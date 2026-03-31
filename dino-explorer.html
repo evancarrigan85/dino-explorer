@@ -802,6 +802,7 @@ footer {
     display: grid;
     grid-template-rows: 48px auto 1fr auto;
     height: 100vh;
+    height: 100dvh; /* override with dynamic viewport height on Safari */
   }
 
   /* Show tab bar at the top on mobile */
@@ -2843,6 +2844,8 @@ function updatePaleoTiles(mya) {
 buildPeriodBar();
 initGeoFeatureToggles();
 initLeafletMap();
+// Ensure Leaflet fills container correctly on mobile after first paint
+setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 200);
 renderDisplay(541);
 setTimeout(() => showFact('🦕', 'Welcome, time explorers! 🌍 Drag the slider to travel through 541 million years. Scroll or pinch to zoom the map. Click any creature or map marker to learn more!'), 600);
 
@@ -2899,6 +2902,8 @@ function showTab(tabName) {
   if (tabName === 'map') {
     leftPanel.style.display = 'grid';
     rightPanel.classList.remove('mobile-visible');
+    // Leaflet needs to know container size changed after being hidden
+    if (leafletMap) setTimeout(() => leafletMap.invalidateSize(), 50);
   } else if (tabName === 'creatures') {
     leftPanel.style.display = 'none';
     rightPanel.classList.add('mobile-visible');
