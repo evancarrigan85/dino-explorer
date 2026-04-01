@@ -444,13 +444,17 @@ header h1 {
   <!-- LEFT: MAP + PERIOD INFO -->
   <div class="left-panel" id="leftPanel">
     <div class="period-info" id="periodInfo">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="era-badge" id="eraBadge" style="padding:2px 8px;border-radius:12px;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#b0c0e0;">Paleozoic</span>
+        <span id="currentLabel" style="font-size:0.7rem;color:var(--muted);">Cambrian Period</span>
+      </div>
       <div class="period-era-label" id="periodEraLabel">Paleozoic Era</div>
       <div class="period-name" id="periodName">Cambrian</div>
       <div class="period-years" id="periodYears">541 – 485 MYA</div>
       <div class="period-desc" id="periodDesc">The explosion of complex life. Almost every major animal group appears in the fossil record for the first time.</div>
     </div>
 
-    <div class="map-area" id="mapArea">
+    <div class="map-area" id="mapArea"><div id="extFlash" style="position:absolute;inset:0;background:radial-gradient(circle,rgba(255,80,0,0.6),transparent 70%);pointer-events:none;opacity:0;transition:opacity 0.3s;z-index:10;"></div>
       <!-- GEO FEATURE TOGGLES -->
       <div class="geo-feature-toggle-bar" id="geoToggleBar"></div>
       <!-- PALEO MAP SVG -->
@@ -470,7 +474,7 @@ header h1 {
 
   <!-- RIGHT: CREATURES -->
   <div class="right-panel" id="rightPanel">
-    <div class="panel-header">🦕 Creatures of this era</div>
+    <div class="panel-header">🦕 <span id="panelTitle">Creatures of this era</span></div>
     <div class="creatures-list" id="creaturesList"></div>
   </div>
 </div>
@@ -2460,7 +2464,7 @@ function renderDisplay(mya) {
     el.classList.toggle('active', el.dataset.id === period.id));
 
   // Timeline label
-  document.getElementById('currentLabel').textContent = period.name + ' Period';
+  const _cl = document.getElementById('currentLabel'); if(_cl) _cl.textContent = period.name + ' Period';
 
   // Extinction flash
   if (crossedExtinction) {
@@ -2530,30 +2534,45 @@ function clearCreatureRange() {
 // ============================================================
 
 function renderGeoFeatures(periodId) {
-  // Remove existing Leaflet markers
-  geoMarkers.forEach(m => { if (leafletMap) leafletMap.removeLayer(m); });
-  geoMarkers = [];
-
-  if (!leafletMap) return;
+  // Remove existing geo markers from SVG overlay
+  document.querySelectorAll('.svg-geo-marker').forEach(el => el.remove());
 
   const features = GEO_FEATURES.filter(f =>
-    f.periods.includes(periodId) && geoFeatureToggles[f.type] && f.latlon);
+    f.periods && f.periods.includes(periodId) && geoToggles[f.type] !== false
+  );
+
+  const svg = document.getElementById('paleoMap');
+  if (!svg) return;
+  const svgW = 800, svgH = 400;
+  const mapW = svg.clientWidth || svgW;
+  const mapH = svg.clientHeight || svgH;
 
   features.forEach(feature => {
+    if (!feature.latlon) return;
     const [lat, lon] = feature.latlon;
+    // Convert lat/lon to SVG coords (rough equirectangular)
+    const x = ((lon + 180) / 360) * svgW;
+    const y = ((90 - lat) / 180) * svgH;
 
-    const icon = L.divIcon({
-      html: `<div class="geo-marker-icon" title="${feature.name}">${feature.icon}</div>`,
-      className: '',
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
-      popupAnchor: [0, -16],
-    });
+    // Create foreignObject with emoji
+    const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    fo.setAttribute('x', x - 14);
+    fo.setAttribute('y', y - 14);
+    fo.setAttribute('width', '28');
+    fo.setAttribute('height', '28');
+    fo.setAttribute('class', 'svg-geo-marker');
+    fo.style.cssText = 'cursor:pointer;overflow:visible';
 
-    const marker = L.marker([lat, lon], { icon, title: feature.name });
-    marker.on('click', () => showGeoPopup(feature));
-    marker.addTo(leafletMap);
-    geoMarkers.push(marker);
+    const div = document.createElement('div');
+    div.style.cssText = 'font-size:18px;line-height:1;text-align:center;cursor:pointer;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.8));transition:transform 0.15s';
+    div.textContent = feature.icon || '📍';
+    div.title = feature.name;
+    div.addEventListener('click', () => showGeoPopup(feature));
+    div.addEventListener('mouseenter', () => div.style.transform = 'scale(1.4)');
+    div.addEventListener('mouseleave', () => div.style.transform = '');
+
+    fo.appendChild(div);
+    svg.appendChild(fo);
   });
 }
 
@@ -2584,7 +2603,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
   // Update display labels immediately for responsiveness
   document.getElementById('myaDisplay').textContent = fmtMya(mya);
   const period = getPeriod(mya);
-  document.getElementById('currentLabel').textContent = period.name + ' Period';
+  const _cl = document.getElementById('currentLabel'); if(_cl) _cl.textContent = period.name + ' Period';
   // Debounce the full async render
   clearTimeout(renderSliderTimer);
   renderSliderTimer = setTimeout(() => { renderDisplay(mya); }, 120);
@@ -2597,11 +2616,7 @@ document.getElementById('chatBtn').addEventListener('click', () => {
 // ============================================================
 //  LEAFLET MAP
 // ============================================================
-let leafletMap = null;
-let paleoTileLayer = null;
-let geoMarkers = [];
-let creatureRangeMarker = null;
-let lastAnchorTime = -1;
+let geoMarkers = []; // legacy compat
 
 // ============================================================
 //  EVENTS
@@ -2642,6 +2657,35 @@ function showTab(tabName) {
 // ============================================================
 //  INIT
 // ============================================================
+
+// ============================================================
+//  GEO FEATURE TOGGLES
+// ============================================================
+let geoToggles = {};
+
+function initGeoFeatureToggles() {
+  const bar = document.getElementById('geoToggleBar');
+  if (!bar) return;
+  
+  // Get unique types from GEO_FEATURES
+  const types = [...new Set(GEO_FEATURES.map(f => f.type))];
+  const typeLabels = { sea: '🌊 Seas', mountain: '⛰️ Mountains', event: '💥 Events', region: '🌍 Regions', ocean: '🌊 Ocean', island: '🏝️ Islands', feature: '✨ Features' };
+  
+  types.forEach(type => {
+    geoToggles[type] = true; // all on by default
+    const btn = document.createElement('button');
+    btn.className = 'geo-feature-toggle active';
+    btn.dataset.type = type;
+    btn.textContent = typeLabels[type] || ('📍 ' + type);
+    btn.addEventListener('click', () => {
+      geoToggles[type] = !geoToggles[type];
+      btn.classList.toggle('active', geoToggles[type]);
+      renderGeoFeatures(activePeriod ? activePeriod.id : 'cambrian');
+    });
+    bar.appendChild(btn);
+  });
+}
+
 buildPeriodLabelBar();
 initGeoFeatureToggles();
 renderDisplay(541);
