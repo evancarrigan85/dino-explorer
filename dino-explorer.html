@@ -94,19 +94,14 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
 .period-desc{font-size:0.82rem;color:#b8c4d8;line-height:1.45;max-width:600px}
 
 /* === MAP AREA === */
-.map-area{position:relative;background:#030a14;overflow:hidden;
-  display:flex;align-items:stretch;justify-content:stretch}
+.map-area{position:relative;background:#7a5828;overflow:hidden;
+  display:flex;align-items:stretch;justify-content:stretch;
+  border:4px solid #4a2e0a;
+  box-shadow:inset 0 0 0 2px #c8a060,inset 0 0 40px rgba(20,10,0,0.5)}
 .map-area svg#paleoMap{width:100%;height:100%;display:block}
 .map-area::before{content:'';position:absolute;inset:0;
-  background-image:
-    radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,0.3) 0%,transparent 100%),
-    radial-gradient(1px 1px at 28% 42%,rgba(255,255,255,0.2) 0%,transparent 100%),
-    radial-gradient(1px 1px at 62% 22%,rgba(255,255,255,0.25) 0%,transparent 100%),
-    radial-gradient(1px 1px at 82% 72%,rgba(255,255,255,0.2) 0%,transparent 100%),
-    radial-gradient(1px 1px at 48% 82%,rgba(255,255,255,0.15) 0%,transparent 100%),
-    radial-gradient(1px 1px at 92% 32%,rgba(255,255,255,0.18) 0%,transparent 100%),
-    radial-gradient(1px 1px at 7% 92%,rgba(255,255,255,0.14) 0%,transparent 100%);
-  pointer-events:none;z-index:0}
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(20,8,0,0.6) 100%);
+  pointer-events:none;z-index:2}
 #paleoMap{position:relative;z-index:1}
 
 /* SVG map zoom/pan via CSS transform */
@@ -2127,16 +2122,131 @@ function myaToSlider(mya) {
 }
 
 // ============================================================
-// SVG MAP RENDERING
+// SVG MAP RENDERING — ANTIQUE CARTOGRAPHY STYLE
 // ============================================================
+
+// Shared SVG defs injected into every map render
+const ANTIQUE_DEFS = `<defs id="antiqueDefs">
+  <filter id="hd_filter" x="-4%" y="-4%" width="108%" height="108%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.028 0.018" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="paper_grain" x="0%" y="0%" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch" result="grain"/>
+    <feColorMatrix type="saturate" values="0" in="grain" result="g"/>
+    <feBlend in="SourceGraphic" in2="g" mode="multiply" result="blend"/>
+    <feComposite in="blend" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <radialGradient id="vigGrad" cx="50%" cy="50%" r="65%">
+    <stop offset="0%" stop-color="transparent"/>
+    <stop offset="100%" stop-color="rgba(25,10,0,0.45)"/>
+  </radialGradient>
+</defs>`;
+
+// Decorative compass rose (bottom-right corner)
+const COMPASS_ROSE = `<g transform="translate(731,348)" opacity="0.85">
+  <circle r="31" fill="rgba(210,185,110,0.10)" stroke="rgba(90,55,15,0.5)" stroke-width="1.2"/>
+  <circle r="19" fill="none" stroke="rgba(90,55,15,0.28)" stroke-width="0.7" stroke-dasharray="2,3.5"/>
+  <polygon points="0,-29 3.8,-12 0,-7 -3.8,-12" fill="#4a2a08"/>
+  <polygon points="0,29 3.8,12 0,7 -3.8,12" fill="#4a2a08"/>
+  <polygon points="29,0 12,3.8 7,0 12,-3.8" fill="#4a2a08"/>
+  <polygon points="-29,0 -12,3.8 -7,0 -12,-3.8" fill="#4a2a08"/>
+  <polygon points="0,-21 2.8,-10 0,-7 -2.8,-10" fill="#9a7030" transform="rotate(45)"/>
+  <polygon points="0,-21 2.8,-10 0,-7 -2.8,-10" fill="#9a7030" transform="rotate(135)"/>
+  <polygon points="0,-21 2.8,-10 0,-7 -2.8,-10" fill="#9a7030" transform="rotate(225)"/>
+  <polygon points="0,-21 2.8,-10 0,-7 -2.8,-10" fill="#9a7030" transform="rotate(315)"/>
+  <circle r="4.5" fill="#4a2a08"/>
+  <circle r="2.5" fill="#d4a040"/>
+  <text x="0" y="-35" text-anchor="middle" fill="#2a1206" font-size="9" font-weight="bold" font-family="Georgia,'Times New Roman',serif">N</text>
+  <text x="0" y="43" text-anchor="middle" fill="#2a1206" font-size="7" font-family="Georgia,'Times New Roman',serif">S</text>
+  <text x="37" y="3.5" text-anchor="middle" fill="#2a1206" font-size="7" font-family="Georgia,'Times New Roman',serif">E</text>
+  <text x="-37" y="3.5" text-anchor="middle" fill="#2a1206" font-size="7" font-family="Georgia,'Times New Roman',serif">W</text>
+</g>`;
+
+// Faint lat/lon grid lines (hand-drawn dashed style)
+const MAP_GRID = `<g opacity="0.10" stroke="#5a3010" stroke-width="0.7" stroke-dasharray="5,7" pointer-events="none">
+  <line x1="0" y1="89" x2="800" y2="89"/>
+  <line x1="0" y1="178" x2="800" y2="178"/>
+  <line x1="0" y1="267" x2="800" y2="267"/>
+  <line x1="0" y1="356" x2="800" y2="356"/>
+  <line x1="200" y1="0" x2="200" y2="400"/>
+  <line x1="400" y1="0" x2="400" y2="400"/>
+  <line x1="600" y1="0" x2="600" y2="400"/>
+</g>`;
+
+// Paper grain overlay for texture (very subtle)
+const GRAIN_OVERLAY = `<rect width="800" height="400" fill="#c8a060" filter="url(#paper_grain)" opacity="0.07" pointer-events="none"/>`;
+
+// Vignette overlay
+const VIGNETTE = `<rect width="800" height="400" fill="url(#vigGrad)" pointer-events="none"/>`;
+
+// Decorative corner flourishes
+const CORNER_MARKS = `<g stroke="rgba(90,55,15,0.35)" stroke-width="1" fill="none">
+  <path d="M8,8 L28,8 M8,8 L8,28"/>
+  <path d="M792,8 L772,8 M792,8 L792,28"/>
+  <path d="M8,392 L28,392 M8,392 L8,372"/>
+  <path d="M792,392 L772,392 M792,392 L792,372"/>
+</g>`;
+
 function getSvgForPeriod(period) {
   return SVG_MAPS[period.id] || SVG_MAPS[period.continentKey] || SVG_MAPS['cambrian'] || '';
 }
 
+function applyAntiqueStyle(svg) {
+  return svg
+    // Ocean gradient stop colors: dark navy → aged steel-blue sea
+    .replace(/#0a2040/gi, '#7a9aaa')
+    .replace(/#030a14/gi, '#4e7285')
+    .replace(/#030814/gi, '#4a6a80')
+    .replace(/#031020/gi, '#4e7285')
+    .replace(/#08132a/gi, '#507a8c')
+    .replace(/#041020/gi, '#4e7285')
+    .replace(/#041028/gi, '#4e7285')
+    .replace(/#050d1a/gi, '#4e7285')
+    .replace(/#06101e/gi, '#4e7285')
+    .replace(/#051018/gi, '#4e7285')
+    // Continent fills: pale tan → warm parchment-land brown
+    .replace(/#c8a87a/gi, '#aa7a3a')
+    .replace(/#c8b08a/gi, '#aa7a3a')
+    .replace(/#caa87c/gi, '#aa7a3a')
+    .replace(/#cab07e/gi, '#aa7a3a')
+    // Continent strokes: → dark ink brown
+    .replace(/#a08050/gi, '#5a3010')
+    .replace(/#90704a/gi, '#5a3010')
+    // Ocean label text: light blue → dark ink blue
+    .replace(/rgba\(100,160,220,0\.55\)/gi, 'rgba(25,50,110,0.82)')
+    .replace(/rgba\(100,160,220,0\.65\)/gi, 'rgba(25,50,110,0.88)')
+    .replace(/rgba\(100,160,220,0\.50\)/gi, 'rgba(25,50,110,0.75)')
+    .replace(/rgba\(100,160,220,0\.40\)/gi, 'rgba(25,50,110,0.65)')
+    .replace(/rgba\(100,160,220,0\.5\)/gi,  'rgba(25,50,110,0.75)')
+    .replace(/rgba\(100,160,220,0\.4\)/gi,  'rgba(25,50,110,0.65)')
+    // Continent label text → dark ink
+    .replace(/#4a2e08/gi, '#1a0e04')
+    .replace(/#3a2008/gi, '#1a0e04')
+    // Ocean current lines → sepia/inky
+    .replace(/rgba\(60,130,200,0\.18\)/gi, 'rgba(40,70,130,0.38)')
+    .replace(/rgba\(60,130,200,0\.15\)/gi, 'rgba(40,70,130,0.30)')
+    // Timestamp text → dark brown
+    .replace(/rgba\(200,168,122,0\.7\)/gi, 'rgba(55,30,8,0.65)')
+    .replace(/rgba\(200,168,122,0\.6\)/gi, 'rgba(55,30,8,0.55)')
+    // Font: system-ui → Georgia serif for authentic cartography feel
+    .replace(/font-family="system-ui,sans-serif"/gi, 'font-family="Georgia,'Times New Roman',serif"')
+    // Add hand-drawn filter to continent paths (match paths with land fill)
+    .replace(/(<path[^>]*fill="#aa7a3a"[^>]*?)(\/?>)/g, (m, p1, p2) => {
+      if (p1.includes('filter=')) return m;
+      return p1 + ' filter="url(#hd_filter)"' + p2;
+    });
+}
+
 function updateMap(period, creatureName) {
   const mapEl = document.getElementById('paleoMap');
-  const svgContent = getSvgForPeriod(period);
-  mapEl.innerHTML = svgContent;
+  let svgContent = getSvgForPeriod(period);
+
+  // Apply antique color + style transformations
+  svgContent = applyAntiqueStyle(svgContent);
+
+  // Build full content: defs + grid (behind) + map content + overlays
+  mapEl.innerHTML = ANTIQUE_DEFS + MAP_GRID + svgContent + GRAIN_OVERLAY + CORNER_MARKS + COMPASS_ROSE + VIGNETTE;
 
   // Show creature range overlay if requested
   if (creatureName && CREATURE_RANGES[creatureName]) {
