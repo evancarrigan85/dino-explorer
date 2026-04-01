@@ -5,517 +5,321 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🦕 Dino Time Explorer</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #080c18;
-  --card: #10151f;
-  --card2: #181e2e;
-  --text: #e8eaf0;
-  --muted: #7a8499;
-  --accent: #f0c040;
-  --border: #252d45;
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080c18;--card:#10151f;--card2:#181e2e;--text:#e8eaf0;
+  --muted:#7a8499;--accent:#f0c040;--border:#252d45;
 }
-html, body {
-  height: 100%;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow: hidden;
-}
-body {
-  display: grid;
-  grid-template-rows: 52px auto 1fr;
-  height: 100vh;
-  height: 100dvh;
-}
+html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);overflow:hidden}
+body{display:grid;grid-template-rows:54px auto 1fr;height:100vh}
 
-/* ---- HEADER ---- */
-header {
-  background: linear-gradient(135deg, #12102a 0%, #0c1830 100%);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  gap: 12px;
-  z-index: 10;
-  flex-shrink: 0;
-}
-header .logo { font-size: 1.6rem; line-height: 1; }
-header h1 {
-  font-size: 1.15rem;
-  font-weight: 900;
-  background: linear-gradient(90deg, #f0c040 0%, #ff7a35 50%, #f0c040 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.mya-display {
-  margin-left: auto;
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--accent);
-  min-width: 90px;
-  text-align: right;
-}
+/* === HEADER === */
+header{background:linear-gradient(135deg,#12102a 0%,#0c1830 100%);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;
+  padding:0 18px;gap:12px;z-index:10}
+header .logo{font-size:1.7rem;line-height:1}
+header h1{font-size:1.25rem;font-weight:900;
+  background:linear-gradient(90deg,#f0c040 0%,#ff7a35 50%,#f0c040 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
+.era-badge{margin-left:auto;padding:3px 10px;border-radius:20px;font-size:0.7rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:0.8px;
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#b0c0e0}
+.mya-display{font-size:1rem;font-weight:800;color:var(--accent);min-width:90px;text-align:right}
 
-/* ---- TIMELINE SLIDER (TOP) ---- */
-.timeline-wrapper {
-  background: #0b0f1e;
-  border-bottom: 2px solid var(--border);
-  padding: 0;
-  position: relative;
-  z-index: 9;
-  user-select: none;
+/* === TIMELINE BAR (top) === */
+#timelineBar{
+  background:linear-gradient(180deg,#0c1228 0%,#080c18 100%);
+  border-bottom:2px solid var(--border);
+  padding:6px 16px 8px;
+  position:relative;z-index:9
 }
-.period-label-bar {
-  display: flex;
-  height: 26px;
-  position: relative;
-  overflow: hidden;
+#periodLabels{
+  display:flex;position:relative;height:20px;margin-bottom:4px;
+  padding:0 8px
 }
-.period-label-btn {
-  position: absolute;
-  top: 0;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  border-right: 1px solid rgba(255,255,255,0.08);
-  transition: background 0.15s;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding: 0 3px;
+.plabel{
+  position:absolute;font-size:0.62rem;color:rgba(180,200,230,0.7);
+  font-weight:600;text-transform:uppercase;letter-spacing:0.3px;
+  transform:translateX(-50%);white-space:nowrap;cursor:pointer;
+  transition:color 0.2s
 }
-.period-label-btn:hover { filter: brightness(1.3); }
-.slider-track-wrapper {
-  padding: 6px 10px 8px;
-  position: relative;
-}
-#timeSlider {
-  width: 100%;
-  height: 14px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: linear-gradient(to right, #3b1878 0%, #1a5f7a 18%, #2a7a5a 40%, #7a6a20 70%, #c08030 85%, #d0a040 100%);
-  border-radius: 7px;
-  outline: none;
-  cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.12);
-}
-#timeSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff8d0, #f0c040 50%, #c08020);
-  border: 2px solid #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 0 12px rgba(240,192,64,0.6);
-  cursor: grab;
-  margin-top: -4px;
-}
-#timeSlider::-webkit-slider-thumb:active { cursor: grabbing; }
-#timeSlider::-moz-range-thumb {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff8d0, #f0c040 50%, #c08020);
-  border: 2px solid #fff; cursor: grab;
-}
-.slider-era-labels {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 4px;
-  font-size: 0.55rem;
-  color: var(--muted);
-}
+.plabel:hover{color:var(--accent)}
+.plabel.active-period-label{color:var(--accent)}
 
-/* ---- MAIN ---- */
-.main {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  overflow: hidden;
-  min-height: 0;
+/* Slider track with era gradient */
+#sliderWrapper{position:relative;padding:0 8px}
+#sliderTrack{
+  position:absolute;left:8px;right:8px;top:50%;
+  transform:translateY(-50%);height:10px;border-radius:5px;
+  background:linear-gradient(to right,
+    #6644cc 0%,#6644cc 0.7%,
+    #2288bb 0.7%,#2288bb 28%,
+    #228844 28%,#228844 66%,
+    #cc8820 66%,#cc8820 100%);
+  pointer-events:none;z-index:0
 }
+.time-slider{
+  -webkit-appearance:none;appearance:none;width:100%;height:44px;
+  background:transparent;cursor:pointer;position:relative;z-index:1;
+  outline:none
+}
+.time-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--accent);border:3px solid #fff;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.6);transition:transform 0.15s
+}
+.time-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.time-slider::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--accent);
+  border:3px solid #fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.6)
+}
+.time-slider::-webkit-slider-runnable-track{height:44px;background:transparent}
 
-/* LEFT PANEL */
-.left-panel {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  overflow: hidden;
-  border-right: 1px solid var(--border);
-  min-height: 0;
-}
+/* === MAIN CONTENT AREA === */
+.main{display:grid;grid-template-columns:1fr 310px;overflow:hidden;height:100%}
 
-/* Period info strip */
-.period-info {
-  padding: 8px 16px 8px;
-  border-bottom: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  background: rgba(10,15,30,0.6);
-  flex-shrink: 0;
-}
-.period-era-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 1px; }
-.period-name { font-size: 1.4rem; font-weight: 900; line-height: 1; }
-.period-years { font-size: 0.68rem; color: var(--muted); margin: 2px 0 4px; }
-.period-desc { font-size: 0.77rem; color: #a0b4cc; line-height: 1.45; }
+/* === LEFT PANEL (map + period info) === */
+.left-panel{display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;
+  border-right:1px solid var(--border)}
 
-/* Map area */
-.map-area {
-  position: relative;
-  overflow: hidden;
-  background: #071a38;
-  min-height: 0;
-}
-#paleoMap {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.map-context-label {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(8,12,24,0.8);
-  color: #8aabcc;
-  font-size: 0.65rem;
-  padding: 3px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
-  pointer-events: none;
-  white-space: nowrap;
-}
+.period-info{padding:10px 16px 8px;background:var(--card);
+  border-bottom:1px solid var(--border);border-left:4px solid var(--accent);
+  transition:all 0.4s}
+.period-era-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);margin-bottom:1px}
+.period-name{font-size:1.4rem;font-weight:900;line-height:1.1;transition:color 0.4s}
+.period-years{font-size:0.75rem;color:var(--accent);font-weight:600;margin:1px 0 4px}
+.period-desc{font-size:0.82rem;color:#b8c4d8;line-height:1.45;max-width:600px}
+
+/* === MAP AREA === */
+.map-area{position:relative;background:#030a14;overflow:hidden;
+  display:flex;align-items:stretch;justify-content:stretch}
+.map-area svg#paleoMap{width:100%;height:100%;display:block}
+.map-area::before{content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,0.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 28% 42%,rgba(255,255,255,0.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 62% 22%,rgba(255,255,255,0.25) 0%,transparent 100%),
+    radial-gradient(1px 1px at 82% 72%,rgba(255,255,255,0.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 48% 82%,rgba(255,255,255,0.15) 0%,transparent 100%),
+    radial-gradient(1px 1px at 92% 32%,rgba(255,255,255,0.18) 0%,transparent 100%),
+    radial-gradient(1px 1px at 7% 92%,rgba(255,255,255,0.14) 0%,transparent 100%);
+  pointer-events:none;z-index:0}
+#paleoMap{position:relative;z-index:1}
+
+/* SVG map zoom/pan via CSS transform */
+.map-area .svg-wrapper{width:100%;height:100%;overflow:hidden;cursor:grab;
+  transform-origin:center center;will-change:transform}
+.map-area .svg-wrapper:active{cursor:grabbing}
+
+/* Creature range label */
+#creatureRangeLabel{position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  background:rgba(12,20,40,0.88);color:rgba(255,250,200,0.92);padding:4px 14px;
+  border-radius:20px;font-size:0.73rem;font-weight:600;z-index:800;pointer-events:none;
+  border:1px solid rgba(255,255,255,0.15);white-space:nowrap;display:none}
 
 /* Events ribbon */
-.events-ribbon {
-  position: absolute;
-  bottom: 32px;
-  left: 0; right: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  background: linear-gradient(90deg, rgba(180,50,50,0.85) 0%, rgba(150,30,30,0.75) 100%);
-  border-top: 1px solid rgba(255,100,100,0.3);
-  font-size: 0.78rem;
-  color: #ffd0c0;
-  font-weight: 600;
-}
-.events-ribbon.hidden { display: none; }
-.event-icon { font-size: 1.1rem; flex-shrink: 0; }
+.events-ribbon{padding:6px 16px;background:rgba(220,50,30,0.15);
+  border-top:1px solid rgba(220,80,40,0.3);display:flex;align-items:center;gap:8px;
+  font-size:0.78rem;color:#ffaa80}
+.events-ribbon.hidden{display:none}
+.event-icon{font-size:1.1rem}
 
-/* Geo feature toggles - above map */
-.geo-feature-toggle-bar {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  right: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  z-index: 5;
-  pointer-events: auto;
-}
-.geo-feature-toggle {
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 0.65rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(8,12,24,0.82);
-  color: var(--muted);
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.geo-feature-toggle.active {
-  background: rgba(30,50,100,0.9);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.geo-feature-toggle:hover { filter: brightness(1.2); }
+/* === RIGHT PANEL === */
+.right-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--card)}
 
-/* RIGHT PANEL — creatures list */
-.right-panel {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--card);
-  min-height: 0;
-}
-.panel-header {
-  padding: 10px 14px 8px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.creatures-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 6px 0;
-}
-.creature-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-left: 2px solid transparent;
-  transition: all 0.15s;
-}
-.creature-row:hover { background: rgba(255,255,255,0.05); }
-.creature-row.active {
-  background: rgba(30,50,90,0.5);
-  border-left-color: var(--accent);
-}
-.creature-emoji { font-size: 1.7rem; line-height: 1; flex-shrink: 0; }
-.creature-title { flex: 1; min-width: 0; }
-.creature-name { font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.creature-size { font-size: 0.63rem; color: var(--muted); margin-top: 1px; }
-.diet-badge {
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.diet-carn { background: rgba(220,60,60,0.25); color: #ff8080; }
-.diet-herb { background: rgba(60,180,60,0.25); color: #80ee80; }
-.diet-omni { background: rgba(180,140,60,0.25); color: #e0c060; }
-.diet-pred { background: rgba(220,60,60,0.25); color: #ff8080; }
-.diet-filt { background: rgba(60,140,220,0.25); color: #80bbff; }
+/* Tab bar - CLEAN, not overlaid */
+.tab-bar{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.tab-btn{flex:1;padding:10px 6px;background:none;border:none;color:var(--muted);
+  font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;
+  border-bottom:2px solid transparent;font-family:inherit}
+.tab-btn:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);
+  background:rgba(240,192,64,0.05)}
+.panel-title{padding:8px 14px;font-size:0.78rem;font-weight:700;
+  color:var(--accent);text-transform:uppercase;letter-spacing:0.8px;
+  border-bottom:1px solid var(--border)}
+.panel-content{flex:1;overflow-y:auto;overflow-x:hidden}
+.panel-content::-webkit-scrollbar{width:4px}
+.panel-content::-webkit-scrollbar-track{background:transparent}
+.panel-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 
-/* Fact popup */
-.fact-popup {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(520px, 92vw);
-  background: linear-gradient(135deg, #12182e 0%, #0e1428 100%);
-  border: 1px solid rgba(240,192,64,0.3);
-  border-radius: 14px;
-  padding: 16px 18px 14px;
-  z-index: 100;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
-  animation: popIn 0.2s ease-out;
-}
-@keyframes popIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(16px) scale(0.96); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-}
-.fact-popup .fp-emoji { font-size: 2rem; display: block; margin-bottom: 6px; }
-.fact-popup .fp-title { font-size: 1.1rem; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
-.fact-popup .fp-meta { font-size: 0.68rem; color: var(--muted); margin-bottom: 8px; }
-.fact-popup .fp-text { font-size: 0.86rem; color: #d0daf0; line-height: 1.55; }
-.fact-popup .fp-close {
-  display: block;
-  text-align: right;
-  font-size: 0.68rem;
-  color: var(--muted);
-  margin-top: 10px;
-  cursor: pointer;
-  padding: 2px 0;
-}
-.fact-popup .fp-close:hover { color: var(--accent); }
-.fact-popup .fp-extra { font-size: 0.68rem; color: #7a9aaa; margin-top: 8px; line-height: 1.5; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 8px; }
+/* === CREATURE CARDS === */
+.creatures-list{padding:8px}
+.creature-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
+.creature-card:hover,.creature-card.active{border-color:var(--accent);
+  background:rgba(240,192,64,0.06)}
+.creature-top{display:flex;gap:10px;align-items:flex-start}
+.creature-emoji{font-size:1.8rem;line-height:1;flex-shrink:0}
+.creature-title{flex:1;min-width:0}
+.creature-name{font-size:0.88rem;font-weight:700;line-height:1.2;
+  display:flex;align-items:center;gap:4px}
+.fun-fact-pulse{font-size:0.7rem;opacity:0;transition:opacity 0.3s}
+.creature-card.active .fun-fact-pulse{opacity:1;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+.creature-size{font-size:0.72rem;color:var(--muted)}
+.creature-lived{font-size:0.68rem;color:var(--accent);opacity:0.8}
+.creature-habitat{font-size:0.72rem;color:#8ab0d0;margin:4px 0 2px}
+.creature-fact{font-size:0.78rem;color:#c0cce0;line-height:1.4;margin:4px 0}
+.creature-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.diet-chip{font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:600}
+.diet-herb{background:rgba(50,180,80,0.2);color:#60d880}
+.diet-carn{background:rgba(220,60,40,0.2);color:#ff8060}
+.diet-pred{background:rgba(220,60,40,0.2);color:#ff8060}
+.diet-omni{background:rgba(200,160,40,0.2);color:#e0c060}
+.diet-filter{background:rgba(60,140,220,0.2);color:#80c0f0}
+.habitat-badge{font-size:0.65rem;padding:2px 7px;border-radius:10px;
+  background:rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+.expand-btn{background:none;border:none;cursor:pointer;color:var(--muted);
+  font-size:0.8rem;padding:4px 0;margin-top:4px;font-family:inherit;display:block}
+.expand-btn:hover{color:var(--accent)}
+.creature-expanded{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.creature-field{margin-bottom:6px;font-size:0.75rem;color:#a0b0c8;line-height:1.4}
+.creature-field strong{color:var(--accent);font-size:0.7rem;display:block;margin-bottom:1px}
+.taxonomy-path{color:#90a8c0;font-style:italic}
+.creature-text{color:#a0b0c8}
 
-/* Geo popup */
-.geo-popup {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(480px, 92vw);
-  background: linear-gradient(135deg, #0e1a30 0%, #0a1220 100%);
-  border: 1px solid rgba(100,160,255,0.3);
-  border-radius: 14px;
-  padding: 14px 16px 12px;
-  z-index: 99;
-  display: none;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
-  animation: popIn 0.2s ease-out;
+/* === GEO FEATURES PANEL === */
+.geo-list{padding:8px}
+.geo-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
+.geo-card:hover{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.03)}
+.geo-card-top{display:flex;gap:8px;align-items:flex-start}
+.geo-icon{font-size:1.5rem;flex-shrink:0}
+.geo-info{flex:1;min-width:0}
+.geo-name{font-size:0.85rem;font-weight:700;line-height:1.2}
+.geo-short{font-size:0.75rem;color:#a0b0c8;line-height:1.3;margin-top:3px}
+.geo-full{font-size:0.73rem;color:#8898b0;line-height:1.4;margin-top:5px;
+  display:none;border-top:1px solid var(--border);padding-top:5px}
+.geo-card.expanded .geo-full{display:block}
+.geo-fun{font-size:0.72rem;color:#90c0a0;margin-top:4px;font-style:italic}
+.geo-type-badge{font-size:0.62rem;padding:2px 6px;border-radius:8px;
+  background:rgba(255,255,255,0.07);color:var(--muted);margin-top:4px;display:inline-block}
+
+/* === ASK PANEL === */
+.ask-panel{padding:12px;display:flex;flex-direction:column;gap:10px;height:100%}
+.ask-hint{font-size:0.78rem;color:var(--muted);text-align:center;padding:20px 10px}
+.ask-hint .emoji{font-size:2rem;display:block;margin-bottom:8px}
+
+/* === FACT POPUP === */
+#factPopup{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(12,20,42,0.97);border:1px solid rgba(255,255,255,0.15);
+  border-radius:12px;padding:12px 18px;max-width:480px;width:90vw;
+  z-index:1000;opacity:0;transition:all 0.35s;pointer-events:none;
+  box-shadow:0 8px 32px rgba(0,0,0,0.6)}
+#factPopup.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.fp-inner{display:flex;gap:10px;align-items:flex-start}
+#fpEmoji{font-size:1.5rem;flex-shrink:0}
+#fpText{font-size:0.83rem;color:#d0ddf0;line-height:1.5}
+.fp-close{position:absolute;top:8px;right:10px;background:none;border:none;
+  color:var(--muted);font-size:1.1rem;cursor:pointer;padding:2px 6px}
+
+/* === MOBILE === */
+@media(max-width:767px){
+  body{grid-template-rows:50px auto 1fr auto}
+  .main{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .right-panel{max-height:45vh;border-top:2px solid var(--border)}
+  .left-panel{border-right:none}
+  header h1{font-size:1.05rem}
+  header .sub{display:none}
+  .period-name{font-size:1.2rem}
+  .period-desc{display:none}
+  #timelineBar{padding:4px 10px 6px}
+  .plabel{font-size:0.58rem}
+  #sliderTrack{height:8px}
 }
-.gp-emoji { font-size: 1.8rem; margin-bottom: 5px; display: block; }
-.gp-name { font-size: 1rem; font-weight: 800; color: #80c8ff; margin-bottom: 4px; }
-.gp-type { font-size: 0.65rem; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-.gp-desc { font-size: 0.83rem; color: #c0d0e8; line-height: 1.5; }
-.gp-close { display: block; text-align: right; font-size: 0.65rem; color: var(--muted); margin-top: 8px; cursor: pointer; }
-
-/* Mobile tab bar */
-.mobile-tab-bar { display: none; }
-
-/* ============ MOBILE ============ */
-@media (max-width: 700px) {
-  body {
-    grid-template-rows: 46px auto 1fr auto;
-    height: 100vh;
-    height: 100dvh;
-  }
-  header { padding: 0 10px; gap: 8px; height: 46px; }
-  header .logo { font-size: 1.35rem; }
-  header h1 { font-size: 0.92rem; }
-  .mya-display { font-size: 0.82rem; min-width: 70px; }
-  .timeline-wrapper { border-bottom: 1px solid var(--border); }
-  .period-label-btn { font-size: 0.5rem; }
-  .main {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-  }
-  .left-panel {
-    border-right: none;
-    grid-template-rows: auto 1fr;
-  }
-  .right-panel { display: none; }
-  .right-panel.mobile-visible {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 20;
-    background: var(--card);
-  }
-  .mobile-tab-bar {
-    display: flex;
-    background: #0b1020;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  .mobile-tab {
-    flex: 1;
-    padding: 8px 0;
-    border: none;
-    background: none;
-    color: var(--muted);
-    font-size: 0.72rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-top: 2px solid transparent;
-    transition: all 0.15s;
-  }
-  .mobile-tab.active {
-    color: var(--accent);
-    border-top-color: var(--accent);
-  }
-  .period-info { padding: 6px 12px; }
-  .period-name { font-size: 1.15rem; }
-  .fact-popup { bottom: 58px; }
-  .geo-popup { bottom: 58px; }
+@media(max-width:480px){
+  .plabel.hide-xs{display:none}
 }
 </style>
 </head>
 <body>
-
 <!-- HEADER -->
 <header>
   <div class="logo">🦕</div>
   <div>
     <h1>Dino Time Explorer</h1>
-    <div style="font-size:0.62rem;color:var(--muted);">541 million years of life on Earth</div>
+    <div class="sub">Slide through 541 million years of life on Earth</div>
   </div>
-  <button id="chatBtn" onclick="showFact('💬','Ask me anything about prehistoric life! Click any creature for encyclopedia-style info. Move the slider to travel through time!')" style="margin-left:8px;padding:5px 10px;border-radius:20px;border:1px solid rgba(240,192,64,0.4);background:rgba(240,192,64,0.1);color:#f0c040;font-size:0.72rem;font-weight:700;cursor:pointer;white-space:nowrap;">💬 Ask</button>
-<div class="mya-display" id="myaDisplay">541 MYA</div>
+  <span class="era-badge" id="eraBadge">Paleozoic Era</span>
+  <div class="mya-display" id="myaDisplay">541 MYA</div>
 </header>
 
-<!-- TIMELINE SLIDER — TOP -->
-<div class="timeline-wrapper">
-  <div class="period-label-bar" id="periodLabelBar">
-    <!-- Populated by JS -->
-  </div>
-  <div class="slider-track-wrapper">
-    <input type="range" id="timeSlider" min="0" max="1000" value="0" step="1">
-  </div>
-  <div class="slider-era-labels">
-    <span style="color:#9060c8">← 541 MYA Cambrian</span>
-    <span style="color:#3a8a6a">Mesozoic</span>
-    <span style="color:#c09030">Today →</span>
+<!-- TIMELINE SLIDER (TOP) -->
+<div id="timelineBar">
+  <div id="periodLabels"></div>
+  <div id="sliderWrapper">
+    <div id="sliderTrack"></div>
+    <input type="range" class="time-slider" id="timeSlider" min="0" max="1000" value="0" step="1">
   </div>
 </div>
 
-<!-- MAIN -->
-<div class="main" id="mainArea">
-  <!-- LEFT: MAP + PERIOD INFO -->
-  <div class="left-panel" id="leftPanel">
+<!-- MAIN CONTENT -->
+<div class="main">
+  <!-- LEFT: map + period info -->
+  <div class="left-panel">
     <div class="period-info" id="periodInfo">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="era-badge" id="eraBadge" style="padding:2px 8px;border-radius:12px;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#b0c0e0;">Paleozoic</span>
-        <span id="currentLabel" style="font-size:0.7rem;color:var(--muted);">Cambrian Period</span>
-      </div>
       <div class="period-era-label" id="periodEraLabel">Paleozoic Era</div>
-      <div class="period-name" id="periodName">Cambrian</div>
-      <div class="period-years" id="periodYears">541 – 485 MYA</div>
-      <div class="period-desc" id="periodDesc">The explosion of complex life. Almost every major animal group appears in the fossil record for the first time.</div>
+      <div class="period-name" id="periodName" style="color:#3cb371">Cambrian Period</div>
+      <div class="period-years" id="periodYears">541 – 485 million years ago</div>
+      <div class="period-desc" id="periodDesc">The ocean EXPLODES with life!</div>
     </div>
+    <div class="map-area" id="mapArea">
+      <div class="svg-wrapper" id="svgWrapper">
+        <svg id="paleoMap" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice"></svg>
+      </div>
+      <div id="creatureRangeLabel"></div>
+    </div>
+    <div class="events-ribbon hidden" id="eventsRibbon">
+      <span class="event-icon" id="eventIcon">💥</span>
+      <span id="eventText">Event</span>
+    </div>
+  </div>
 
-    <div class="map-area" id="mapArea"><div id="extFlash" style="position:absolute;inset:0;background:radial-gradient(circle,rgba(255,80,0,0.6),transparent 70%);pointer-events:none;opacity:0;transition:opacity 0.3s;z-index:10;"></div>
-      <!-- GEO FEATURE TOGGLES -->
-      <div class="geo-feature-toggle-bar" id="geoToggleBar"></div>
-      <!-- PALEO MAP SVG -->
-      <svg id="paleoMap" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-        <rect width="800" height="400" fill="#071a38"/>
-        <text x="400" y="210" text-anchor="middle" fill="#3a6a9a" font-size="18" opacity="0.5">Loading map...</text>
-      </svg>
-      <!-- Context label -->
-      <div class="map-context-label" id="mapContextLabel">Cambrian Earth · 541 MYA</div>
-      <!-- Events ribbon -->
-      <div class="events-ribbon hidden" id="eventsRibbon">
-        <span class="event-icon" id="eventIcon">🌋</span>
-        <span id="eventText"></span>
+  <!-- RIGHT: tabs + content -->
+  <div class="right-panel" id="rightPanel">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="creatures" onclick="switchTab('creatures')">🦕 Creatures</button>
+      <button class="tab-btn" data-tab="geo" onclick="switchTab('geo')">🌋 Geology</button>
+      <button class="tab-btn" data-tab="ask" onclick="switchTab('ask')">💬 Ask</button>
+    </div>
+    <div class="panel-title" id="panelTitle">🌊 Life in This Period</div>
+    <div class="panel-content" id="panelContent">
+      <div id="creaturesPanel" class="creatures-list"></div>
+      <div id="geoPanel" class="geo-list" style="display:none"></div>
+      <div id="askPanel" class="ask-panel" style="display:none">
+        <div class="ask-hint">
+          <span class="emoji">💬</span>
+          Ask me anything about prehistoric life, continental drift, or what you see here!
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- RIGHT: CREATURES -->
-  <div class="right-panel" id="rightPanel">
-    <div class="panel-header">🦕 <span id="panelTitle">Creatures of this era</span></div>
-    <div class="creatures-list" id="creaturesList"></div>
-  </div>
-</div>
-
-<!-- MOBILE TAB BAR -->
-<div class="mobile-tab-bar">
-  <button class="mobile-tab active" data-tab="map" onclick="showTab('map')">🗺️ Map</button>
-  <button class="mobile-tab" data-tab="creatures" onclick="showTab('creatures')">🦕 Creatures</button>
-  <button class="mobile-tab" data-tab="ask" onclick="showTab('ask')">💬 Ask</button>
 </div>
 
 <!-- FACT POPUP -->
-<div class="fact-popup" id="factPopup" style="display:none">
-  <span class="fp-emoji" id="fpEmoji"></span>
-  <div class="fp-title" id="fpTitle"></div>
-  <div class="fp-meta" id="fpMeta"></div>
-  <div class="fp-text" id="fpText"></div>
-  <div class="fp-extra" id="fpExtra" style="display:none"></div>
-  <span class="fp-close" onclick="closeFactPopup()">tap to dismiss ✕</span>
-</div>
-
-<!-- GEO POPUP -->
-<div class="geo-popup" id="geoPopup">
-  <span class="gp-emoji" id="gpEmoji"></span>
-  <div class="gp-name" id="gpName"></div>
-  <div class="gp-type" id="gpType"></div>
-  <div class="gp-desc" id="gpDesc"></div>
-  <div id="gpShort" style="font-size:0.82rem;color:#c0d0e8;line-height:1.5;margin-top:4px;"></div>
-  <div id="gpFull" style="font-size:0.78rem;color:#a0b0c8;line-height:1.5;margin-top:4px;display:none;"></div>
-  <div id="gpFun" style="font-size:0.75rem;color:#80c8ff;margin-top:6px;font-style:italic;"></div>
-  <span class="gp-close" onclick="closeGeoPopup()">tap to dismiss ✕</span>
+<div id="factPopup">
+  <div class="fp-inner">
+    <span id="fpEmoji">🦕</span>
+    <span id="fpText">Welcome!</span>
+  </div>
+  <button class="fp-close" onclick="closeFactPopup()">✕</button>
 </div>
 
 <script>
-const ANCHOR_TIMES = [0, 35, 66, 100, 145, 201, 252, 300, 359, 419, 485, 541];
-
-function getAnchorTimeForPeriod(mya) {
-  return ANCHOR_TIMES.reduce((closest, t) =>
-    Math.abs(t - mya) < Math.abs(closest - mya) ? t : closest);
-}
+// ============================================================
+// DATA - injected from original file
+// ============================================================
+const SLIDER_BP = [
+  [0,    541],   // left edge  = 541 MYA (Cambrian)
+  [250,  359],   // 25%        = 359 MYA (end-Devonian)
+  [400,  252],   // 40%        = 252 MYA (P-T extinction)
+  [700,   66],   // 70%        =  66 MYA (K-Pg extinction)
+  [1000,   0],   // right edge =   0 MYA (today)
+];
 
 const PERIODS = [
   {
@@ -962,11 +766,7 @@ const PERIODS = [
        fact:"The tallest bird ever known - females towered over modern ostriches. The nine species of moa were New Zealand\'s dominant herbivores for millions of years. Polynesian settlers arrived around 1280 CE and within 200 years all moa species were extinct, one of the fastest megafaunal collapses in history."},
     ]
   },
-];
-
-// ============================================================
-//  GEOLOGICAL FEATURES DATA
-// ============================================================
+]
 
 const GEO_FEATURES = [
   // SEAS
@@ -1329,18 +1129,7 @@ const GEO_FEATURES = [
     latlon:[-5, -60],
     positions:{ neogene:{x:280, y:270} }
   },
-];
-
-// ============================================================
-//  CONTINENT SVG DATA  (viewBox 0 0 620 380)
-// ============================================================
-// (CONTINENTS removed — Leaflet tile service handles maps)
-
-// ============================================================
-//  CREATURE RANGE DATA
-//  SVG coords match the viewBox 0 0 620 380 of each continental config.
-//  Each entry: { label, color, svg }
-// ============================================================
+]
 
 const CREATURE_RANGES = {
   // ---- CAMBRIAN (continentKey: cambrian) ----
@@ -1778,546 +1567,524 @@ const CREATURE_RANGES = {
     color:"#d0d080",
     svg:`<ellipse cx="370" cy="265" rx="75" ry="45" fill="rgba(208,208,128,0.15)" stroke="rgba(220,220,140,0.6)" stroke-width="1.5" stroke-dasharray="5,3"/>`
   },
+}
+
+// ============================================================
+// SVG MAP DATA
+// ============================================================
+const SVG_MAPS = {
+  cryogenian: `
+    <defs>
+      <radialGradient id="og_cryo" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#001525"/>
+        <stop offset="100%" stop-color="#000510"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_cryo)"/>
+    <rect width="800" height="400" fill="rgba(180,225,255,0.10)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <path d="M265,230 C330,212 440,205 545,208 C635,211 700,228 738,252 C768,272 772,305 755,338 C738,368 702,388 652,396 C590,403 510,400 440,392 C368,384 298,363 248,332 C205,306 194,272 208,248 C220,228 248,220 265,230Z" fill="#9ab8cc" stroke="#6a8899" stroke-width="1"/>
+    <path d="M108,143 C148,130 218,128 255,148 C272,158 270,178 252,198 C236,215 202,222 168,218 C132,212 108,196 105,175 C103,162 107,148 108,143Z" fill="#9ab8cc" stroke="#6a8899" stroke-width="1"/>
+    <ellipse cx="400" cy="2" rx="400" ry="55" fill="rgba(210,240,255,0.35)"/>
+    <ellipse cx="400" cy="398" rx="400" ry="55" fill="rgba(210,240,255,0.35)"/>
+    <rect width="800" height="400" fill="rgba(160,210,240,0.07)"/>
+    <text x="400" y="195" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="28" font-style="italic" font-family="system-ui,sans-serif">SNOWBALL EARTH</text>
+    <text x="400" y="220" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="14" font-style="italic" font-family="system-ui,sans-serif">720 – 635 Million Years Ago</text>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~700 MYA</text>`,
+  cambrian: `
+    <defs>
+      <radialGradient id="og_cb" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_cb)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="308" y="172" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Iapetus Ocean</text>
+    <text x="80" y="295" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-15,80,295)">Panthalassa</text>
+    <path d="M265,230 C330,212 440,205 545,208 C635,211 700,228 738,252 C768,272 772,305 755,338 C738,368 702,388 652,396 C590,403 510,400 440,392 C368,384 298,363 248,332 C205,306 194,272 208,248 C220,228 248,220 265,230Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="500" y="308" text-anchor="middle" fill="#4a2e08" font-size="15" font-weight="bold" font-family="system-ui,sans-serif">Gondwana</text>
+    <path d="M108,143 C148,130 218,128 255,148 C272,158 270,178 252,198 C236,215 202,222 168,218 C132,212 108,196 105,175 C103,162 107,148 108,143Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="182" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Laurentia</text>
+    <path d="M382,188 C412,182 450,180 470,192 C484,200 485,216 474,229 C462,241 438,247 414,243 C390,237 374,220 382,188Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="428" y="216" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Baltica</text>
+    <path d="M692,155 C722,147 758,150 774,165 C785,177 782,195 764,207 C746,219 718,221 698,211 C678,202 672,182 692,155Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="728" y="188" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Siberia</text>
+    <path d="M50,200 C150,182 250,185 355,198" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M555,250 C610,240 690,245 760,255" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="610" cy="260" r="4" fill="#ff6030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~541 MYA</text>`,
+  ordovician: `
+    <defs>
+      <radialGradient id="og_od" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_od)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="305" y="180" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Iapetus Ocean</text>
+    <text x="80" y="290" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-12,80,290)">Panthalassa</text>
+    <path d="M245,248 C308,228 420,218 535,220 C625,222 695,240 730,265 C760,286 760,320 740,352 C718,382 678,398 622,402 C552,406 470,400 395,388 C325,375 262,350 222,315 C190,285 188,252 205,235 C218,224 235,238 245,248Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="500" y="318" text-anchor="middle" fill="#4a2e08" font-size="15" font-weight="bold" font-family="system-ui,sans-serif">Gondwana</text>
+    <path d="M98,150 C140,136 210,132 250,152 C268,164 266,185 248,204 C230,220 198,225 162,220 C126,214 102,198 98,177 C96,164 98,152 98,150Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="178" y="183" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Laurentia</text>
+    <path d="M370,195 C398,188 435,185 456,197 C470,206 472,222 462,235 C450,246 428,252 404,248 C380,242 365,225 370,195Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="415" y="222" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Baltica</text>
+    <path d="M685,162 C715,154 750,157 766,172 C777,185 774,203 756,215 C738,227 710,228 690,218 C670,208 665,188 685,162Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="725" y="194" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Siberia</text>
+    <path d="M50,195 C150,178 255,182 360,195" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M560,255 C615,245 695,248 765,258" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~470 MYA</text>`,
+  silurian: `
+    <defs>
+      <radialGradient id="og_sl" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_sl)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="292" y="185" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Iapetus (closing)</text>
+    <text x="80" y="292" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-12,80,292)">Panthalassa</text>
+    <path d="M235,248 C298,228 410,218 525,220 C615,222 688,240 724,268 C755,292 756,328 738,360 C718,390 676,405 618,408 C548,412 462,404 385,390 C312,376 248,350 208,314 C175,282 172,250 190,232 C202,222 222,240 235,248Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="488" y="320" text-anchor="middle" fill="#4a2e08" font-size="15" font-weight="bold" font-family="system-ui,sans-serif">Gondwana</text>
+    <path d="M92,148 C145,130 242,124 302,138 C348,150 378,172 392,198 C404,222 395,248 372,262 C348,276 308,280 268,272 C225,264 185,244 158,218 C130,192 108,165 105,148 C104,138 95,148 92,148Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="248" y="200" text-anchor="middle" fill="#4a2e08" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">Euramerica (forming)</text>
+    <path d="M675,168 C705,160 740,163 756,178 C767,192 764,210 746,222 C728,234 700,235 680,225 C660,215 655,195 675,168Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="718" y="200" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Siberia</text>
+    <path d="M50,195 C150,175 252,180 360,198" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="538" cy="285" r="4" fill="#ff6030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="348" cy="158" r="3" fill="#ff9040" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~430 MYA</text>`,
+  devonian: `
+    <defs>
+      <radialGradient id="og_dv" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_dv)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="78" y="288" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-12,78,288)">Panthalassa</text>
+    <text x="578" y="185" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Rheic Ocean</text>
+    <path d="M220,250 C285,232 398,222 512,222 C602,222 675,240 718,268 C748,292 748,328 728,360 C706,392 662,408 602,412 C530,418 442,408 364,392 C290,376 228,348 188,312 C155,278 152,248 170,228 C184,215 208,235 220,250Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="478" y="322" text-anchor="middle" fill="#4a2e08" font-size="15" font-weight="bold" font-family="system-ui,sans-serif">Gondwana</text>
+    <path d="M108,148 C148,132 220,125 278,132 C330,138 372,155 395,178 C415,198 415,222 400,240 C382,260 348,272 308,278 C265,284 218,280 180,265 C140,250 110,228 98,202 C86,176 92,155 108,148Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="248" y="205" text-anchor="middle" fill="#4a2e08" font-size="13" font-weight="bold" font-family="system-ui,sans-serif">Euramerica</text>
+    <path d="M660,172 C692,162 728,165 744,182 C756,196 752,215 734,228 C716,240 688,242 668,232 C648,222 642,200 660,172Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="705" y="205" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Siberia</text>
+    <path d="M50,192 C155,175 258,178 365,195" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M555,258 C615,245 692,248 762,258" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="380" cy="192" r="4" fill="#ff7030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="508" cy="268" r="3" fill="#ff6030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~385 MYA</text>`,
+  carboniferous: `
+    <defs>
+      <radialGradient id="og_carb" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_carb)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="78" y="288" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-12,78,288)">Panthalassa</text>
+    <text x="582" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Tethys (forming)</text>
+    <path d="M158,158 C198,138 288,125 382,128 C458,130 528,145 572,165 C610,182 628,210 622,238 C616,262 595,282 558,295 C518,308 462,315 402,318 C338,320 268,310 208,288 C152,266 115,235 108,202 C100,168 118,148 142,148 C148,148 155,158 158,158Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="368" y="218" text-anchor="middle" fill="#4a2e08" font-size="14" font-weight="bold" font-family="system-ui,sans-serif">Proto-Pangaea</text>
+    <text x="368" y="240" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Coal swamp equator</text>
+    <path d="M178,268 C222,252 308,245 392,248 C472,250 542,262 578,285 C608,305 612,335 592,362 C572,388 532,405 478,410 C415,416 342,408 278,390 C218,372 172,342 155,308 C138,275 145,258 165,258 C170,258 178,268 178,268Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="378" y="332" text-anchor="middle" fill="#4a2e08" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">Gondwana (N. part)</text>
+    <path d="M50,188 C155,172 258,175 365,192" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="362" cy="200" r="5" fill="#ff5020" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="498" cy="178" r="3" fill="#ff8040" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~330 MYA</text>`,
+  permian: `
+    <defs>
+      <radialGradient id="og_pm" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#061828"/>
+        <stop offset="100%" stop-color="#020810"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_pm)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="695" y="198" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Tethys Sea</text>
+    <text x="72" y="200" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-5,72,200)">Panthalassa</text>
+    <path d="M225,105 C265,90 320,82 375,85 C420,88 455,100 475,118 C495,136 495,162 490,188 C485,212 472,235 455,255 C440,272 418,285 415,302 C412,320 428,338 440,355 C452,370 455,388 435,398 C408,410 365,405 318,395 C268,382 220,360 185,330 C152,302 130,265 118,225 C108,188 105,148 115,118 C125,92 168,90 195,92 C210,93 222,102 225,105Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="312" y="230" text-anchor="middle" fill="#4a2e08" font-size="20" font-weight="bold" font-family="system-ui,sans-serif">PANGAEA</text>
+    <text x="312" y="252" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Single Supercontinent</text>
+    <text x="312" y="268" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">~270 Million Years Ago</text>
+    <circle cx="428" cy="162" r="5" fill="#ff4010" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="485" cy="198" r="4" fill="#ff6020" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="248" cy="195" r="3" fill="#ff7030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <path d="M760,200 C770,180 775,220 760,235" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="3s" repeatCount="indefinite"/>
+    </path>
+    <path d="M42,200 C38,170 35,230 42,210" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="3.5s" repeatCount="indefinite"/>
+    </path>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/><ellipse cx="400" cy="2" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~270 MYA</text>`,
+  triassic: `
+    <defs>
+      <radialGradient id="og_tr" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#061828"/>
+        <stop offset="100%" stop-color="#020810"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_tr)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="688" y="198" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Tethys Sea</text>
+    <text x="72" y="200" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-5,72,200)">Panthalassa</text>
+    <path d="M230,108 C268,92 324,84 380,87 C426,90 462,102 482,120 C502,138 502,162 496,188 C490,212 476,235 458,255 C442,272 420,285 416,302 C413,320 430,338 442,355 C453,370 456,388 436,398 C408,410 365,405 318,395 C268,382 220,360 185,330 C152,302 130,265 118,225 C108,188 105,148 115,118 C125,92 168,90 196,92 C212,93 228,105 230,108Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="308" y="235" text-anchor="middle" fill="#4a2e08" font-size="18" font-weight="bold" font-family="system-ui,sans-serif">PANGAEA</text>
+    <text x="308" y="258" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">(Rifting begins)</text>
+    <line x1="275" y1="110" x2="260" y2="158" stroke="rgba(255,120,50,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+    <line x1="255" y1="155" x2="238" y2="210" stroke="rgba(255,120,50,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+    <circle cx="480" cy="145" r="5" fill="#ff4010" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="382" cy="188" r="4" fill="#ff6020" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="268" cy="252" r="3" fill="#ff7030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <path d="M762,200 C772,178 775,222 762,232" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="3s" repeatCount="indefinite"/>
+    </path>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/><ellipse cx="400" cy="2" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~235 MYA</text>`,
+  jurassic: `
+    <defs>
+      <radialGradient id="og_jr" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_jr)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="245" y="185" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Proto-Atlantic</text>
+    <text x="680" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Tethys Sea</text>
+    <text x="72" y="295" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-12,72,295)">Panthalassa</text>
+    <path d="M85,108 C130,95 205,90 258,105 C298,118 328,142 332,168 C336,194 318,218 290,234 C262,248 228,252 195,242 C158,232 122,210 102,185 C82,160 75,135 88,118 Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="210" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
+    <path d="M348,142 C385,130 438,125 482,132 C520,138 545,155 548,178 C550,200 532,218 505,228 C475,238 438,238 408,228 C378,218 355,200 350,178 C347,162 350,145 348,142Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="448" y="182" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Europe</text>
+    <path d="M230,270 C278,252 355,243 435,245 C512,247 568,262 600,285 C628,306 630,335 610,360 C588,385 550,398 502,400 C450,402 390,396 335,380 C285,365 245,340 228,310 C214,284 218,268 230,270Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="420" y="316" text-anchor="middle" fill="#4a2e08" font-size="14" font-weight="bold" font-family="system-ui,sans-serif">Gondwana</text>
+    <path d="M665,158 C698,148 738,150 758,165 C775,178 772,198 752,212 C730,226 698,228 672,218 C648,208 642,185 665,158Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="710" y="192" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Asia</text>
+    <path d="M230,188 C240,175 255,175 268,182" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="362" cy="155" r="4" fill="#ff5020" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="502" cy="175" r="3" fill="#ff7030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="255" cy="315" r="3" fill="#ff6030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/><ellipse cx="400" cy="2" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~170 MYA</text>`,
+  cretaceous: `
+    <defs>
+      <radialGradient id="og_cr" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_cr)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="302" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Atlantic Ocean</text>
+    <text x="655" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Tethys Sea</text>
+    <text x="72" y="295" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-8,72,295)">Pacific</text>
+    <path d="M85,128 C130,115 195,112 248,125 C290,136 315,158 320,182 C324,206 308,228 282,242 C255,256 218,260 185,252 C148,244 118,226 100,204 C82,182 72,160 82,142 C85,132 83,128 85,128Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="195" y="188" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
+    <path d="M205,232 C228,220 260,215 280,225 C298,235 302,258 296,285 C290,318 273,348 250,368 C228,385 205,390 188,378 C172,366 165,342 168,312 C171,278 178,248 192,234 C198,226 206,234 205,232Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="238" y="302" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">S. America</text>
+    <path d="M358,158 C395,145 480,135 572,130 C650,126 718,132 762,148 C795,162 800,182 790,202 C780,220 758,235 720,242 C680,250 625,252 570,248 C500,244 430,238 380,228 C345,220 335,208 340,192 C344,178 355,162 358,158Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="580" y="190" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Eurasia</text>
+    <path d="M395,218 C425,210 462,208 485,222 C508,236 515,262 512,292 C508,325 495,355 472,372 C450,388 420,392 398,380 C375,368 360,345 355,315 C349,280 350,248 365,230 C374,218 386,218 395,218Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="436" y="292" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Africa</text>
+    <path d="M550,288 C565,278 582,276 592,285 C602,294 600,312 588,325 C575,337 556,340 544,332 C534,324 534,305 550,288Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="568" y="310" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">India</text>
+    <path d="M610,320 C640,310 678,308 705,320 C728,330 735,352 720,368 C705,382 675,388 645,382 C616,376 602,360 605,342 C606,332 608,322 610,320Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="660" y="342" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Australia</text>
+    <ellipse cx="400" cy="395" rx="350" ry="28" fill="rgba(180,210,245,0.2)" stroke="rgba(120,170,220,0.3)" stroke-width="1"/>
+    <text x="400" y="398" text-anchor="middle" fill="#5580a0" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Antarctica</text>
+    <path d="M350,188 C360,178 370,178 382,185" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="510" cy="195" r="4" fill="#ff5020" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="225" cy="182" r="3" fill="#ff7030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="420" cy="375" r="3" fill="#ff6030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="400" cy="2" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~90 MYA</text>`,
+  paleogene: `
+    <defs>
+      <radialGradient id="og_pg" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_pg)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="302" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Atlantic Ocean</text>
+    <text x="72" y="292" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-8,72,292)">Pacific</text>
+    <path d="M85,108 C130,93 208,88 262,104 C302,116 330,140 334,168 C338,195 320,220 292,236 C264,250 228,255 194,244 C155,232 120,210 100,184 C80,158 75,132 88,118Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="210" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
+    <path d="M205,228 C232,215 268,210 292,222 C315,235 322,262 315,292 C308,322 290,355 265,378 C240,398 210,405 192,390 C174,375 168,348 172,315 C176,282 184,248 198,232 C202,226 208,234 205,228Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="238" y="308" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">S. America</text>
+    <path d="M355,148 C388,136 435,130 472,138 C505,146 528,162 528,180 C528,196 512,210 488,218 C460,226 425,225 398,215 C372,205 352,188 355,168 C357,155 356,150 355,148Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="442" y="180" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Europe</text>
+    <path d="M458,120 C498,108 568,98 642,90 C714,84 775,90 800,108 C800,125 785,142 758,158 C728,172 688,180 644,184 C596,188 545,185 502,178 C462,170 442,155 445,140 C448,128 458,122 458,120Z M530,180 C554,172 588,172 608,186 C622,198 618,218 598,228 C578,238 548,236 532,222 C518,212 518,188 530,180Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="625" y="145" text-anchor="middle" fill="#4a2e08" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">Asia (India colliding)</text>
+    <path d="M380,198 C412,188 452,185 478,198 C505,212 515,242 512,272 C508,308 492,342 468,362 C445,380 415,385 395,372 C375,358 362,332 358,298 C354,262 356,228 372,210 C378,200 380,200 380,198Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="432" y="288" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Africa</text>
+    <path d="M618,298 C650,286 690,284 720,298 C746,310 755,335 740,355 C725,374 692,384 658,380 C624,376 605,358 606,334 C606,318 616,300 618,298Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="665" y="338" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Australia</text>
+    <ellipse cx="400" cy="395" rx="360" ry="30" fill="rgba(185,215,248,0.22)" stroke="rgba(120,172,222,0.3)" stroke-width="1"/>
+    <text x="400" y="398" text-anchor="middle" fill="#5580a0" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Antarctica</text>
+    <circle cx="548" cy="152" r="5" fill="#ff4010" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
+    </circle><circle cx="385" cy="178" r="3" fill="#ff7030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~50 MYA</text>`,
+  neogene: `
+    <defs>
+      <radialGradient id="og_ng" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_ng)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="302" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Atlantic Ocean</text>
+    <text x="72" y="292" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-8,72,292)">Pacific</text>
+    <path d="M85,105 C128,90 205,85 258,100 C298,112 325,138 330,165 C335,195 318,222 292,240 C265,256 228,262 192,252 C152,242 118,222 100,198 C80,172 72,148 85,120 Z M245,88 C268,75 295,72 305,82 C314,92 305,105 288,110 C272,114 250,108 245,88Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="200" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
+    <path d="M205,228 C232,215 268,210 292,222 C315,235 322,262 315,292 C308,322 290,355 265,378 C240,398 210,405 192,390 C174,375 168,348 172,315 C176,282 184,248 198,232 C202,226 208,234 205,228Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="238" y="308" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">S. America</text>
+    <text x="240" y="242" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="9" font-style="italic" font-family="system-ui,sans-serif">(no land bridge yet)</text>
+    <path d="M362,145 C390,135 428,130 460,138 C490,146 508,162 508,178 C508,192 495,205 472,210 C448,215 418,212 395,205 C372,198 355,185 358,168 C360,155 364,148 362,145Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="432" y="178" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Europe</text>
+    <path d="M465,118 C505,105 575,95 648,88 C718,82 778,88 800,105 C800,122 785,140 758,155 C728,170 688,178 645,182 C598,186 548,182 505,175 C465,168 445,155 448,140 C450,128 462,120 465,118Z M532,178 C555,172 588,172 608,185 C622,196 618,215 598,225 C578,234 548,232 532,220 C518,210 518,186 532,178Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="622" y="142" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Asia</text>
+    <path d="M380,198 C412,188 452,185 478,198 C505,212 515,242 512,272 C508,308 492,342 468,362 C445,380 415,385 395,372 C375,358 362,332 358,298 C354,262 356,228 372,210 C378,200 380,200 380,198Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="432" y="285" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Africa</text>
+    <path d="M615,298 C648,285 688,282 718,295 C745,308 755,332 742,352 C728,372 695,382 660,378 C626,374 605,355 605,330 C605,316 613,300 615,298Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="662" y="332" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Australia</text>
+    <ellipse cx="400" cy="395" rx="360" ry="30" fill="rgba(185,215,248,0.25)" stroke="rgba(120,172,222,0.35)" stroke-width="1"/>
+    <text x="400" y="398" text-anchor="middle" fill="#5580a0" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Antarctica</text>
+    <path d="M50,200 C155,185 260,188 368,200" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M560,245 C620,235 700,238 772,248" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~15 MYA</text>`,
+  quaternary: `
+    <defs>
+      <radialGradient id="og_qt" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_qt)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="302" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Atlantic</text>
+    <text x="72" y="292" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-8,72,292)">Pacific</text>
+    <text x="620" y="222" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Indian Ocean</text>
+    <path d="M85,105 C128,90 205,85 258,100 C298,112 325,138 330,165 C335,195 318,222 292,240 C265,256 228,262 192,252 C152,242 118,222 100,198 C80,172 72,148 85,120 Z M245,88 C268,75 295,72 305,82 C314,92 305,105 288,110 C272,114 250,108 245,88Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="200" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
+    <path d="M205,228 C232,215 268,210 292,222 C315,235 322,262 315,292 C308,322 290,355 265,378 C240,398 210,405 192,390 C174,375 168,348 172,315 C176,282 184,248 198,232 C202,226 208,234 205,228Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="238" y="308" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">S. America</text>
+    <path d="M362,145 C390,135 428,130 460,138 C490,146 508,162 508,178 C508,192 495,205 472,210 C448,215 418,212 395,205 C372,198 355,185 358,168 C360,155 364,148 362,145Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="432" y="178" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Europe</text>
+    <path d="M465,118 C505,105 575,95 648,88 C718,82 778,88 800,105 C800,122 785,140 758,155 C728,170 688,178 645,182 C598,186 548,182 505,175 C465,168 445,155 448,140 C450,128 462,120 465,118Z M532,178 C555,172 588,172 608,185 C622,196 618,215 598,225 C578,234 548,232 532,220 C518,210 518,186 532,178Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="622" y="142" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Asia</text>
+    <path d="M380,198 C412,188 452,185 478,198 C505,212 515,242 512,272 C508,308 492,342 468,362 C445,380 415,385 395,372 C375,358 362,332 358,298 C354,262 356,228 372,210 C378,200 380,200 380,198Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="432" y="285" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Africa</text>
+    <path d="M615,298 C648,285 688,282 718,295 C745,308 755,332 742,352 C728,372 695,382 660,378 C626,374 605,355 605,330 C605,316 613,300 615,298Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="662" y="332" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Australia</text>
+    <ellipse cx="400" cy="392" rx="400" ry="38" fill="rgba(200,225,252,0.28)" stroke="rgba(140,185,230,0.35)" stroke-width="1"/>
+    <text x="400" y="398" text-anchor="middle" fill="#6090b8" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Antarctica (Ice Sheet)</text>
+    <ellipse cx="400" cy="2" rx="200" ry="25" fill="rgba(200,225,252,0.28)"/>
+    <text x="400" y="22" text-anchor="middle" fill="#6090b8" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Arctic Ocean (Ice)</text>
+    <path d="M50,200 C155,185 260,188 368,200" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M562,245 C622,235 702,238 774,248" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~2 MYA</text>`,
+  holocene: `
+    <defs>
+      <radialGradient id="og_qt" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_qt)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="302" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Atlantic</text>
+    <text x="72" y="292" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-8,72,292)">Pacific</text>
+    <text x="620" y="222" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Indian Ocean</text>
+    <path d="M85,105 C128,90 205,85 258,100 C298,112 325,138 330,165 C335,195 318,222 292,240 C265,256 228,262 192,252 C152,242 118,222 100,198 C80,172 72,148 85,120 Z M245,88 C268,75 295,72 305,82 C314,92 305,105 288,110 C272,114 250,108 245,88Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="200" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
+    <path d="M205,228 C232,215 268,210 292,222 C315,235 322,262 315,292 C308,322 290,355 265,378 C240,398 210,405 192,390 C174,375 168,348 172,315 C176,282 184,248 198,232 C202,226 208,234 205,228Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="238" y="308" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">S. America</text>
+    <path d="M362,145 C390,135 428,130 460,138 C490,146 508,162 508,178 C508,192 495,205 472,210 C448,215 418,212 395,205 C372,198 355,185 358,168 C360,155 364,148 362,145Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="432" y="178" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Europe</text>
+    <path d="M465,118 C505,105 575,95 648,88 C718,82 778,88 800,105 C800,122 785,140 758,155 C728,170 688,178 645,182 C598,186 548,182 505,175 C465,168 445,155 448,140 C450,128 462,120 465,118Z M532,178 C555,172 588,172 608,185 C622,196 618,215 598,225 C578,234 548,232 532,220 C518,210 518,186 532,178Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="622" y="142" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Asia</text>
+    <path d="M380,198 C412,188 452,185 478,198 C505,212 515,242 512,272 C508,308 492,342 468,362 C445,380 415,385 395,372 C375,358 362,332 358,298 C354,262 356,228 372,210 C378,200 380,200 380,198Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="432" y="285" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Africa</text>
+    <path d="M615,298 C648,285 688,282 718,295 C745,308 755,332 742,352 C728,372 695,382 660,378 C626,374 605,355 605,330 C605,316 613,300 615,298Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="662" y="332" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Australia</text>
+    <ellipse cx="400" cy="392" rx="400" ry="38" fill="rgba(200,225,252,0.28)" stroke="rgba(140,185,230,0.35)" stroke-width="1"/>
+    <text x="400" y="398" text-anchor="middle" fill="#6090b8" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Antarctica (Ice Sheet)</text>
+    <ellipse cx="400" cy="2" rx="200" ry="25" fill="rgba(200,225,252,0.28)"/>
+    <text x="400" y="22" text-anchor="middle" fill="#6090b8" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Arctic Ocean (Ice)</text>
+    <path d="M50,200 C155,185 260,188 368,200" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M562,245 C622,235 702,238 774,248" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~2 MYA</text>`,
+  ediacaran: `
+    <defs>
+      <radialGradient id="og_cb" cx="40%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2040"/>
+        <stop offset="100%" stop-color="#030a14"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="400" fill="url(#og_cb)"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
+    <text x="308" y="172" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Iapetus Ocean</text>
+    <text x="80" y="295" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-15,80,295)">Panthalassa</text>
+    <path d="M265,230 C330,212 440,205 545,208 C635,211 700,228 738,252 C768,272 772,305 755,338 C738,368 702,388 652,396 C590,403 510,400 440,392 C368,384 298,363 248,332 C205,306 194,272 208,248 C220,228 248,220 265,230Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="500" y="308" text-anchor="middle" fill="#4a2e08" font-size="15" font-weight="bold" font-family="system-ui,sans-serif">Gondwana</text>
+    <path d="M108,143 C148,130 218,128 255,148 C272,158 270,178 252,198 C236,215 202,222 168,218 C132,212 108,196 105,175 C103,162 107,148 108,143Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="182" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Laurentia</text>
+    <path d="M382,188 C412,182 450,180 470,192 C484,200 485,216 474,229 C462,241 438,247 414,243 C390,237 374,220 382,188Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="428" y="216" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Baltica</text>
+    <path d="M692,155 C722,147 758,150 774,165 C785,177 782,195 764,207 C746,219 718,221 698,211 C678,202 672,182 692,155Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
+    <text x="728" y="188" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Siberia</text>
+    <path d="M50,200 C150,182 250,185 355,198" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M555,250 C610,240 690,245 760,255" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+      <animate attributeName="stroke-dashoffset" values="0;-26" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="610" cy="260" r="4" fill="#ff6030" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~541 MYA</text>`,
 };
 
 // ============================================================
-//  SLIDER SCALE — non-linear so the Mesozoic gets more resolution
-//  Slider 0 = oldest (541 MYA)   Slider 1000 = today (0 MYA)
-//  Breakpoints chosen so dinosaur-era (66–252 MYA) gets 30% of the slider travel
+// HELPERS
 // ============================================================
-
-const SLIDER_BP = [
-  [0,     541],  // left edge  =  541 MYA (Cambrian start)
-  [80,    485],  // 8%         =  485 MYA (Ordovician)
-  [130,   444],  // 13%        =  444 MYA (O-S extinction)
-  [180,   419],  // 18%        =  419 MYA (Devonian)
-  [230,   385],  // 23%        =  385 MYA (Late Devonian)
-  [250,   359],  // 25%        =  359 MYA (end-Devonian)
-  [400,   252],  // 40%        =  252 MYA (P-T extinction)
-  [700,    66],  // 70%        =   66 MYA (K-Pg extinction)
-  [1000,   0],   // right edge =   0 MYA (today)
-];
-
-function sliderToMya(val) {
-  val = Math.max(0, Math.min(1000, parseFloat(val)));
-  for (let i = 0; i < SLIDER_BP.length - 1; i++) {
-    const [s0, m0] = SLIDER_BP[i];
-    const [s1, m1] = SLIDER_BP[i + 1];
-    if (val <= s1 + 0.001) {
-      const t = (val - s0) / (s1 - s0);
-      return Math.round(m0 + t * (m1 - m0));
-    }
-  }
-  return 0;
-}
-
-function myaToSlider(mya) {
-  for (let i = 0; i < SLIDER_BP.length - 1; i++) {
-    const [s0, m0] = SLIDER_BP[i];
-    const [s1, m1] = SLIDER_BP[i + 1];
-    if (mya >= m1 && mya <= m0) {
-      const t = (m0 - mya) / (m0 - m1);
-      return s0 + t * (s1 - s0);
-    }
-  }
-  return mya <= 0 ? 1000 : 0;
-}
-
-const PALEO_MAPS = {
-  541: {
-    label: "Cambrian Earth",
-    ocean: "#0a2a50",
-    desc: "Gondwana dominates the southern hemisphere. Small continental fragments drift near the equator.",
-    svg: `
-        <!-- GONDWANA - massive southern supercontinent -->
-        <ellipse cx="400" cy="300" rx="240" ry="100" fill="#8B7355" opacity="0.9"/>
-        <!-- Extension of Gondwana -->
-        <ellipse cx="320" cy="260" rx="120" ry="70" fill="#8B7355" opacity="0.85"/>
-        <!-- Laurentia - near equator left -->
-        <ellipse cx="130" cy="170" rx="70" ry="45" fill="#9B8363" opacity="0.9"/>
-        <!-- Baltica - small mass -->
-        <ellipse cx="360" cy="175" rx="50" ry="35" fill="#9B8363" opacity="0.9"/>
-        <!-- Siberia -->
-        <ellipse cx="560" cy="140" rx="55" ry="35" fill="#9B8363" opacity="0.85"/>
-        <!-- Kazakhstania small mass -->
-        <ellipse cx="490" cy="185" rx="35" ry="25" fill="#9B8363" opacity="0.8"/>
-        <!-- Shallow equatorial seas highlight -->
-        <rect x="0" y="155" width="800" height="30" fill="#1a4a8a" opacity="0.25"/>
-        <!-- Labels -->
-        <text x="400" y="295" text-anchor="middle" fill="#e8dfc0" font-size="13" font-weight="bold" opacity="0.9">GONDWANA</text>
-        <text x="130" y="168" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.85">Laurentia</text>
-        <text x="360" y="173" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.85">Baltica</text>
-        <text x="560" y="138" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.85">Siberia</text>
-        <text x="400" y="55" text-anchor="middle" fill="#6a9fd8" font-size="11" opacity="0.7">PANTHALASSIC OCEAN</text>
-        <text x="400" y="165" text-anchor="middle" fill="#6a9fd8" font-size="10" opacity="0.65">— EQUATOR —</text>
-        `
-  },
-  485: {
-    label: "Ordovician Earth",
-    ocean: "#0a2a52",
-    desc: "Gondwana rotates south. Massive ice sheets form at the south pole. Mass extinction follows.",
-    svg: `
-        <!-- GONDWANA shifted further south/east -->
-        <ellipse cx="450" cy="310" rx="230" ry="100" fill="#8B7355" opacity="0.9"/>
-        <ellipse cx="370" cy="275" rx="110" ry="65" fill="#8B7355" opacity="0.85"/>
-        <!-- Ice cap on gondwana south end -->
-        <ellipse cx="480" cy="370" rx="90" ry="30" fill="#d4eeff" opacity="0.7"/>
-        <!-- Laurentia drifting toward equator -->
-        <ellipse cx="120" cy="185" rx="75" ry="50" fill="#9B8363" opacity="0.9"/>
-        <!-- Baltica moving north -->
-        <ellipse cx="330" cy="155" rx="55" ry="38" fill="#9B8363" opacity="0.9"/>
-        <!-- Siberia -->
-        <ellipse cx="570" cy="130" rx="55" ry="35" fill="#9B8363" opacity="0.85"/>
-        <!-- Shallow tropical seas -->
-        <rect x="0" y="165" width="800" height="25" fill="#1a5a9a" opacity="0.2"/>
-        <!-- Labels -->
-        <text x="450" y="305" text-anchor="middle" fill="#e8dfc0" font-size="13" font-weight="bold" opacity="0.9">GONDWANA</text>
-        <text x="480" y="373" text-anchor="middle" fill="#b0d8f8" font-size="9" opacity="0.85">Ice Sheet</text>
-        <text x="120" y="183" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.85">Laurentia</text>
-        <text x="330" y="153" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.85">Baltica</text>
-        <text x="570" y="128" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.85">Siberia</text>
-        <text x="200" y="60" text-anchor="middle" fill="#6a9fd8" font-size="11" opacity="0.7">PANTHALASSIC OCEAN</text>
-        `
-  },
-  419: {
-    label: "Devonian Earth",
-    ocean: "#0a2a50",
-    desc: "Euramerica forms as Laurentia and Baltica collide. The age of fish \u2014 oceans teem with life.",
-    svg: `
-        <!-- GONDWANA south -->
-        <ellipse cx="430" cy="305" rx="225" ry="105" fill="#8B7355" opacity="0.9"/>
-        <ellipse cx="350" cy="268" rx="105" ry="62" fill="#8B7355" opacity="0.85"/>
-        <!-- Euramerica - Laurentia + Baltica merged, near equator-left -->
-        <path d="M60,140 L230,120 L270,160 L250,200 L190,215 L110,210 L70,185 Z" fill="#9B8363" opacity="0.9"/>
-        <!-- Caledonian mountains shown as slightly darker -->
-        <path d="M200,130 L240,140 L235,160 L210,155 Z" fill="#6B5340" opacity="0.7"/>
-        <!-- Siberia -->
-        <ellipse cx="565" cy="125" rx="58" ry="38" fill="#9B8363" opacity="0.85"/>
-        <!-- Kazakhstania -->
-        <ellipse cx="500" cy="175" rx="40" ry="28" fill="#9B8363" opacity="0.8"/>
-        <!-- Shallow tropical Devonian reefs band -->
-        <rect x="0" y="165" width="800" height="20" fill="#1a5a9a" opacity="0.2"/>
-        <!-- Labels -->
-        <text x="430" y="300" text-anchor="middle" fill="#e8dfc0" font-size="13" font-weight="bold" opacity="0.9">GONDWANA</text>
-        <text x="165" y="170" text-anchor="middle" fill="#e8dfc0" font-size="11" font-weight="bold" opacity="0.9">EURAMERICA</text>
-        <text x="565" y="123" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.85">Siberia</text>
-        <text x="200" y="60" text-anchor="middle" fill="#6a9fd8" font-size="10" opacity="0.7">PANTHALASSIC OCEAN</text>
-        <text x="165" y="240" text-anchor="middle" fill="#6a9fd8" font-size="9" opacity="0.65">Rheic Ocean</text>
-        `
-  },
-  359: {
-    label: "Carboniferous Earth",
-    ocean: "#0a2855",
-    desc: "Continents crash together forming Pangaea. Giant coal swamp forests fill the air with oxygen.",
-    svg: `
-        <!-- EURAMERICA north mass -->
-        <path d="M50,110 L320,90 L360,130 L340,185 L280,210 L190,220 L100,210 L50,175 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Coal swamp color hint -->
-        <path d="M100,150 L280,140 L300,175 L260,195 L140,195 L90,175 Z" fill="#556b2f" opacity="0.35"/>
-        <!-- GONDWANA south - moving north to collide -->
-        <path d="M150,255 L500,240 L560,275 L540,340 L480,370 L300,375 L180,355 L140,310 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Gondwana north edge approaching -->
-        <path d="M200,250 L440,240 L470,258 L420,268 L200,265 Z" fill="#9B8363" opacity="0.75"/>
-        <!-- Siberia drifting to join -->
-        <ellipse cx="575" cy="120" rx="62" ry="40" fill="#9B8363" opacity="0.85"/>
-        <!-- Closing ocean between -->
-        <text x="400" y="235" text-anchor="middle" fill="#4a8ac8" font-size="9" opacity="0.7">Closing Rheic Ocean</text>
-        <!-- Labels -->
-        <text x="190" y="155" text-anchor="middle" fill="#e8dfc0" font-size="12" font-weight="bold" opacity="0.9">EURAMERICA</text>
-        <text x="340" y="305" text-anchor="middle" fill="#e8dfc0" font-size="13" font-weight="bold" opacity="0.9">GONDWANA</text>
-        <text x="575" y="118" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.85">Siberia</text>
-        <text x="650" y="70" text-anchor="middle" fill="#6a9fd8" font-size="10" opacity="0.7">PANTHALASSIC</text>
-        `
-  },
-  300: {
-    label: "Permian Earth \u2014 PANGAEA",
-    ocean: "#081e40",
-    desc: "All continents fuse into PANGAEA. The greatest supercontinent in Earth's history. Then: The Great Dying.",
-    svg: `
-        <!-- PANGAEA - giant C-shape wrapping Tethys Sea -->
-        <!-- Northern arm (Laurasia) -->
-        <path d="M80,100 L560,85 L600,110 L590,155 L540,175 L460,170 L390,180 L350,195 L310,190 L270,175 L200,170 L110,165 L70,140 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Coal color hint on north -->
-        <path d="M150,115 L450,105 L470,140 L420,155 L200,150 L140,135 Z" fill="#556b2f" opacity="0.3"/>
-        <!-- Southern arm (Gondwana part) -->
-        <path d="M100,195 L310,195 L330,225 L320,290 L280,340 L210,365 L150,360 L100,330 L75,270 L80,225 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Eastern Gondwana (Africa/India/Antarctica) -->
-        <path d="M350,200 L540,190 L600,220 L610,295 L570,355 L490,375 L410,370 L365,335 L350,270 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- TETHYS SEA - the inner ocean -->
-        <path d="M315,195 L355,198 L365,240 L355,265 L335,250 L320,220 Z" fill="#0a3060" opacity="0.9"/>
-        <ellipse cx="480" cy="210" rx="65" ry="35" fill="#0a3060" opacity="0.75"/>
-        <!-- Siberia joined to north -->
-        <path d="M520,85 L640,75 L660,100 L620,120 L560,120 L520,105 Z" fill="#8B7355" opacity="0.88"/>
-        <!-- Labels -->
-        <text x="350" y="135" text-anchor="middle" fill="#e8dfc0" font-size="16" font-weight="bold" opacity="0.95">P A N G A E A</text>
-        <text x="430" y="208" text-anchor="middle" fill="#5a9fd8" font-size="11" font-weight="bold" opacity="0.85">TETHYS SEA</text>
-        <text x="110" y="65" text-anchor="middle" fill="#6a9fd8" font-size="10" opacity="0.7">PANTHALASSIC OCEAN</text>
-        <text x="720" y="250" text-anchor="middle" fill="#6a9fd8" font-size="10" opacity="0.7">PANTHALASSIC</text>
-        `
-  },
-  252: {
-    label: "Triassic Earth",
-    ocean: "#091e42",
-    desc: "Pangaea begins to crack. The first dinosaurs appear. Life rebuilds after the Great Dying.",
-    svg: `
-        <!-- Pangaea beginning to rift but still mostly connected -->
-        <!-- Northern mass (Laurasia) with rift starting -->
-        <path d="M70,95 L570,80 L605,105 L600,150 L550,170 L480,168 L400,178 L350,188 L300,182 L250,170 L160,162 L80,150 L65,120 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Slight rift zone (early Atlantic hint) -->
-        <path d="M210,155 L230,162 L225,172 L205,168 Z" fill="#1a3a60" opacity="0.6"/>
-        <!-- Southern mass (Gondwana parts together) -->
-        <path d="M90,185 L580,178 L615,205 L620,280 L590,340 L530,370 L440,378 L330,372 L220,360 L150,330 L95,285 L85,230 Z" fill="#8B7355" opacity="0.88"/>
-        <!-- Tethys Sea widening -->
-        <path d="M390,180 L560,175 L600,205 L585,240 L540,235 L415,210 Z" fill="#0a3060" opacity="0.8"/>
-        <!-- Labels -->
-        <text x="320" y="130" text-anchor="middle" fill="#e8dfc0" font-size="14" font-weight="bold" opacity="0.92">LAURASIA</text>
-        <text x="340" y="275" text-anchor="middle" fill="#e8dfc0" font-size="14" font-weight="bold" opacity="0.92">GONDWANA</text>
-        <text x="495" y="208" text-anchor="middle" fill="#5a9fd8" font-size="10" font-weight="bold" opacity="0.85">TETHYS SEA</text>
-        <text x="100" y="55" text-anchor="middle" fill="#6a9fd8" font-size="10" opacity="0.7">PANTHALASSIC OCEAN</text>
-        `
-  },
-  201: {
-    label: "Jurassic Earth",
-    ocean: "#0a2045",
-    desc: "Pangaea clearly splits. Dinosaurs rule the land. The first birds take flight. Atlantic Ocean is born.",
-    svg: `
-        <!-- LAURASIA - North America + Europe + Asia -->
-        <!-- North America -->
-        <path d="M55,105 L235,85 L265,110 L260,165 L220,195 L170,205 L110,195 L60,168 L45,135 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Europe -->
-        <path d="M285,95 L410,88 L435,110 L425,145 L390,158 L345,155 L300,140 L280,118 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Asia (part of Laurasia) -->
-        <path d="M415,85 L640,78 L670,100 L660,160 L610,180 L540,175 L475,168 L445,148 L425,115 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Baby North Atlantic - narrow seaway -->
-        <path d="M245,100 L285,96 L285,165 L245,170 Z" fill="#1a4a80" opacity="0.85"/>
-        <!-- GONDWANA breaking up -->
-        <!-- South America -->
-        <path d="M145,215 L260,210 L280,235 L270,330 L230,365 L180,368 L145,340 L130,280 L130,240 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Africa -->
-        <path d="M290,200 L420,196 L450,220 L455,310 L430,355 L380,368 L320,362 L290,330 L280,265 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Narrow opening - South Atlantic starting -->
-        <path d="M265,230 L292,228 L292,355 L265,352 Z" fill="#1a4a80" opacity="0.7"/>
-        <!-- India (island continent) -->
-        <ellipse cx="530" cy="255" rx="45" ry="35" fill="#9B8363" opacity="0.88"/>
-        <!-- Antarctica + Australia together -->
-        <path d="M480,330 L680,325 L700,355 L680,385 L500,388 L475,365 Z" fill="#8B7355" opacity="0.85"/>
-        <!-- Tethys Sea (still open) -->
-        <path d="M425,155 L670,148 L680,180 L640,200 L490,210 L450,200 L430,175 Z" fill="#0a3060" opacity="0.75"/>
-        <!-- Labels -->
-        <text x="155" y="143" text-anchor="middle" fill="#e8dfc0" font-size="11" font-weight="bold" opacity="0.9">N. AMERICA</text>
-        <text x="355" y="122" text-anchor="middle" fill="#e8dfc0" font-size="11" font-weight="bold" opacity="0.9">EUROPE</text>
-        <text x="545" y="125" text-anchor="middle" fill="#e8dfc0" font-size="11" font-weight="bold" opacity="0.9">ASIA</text>
-        <text x="200" y="290" text-anchor="middle" fill="#e8dfc0" font-size="10" font-weight="bold" opacity="0.9">S. AMERICA</text>
-        <text x="368" y="285" text-anchor="middle" fill="#e8dfc0" font-size="12" font-weight="bold" opacity="0.9">AFRICA</text>
-        <text x="530" y="253" text-anchor="middle" fill="#e8dfc0" font-size="8" opacity="0.85">India</text>
-        <text x="580" y="360" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.85">Antarctica+Australia</text>
-        <text x="560" y="175" text-anchor="middle" fill="#5a9fd8" font-size="9" opacity="0.75">TETHYS SEA</text>
-        `
-  },
-  145: {
-    label: "Early Cretaceous Earth",
-    ocean: "#0a2248",
-    desc: "Atlantic widens. India races north. Dinosaurs reach their peak. Flowering plants appear.",
-    svg: `
-        <!-- North America (west) -->
-        <path d="M50,100 L230,82 L260,108 L258,175 L215,205 L155,210 L90,198 L50,168 L40,130 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Cretaceous Seaway splits N. America! -->
-        <path d="M175,100 L210,98 L212,205 L175,205 Z" fill="#1a5a90" opacity="0.7"/>
-        <!-- Europe -->
-        <path d="M295,90 L420,84 L445,108 L438,148 L400,162 L350,158 L305,142 L288,115 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Asia -->
-        <path d="M430,82 L660,76 L680,98 L672,162 L618,182 L542,178 L478,170 L448,148 L432,108 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- South America -->
-        <path d="M110,218 L248,214 L270,238 L262,335 L222,368 L172,370 L138,342 L122,282 L118,242 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Africa -->
-        <path d="M295,200 L430,196 L458,222 L462,318 L436,360 L382,372 L320,365 L292,332 L282,265 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- South Atlantic (wider now) -->
-        <path d="M265,220 L298,218 L296,365 L262,362 Z" fill="#1a4a80" opacity="0.8"/>
-        <!-- India racing north -->
-        <ellipse cx="540" cy="230" rx="42" ry="33" fill="#9B8363" opacity="0.9"/>
-        <!-- Australia separating from Antarctica -->
-        <ellipse cx="650" cy="325" rx="55" ry="30" fill="#9B8363" opacity="0.88"/>
-        <!-- Antarctica -->
-        <path d="M300,375" fill="#c8d8e8" opacity="0.7"/>
-        <ellipse cx="450" cy="385" rx="150" ry="15" fill="#c8d8e8" opacity="0.65"/>
-        <!-- Tethys -->
-        <path d="M448,158 L668,152 L678,178 L638,200 L492,208 L458,195 L445,172 Z" fill="#0a3060" opacity="0.72"/>
-        <!-- Labels -->
-        <text x="122" y="145" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">N. AMERICA</text>
-        <text x="188" y="152" text-anchor="middle" fill="#4a9fd8" font-size="8" opacity="0.85">Inland Sea</text>
-        <text x="358" y="120" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">EUROPE</text>
-        <text x="552" y="120" text-anchor="middle" fill="#e8dfc0" font-size="11" opacity="0.9">ASIA</text>
-        <text x="188" y="292" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">S. AMERICA</text>
-        <text x="372" y="285" text-anchor="middle" fill="#e8dfc0" font-size="12" opacity="0.9">AFRICA</text>
-        <text x="540" y="228" text-anchor="middle" fill="#e8dfc0" font-size="8" opacity="0.9">India →</text>
-        <text x="650" y="322" text-anchor="middle" fill="#e8dfc0" font-size="8" opacity="0.85">Australia</text>
-        `
-  },
-  100: {
-    label: "Late Cretaceous Earth",
-    ocean: "#0a2248",
-    desc: "Dinosaurs everywhere. Shallow seas flood the continents. India approaches Asia.",
-    svg: `
-        <!-- Similar to 145 but Atlantic wider, India closer to Asia -->
-        <!-- North America with inland sea -->
-        <path d="M45,98 L175,80 L210,105 L208,200 L160,212 L90,200 L45,172 L35,128 Z" fill="#8B7355" opacity="0.9"/>
-        <path d="M212,98 L248,82 L258,108 L255,205 L212,205 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Interior seaway wider -->
-        <path d="M178,82 L214,80 L215,205 L178,205 Z" fill="#1a5a90" opacity="0.75"/>
-        <!-- Europe -->
-        <path d="M305,88 L428,82 L450,106 L444,148 L405,162 L355,158 L308,140 L292,112 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Asia (large) -->
-        <path d="M438,80 L668,74 L685,98 L678,162 L622,182 L545,180 L480,172 L452,148 L440,108 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- South America -->
-        <path d="M105,220 L242,215 L265,240 L258,338 L218,370 L168,372 L132,344 L118,282 L112,244 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Africa -->
-        <path d="M302,198 L435,193 L462,220 L466,320 L440,362 L385,374 L322,367 L294,334 L284,268 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- India very close to Asia now -->
-        <ellipse cx="548" cy="198" rx="40" ry="28" fill="#9B8363" opacity="0.9"/>
-        <!-- Narrow gap closing -->
-        <path d="M538,175 L562,175 L562,193 L538,193 Z" fill="#1a4a80" opacity="0.6"/>
-        <!-- Australia still connected to Antarctica area -->
-        <ellipse cx="655" cy="318" rx="55" ry="28" fill="#9B8363" opacity="0.88"/>
-        <ellipse cx="490" cy="375" rx="140" ry="20" fill="#c8d8e8" opacity="0.65"/>
-        <!-- Tethys (shrinking) -->
-        <path d="M452,148 L672,140 L682,168 L645,188 L548,195 L462,185 L450,165 Z" fill="#0a3060" opacity="0.65"/>
-        <!-- Labels -->
-        <text x="148" y="142" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">N. AMERICA</text>
-        <text x="200" y="145" text-anchor="middle" fill="#4a9fd8" font-size="7" opacity="0.8">Seaway</text>
-        <text x="362" y="118" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">EUROPE</text>
-        <text x="558" y="118" text-anchor="middle" fill="#e8dfc0" font-size="11" opacity="0.9">ASIA</text>
-        <text x="185" y="294" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">S. AMERICA</text>
-        <text x="374" y="288" text-anchor="middle" fill="#e8dfc0" font-size="12" opacity="0.9">AFRICA</text>
-        <text x="548" y="196" text-anchor="middle" fill="#e8dfc0" font-size="8" opacity="0.9">India →</text>
-        <text x="548" y="178" text-anchor="middle" fill="#ff9a30" font-size="7" opacity="0.9">⬆ Colliding!</text>
-        `
-  },
-  66: {
-    label: "K-Pg Boundary \u2014 Asteroid Impact!",
-    ocean: "#0a2040",
-    desc: "The asteroid hits. 76% of species go extinct. But continents now look almost modern.",
-    svg: `
-        <!-- Nearly modern continents but India still south of Asia -->
-        <!-- North America (recognizable) -->
-        <path d="M42,95 L195,78 L238,90 L255,118 L252,185 L218,212 L162,225 L98,215 L48,190 L32,148 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Greenland separating -->
-        <ellipse cx="248" cy="75" rx="32" ry="20" fill="#c8d8e8" opacity="0.8"/>
-        <!-- Europe -->
-        <path d="M310,88 L432,82 L452,104 L448,145 L410,162 L358,160 L312,142 L296,112 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Asia (joined, large) -->
-        <path d="M442,78 L672,72 L690,95 L682,162 L628,185 L548,182 L482,175 L455,148 L442,108 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- India close to collision zone -->
-        <path d="M522,168 L572,162 L580,185 L570,200 L528,205 L515,190 Z" fill="#9B8363" opacity="0.9"/>
-        <!-- Collision zone - Himalayas starting -->
-        <path d="M490,160 L582,155 L586,168 L490,168 Z" fill="#6B5340" opacity="0.7"/>
-        <!-- South America (recognizable) -->
-        <path d="M95,222 L235,215 L262,242 L255,342 L215,375 L162,378 L125,350 L108,288 L98,248 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Africa (recognizable) -->
-        <path d="M310,195 L440,190 L468,215 L472,322 L445,368 L388,382 L325,375 L298,340 L288,275 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Australia separated from Antarctica -->
-        <ellipse cx="655" cy="308" rx="55" ry="30" fill="#9B8363" opacity="0.9"/>
-        <!-- Antarctica -->
-        <path d="M350,380 L620,375 L640,395 L340,398 Z" fill="#d8eef8" opacity="0.7"/>
-        <!-- Tethys Sea (shrinking to Mediterranean) -->
-        <ellipse cx="400" cy="175" rx="45" ry="18" fill="#1a4a80" opacity="0.7"/>
-        <!-- Asteroid impact flash indicator -->
-        <circle cx="385" cy="215" r="18" fill="#ff8c00" opacity="0.4"/>
-        <circle cx="385" cy="215" r="10" fill="#ffdc00" opacity="0.5"/>
-        <text x="385" y="213" text-anchor="middle" fill="white" font-size="12" opacity="0.9">☄️</text>
-        <!-- Labels -->
-        <text x="148" y="148" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">N. AMERICA</text>
-        <text x="365" y="118" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">EUROPE</text>
-        <text x="560" y="118" text-anchor="middle" fill="#e8dfc0" font-size="11" opacity="0.9">ASIA</text>
-        <text x="182" y="298" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">S. AMERICA</text>
-        <text x="378" y="292" text-anchor="middle" fill="#e8dfc0" font-size="12" opacity="0.9">AFRICA</text>
-        <text x="655" y="306" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.9">Australia</text>
-        <text x="390" y="255" text-anchor="middle" fill="#ff6a00" font-size="9" opacity="0.85">Yucatan Impact!</text>
-        `
-  },
-  35: {
-    label: "Eocene Earth",
-    ocean: "#0a1e3c",
-    desc: "India smashes into Asia building the Himalayas. Warm greenhouse climate. Mammals diversify.",
-    svg: `
-        <!-- North America (modern-ish) -->
-        <path d="M40,92 L198,75 L240,88 L258,115 L255,185 L220,212 L162,225 L96,215 L46,188 L30,148 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Greenland -->
-        <ellipse cx="252" cy="70" rx="32" ry="22" fill="#c8d8e8" opacity="0.82"/>
-        <!-- Europe -->
-        <path d="M312,86 L434,80 L455,102 L450,142 L412,160 L360,158 L314,140 L298,110 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Asia (large + India crashed in) -->
-        <path d="M440,76 L675,70 L692,93 L685,162 L630,185 L548,185 L488,178 L455,152 L455,175 L510,195 L560,198 L592,180 L692,162 L685,93 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Asia main body -->
-        <path d="M440,76 L675,70 L692,93 L685,165 L628,185 L548,185 L488,178 L455,152 L440,108 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- India now merged/colliding with Asia - Himalayas forming! -->
-        <path d="M488,178 L568,172 L580,195 L565,210 L492,212 L478,198 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Himalayas highlight -->
-        <path d="M490,175 L565,170 L570,182 L490,182 Z" fill="#5a4a30" opacity="0.8"/>
-        <text x="530" y="179" text-anchor="middle" fill="#e8dfc0" font-size="7" opacity="0.9">⛰️ Himalayas rising!</text>
-        <!-- South America (almost modern) -->
-        <path d="M92,222 L232,215 L260,242 L254,343 L214,378 L160,380 L122,352 L105,290 L95,248 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Africa (modern) -->
-        <path d="M312,192 L442,188 L470,212 L474,322 L448,368 L390,382 L328,375 L300,340 L290,272 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Australia (separated, drifting north) -->
-        <path d="M602,295 L710,290 L718,322 L698,345 L608,348 L592,325 Z" fill="#9B8363" opacity="0.9"/>
-        <!-- Antarctica with ice cap -->
-        <ellipse cx="460" cy="382" rx="155" ry="18" fill="#d8eef8" opacity="0.72"/>
-        <!-- Tethys now Mediterranean/Paratethys -->
-        <ellipse cx="398" cy="168" rx="40" ry="14" fill="#1a4a80" opacity="0.75"/>
-        <!-- Labels -->
-        <text x="148" y="148" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">N. AMERICA</text>
-        <text x="368" y="115" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">EUROPE</text>
-        <text x="558" y="118" text-anchor="middle" fill="#e8dfc0" font-size="11" opacity="0.9">ASIA</text>
-        <text x="178" y="298" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">S. AMERICA</text>
-        <text x="380" y="290" text-anchor="middle" fill="#e8dfc0" font-size="12" opacity="0.9">AFRICA</text>
-        <text x="655" y="318" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.9">Australia</text>
-        `
-  },
-  0: {
-    label: "Modern Earth",
-    ocean: "#0a1e38",
-    desc: "Our world today. Humans everywhere. Ice ages shaped the landscape. The story continues...",
-    svg: `
-        <!-- Modern continents - recognizable shapes -->
-        <!-- North America -->
-        <path d="M38,90 L198,72 L242,86 L262,112 L258,182 L222,210 L165,224 L98,215 L48,188 L28,148 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Central America -->
-        <path d="M185,210 L220,210 L240,235 L215,248 L188,238 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Greenland (ice) -->
-        <path d="M232,55 L285,52 L295,72 L285,88 L248,90 L228,75 Z" fill="#d8eef8" opacity="0.85"/>
-        <!-- Europe -->
-        <path d="M315,85 L435,78 L458,100 L452,140 L415,158 L362,158 L315,140 L300,108 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- British Isles -->
-        <ellipse cx="302" cy="105" rx="15" ry="18" fill="#8B7355" opacity="0.85"/>
-        <!-- Scandinavia -->
-        <path d="M362,72 L392,68 L398,90 L380,105 L358,98 Z" fill="#8B7355" opacity="0.88"/>
-        <!-- Asia (huge) -->
-        <path d="M442,75 L678,68 L695,90 L688,158 L632,182 L552,185 L490,180 L458,158 L442,105 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- India subcontinent -->
-        <path d="M492,178 L568,172 L578,195 L555,225 L520,232 L492,215 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Japan -->
-        <ellipse cx="672" cy="128" rx="12" ry="28" fill="#9B8363" opacity="0.88"/>
-        <!-- Southeast Asia islands -->
-        <ellipse cx="640" cy="222" rx="25" ry="15" fill="#9B8363" opacity="0.85"/>
-        <!-- South America -->
-        <path d="M90,225 L228,218 L258,244 L252,345 L212,380 L158,382 L120,354 L102,292 L92,248 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Caribbean -->
-        <ellipse cx="215" cy="222" rx="18" ry="8" fill="#9B8363" opacity="0.75"/>
-        <!-- Africa -->
-        <path d="M314,188 L445,183 L472,208 L476,320 L450,368 L392,385 L330,378 L302,342 L290,272 Z" fill="#8B7355" opacity="0.9"/>
-        <!-- Madagascar -->
-        <ellipse cx="488" cy="310" rx="10" ry="25" fill="#9B8363" opacity="0.85"/>
-        <!-- Australia -->
-        <path d="M598,288 L712,282 L722,312 L704,345 L610,348 L590,322 Z" fill="#9B8363" opacity="0.9"/>
-        <!-- New Zealand -->
-        <ellipse cx="735" cy="340" rx="8" ry="18" fill="#9B8363" opacity="0.82"/>
-        <!-- Antarctica (ice cap) -->
-        <path d="M320,378 L630,372 L655,395 L300,398 Z" fill="#d8eef8" opacity="0.75"/>
-        <!-- Arctic ice cap -->
-        <ellipse cx="400" cy="5" rx="200" ry="25" fill="#d8eef8" opacity="0.6"/>
-        <!-- Mediterranean Sea -->
-        <path d="M318,158 L455,152 L460,168 L318,170 Z" fill="#1a4a80" opacity="0.8"/>
-        <!-- Labels -->
-        <text x="150" y="148" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">N. AMERICA</text>
-        <text x="365" y="115" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">EUROPE</text>
-        <text x="558" y="118" text-anchor="middle" fill="#e8dfc0" font-size="11" opacity="0.9">ASIA</text>
-        <text x="172" y="300" text-anchor="middle" fill="#e8dfc0" font-size="10" opacity="0.9">S. AMERICA</text>
-        <text x="380" y="290" text-anchor="middle" fill="#e8dfc0" font-size="12" opacity="0.9">AFRICA</text>
-        <text x="655" y="312" text-anchor="middle" fill="#e8dfc0" font-size="9" opacity="0.9">Australia</text>
-        <text x="530" y="205" text-anchor="middle" fill="#e8dfc0" font-size="8" opacity="0.85">India</text>
-        <text x="400" y="390" text-anchor="middle" fill="#b8ddf8" font-size="9" opacity="0.75">Antarctica</text>
-        <text x="400" y="205" text-anchor="middle" fill="#4a90d8" font-size="10" opacity="0.65">ATLANTIC OCEAN</text>
-        <text x="100" y="230" text-anchor="middle" fill="#4a90d8" font-size="10" opacity="0.65">PACIFIC</text>
-        <text x="700" y="230" text-anchor="middle" fill="#4a90d8" font-size="10" opacity="0.65">PACIFIC</text>
-        <text x="578" y="255" text-anchor="middle" fill="#4a90d8" font-size="9" opacity="0.65">INDIAN</text>
-        `
-  },
-};
-
-
-
-// ============================================================
-//  PERIOD LABEL BAR (above slider)
-// ============================================================
-const PERIOD_LABELS = [
-  { name: "Cambrian", mya: 541, color: "#5b3090" },
-  { name: "Ordovician", mya: 485, color: "#4a6ab0" },
-  { name: "Silurian", mya: 444, color: "#3a7890" },
-  { name: "Devonian", mya: 419, color: "#2a8878" },
-  { name: "Carbon.", mya: 359, color: "#386840" },
-  { name: "Permian", mya: 299, color: "#984020" },
-  { name: "Triassic", mya: 252, color: "#b83030" },
-  { name: "Jurassic", mya: 201, color: "#2a8a4a" },
-  { name: "Cretaceous", mya: 145, color: "#3a9a30" },
-  { name: "Paleogene", mya: 66, color: "#a09020" },
-  { name: "Neogene", mya: 23, color: "#c09030" },
-  { name: "Today", mya: 0, color: "#808080" },
-];
-
-function buildPeriodLabelBar() {
-  const bar = document.getElementById('periodLabelBar');
-  const totalWidth = bar.offsetWidth || window.innerWidth;
-  PERIOD_LABELS.forEach((p, i) => {
-    const nextMya = i < PERIOD_LABELS.length - 1 ? PERIOD_LABELS[i+1].mya : -1;
-    const startPct = (1 - p.mya / 541) * 100;
-    const endPct = nextMya < 0 ? 100 : (1 - nextMya / 541) * 100;
-    const widthPct = endPct - startPct;
-    const btn = document.createElement('div');
-    btn.className = 'period-label-btn';
-    btn.style.left = startPct + '%';
-    btn.style.width = widthPct + '%';
-    btn.style.background = p.color + '55';
-    btn.style.color = p.color;
-    btn.style.borderColor = p.color + '44';
-    btn.textContent = widthPct > 5 ? p.name : (widthPct > 2 ? p.name.substring(0,3) : '');
-    btn.title = p.name + ' — click to jump';
-    btn.addEventListener('click', () => {
-      const sliderVal = myaToSlider(p.mya);
-      const slider = document.getElementById('timeSlider');
-      slider.value = sliderVal;
-      renderDisplay(p.mya);
-      document.getElementById('myaDisplay').textContent = fmtMya(p.mya);
-    });
-    bar.appendChild(btn);
-  });
-}
-
-// ============================================================
-//  MAP RENDERING
-// ============================================================
-function renderPaleoMap(mya) {
-  const anchorTime = getAnchorTimeForPeriod(mya);
-  const mapData = PALEO_MAPS[anchorTime];
-  if (!mapData) return;
-  
-  const svg = document.getElementById('paleoMap');
-  svg.innerHTML = `
-    <rect width="800" height="400" fill="${mapData.ocean}"/>
-    <!-- Ocean gradient overlay -->
-    <radialGradient id="oceanGrad" cx="50%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="${mapData.ocean}" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#020810" stop-opacity="0.5"/>
-    </radialGradient>
-    ${mapData.svg}
-    <rect width="800" height="400" fill="url(#oceanGrad)" pointer-events="none"/>
-  `;
-  
-  const label = document.getElementById('mapContextLabel');
-  if (label) label.textContent = mapData.label + ' · ' + fmtMya(mya);
-}
-
-// ============================================================
-//  HELPERS
-// ============================================================
-
 let currentMya = 541;
-let activePeriod = PERIODS[0];
+let activePeriod = null;
 let factTimer = null;
 let renderSliderTimer = null;
+let currentTab = 'creatures';
 
-// ============================================================
-//  HELPERS
-// ============================================================
 function getPeriod(mya) {
   for (const p of PERIODS) {
     if (mya <= p.start && mya >= p.end) return p;
@@ -2328,61 +2095,123 @@ function getPeriod(mya) {
 
 function fmtMya(mya) {
   if (mya < 0.001) return "Today";
-  if (mya < 0.1) {
-    const kya = (mya * 1000).toFixed(0);
-    return kya + ",000 years ago";
-  }
+  if (mya < 0.1) return (mya * 1000).toFixed(0) + ",000 years ago";
   if (mya < 1) return (mya * 1000).toFixed(0) + ",000 years ago";
   return Math.round(mya) + " MYA";
 }
 
-// ============================================================
-//  RENDER PERIOD BAR
-// ============================================================
-function buildPeriodBar() {
-  const bar = document.getElementById('periodBar');
-  const total = 541;
-  let html = '';
-  for (const p of PERIODS) {
-    const span = p.start - p.end;
-    const pct = (span / total * 100).toFixed(3);
-    html += `<div class="period-seg" style="width:${pct}%;background:${p.color};opacity:0.75"
-                  data-id="${p.id}" onclick="clickPeriodSeg('${p.id}')">
-               <div class="seg-tip">${p.name}<br>${p.start}–${p.end} MYA</div>
-             </div>`;
+function sliderToMya(val) {
+  val = Math.max(0, Math.min(1000, parseFloat(val)));
+  for (let i = 0; i < SLIDER_BP.length - 1; i++) {
+    const [s0, m0] = SLIDER_BP[i];
+    const [s1, m1] = SLIDER_BP[i + 1];
+    if (val <= s1 + 0.001) {
+      const t = (val - s0) / (s1 - s0);
+      return Math.round((m0 + t * (m1 - m0)) * 10) / 10;
+    }
   }
-  bar.innerHTML = html;
+  return 0;
 }
 
-function clickPeriodSeg(id) {
-  const p = PERIODS.find(x => x.id === id);
-  if (p) {
-    const mid = (p.start + p.end) / 2;
-    document.getElementById('timeSlider').value = myaToSlider(mid);
-    renderDisplay(mid);
+function myaToSlider(mya) {
+  mya = Math.max(0, Math.min(721, parseFloat(mya)));
+  for (let i = 0; i < SLIDER_BP.length - 1; i++) {
+    const [s0, m0] = SLIDER_BP[i];
+    const [s1, m1] = SLIDER_BP[i + 1];
+    if (mya >= m1 - 0.001) {
+      const t = (m0 - mya) / (m0 - m1);
+      return Math.round(s0 + t * (s1 - s0));
+    }
+  }
+  return 1000;
+}
+
+// ============================================================
+// SVG MAP RENDERING
+// ============================================================
+function getSvgForPeriod(period) {
+  return SVG_MAPS[period.id] || SVG_MAPS[period.continentKey] || SVG_MAPS['cambrian'] || '';
+}
+
+function updateMap(period, creatureName) {
+  const mapEl = document.getElementById('paleoMap');
+  const svgContent = getSvgForPeriod(period);
+  mapEl.innerHTML = svgContent;
+
+  // Show creature range overlay if requested
+  if (creatureName && CREATURE_RANGES[creatureName]) {
+    const data = CREATURE_RANGES[creatureName];
+    const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    overlay.innerHTML = data.svg;
+    overlay.style.pointerEvents = 'none';
+    mapEl.appendChild(overlay);
+    const lbl = document.getElementById('creatureRangeLabel');
+    lbl.textContent = data.label;
+    lbl.style.display = 'block';
+  } else {
+    const lbl = document.getElementById('creatureRangeLabel');
+    lbl.style.display = 'none';
   }
 }
 
 // ============================================================
-//  RENDER DISPLAY
+// PERIOD LABEL BAR
 // ============================================================
-function toggleExpanded(id) {
-  const elem = document.getElementById(id);
-  if (elem) elem.style.display = elem.style.display === 'none' ? 'block' : 'none';
+function buildPeriodLabels() {
+  const container = document.getElementById('periodLabels');
+  const TOTAL_MYA = PERIODS[0].start; // max mya
+  const labels = [];
+
+  PERIODS.forEach(p => {
+    const midMya = (p.start + p.end) / 2;
+    const sliderVal = myaToSlider(midMya);
+    const pct = (sliderVal / 1000) * 100;
+    labels.push({ name: p.name, pct, id: p.id, mya: midMya });
+  });
+
+  // Only show labels that don't crowd - filter by minimum spacing
+  const shown = [];
+  labels.forEach(l => {
+    const tooClose = shown.some(s => Math.abs(s.pct - l.pct) < 7);
+    if (!tooClose) shown.push(l);
+  });
+
+  container.innerHTML = '';
+  shown.forEach(l => {
+    const el = document.createElement('div');
+    el.className = 'plabel';
+    el.style.left = l.pct + '%';
+    el.textContent = l.name;
+    el.title = l.name + ' (' + Math.round(l.mya) + ' MYA)';
+    el.addEventListener('click', () => {
+      document.getElementById('timeSlider').value = myaToSlider(l.mya);
+      renderDisplay(l.mya);
+    });
+    // hide some on small screens
+    if (l.name.length > 8) el.classList.add('hide-xs');
+    container.appendChild(el);
+  });
+}
+
+function updateActivePeriodLabel(periodId) {
+  document.querySelectorAll('.plabel').forEach(el => {
+    el.classList.toggle('active-period-label',
+      el.title.toLowerCase().includes(periodId.toLowerCase()) ||
+      el.textContent.toLowerCase() === periodId.toLowerCase());
+  });
 }
 
 // ============================================================
-//  RENDER DISPLAY
+// RENDER
 // ============================================================
+let activeCreatureName = null;
 
 function renderDisplay(mya) {
   currentMya = mya;
   const period = getPeriod(mya);
-  const changed = period.id !== activePeriod.id;
-  const crossedExtinction = changed && activePeriod.extinctionAtEnd && mya < activePeriod.end;
-
+  const changed = !activePeriod || period.id !== activePeriod.id;
+  if (changed) activeCreatureName = null;
   activePeriod = period;
-  if (changed) clearCreatureRange();
 
   // Header
   document.getElementById('myaDisplay').textContent = fmtMya(mya);
@@ -2395,10 +2224,10 @@ function renderDisplay(mya) {
                        period.id === 'quaternary' ? 'Ice Age' :
                        period.name + ' Period';
   nameEl.style.color = period.textColor;
-  const periodInfo = document.getElementById('periodInfo');
-  if (periodInfo) periodInfo.style.borderLeftColor = period.color;
+  const periodInfoEl = document.getElementById('periodInfo');
+  if (periodInfoEl) periodInfoEl.style.borderLeftColor = period.color;
   document.getElementById('periodYears').textContent =
-    period.start + ' – ' + period.end + ' million years ago';
+    period.start + ' \u2013 ' + period.end + ' million years ago';
   document.getElementById('periodDesc').textContent = period.desc;
 
   // Events ribbon
@@ -2411,27 +2240,48 @@ function renderDisplay(mya) {
     ribbon.classList.add('hidden');
   }
 
-  // ── Creatures list (built synchronously BEFORE the map fetch) ──
-  document.getElementById('panelTitle').textContent = '🌍 Life in the ' + period.name;
-  const list = document.getElementById('creaturesList');
-  list.innerHTML = '';
+  // Update map
+  updateMap(period, activeCreatureName);
 
+  // Update active label
+  updateActivePeriodLabel(period.id);
+
+  // Panel title
+  document.getElementById('panelTitle').textContent =
+    currentTab === 'creatures' ? '🌍 Life in the ' + period.name :
+    currentTab === 'geo' ? '🌋 Geology of the ' + period.name :
+    '💬 Ask a Question';
+
+  // Render current tab content
+  if (currentTab === 'creatures') renderCreatures(period);
+  else if (currentTab === 'geo') renderGeoFeatures(period);
+}
+
+// ============================================================
+// CREATURES
+// ============================================================
+function renderCreatures(period) {
+  const list = document.getElementById('creaturesPanel');
+  list.innerHTML = '';
   period.creatures.forEach((c, i) => {
-    const dietMap = { herb:'🌿 Plant-eater', carn:'🥩 Meat-eater', omni:'🍖 Eats Both', pred:'⚡ Predator', filter:'💧 Filter Feeder' };
+    const dietMap = {
+      herb:'🌿 Plant-eater', carn:'🥩 Meat-eater',
+      omni:'🍖 Eats Both', pred:'⚡ Predator', filter:'💧 Filter Feeder'
+    };
     const card = document.createElement('div');
     card.className = 'creature-card';
     const expandedId = 'exp-' + i + '-' + period.id;
     let expandedHtml = '';
     if (c.taxonomy || c.discovery || c.keyResearchers || c.citation) {
-      expandedHtml = `
-        <div class="creature-expanded" id="${expandedId}" style="display:none;">
-          ${c.taxonomy ? `<div class="creature-field"><strong>Taxonomy:</strong><br><span class="taxonomy-path">${c.taxonomy}</span></div>` : ''}
-          ${c.discovery ? `<div class="creature-field"><strong>Discovery:</strong><br><span class="creature-text">${c.discovery}</span></div>` : ''}
-          ${c.keyResearchers ? `<div class="creature-field"><strong>Key Researchers:</strong><br><span class="creature-text">${c.keyResearchers}</span></div>` : ''}
-          ${c.citation ? `<div class="creature-field"><strong>Citation:</strong><br><span class="creature-text">${c.citation}</span></div>` : ''}
-        </div>`;
+      expandedHtml = `<div class="creature-expanded" id="${expandedId}" style="display:none">
+        ${c.taxonomy ? `<div class="creature-field"><strong>Taxonomy:</strong><span class="taxonomy-path">${c.taxonomy}</span></div>` : ''}
+        ${c.discovery ? `<div class="creature-field"><strong>Discovery:</strong><span class="creature-text">${c.discovery}</span></div>` : ''}
+        ${c.keyResearchers ? `<div class="creature-field"><strong>Key Researchers:</strong><span class="creature-text">${c.keyResearchers}</span></div>` : ''}
+        ${c.citation ? `<div class="creature-field"><strong>Citation:</strong><span class="creature-text">${c.citation}</span></div>` : ''}
+      </div>`;
     }
-    const toggleBtn = (c.taxonomy || c.discovery) ? `<button class="expand-btn" onclick="toggleExpanded('${expandedId}')" style="background:none;border:none;cursor:pointer;color:#7a8499;font-size:0.85rem;padding:4px 0;margin-top:6px;">📖 Full Entry</button>` : '';
+    const toggleBtn = (c.taxonomy || c.discovery) ?
+      `<button class="expand-btn" onclick="toggleExpanded('${expandedId}')">📖 Full Entry</button>` : '';
     card.innerHTML = `
       <div class="creature-top">
         <div class="creature-emoji">${c.emoji}</div>
@@ -2447,44 +2297,84 @@ function renderDisplay(mya) {
         <span class="diet-chip diet-${c.diet}">${dietMap[c.diet] || c.diet}</span>
         ${c.habitat ? `<span class="habitat-badge">${c.habitat.split(' ')[0]}</span>` : ''}
       </div>
-      ${toggleBtn}
-      ${expandedHtml}
-    `;
+      ${toggleBtn}${expandedHtml}`;
     card.addEventListener('click', (e) => {
       if (e.target.closest('.expand-btn')) return;
-      document.querySelectorAll('.creature-card').forEach(el => el.classList.remove('active', 'clicked'));
-      card.classList.add('active', 'clicked');
-      showFact(c.emoji, c.fact);
-      showCreatureRange(c.name);
+      const isActive = card.classList.contains('active');
+      document.querySelectorAll('.creature-card.active').forEach(x => x.classList.remove('active'));
+      if (!isActive) {
+        card.classList.add('active');
+        activeCreatureName = c.name;
+        updateMap(period, c.name);
+        if (c.fact) showFact(c.emoji, c.fact);
+      } else {
+        activeCreatureName = null;
+        updateMap(period, null);
+      }
     });
     list.appendChild(card);
   });
+}
 
-  // Geological features
-  renderGeoFeatures(period.id);
-
-  // Period bar highlight
-  document.querySelectorAll('.period-seg').forEach(el =>
-    el.classList.toggle('active', el.dataset.id === period.id));
-
-  // Timeline label
-  const _cl = document.getElementById('currentLabel'); if(_cl) _cl.textContent = period.name + ' Period';
-
-  // Extinction flash
-  if (crossedExtinction) {
-    const flash = document.getElementById('extFlash');
-    flash.classList.remove('flash');
-    void flash.offsetWidth;
-    flash.classList.add('flash');
-  }
-
-  // Update SVG paleogeographic map
-  renderPaleoMap(mya);
-  renderGeoFeatures(period.id);
+function toggleExpanded(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 // ============================================================
-//  FACT POPUP
+// GEO FEATURES
+// ============================================================
+function renderGeoFeatures(period) {
+  const list = document.getElementById('geoPanel');
+  list.innerHTML = '';
+  const features = GEO_FEATURES.filter(f => f.periods && f.periods.includes(period.id));
+  if (!features.length) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:0.82rem">No geological features recorded for this period.</div>';
+    return;
+  }
+  features.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'geo-card';
+    card.innerHTML = `
+      <div class="geo-card-top">
+        <div class="geo-icon">${f.icon}</div>
+        <div class="geo-info">
+          <div class="geo-name">${f.name}</div>
+          <div class="geo-short">${f.shortDesc || ''}</div>
+        </div>
+      </div>
+      <div class="geo-full">
+        ${f.fullDesc ? `<div style="margin-bottom:5px">${f.fullDesc}</div>` : ''}
+        ${f.funFact ? `<div class="geo-fun">💡 ${f.funFact}</div>` : ''}
+      </div>
+      ${f.type ? `<div><span class="geo-type-badge">${f.type}</span></div>` : ''}`;
+    card.addEventListener('click', () => card.classList.toggle('expanded'));
+    list.appendChild(card);
+  });
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  document.getElementById('creaturesPanel').style.display = tab === 'creatures' ? 'block' : 'none';
+  document.getElementById('geoPanel').style.display = tab === 'geo' ? 'block' : 'none';
+  document.getElementById('askPanel').style.display = tab === 'ask' ? 'flex' : 'none';
+  const period = activePeriod || getPeriod(currentMya);
+  document.getElementById('panelTitle').textContent =
+    tab === 'creatures' ? '🌍 Life in the ' + period.name :
+    tab === 'geo' ? '🌋 Geology of the ' + period.name : '💬 Ask a Question';
+  if (tab === 'creatures') renderCreatures(period);
+  else if (tab === 'geo') renderGeoFeatures(period);
+}
+
+// ============================================================
+// FACT POPUP
 // ============================================================
 function showFact(emoji, text) {
   if (factTimer) clearTimeout(factTimer);
@@ -2493,214 +2383,102 @@ function showFact(emoji, text) {
   document.getElementById('factPopup').classList.add('show');
   factTimer = setTimeout(() => closeFactPopup(), 6000);
 }
-
 function closeFactPopup() {
   document.getElementById('factPopup').classList.remove('show');
   if (factTimer) { clearTimeout(factTimer); factTimer = null; }
 }
 
 // ============================================================
-//  CREATURE RANGE LABEL (Leaflet mode)
+// MAP ZOOM / PAN
 // ============================================================
+let mapScale = 1, mapX = 0, mapY = 0;
+let isDragging = false, lastX = 0, lastY = 0;
+let pinchDist = 0;
 
-// ============================================================
-//  CREATURE RANGE
-// ============================================================
-
-
-function showCreatureRange(name) {
-  clearCreatureRange();
-  const data = CREATURE_RANGES[name];
-  if (!data) return;
-  const label = document.getElementById('mapContextLabel');
-  if (label) {
-    label.textContent = `${name} range: ${data.range || 'Worldwide'}`;
-    label.style.background = 'rgba(240,192,64,0.25)';
-    label.style.borderColor = 'rgba(240,192,64,0.5)';
-    label.style.color = '#f0c040';
-  }
+function applyMapTransform() {
+  const wrapper = document.getElementById('svgWrapper');
+  wrapper.style.transform = `translate(${mapX}px,${mapY}px) scale(${mapScale})`;
 }
 
-function clearCreatureRange() {
-  const label = document.getElementById('mapContextLabel');
-  if (label) {
-    label.style.background = '';
-    label.style.borderColor = '';
-    label.style.color = '';
-    const period = getPeriod(currentMya);
-    const mapData = PALEO_MAPS[getAnchorTimeForPeriod(currentMya)];
-    if (mapData) label.textContent = mapData.label + ' · ' + fmtMya(currentMya);
-  }
+function clampMapTransform() {
+  const area = document.getElementById('mapArea');
+  const w = area.offsetWidth, h = area.offsetHeight;
+  const maxX = w * (mapScale - 1) / 2;
+  const maxY = h * (mapScale - 1) / 2;
+  mapX = Math.max(-maxX, Math.min(maxX, mapX));
+  mapY = Math.max(-maxY, Math.min(maxY, mapY));
 }
 
-
-// ============================================================
-//  GEO FEATURES
-// ============================================================
-
-function renderGeoFeatures(periodId) {
-  // Remove existing geo markers from SVG overlay
-  document.querySelectorAll('.svg-geo-marker').forEach(el => el.remove());
-
-  const features = GEO_FEATURES.filter(f =>
-    f.periods && f.periods.includes(periodId) && geoToggles[f.type] !== false
-  );
-
-  const svg = document.getElementById('paleoMap');
-  if (!svg) return;
-  const svgW = 800, svgH = 400;
-  const mapW = svg.clientWidth || svgW;
-  const mapH = svg.clientHeight || svgH;
-
-  features.forEach(feature => {
-    if (!feature.latlon) return;
-    const [lat, lon] = feature.latlon;
-    // Convert lat/lon to SVG coords (rough equirectangular)
-    const x = ((lon + 180) / 360) * svgW;
-    const y = ((90 - lat) / 180) * svgH;
-
-    // Create foreignObject with emoji
-    const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-    fo.setAttribute('x', x - 14);
-    fo.setAttribute('y', y - 14);
-    fo.setAttribute('width', '28');
-    fo.setAttribute('height', '28');
-    fo.setAttribute('class', 'svg-geo-marker');
-    fo.style.cssText = 'cursor:pointer;overflow:visible';
-
-    const div = document.createElement('div');
-    div.style.cssText = 'font-size:18px;line-height:1;text-align:center;cursor:pointer;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.8));transition:transform 0.15s';
-    div.textContent = feature.icon || '📍';
-    div.title = feature.name;
-    div.addEventListener('click', () => showGeoPopup(feature));
-    div.addEventListener('mouseenter', () => div.style.transform = 'scale(1.4)');
-    div.addEventListener('mouseleave', () => div.style.transform = '');
-
-    fo.appendChild(div);
-    svg.appendChild(fo);
-  });
-}
-
-function showGeoPopup(feature) {
-  if (geoFeatureTimer) clearTimeout(geoFeatureTimer);
-
-  document.getElementById('gpType').textContent = feature.icon;
-  document.getElementById('gpName').textContent = feature.name;
-  document.getElementById('gpShort').textContent = feature.shortDesc;
-  document.getElementById('gpFull').textContent = feature.fullDesc;
-  document.getElementById('gpFun').textContent = '💡 ' + feature.funFact;
-
-  document.getElementById('geoPopup').classList.add('show');
-  geoFeatureTimer = setTimeout(() => closeGeoPopup(), 8000);
-}
-
-function closeGeoPopup() {
-  const popup = document.getElementById('geoPopup');
-  popup.classList.remove('show');
-  if (geoFeatureTimer) { clearTimeout(geoFeatureTimer); geoFeatureTimer = null; }
-}
-
-// ============================================================
-//  EVENTS
-// ============================================================
-document.getElementById('timeSlider').addEventListener('input', function() {
-  const mya = sliderToMya(this.value);
-  // Update display labels immediately for responsiveness
-  document.getElementById('myaDisplay').textContent = fmtMya(mya);
-  const period = getPeriod(mya);
-  const _cl = document.getElementById('currentLabel'); if(_cl) _cl.textContent = period.name + ' Period';
-  // Debounce the full async render
-  clearTimeout(renderSliderTimer);
-  renderSliderTimer = setTimeout(() => { renderDisplay(mya); }, 120);
+document.getElementById('svgWrapper').addEventListener('dblclick', e => {
+  if (mapScale > 1) { mapScale = 1; mapX = 0; mapY = 0; }
+  else { mapScale = 2; }
+  applyMapTransform();
 });
 
-document.getElementById('chatBtn')?.addEventListener('click', () => {
-  showFact('💬', 'Hi there, time explorers! 👋 Ask me anything about what you see here — what dinosaur ate what, why the continents moved, what caused the extinctions, or what your favorite prehistoric creature was like!');
+document.getElementById('svgWrapper').addEventListener('wheel', e => {
+  e.preventDefault();
+  mapScale = Math.max(1, Math.min(5, mapScale * (e.deltaY < 0 ? 1.12 : 0.89)));
+  if (mapScale <= 1) { mapX = 0; mapY = 0; }
+  clampMapTransform();
+  applyMapTransform();
+}, { passive: false });
+
+document.getElementById('svgWrapper').addEventListener('mousedown', e => {
+  if (mapScale <= 1) return;
+  isDragging = true; lastX = e.clientX; lastY = e.clientY;
 });
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  mapX += e.clientX - lastX; mapY += e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  clampMapTransform(); applyMapTransform();
+});
+document.addEventListener('mouseup', () => { isDragging = false; });
+
+// Touch pinch/pan
+document.getElementById('svgWrapper').addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                           e.touches[0].clientY - e.touches[1].clientY);
+  } else if (e.touches.length === 1 && mapScale > 1) {
+    isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+  }
+}, { passive: true });
+document.getElementById('svgWrapper').addEventListener('touchmove', e => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                         e.touches[0].clientY - e.touches[1].clientY);
+    mapScale = Math.max(1, Math.min(5, mapScale * d / pinchDist));
+    pinchDist = d;
+    if (mapScale <= 1) { mapX = 0; mapY = 0; }
+    clampMapTransform(); applyMapTransform();
+  } else if (e.touches.length === 1 && isDragging) {
+    mapX += e.touches[0].clientX - lastX; mapY += e.touches[0].clientY - lastY;
+    lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    clampMapTransform(); applyMapTransform();
+  }
+}, { passive: false });
+document.addEventListener('touchend', () => { isDragging = false; });
 
 // ============================================================
-//  LEAFLET MAP
-// ============================================================
-let geoMarkers = []; // legacy compat
-
-// ============================================================
-//  EVENTS
+// SLIDER EVENTS
 // ============================================================
 document.getElementById('timeSlider').addEventListener('input', function() {
   const mya = sliderToMya(this.value);
   document.getElementById('myaDisplay').textContent = fmtMya(mya);
   const period = getPeriod(mya);
-  document.getElementById('currentLabel') && (document.getElementById('currentLabel').textContent = period.name);
   clearTimeout(renderSliderTimer);
-  renderSliderTimer = setTimeout(() => { renderDisplay(mya); }, 80);
+  renderSliderTimer = setTimeout(() => renderDisplay(mya), 100);
 });
 
 // ============================================================
-//  MOBILE TABS
+// INIT
 // ============================================================
-function showTab(tabName) {
-  document.querySelectorAll('.mobile-tab').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector(`[data-tab="${tabName}"]`);
-  if (btn) btn.classList.add('active');
-  
-  const rightPanel = document.getElementById('rightPanel');
-  const leftPanel = document.getElementById('leftPanel');
-  
-  if (tabName === 'map') {
-    leftPanel.style.display = 'grid';
-    rightPanel.classList.remove('mobile-visible');
-  } else if (tabName === 'creatures') {
-    leftPanel.style.display = 'none';
-    rightPanel.classList.add('mobile-visible');
-  } else if (tabName === 'ask') {
-    leftPanel.style.display = 'grid';
-    rightPanel.classList.remove('mobile-visible');
-    showFact('💬', 'Ask me anything! Drag the slider to travel through time. Click any creature for encyclopedia info. Tap geo features to learn about ancient mountains, oceans, and events!');
-  }
-}
-
-// ============================================================
-//  INIT
-// ============================================================
-
-// ============================================================
-//  GEO FEATURE TOGGLES
-// ============================================================
-let geoToggles = {};
-
-function initGeoFeatureToggles() {
-  const bar = document.getElementById('geoToggleBar');
-  if (!bar) return;
-  
-  // Get unique types from GEO_FEATURES
-  const types = [...new Set(GEO_FEATURES.map(f => f.type))];
-  const typeLabels = { sea: '🌊 Seas', mountain: '⛰️ Mountains', event: '💥 Events', region: '🌍 Regions', ocean: '🌊 Ocean', island: '🏝️ Islands', feature: '✨ Features' };
-  
-  types.forEach(type => {
-    geoToggles[type] = true; // all on by default
-    const btn = document.createElement('button');
-    btn.className = 'geo-feature-toggle active';
-    btn.dataset.type = type;
-    btn.textContent = typeLabels[type] || ('📍 ' + type);
-    btn.addEventListener('click', () => {
-      geoToggles[type] = !geoToggles[type];
-      btn.classList.toggle('active', geoToggles[type]);
-      renderGeoFeatures(activePeriod ? activePeriod.id : 'cambrian');
-    });
-    bar.appendChild(btn);
-  });
-}
-
-buildPeriodLabelBar();
-initGeoFeatureToggles();
+if (!activePeriod) activePeriod = getPeriod(541);
+buildPeriodLabels();
 renderDisplay(541);
-renderPaleoMap(541);
-setTimeout(() => {
-  buildPeriodLabelBar(); // re-run after layout is ready
-  showFact('🦕', 'Welcome, time explorers! 🌍 Drag the slider at the top to travel through 541 million years of Earth history. Click any creature or geo feature to learn more!');
-}, 300);
-
-
+setTimeout(() => showFact('🦕', 'Welcome, time explorers! 🌍 Drag the slider to travel through 541+ million years. Double-click the map to zoom. Click any creature to see its fossil range!'), 800);
 </script>
 </body>
 </html>
