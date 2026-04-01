@@ -2478,8 +2478,9 @@ function renderDisplay(mya) {
     flash.classList.add('flash');
   }
 
-  // ── Update Leaflet tile layer (instant — no await needed) ──
-  updatePaleoTiles(mya);
+  // Update SVG paleogeographic map
+  renderPaleoMap(mya);
+  renderGeoFeatures(period.id);
 }
 
 // ============================================================
