@@ -2230,7 +2230,7 @@ function applyAntiqueStyle(svg) {
     .replace(/rgba\(200,168,122,0\.7\)/gi, 'rgba(55,30,8,0.65)')
     .replace(/rgba\(200,168,122,0\.6\)/gi, 'rgba(55,30,8,0.55)')
     // Font: system-ui → Georgia serif for authentic cartography feel
-    .replace(/font-family="system-ui,sans-serif"/gi, 'font-family="Georgia,'Times New Roman',serif"')
+    .replace(/font-family="system-ui,sans-serif"/gi, 'font-family="Georgia,serif"')
     // Add hand-drawn filter to continent paths (match paths with land fill)
     .replace(/(<path[^>]*fill="#aa7a3a"[^>]*?)(\/?>)/g, (m, p1, p2) => {
       if (p1.includes('filter=')) return m;
