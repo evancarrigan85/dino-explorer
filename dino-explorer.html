@@ -32,50 +32,61 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
 #timelineBar{
   background:linear-gradient(180deg,#0c1228 0%,#080c18 100%);
   border-bottom:2px solid var(--border);
-  padding:6px 16px 8px;
+  padding:8px 16px 10px;
   position:relative;z-index:9
 }
 #periodLabels{
-  display:flex;position:relative;height:20px;margin-bottom:4px;
+  display:flex;position:relative;height:22px;margin-bottom:4px;
   padding:0 8px
 }
 .plabel{
-  position:absolute;font-size:0.62rem;color:rgba(180,200,230,0.7);
-  font-weight:600;text-transform:uppercase;letter-spacing:0.3px;
+  position:absolute;font-size:0.63rem;color:rgba(180,200,230,0.65);
+  font-weight:700;text-transform:uppercase;letter-spacing:0.4px;
   transform:translateX(-50%);white-space:nowrap;cursor:pointer;
-  transition:color 0.2s
+  transition:color 0.2s,opacity 0.2s;padding:2px 0
 }
 .plabel:hover{color:var(--accent)}
-.plabel.active-period-label{color:var(--accent)}
+.plabel.active-period-label{color:var(--accent);opacity:1}
 
 /* Slider track with era gradient */
 #sliderWrapper{position:relative;padding:0 8px}
 #sliderTrack{
   position:absolute;left:8px;right:8px;top:50%;
-  transform:translateY(-50%);height:10px;border-radius:5px;
+  transform:translateY(-50%);height:14px;border-radius:7px;
   background:linear-gradient(to right,
     #6644cc 0%,#6644cc 0.7%,
     #2288bb 0.7%,#2288bb 28%,
     #228844 28%,#228844 66%,
     #cc8820 66%,#cc8820 100%);
+  box-shadow:0 2px 8px rgba(0,0,0,0.5);
   pointer-events:none;z-index:0
 }
 .time-slider{
-  -webkit-appearance:none;appearance:none;width:100%;height:44px;
-  background:transparent;cursor:pointer;position:relative;z-index:1;
+  -webkit-appearance:none;appearance:none;width:100%;height:50px;
+  background:transparent;cursor:grab;position:relative;z-index:1;
   outline:none
 }
+.time-slider:active{cursor:grabbing}
 .time-slider::-webkit-slider-thumb{
-  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
-  background:var(--accent);border:3px solid #fff;cursor:pointer;
-  box-shadow:0 2px 8px rgba(0,0,0,0.6);transition:transform 0.15s
+  -webkit-appearance:none;width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#f8d860,var(--accent));
+  border:3px solid #fff;cursor:grab;
+  box-shadow:0 2px 12px rgba(0,0,0,0.7),0 0 0 3px rgba(240,192,64,0.25);
+  transition:transform 0.15s,box-shadow 0.15s
 }
-.time-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.time-slider::-webkit-slider-thumb:hover{transform:scale(1.18);box-shadow:0 3px 16px rgba(0,0,0,0.8),0 0 0 4px rgba(240,192,64,0.35)}
 .time-slider::-moz-range-thumb{
-  width:22px;height:22px;border-radius:50%;background:var(--accent);
-  border:3px solid #fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.6)
+  width:28px;height:28px;border-radius:50%;background:var(--accent);
+  border:3px solid #fff;cursor:grab;box-shadow:0 2px 10px rgba(0,0,0,0.7)
 }
-.time-slider::-webkit-slider-runnable-track{height:44px;background:transparent}
+.time-slider::-webkit-slider-runnable-track{height:50px;background:transparent}
+#timelineHint{font-size:0.62rem;color:rgba(140,160,190,0.55);text-align:center;
+  margin-top:1px;letter-spacing:0.3px}
+.period-nav{display:flex;gap:6px;margin-left:auto}
+.nav-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;border-radius:5px;padding:3px 10px;
+  font-size:1rem;line-height:1;transition:all 0.15s}
+.nav-btn:hover{background:rgba(240,192,64,0.12);border-color:var(--accent);color:var(--accent)}
 
 /* === MAIN CONTENT AREA === */
 .main{display:grid;grid-template-columns:1fr 310px;overflow:hidden;height:100%}
@@ -94,20 +105,22 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
 .period-desc{font-size:0.82rem;color:#b8c4d8;line-height:1.45;max-width:600px}
 
 /* === MAP AREA === */
-.map-area{position:relative;background:#7a5828;overflow:hidden;
+.map-area{position:relative;background:#040c18;overflow:hidden;
   display:flex;align-items:stretch;justify-content:stretch;
-  border:4px solid #4a2e0a;
-  box-shadow:inset 0 0 0 2px #c8a060,inset 0 0 40px rgba(20,10,0,0.5)}
+  border:2px solid #1a2840}
 .map-area svg#paleoMap{width:100%;height:100%;display:block}
 .map-area::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at center,transparent 50%,rgba(20,8,0,0.6) 100%);
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,5,20,0.45) 100%);
   pointer-events:none;z-index:2}
 #paleoMap{position:relative;z-index:1}
+#mapZoomHint{position:absolute;bottom:8px;right:42px;font-size:0.62rem;
+  color:rgba(150,175,220,0.45);pointer-events:none;z-index:3;letter-spacing:0.3px}
 
-/* SVG map zoom/pan via CSS transform */
+/* SVG map zoom/pan via CSS transform on the SVG element itself */
 .map-area .svg-wrapper{width:100%;height:100%;overflow:hidden;cursor:grab;
-  transform-origin:center center;will-change:transform}
+  position:relative}
 .map-area .svg-wrapper:active{cursor:grabbing}
+#paleoMap{transform-origin:0 0;will-change:transform}
 
 /* Creature range label */
 #creatureRangeLabel{position:absolute;top:8px;left:50%;transform:translateX(-50%);
@@ -250,6 +263,13 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
     <div id="sliderTrack"></div>
     <input type="range" class="time-slider" id="timeSlider" min="0" max="1000" value="0" step="1">
   </div>
+  <div style="display:flex;align-items:center;padding:0 8px 2px">
+    <div id="timelineHint">← drag slider · use ◀ ▶ to jump periods · scroll map to zoom</div>
+    <div class="period-nav">
+      <button class="nav-btn" onclick="jumpPeriod(-1)" title="Previous period (←)">◀</button>
+      <button class="nav-btn" onclick="jumpPeriod(1)" title="Next period (→)">▶</button>
+    </div>
+  </div>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -267,6 +287,7 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
         <svg id="paleoMap" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice"></svg>
       </div>
       <div id="creatureRangeLabel"></div>
+      <div id="mapZoomHint">scroll to zoom · drag to pan · dbl-click to reset</div>
     </div>
     <div class="events-ribbon hidden" id="eventsRibbon">
       <span class="event-icon" id="eventIcon">💥</span>
@@ -2499,43 +2520,59 @@ function closeFactPopup() {
 }
 
 // ============================================================
-// MAP ZOOM / PAN
+// MAP ZOOM / PAN  (cursor-centered, transform on #paleoMap SVG)
 // ============================================================
 let mapScale = 1, mapX = 0, mapY = 0;
 let isDragging = false, lastX = 0, lastY = 0;
-let pinchDist = 0;
+let pinchDist = 0, pinchMidX = 0, pinchMidY = 0;
 
 function applyMapTransform() {
-  const wrapper = document.getElementById('svgWrapper');
-  wrapper.style.transform = `translate(${mapX}px,${mapY}px) scale(${mapScale})`;
+  // Transform is on the SVG element itself (transform-origin:0 0)
+  document.getElementById('paleoMap').style.transform =
+    `translate(${mapX}px,${mapY}px) scale(${mapScale})`;
 }
 
 function clampMapTransform() {
   const area = document.getElementById('mapArea');
   const w = area.offsetWidth, h = area.offsetHeight;
-  const maxX = w * (mapScale - 1) / 2;
-  const maxY = h * (mapScale - 1) / 2;
-  mapX = Math.max(-maxX, Math.min(maxX, mapX));
-  mapY = Math.max(-maxY, Math.min(maxY, mapY));
+  // With transform-origin:0 0, valid range is [w*(1-scale), 0] for x and y
+  mapX = Math.min(0, Math.max(w * (1 - mapScale), mapX));
+  mapY = Math.min(0, Math.max(h * (1 - mapScale), mapY));
 }
 
-document.getElementById('svgWrapper').addEventListener('dblclick', e => {
-  if (mapScale > 1) { mapScale = 1; mapX = 0; mapY = 0; }
-  else { mapScale = 2; }
-  applyMapTransform();
-});
+function resetMapTransform() { mapScale = 1; mapX = 0; mapY = 0; applyMapTransform(); }
 
-document.getElementById('svgWrapper').addEventListener('wheel', e => {
-  e.preventDefault();
-  mapScale = Math.max(1, Math.min(5, mapScale * (e.deltaY < 0 ? 1.12 : 0.89)));
+function zoomAt(cx, cy, factor) {
+  // cx, cy: cursor position relative to mapArea container
+  const oldScale = mapScale;
+  mapScale = Math.max(1, Math.min(6, mapScale * factor));
   if (mapScale <= 1) { mapX = 0; mapY = 0; }
+  else {
+    mapX = cx - (cx - mapX) * (mapScale / oldScale);
+    mapY = cy - (cy - mapY) * (mapScale / oldScale);
+  }
   clampMapTransform();
   applyMapTransform();
+}
+
+const mapAreaEl = document.getElementById('mapArea');
+
+mapAreaEl.addEventListener('dblclick', e => {
+  if (mapScale > 1) { resetMapTransform(); return; }
+  const r = mapAreaEl.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, 2.5);
+});
+
+mapAreaEl.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = mapAreaEl.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.15 : 0.87);
 }, { passive: false });
 
-document.getElementById('svgWrapper').addEventListener('mousedown', e => {
+mapAreaEl.addEventListener('mousedown', e => {
   if (mapScale <= 1) return;
   isDragging = true; lastX = e.clientX; lastY = e.clientY;
+  mapAreaEl.style.cursor = 'grabbing';
 });
 document.addEventListener('mousemove', e => {
   if (!isDragging) return;
@@ -2543,26 +2580,31 @@ document.addEventListener('mousemove', e => {
   lastX = e.clientX; lastY = e.clientY;
   clampMapTransform(); applyMapTransform();
 });
-document.addEventListener('mouseup', () => { isDragging = false; });
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+  mapAreaEl.style.cursor = '';
+});
 
-// Touch pinch/pan
-document.getElementById('svgWrapper').addEventListener('touchstart', e => {
+// Touch pinch-to-zoom + pan
+mapAreaEl.addEventListener('touchstart', e => {
   if (e.touches.length === 2) {
     pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                            e.touches[0].clientY - e.touches[1].clientY);
+    const r = mapAreaEl.getBoundingClientRect();
+    pinchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left;
+    pinchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top;
   } else if (e.touches.length === 1 && mapScale > 1) {
     isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
   }
 }, { passive: true });
-document.getElementById('svgWrapper').addEventListener('touchmove', e => {
+
+mapAreaEl.addEventListener('touchmove', e => {
   if (e.touches.length === 2) {
     e.preventDefault();
     const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                          e.touches[0].clientY - e.touches[1].clientY);
-    mapScale = Math.max(1, Math.min(5, mapScale * d / pinchDist));
+    zoomAt(pinchMidX, pinchMidY, d / pinchDist);
     pinchDist = d;
-    if (mapScale <= 1) { mapX = 0; mapY = 0; }
-    clampMapTransform(); applyMapTransform();
   } else if (e.touches.length === 1 && isDragging) {
     mapX += e.touches[0].clientX - lastX; mapY += e.touches[0].clientY - lastY;
     lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
@@ -2572,15 +2614,183 @@ document.getElementById('svgWrapper').addEventListener('touchmove', e => {
 document.addEventListener('touchend', () => { isDragging = false; });
 
 // ============================================================
+// PERIOD NAVIGATION
+// ============================================================
+function jumpPeriod(dir) {
+  const sorted = [...PERIODS].sort((a,b) => b.start - a.start); // newest first = left on slider
+  const cur = activePeriod || getPeriod(currentMya);
+  const idx = sorted.findIndex(p => p.id === cur.id);
+  const next = sorted[Math.max(0, Math.min(sorted.length - 1, idx + dir))];
+  if (!next || next.id === cur.id) return;
+  const mya = (next.start + next.end) / 2;
+  const sliderVal = myaToSlider(mya);
+  document.getElementById('timeSlider').value = sliderVal;
+  document.getElementById('myaDisplay').textContent = fmtMya(mya);
+  resetMapTransform();
+  renderDisplay(mya);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowLeft')  jumpPeriod(-1);
+  if (e.key === 'ArrowRight') jumpPeriod(1);
+});
+
+// ============================================================
 // SLIDER EVENTS
 // ============================================================
+let _lastSliderPeriodId = null;
 document.getElementById('timeSlider').addEventListener('input', function() {
   const mya = sliderToMya(this.value);
   document.getElementById('myaDisplay').textContent = fmtMya(mya);
   const period = getPeriod(mya);
+  if (period && period.id !== _lastSliderPeriodId) {
+    _lastSliderPeriodId = period.id;
+    resetMapTransform();
+  }
   clearTimeout(renderSliderTimer);
   renderSliderTimer = setTimeout(() => renderDisplay(mya), 100);
 });
+
+// ============================================================
+// HIGH-QUALITY PALEOGEOGRAPHIC MAPS OVERRIDE
+// ============================================================
+;(function(){
+  const G=(la,lo)=>[Math.round((lo+180)*800/360),Math.round((90-la)*400/180)];
+  const P=(pts,z=1)=>{const c=pts.map(([la,lo])=>G(la,lo).join(','));return 'M'+c[0]+c.slice(1).map(v=>' L'+v).join('')+(z?' Z':'');};
+  const land=(d,label,lx,ly,fs=13)=>`<path d="${d}" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>`+(label?`<text x="${lx}" y="${ly}" text-anchor="middle" fill="#4a2e08" font-size="${fs}" font-weight="bold" font-family="system-ui,sans-serif">${label}</text>`:'');
+  const sea=(t,x,y,r=0,fs=11)=>`<text x="${x}" y="${y}" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="${fs}" font-style="italic" font-family="system-ui,sans-serif"${r?` transform="rotate(${r},${x},${y})"`:''} >${t}</text>`;
+  const mya=(t)=>`<text x="12" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">${t}</text>`;
+  const bg=(id,c1,c2)=>`<defs><radialGradient id="bg${id}" cx="40%" cy="48%" r="75%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient></defs><rect width="800" height="400" fill="url(#bg${id})"/>`;
+  const iceband=(lat,op=0.75)=>`<path d="${P([[lat,-180],[lat,180],[90,180],[90,-180]])}" fill="rgba(210,232,255,${op})" stroke="rgba(180,210,240,0.4)" stroke-width="0.5"/>`;
+  const antice=(lat,op=0.75)=>`<path d="${P([[lat,-180],[lat,180],[-90,180],[-90,-180]])}" fill="rgba(210,232,255,${op})" stroke="rgba(180,210,240,0.4)" stroke-width="0.5"/>`;
+
+  /* ── MODERN continent shapes ───────────────────────────── */
+  const NA  =P([[70,-165],[48,-124],[38,-122],[22,-106],[9,-79],[15,-86],[20,-87],[25,-80],[35,-76],[44,-66],[47,-52],[55,-59],[60,-65],[68,-85],[70,-100]]);
+  const SA  =P([[12,-72],[5,-52],[0,-50],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-68],[-56,-66],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-77]]);
+  const EU  =P([[72,-10],[65,-20],[58,-5],[52,14],[44,8],[36,-9],[36,3],[38,22],[44,28],[54,18],[60,24],[65,27],[70,30]]);
+  const AF  =P([[37,-5],[31,32],[12,44],[11,51],[2,41],[-5,40],[-12,40],[-28,33],[-34,18],[-28,16],[-18,12],[-5,-10],[0,-17],[14,-17],[22,-17],[30,-10]]);
+  const AS  =P([[26,36],[42,28],[37,37],[42,50],[55,60],[72,53],[73,105],[68,130],[60,141],[52,135],[42,132],[35,128],[22,114],[10,104],[8,99],[8,77],[22,68],[27,56]]);
+  const AU  =P([[-14,130],[-14,136],[-19,148],[-27,153],[-38,145],[-38,140],[-35,117],[-28,114],[-22,114],[-18,122]]);
+  const GR  =P([[76,-70],[83,-45],[83,-20],[75,-18],[70,-25],[64,-52],[70,-52]]);
+  const ANT =P([[-67,-180],[-67,180],[-90,180],[-90,-180]]);
+
+  /* ── CRETACEOUS (~90 MYA) variants ────────────────────── */
+  const SA_K=P([[10,-65],[5,-52],[0,-48],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-54,-68],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-72]]);
+  const AF_K=P([[35,-5],[30,34],[10,44],[10,51],[2,41],[-5,40],[-12,40],[-28,34],[-35,20],[-20,12],[-5,-8],[0,-16],[14,-16],[22,-17],[30,-10]]);
+  const IND_K=P([[5,70],[-5,73],[-15,74],[-18,70],[-8,64],[5,64]]);
+  const AS_K =P([[26,36],[42,28],[38,37],[42,50],[55,60],[70,55],[73,105],[68,130],[60,141],[52,135],[42,132],[35,128],[22,114],[10,104],[8,99],[22,68],[27,56]]);
+  const AUANT_K=P([[-14,130],[-14,136],[-20,148],[-28,153],[-38,150],[-50,145],[-65,130],[-75,80],[-75,30],[-70,10],[-65,0],[-65,-30],[-55,-50],[-45,-65],[-40,145],[-38,140],[-28,114],[-18,122]]);
+
+  /* ── JURASSIC (~170 MYA) ── Laurasia + Gondwana ─────── */
+  const LAUR_J=P([[68,-165],[48,-124],[38,-120],[22,-104],[9,-79],[15,-86],[20,-87],[25,-80],[35,-76],[44,-64],[47,-52],[52,-25],[55,-10],[52,20],[55,55],[50,80],[45,120],[35,115],[25,108],[10,96],[15,78],[25,62],[35,46],[42,30],[48,10],[52,-20],[55,-30],[50,-40]]);
+  const GOND_J=P([[12,-60],[5,-52],[0,-48],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-67],[-65,-55],[-75,-20],[-80,0],[-80,60],[-75,90],[-65,120],[-50,140],[-35,142],[-20,148],[-10,130],[0,120],[8,85],[5,65],[0,55],[-5,40],[-12,40],[-28,34],[-35,22],[-20,12],[-5,-8],[0,-17],[14,-17],[22,-17],[30,-10],[35,-5]]);
+
+  /* ── PANGAEA (~250 MYA) ─────────────────────────────── */
+  const PANGAEA=P([[58,-40],[65,-5],[68,40],[60,52],[55,60],[65,60],[45,120],[35,115],[25,110],[10,88],[-5,42],[-15,40],[-35,38],[-55,22],[-70,5],[-75,0],[-75,-25],[-65,-50],[-55,-65],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-77],[10,-78],[20,-75],[30,-80],[40,-72],[50,-55]]);
+
+  /* ── CARBONIFEROUS (~320 MYA) ── Proto-Pangaea ─────── */
+  const EURAMER=P([[65,-35],[70,5],[68,40],[60,50],[55,55],[65,55],[70,30],[72,5],[68,-25],[62,-25],[55,-30],[50,-40],[44,-64],[47,-52],[55,-45],[60,-20],[35,-5],[36,5],[30,10],[28,20],[28,-10],[30,-30],[35,-52],[44,-65],[50,-56]]);
+  const GOND_C =P([[5,-40],[0,-45],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-67],[-65,-50],[-75,-10],[-80,20],[-80,60],[-75,90],[-65,120],[-50,140],[-30,148],[-15,140],[0,120],[8,85],[5,65],[0,55],[-5,40],[-25,38],[-40,22],[-55,22],[-60,20],[-55,10],[-30,10],[-15,8],[0,-8],[5,-12],[5,-30]]);
+  const SIBE_C =P([[25,130],[35,145],[25,160],[15,155],[10,140],[15,128]]);
+
+  /* ── CAMBRIAN (~520 MYA) ── scattered plates ────────── */
+  const GOND_CB=P([[5,-20],[0,-10],[-5,10],[-5,30],[-10,50],[-20,70],[-30,80],[-45,80],[-60,65],[-70,30],[-75,0],[-75,-30],[-65,-50],[-50,-60],[-35,-55],[-20,-50],[-5,-40],[0,-30]]);
+  const LAUR_CB=P([[30,-70],[40,-50],[45,-30],[35,-15],[20,-15],[10,-25],[10,-45],[15,-60],[25,-70]]);
+  const BALT_CB=P([[15,30],[20,45],[10,55],[-5,55],[-10,45],[-5,35],[5,30]]);
+  const SIBE_CB=P([[25,140],[35,155],[25,170],[15,165],[10,150],[15,138]]);
+
+  /* ═══════════ ASSEMBLE TEMPLATES ═══════════ */
+  function mkmap(id,c1,c2,content){ return bg(id,c1,c2)+content; }
+
+  Object.assign(SVG_MAPS, {
+
+    cryogenian: mkmap('cryo','#010a18','#000408',
+      `<rect width="800" height="400" fill="rgba(180,220,255,0.08)"/>` +
+      antice(25,0.60)+
+      `<path d="${P([[25,-180],[25,180],[-25,180],[-25,-180]])}" fill="rgba(210,232,255,0.40)" stroke="none"/>` +
+      antice(-25,0.72)+
+      land(P([[5,10],[10,30],[-5,40],[-20,35],[-30,20],[-25,0],[-10,-10],[0,-5]]),'',0,0)+
+      land(P([[10,-50],[20,-35],[15,-20],[5,-15],[-5,-20],[-10,-40],[-5,-50],[5,-50]]),'',0,0)+
+      sea('SNOWBALL EARTH',400,188,0,26)+sea('720 – 635 Million Years Ago',400,216,0,13)+
+      mya('~700 MYA')
+    ),
+
+    cambrian: mkmap('camb','#0a2040','#030a14',
+      land(GOND_CB,'Gondwana',390,290,14)+
+      land(LAUR_CB,'Laurentia',320,125,11)+
+      land(BALT_CB,'Baltica',488,190,10)+
+      land(SIBE_CB,'Siberia',718,172,10)+
+      antice(-75,0.6)+
+      sea('Iapetus Ocean',300,182,0,10)+sea('Panthalassa',120,290,-18,10)+
+      sea('Paleo-Tethys',560,148,0,10)+mya('~520 MYA')
+    ),
+
+    carboniferous: mkmap('carb','#0a2040','#030a14',
+      land(GOND_C,'Gondwana',440,310,13)+
+      land(EURAMER,'Euramerica',375,118,13)+
+      land(SIBE_C,'Siberia',698,168,10)+
+      antice(-75,0.6)+
+      sea('Tethys Sea',558,198,0,10)+sea('Rheic Ocean',308,222,-15,10)+
+      sea('Panthalassa',105,248,-18,11)+mya('~320 MYA')
+    ),
+
+    pangaea: mkmap('pang','#0a2040','#030a14',
+      land(PANGAEA,'Pangaea',445,182,18)+
+      antice(-75,0.6)+
+      sea('Panthalassa',128,225,0,12)+sea('Tethys Sea',618,162,15,11)+
+      mya('~250 MYA')
+    ),
+
+    jurassic: mkmap('jura','#0a2040','#030a14',
+      land(LAUR_J,'Laurasia',385,112,13)+
+      land(GOND_J,'Gondwana',428,292,14)+
+      antice(-73,0.6)+
+      sea('Tethys Sea',572,188,0,11)+sea('Proto-Atlantic',255,182,-15,10)+
+      sea('Panthalassa',118,258,-18,11)+mya('~170 MYA')
+    ),
+
+    cretaceous: mkmap('kret','#0a2040','#030a14',
+      land(NA    ,'N. America',162,118,11)+
+      land(SA_K  ,'S. America',262,252,10)+
+      land(EU    ,'Europe',    418,86,10)+
+      land(AF_K  ,'Africa',    425,195,11)+
+      land(AS_K  ,'Asia',      585,108,12)+
+      land(IND_K ,'India',     562,212,9)+
+      land(AUANT_K,'Aus-Antarctica',605,308,10)+
+      sea('Atlantic',312,188,0,10)+sea('Tethys Sea',528,172,0,10)+
+      sea('Indian Ocean',488,252,0,10)+mya('~90 MYA')
+    ),
+
+    paleogene: mkmap('paleo','#0a2040','#030a14',
+      land(NA  ,'N. America',162,118,11)+
+      land(SA  ,'S. America',262,252,10)+
+      land(EU  ,'Europe',    418,86,10)+
+      land(AF  ,'Africa',    428,195,11)+
+      land(AS  ,'Asia',      585,112,12)+
+      land(AU  ,'Australia', 692,262,10)+
+      land(GR  ,'',0,0)+
+      antice(-68,0.65)+
+      sea('Atlantic Ocean',315,182,0,10)+sea('Indian Ocean',498,252,0,10)+
+      mya('~45 MYA')
+    ),
+
+    modern: mkmap('mod','#0a2040','#030a14',
+      land(NA  ,'N. America',162,118,11)+
+      land(SA  ,'S. America',262,252,10)+
+      land(EU  ,'Europe',    418,86,10)+
+      land(AF  ,'Africa',    428,195,11)+
+      land(AS  ,'Asia',      585,112,12)+
+      land(AU  ,'Australia', 692,262,10)+
+      land(GR  ,'',0,0)+
+      antice(-67,0.75)+iceband(74,0.35)+
+      sea('Atlantic Ocean',315,182,0,10)+sea('Pacific Ocean',132,198,0,11)+
+      sea('Indian Ocean',498,252,0,10)+sea('Arctic Ocean',398,22,0,9)+
+      mya('~0 MYA')
+    ),
+
+  });
+})();
 
 // ============================================================
 // INIT
