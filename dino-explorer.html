@@ -32,61 +32,50 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
 #timelineBar{
   background:linear-gradient(180deg,#0c1228 0%,#080c18 100%);
   border-bottom:2px solid var(--border);
-  padding:8px 16px 10px;
+  padding:6px 16px 8px;
   position:relative;z-index:9
 }
 #periodLabels{
-  display:flex;position:relative;height:22px;margin-bottom:4px;
+  display:flex;position:relative;height:20px;margin-bottom:4px;
   padding:0 8px
 }
 .plabel{
-  position:absolute;font-size:0.63rem;color:rgba(180,200,230,0.65);
-  font-weight:700;text-transform:uppercase;letter-spacing:0.4px;
+  position:absolute;font-size:0.62rem;color:rgba(180,200,230,0.7);
+  font-weight:600;text-transform:uppercase;letter-spacing:0.3px;
   transform:translateX(-50%);white-space:nowrap;cursor:pointer;
-  transition:color 0.2s,opacity 0.2s;padding:2px 0
+  transition:color 0.2s
 }
 .plabel:hover{color:var(--accent)}
-.plabel.active-period-label{color:var(--accent);opacity:1}
+.plabel.active-period-label{color:var(--accent)}
 
 /* Slider track with era gradient */
 #sliderWrapper{position:relative;padding:0 8px}
 #sliderTrack{
   position:absolute;left:8px;right:8px;top:50%;
-  transform:translateY(-50%);height:14px;border-radius:7px;
+  transform:translateY(-50%);height:10px;border-radius:5px;
   background:linear-gradient(to right,
     #6644cc 0%,#6644cc 0.7%,
     #2288bb 0.7%,#2288bb 28%,
     #228844 28%,#228844 66%,
     #cc8820 66%,#cc8820 100%);
-  box-shadow:0 2px 8px rgba(0,0,0,0.5);
   pointer-events:none;z-index:0
 }
 .time-slider{
-  -webkit-appearance:none;appearance:none;width:100%;height:50px;
-  background:transparent;cursor:grab;position:relative;z-index:1;
+  -webkit-appearance:none;appearance:none;width:100%;height:44px;
+  background:transparent;cursor:pointer;position:relative;z-index:1;
   outline:none
 }
-.time-slider:active{cursor:grabbing}
 .time-slider::-webkit-slider-thumb{
-  -webkit-appearance:none;width:30px;height:30px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#f8d860,var(--accent));
-  border:3px solid #fff;cursor:grab;
-  box-shadow:0 2px 12px rgba(0,0,0,0.7),0 0 0 3px rgba(240,192,64,0.25);
-  transition:transform 0.15s,box-shadow 0.15s
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--accent);border:3px solid #fff;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.6);transition:transform 0.15s
 }
-.time-slider::-webkit-slider-thumb:hover{transform:scale(1.18);box-shadow:0 3px 16px rgba(0,0,0,0.8),0 0 0 4px rgba(240,192,64,0.35)}
+.time-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .time-slider::-moz-range-thumb{
-  width:28px;height:28px;border-radius:50%;background:var(--accent);
-  border:3px solid #fff;cursor:grab;box-shadow:0 2px 10px rgba(0,0,0,0.7)
+  width:22px;height:22px;border-radius:50%;background:var(--accent);
+  border:3px solid #fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.6)
 }
-.time-slider::-webkit-slider-runnable-track{height:50px;background:transparent}
-#timelineHint{font-size:0.62rem;color:rgba(140,160,190,0.55);text-align:center;
-  margin-top:1px;letter-spacing:0.3px}
-.period-nav{display:flex;gap:6px;margin-left:auto}
-.nav-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);
-  color:var(--muted);cursor:pointer;border-radius:5px;padding:3px 10px;
-  font-size:1rem;line-height:1;transition:all 0.15s}
-.nav-btn:hover{background:rgba(240,192,64,0.12);border-color:var(--accent);color:var(--accent)}
+.time-slider::-webkit-slider-runnable-track{height:44px;background:transparent}
 
 /* === MAIN CONTENT AREA === */
 .main{display:grid;grid-template-columns:1fr 310px;overflow:hidden;height:100%}
@@ -105,22 +94,20 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
 .period-desc{font-size:0.82rem;color:#b8c4d8;line-height:1.45;max-width:600px}
 
 /* === MAP AREA === */
-.map-area{position:relative;background:#040c18;overflow:hidden;
+.map-area{position:relative;background:#7a5828;overflow:hidden;
   display:flex;align-items:stretch;justify-content:stretch;
-  border:2px solid #1a2840}
+  border:4px solid #4a2e0a;
+  box-shadow:inset 0 0 0 2px #c8a060,inset 0 0 40px rgba(20,10,0,0.5)}
 .map-area svg#paleoMap{width:100%;height:100%;display:block}
 .map-area::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,5,20,0.45) 100%);
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(20,8,0,0.6) 100%);
   pointer-events:none;z-index:2}
 #paleoMap{position:relative;z-index:1}
-#mapZoomHint{position:absolute;bottom:8px;right:42px;font-size:0.62rem;
-  color:rgba(150,175,220,0.45);pointer-events:none;z-index:3;letter-spacing:0.3px}
 
-/* SVG map zoom/pan via CSS transform on the SVG element itself */
+/* SVG map zoom/pan via CSS transform */
 .map-area .svg-wrapper{width:100%;height:100%;overflow:hidden;cursor:grab;
-  position:relative}
+  transform-origin:center center;will-change:transform}
 .map-area .svg-wrapper:active{cursor:grabbing}
-#paleoMap{transform-origin:0 0;will-change:transform}
 
 /* Creature range label */
 #creatureRangeLabel{position:absolute;top:8px;left:50%;transform:translateX(-50%);
@@ -162,6 +149,8 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
   background:rgba(240,192,64,0.06)}
 .creature-top{display:flex;gap:10px;align-items:flex-start}
 .creature-emoji{font-size:1.8rem;line-height:1;flex-shrink:0}
+.creature-sprite{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.creature-sprite svg{width:100%;height:100%}
 .creature-title{flex:1;min-width:0}
 .creature-name{font-size:0.88rem;font-weight:700;line-height:1.2;
   display:flex;align-items:center;gap:4px}
@@ -263,13 +252,6 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
     <div id="sliderTrack"></div>
     <input type="range" class="time-slider" id="timeSlider" min="0" max="1000" value="0" step="1">
   </div>
-  <div style="display:flex;align-items:center;padding:0 8px 2px">
-    <div id="timelineHint">← drag slider · use ◀ ▶ to jump periods · scroll map to zoom</div>
-    <div class="period-nav">
-      <button class="nav-btn" onclick="jumpPeriod(-1)" title="Previous period (←)">◀</button>
-      <button class="nav-btn" onclick="jumpPeriod(1)" title="Next period (→)">▶</button>
-    </div>
-  </div>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -287,7 +269,6 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
         <svg id="paleoMap" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice"></svg>
       </div>
       <div id="creatureRangeLabel"></div>
-      <div id="mapZoomHint">scroll to zoom · drag to pan · dbl-click to reset</div>
     </div>
     <div class="events-ribbon hidden" id="eventsRibbon">
       <span class="event-icon" id="eventIcon">💥</span>
@@ -1147,6 +1128,833 @@ const GEO_FEATURES = [
   },
 ]
 
+const CREATURE_SPRITES = {
+  'Tyrannosaurus Rex': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body -->
+  <path d="M22,52 C18,48 16,42 17,36 C18,30 22,25 28,23 C34,21 41,22 46,27 C51,32 52,38 50,44 C48,50 43,54 37,56 C31,58 25,55 22,52Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3" stroke-linejoin="round"/>
+  <!-- Neck -->
+  <path d="M44,27 C48,22 53,17 58,13 C61,10 64,9 66,11"
+        fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Head - large, angular -->
+  <path d="M64,8 C70,5 76,7 78,13 C80,19 77,26 72,30 C67,33 61,32 58,27 C55,22 56,13 64,8Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Lower jaw -->
+  <path d="M57,26 C60,30 65,33 70,34 C74,35 77,33 78,30" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Teeth top -->
+  <path d="M61,20 l2,4 M65,21 l2,4 M69,22 l2,4" stroke="#2a1808" stroke-width="0.7"/>
+  <!-- Teeth bottom -->
+  <path d="M62,27 l-1,3 M66,28 l-1,3 M70,29 l-1,3" stroke="#2a1808" stroke-width="0.6"/>
+  <!-- Eye -->
+  <circle cx="70" cy="12" r="2" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <circle cx="70" cy="12" r="0.8" fill="#2a1808"/>
+  <!-- Tiny arms -->
+  <path d="M42,34 C44,32 47,31 49,33 C50,34 50,37 48,38" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <path d="M48,38 l3,2" stroke="#2a1808" stroke-width="0.7"/>
+  <!-- Thigh -->
+  <path d="M24,54 C20,58 18,64 17,70 C16,74 17,78 20,79"
+        fill="none" stroke="#2a1808" stroke-width="1.8"/>
+  <!-- Lower leg 1 -->
+  <path d="M20,79 C18,80 15,79 14,77 C12,74 13,70 14,66"
+        fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Foot 1 -->
+  <path d="M14,77 l-3,3 M14,77 l0,4 M14,77 l3,3" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Thigh 2 -->
+  <path d="M34,56 C32,60 30,66 29,72 C28,76 28,79 30,80"
+        fill="none" stroke="#2a1808" stroke-width="1.6"/>
+  <!-- Lower leg 2 -->
+  <path d="M30,80 C28,81 25,80 24,78" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Foot 2 -->
+  <path d="M24,78 l-3,3 M24,78 l1,4 M24,78 l4,2" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Tail -->
+  <path d="M18,42 C12,38 6,34 3,30 C1,27 1,24 3,22"
+        fill="none" stroke="#2a1808" stroke-width="1.6"/>
+  <!-- Body hatching -->
+  <path d="M27,32 l2,-4 M31,30 l2,-4 M35,29 l2,-4 M39,30 l2,-4 M42,32 l2,-4"
+        stroke="#2a1808" stroke-width="0.45" opacity="0.55"/>
+  <path d="M25,42 l2,-4 M29,43 l2,-4 M33,44 l2,-4"
+        stroke="#2a1808" stroke-width="0.45" opacity="0.45"/>
+</svg>`,
+  'Triceratops': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body - massive, barrel shaped -->
+  <ellipse cx="36" cy="50" rx="22" ry="15"
+           fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Neck -->
+  <path d="M55,44 C60,40 64,37 66,38" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Head -->
+  <path d="M64,34 C70,30 76,30 79,35 C81,40 79,46 74,49 C69,52 63,51 60,47 C57,43 57,38 64,34Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Frill -->
+  <path d="M64,32 C62,26 62,20 65,16 C68,12 73,11 77,13 C81,15 83,20 81,25 C79,30 74,33 70,34"
+        fill="rgba(200,185,160,0.08)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Frill scallops -->
+  <path d="M65,20 C67,17 70,16 72,18 M72,18 C74,16 77,15 79,17 M79,17 C80,15 82,14 82,17"
+        fill="none" stroke="#2a1808" stroke-width="0.7"/>
+  <!-- Brow horns -->
+  <path d="M65,33 C63,28 62,23 64,19" stroke="#2a1808" stroke-width="1.3" fill="none"/>
+  <path d="M71,31 C70,26 70,21 72,17" stroke="#2a1808" stroke-width="1.2" fill="none"/>
+  <!-- Nose horn -->
+  <path d="M78,38 C80,34 82,31 84,29" stroke="#2a1808" stroke-width="1.1" fill="none"/>
+  <!-- Eye -->
+  <circle cx="70" cy="38" r="1.8" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="70" cy="38" r="0.7" fill="#2a1808"/>
+  <!-- Beak -->
+  <path d="M79,44 C82,44 84,46 84,48" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- Legs -->
+  <path d="M22,62 l0,14" stroke="#2a1808" stroke-width="1.8"/> <path d="M22,76 l-3,3 M22,76 l3,3 M22,76 l0,4" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M30,65 l0,13" stroke="#2a1808" stroke-width="1.8"/> <path d="M30,78 l-3,2 M30,78 l3,2" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M44,65 l0,13" stroke="#2a1808" stroke-width="1.8"/> <path d="M44,78 l-3,2 M44,78 l3,2" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M53,62 l0,14" stroke="#2a1808" stroke-width="1.8"/> <path d="M53,76 l-3,3 M53,76 l3,3" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Short tail -->
+  <path d="M14,52 C10,50 7,47 6,44" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Body hatching -->
+  <path d="M25,44 l2,-4 M29,42 l2,-4 M33,41 l2,-4 M37,41 l2,-4 M41,42 l2,-4 M45,44 l2,-4"
+        stroke="#2a1808" stroke-width="0.45" opacity="0.50"/>
+</svg>`,
+  'Brachiosaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body - large barrel -->
+  <ellipse cx="32" cy="58" rx="18" ry="12"
+           fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Very long neck -->
+  <path d="M44,52 C50,46 56,38 60,30 C64,22 66,14 65,8 C64,4 62,2 60,2"
+        fill="none" stroke="#2a1808" stroke-width="2.2"/>
+  <!-- Neck width -->
+  <path d="M46,51 C52,45 58,36 62,27 C66,18 67,10 66,5"
+        fill="none" stroke="#2a1808" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <!-- Small head -->
+  <path d="M58,2 C62,0 67,1 70,5 C72,8 71,12 68,15 C65,18 61,18 59,15 C57,12 57,6 60,3Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Nostril -->
+  <ellipse cx="66" cy="4" rx="1.5" ry="1" fill="#2a1808"/>
+  <!-- Eye -->
+  <circle cx="62" cy="8" r="1.5" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <circle cx="62" cy="8" r="0.6" fill="#2a1808"/>
+  <!-- Front legs (taller, Brachio feature) -->
+  <path d="M40,68 l0,12" stroke="#2a1808" stroke-width="2"/> <path d="M40,80 l-3,1 M40,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M32,70 l0,10" stroke="#2a1808" stroke-width="2"/> <path d="M32,80 l-3,0 M32,80 l2,0" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Back legs -->
+  <path d="M22,68 l0,12" stroke="#2a1808" stroke-width="2"/> <path d="M22,80 l-2,1 M22,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M15,66 l0,12" stroke="#2a1808" stroke-width="2"/> <path d="M15,78 l-2,2 M15,78 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Tail -->
+  <path d="M14,60 C10,58 6,55 4,52 C2,49 2,46 4,44"
+        fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Body hatching -->
+  <path d="M20,54 l2,-4 M24,52 l2,-4 M28,51 l2,-4 M32,51 l2,-4 M36,52 l2,-4 M40,54 l2,-4"
+        stroke="#2a1808" stroke-width="0.45" opacity="0.50"/>
+  <!-- Neck hatching -->
+  <path d="M50,42 l-3,2 M54,34 l-3,2 M58,26 l-3,2 M62,18 l-3,2"
+        stroke="#2a1808" stroke-width="0.4" opacity="0.40"/>
+</svg>`,
+  'Stegosaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body -->
+  <ellipse cx="34" cy="55" rx="20" ry="13"
+           fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Neck -->
+  <path d="M50,46 C55,41 60,38 63,38" fill="none" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Small head -->
+  <path d="M62,36 C67,33 73,34 75,39 C77,43 74,48 70,49 C66,50 62,47 62,43 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Eye -->
+  <circle cx="68" cy="40" r="1.5" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <circle cx="68" cy="40" r="0.6" fill="#2a1808"/>
+  <!-- Beak/mouth -->
+  <path d="M74,43 C76,43 78,44 78,46" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Dorsal plates - alternating pairs -->
+  <path d="M44,42 C43,36 44,28 46,24 C47,20 49,18 50,20 C51,22 51,30 50,38"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M38,41 C37,34 38,26 40,22 C41,18 44,16 45,18 C46,20 45,28 44,36"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M32,42 C31,36 32,29 34,25 C35,21 37,19 38,21 C39,23 39,31 38,38"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M26,44 C25,38 26,32 28,28 C29,24 31,23 32,25 C33,27 33,34 32,40"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.0"/>
+  <path d="M20,47 C19,42 20,37 22,33 C23,30 25,29 26,31 C27,33 27,38 26,43"
+        fill="rgba(200,185,160,0.08)" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Tail with thagomizer spikes -->
+  <path d="M14,55 C10,53 6,50 3,48 C1,46 0,44 1,42"
+        fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <path d="M5,47 C4,43 4,39 6,36" stroke="#2a1808" stroke-width="1.2" fill="none"/>
+  <path d="M2,45 C1,41 1,37 3,34" stroke="#2a1808" stroke-width="1.1" fill="none"/>
+  <path d="M8,49 C7,45 8,41 10,38" stroke="#2a1808" stroke-width="1.1" fill="none"/>
+  <path d="M11,51 C10,47 11,43 13,40" stroke="#2a1808" stroke-width="1.0" fill="none"/>
+  <!-- Legs -->
+  <path d="M44,66 l0,12" stroke="#2a1808" stroke-width="1.8"/> <path d="M44,78 l-3,2 M44,78 l3,2" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M35,68 l0,11" stroke="#2a1808" stroke-width="1.8"/> <path d="M35,79 l-3,1 M35,79 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M24,66 l0,12" stroke="#2a1808" stroke-width="1.8"/> <path d="M24,78 l-3,2 M24,78 l3,2" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M16,64 l0,14" stroke="#2a1808" stroke-width="1.8"/> <path d="M16,78 l-3,2 M16,78 l3,2" stroke="#2a1808" stroke-width="0.8"/>
+</svg>`,
+  'Velociraptor': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lean, forward-leaning body -->
+  <path d="M28,48 C24,44 21,38 22,32 C23,26 27,22 33,20 C39,18 45,20 49,25 C53,30 53,37 50,43 C47,49 41,52 35,52Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Neck -->
+  <path d="M47,25 C52,20 57,16 61,14" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Head with elongated snout -->
+  <path d="M59,12 C63,9 68,9 72,13 C76,17 76,23 72,27 C68,31 63,31 60,27 C57,23 57,17 60,13Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Narrow jaw open -->
+  <path d="M60,25 C63,28 68,30 72,30 C75,30 77,28 77,26" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Serrated teeth -->
+  <path d="M62,22 l2,4 M66,22 l2,4 M70,23 l2,4" stroke="#2a1808" stroke-width="0.6"/>
+  <!-- Eye - intelligent -->
+  <circle cx="66" cy="16" r="2" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="66" cy="16" r="0.8" fill="#2a1808"/>
+  <!-- Feathered arm/wing -->
+  <path d="M41,32 C43,28 47,25 51,25 C53,25 55,27 54,30"
+        fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- Feather detail -->
+  <path d="M42,30 l4,-5 M46,27 l4,-4 M50,25 l3,-3" stroke="#2a1808" stroke-width="0.6" opacity="0.7"/>
+  <!-- Body feathers -->
+  <path d="M28,36 l-4,-3 M26,40 l-4,-2 M26,44 l-4,-2" stroke="#2a1808" stroke-width="0.6" opacity="0.60"/>
+  <!-- Powerful hind leg -->
+  <path d="M32,52 C30,58 28,65 25,70" fill="none" stroke="#2a1808" stroke-width="1.8"/>
+  <!-- Lower leg -->
+  <path d="M25,70 C23,76 22,80 22,80" fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Foot with RAISED sickle claw -->
+  <path d="M22,80 l-3,0 M22,80 l2,0 M22,80 l-4,-2" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Sickle claw raised! -->
+  <path d="M20,75 C18,71 17,66 19,63 C21,60 24,61 25,64" stroke="#2a1808" stroke-width="1.1" fill="none"/>
+  <!-- Second leg -->
+  <path d="M39,52 C38,58 37,65 35,71 C33,77 31,80 30,80" fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <path d="M30,80 l-3,0 M30,80 l3,0" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Stiff tail (counterbalance) -->
+  <path d="M22,42 C16,40 10,37 5,34 C2,32 0,30 1,28"
+        fill="none" stroke="#2a1808" stroke-width="1.3"/>
+</svg>`,
+  'Spinosaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body - large, semi-aquatic -->
+  <path d="M20,52 C16,47 14,40 15,34 C16,28 20,23 26,21 C32,19 39,21 44,26 C49,31 50,38 48,45 C46,52 40,57 33,58 C26,59 22,55 20,52Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Long neck -->
+  <path d="M42,27 C48,22 54,18 60,16 C64,14 67,14 68,16"
+        fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Elongated crocodilian head -->
+  <path d="M66,13 C70,10 76,11 79,15 C82,19 81,26 77,30 C73,34 67,34 64,30 C61,26 62,18 66,13Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Long narrow jaw -->
+  <path d="M64,29 C67,33 72,36 77,36 C80,36 82,34 82,31" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- Conical teeth (fish-eater) -->
+  <path d="M66,23 l2,5 M70,24 l2,5 M74,25 l2,5" stroke="#2a1808" stroke-width="0.7"/>
+  <path d="M67,28 l-1,4 M71,29 l-1,4 M75,30 l-1,4" stroke="#2a1808" stroke-width="0.6"/>
+  <!-- Eye -->
+  <circle cx="72" cy="17" r="1.8" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="72" cy="17" r="0.7" fill="#2a1808"/>
+  <!-- NEURAL SPINE SAIL - the signature feature -->
+  <path d="M34,22 C34,15 35,8 36,3" stroke="#2a1808" stroke-width="1.8" fill="none"/>
+  <path d="M38,21 C38,13 39,6 40,1" stroke="#2a1808" stroke-width="1.8" fill="none"/>
+  <path d="M42,22 C42,14 43,8 44,3" stroke="#2a1808" stroke-width="1.6" fill="none"/>
+  <path d="M46,24 C46,17 47,11 48,6" stroke="#2a1808" stroke-width="1.4" fill="none"/>
+  <path d="M30,23 C30,17 31,12 32,8" stroke="#2a1808" stroke-width="1.4" fill="none"/>
+  <path d="M26,25 C26,20 27,16 28,13" stroke="#2a1808" stroke-width="1.2" fill="none"/>
+  <!-- Sail membrane (thin connecting web) -->
+  <path d="M28,18 C30,14 32,10 34,6 C36,3 38,1 40,1 C42,1 44,3 46,6 C47,9 48,12 48,15"
+        fill="rgba(200,180,150,0.10)" stroke="#2a1808" stroke-width="0.6"/>
+  <!-- Longer forelimbs than T-Rex -->
+  <path d="M41,35 C44,32 48,30 52,31 C54,32 55,35 53,38 C51,41 48,42 46,40"
+        fill="none" stroke="#2a1808" stroke-width="1"/>
+  <path d="M53,38 l3,2 M52,40 l2,3" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Legs -->
+  <path d="M22,58 C20,64 18,70 17,76 C16,80 16,80 17,80" fill="none" stroke="#2a1808" stroke-width="1.6"/>
+  <path d="M17,80 l-3,1 M17,80 l0,1 M17,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M32,60 C30,66 29,72 28,78 C27,80 27,80 28,80" fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <path d="M28,80 l-3,1 M28,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Tail -->
+  <path d="M16,46 C11,43 6,40 3,37 C1,35 0,33 1,31"
+        fill="none" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Sail spine hatching for texture -->
+  <path d="M30,20 l1,-3 M34,18 l1,-3 M38,17 l1,-3 M42,18 l1,-3 M46,20 l1,-3"
+        stroke="#2a1808" stroke-width="0.4" opacity="0.5"/>
+</svg>`,
+  'Ankylosaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Low, wide armored body -->
+  <path d="M12,56 C12,46 18,38 28,34 C38,30 50,30 58,36 C66,42 68,52 66,60 C64,68 57,74 47,76 C37,78 27,76 20,70 C14,64 12,62 12,56Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Short neck -->
+  <path d="M58,38 C63,35 68,34 70,36" fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Small head -->
+  <path d="M68,33 C73,30 78,31 80,36 C82,40 80,45 76,47 C72,49 68,47 67,43 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Eye -->
+  <circle cx="74" cy="38" r="1.5" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <circle cx="74" cy="38" r="0.6" fill="#2a1808"/>
+  <!-- Beak -->
+  <path d="M79,42 C82,43 84,44 84,46" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Armor scutes - rows of osteoderms -->
+  <g fill="rgba(200,185,160,0.15)" stroke="#2a1808" stroke-width="0.8">
+    <ellipse cx="25" cy="42" rx="4" ry="3"/>
+    <ellipse cx="33" cy="38" rx="4" ry="3"/>
+    <ellipse cx="41" cy="36" rx="4" ry="3"/>
+    <ellipse cx="49" cy="37" rx="4" ry="3"/>
+    <ellipse cx="57" cy="40" rx="4" ry="3"/>
+    <ellipse cx="22" cy="50" rx="4" ry="3"/>
+    <ellipse cx="30" cy="46" rx="4" ry="3"/>
+    <ellipse cx="38" cy="44" rx="4" ry="3"/>
+    <ellipse cx="46" cy="44" rx="4" ry="3"/>
+    <ellipse cx="54" cy="46" rx="4" ry="3"/>
+    <ellipse cx="62" cy="50" rx="4" ry="3"/>
+    <ellipse cx="20" cy="58" rx="3.5" ry="2.5"/>
+    <ellipse cx="28" cy="55" rx="3.5" ry="2.5"/>
+    <ellipse cx="36" cy="53" rx="3.5" ry="2.5"/>
+    <ellipse cx="44" cy="53" rx="3.5" ry="2.5"/>
+    <ellipse cx="52" cy="54" rx="3.5" ry="2.5"/>
+    <ellipse cx="60" cy="57" rx="3.5" ry="2.5"/>
+  </g>
+  <!-- Tail club -->
+  <path d="M12,58 C8,56 4,54 2,52 C0,50 0,48 2,46"
+        fill="none" stroke="#2a1808" stroke-width="1.6"/>
+  <!-- Club oval -->
+  <ellipse cx="3" cy="48" rx="6" ry="4" fill="rgba(200,185,160,0.15)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Short stocky legs -->
+  <path d="M22,74 l-2,6" stroke="#2a1808" stroke-width="2"/> <path d="M20,80 l-3,1 M20,80 l3,1 M20,80 l0,1" stroke="#2a1808" stroke-width="0.9"/>
+  <path d="M32,76 l-1,4" stroke="#2a1808" stroke-width="2"/> <path d="M31,80 l-2,1 M31,80 l3,1" stroke="#2a1808" stroke-width="0.9"/>
+  <path d="M48,76 l1,4" stroke="#2a1808" stroke-width="2"/> <path d="M49,80 l-2,1 M49,80 l3,1" stroke="#2a1808" stroke-width="0.9"/>
+  <path d="M58,74 l2,6" stroke="#2a1808" stroke-width="2"/> <path d="M60,80 l-3,1 M60,80 l3,1 M60,80 l0,1" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Side spikes -->
+  <path d="M18,46 l-4,-6" stroke="#2a1808" stroke-width="1.2"/>
+  <path d="M14,52 l-4,-5" stroke="#2a1808" stroke-width="1.2"/>
+  <path d="M62,46 l4,-6" stroke="#2a1808" stroke-width="1.2"/>
+  <path d="M65,52 l4,-5" stroke="#2a1808" stroke-width="1.2"/>
+</svg>`,
+  'Parasaurolophus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body -->
+  <path d="M16,52 C13,46 12,38 15,31 C18,24 25,19 34,18 C43,17 52,20 57,27 C62,34 62,43 58,50 C54,57 46,62 37,63 C28,64 19,58 16,52Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Neck -->
+  <path d="M54,27 C58,22 62,18 65,16 C67,15 68,15 68,17"
+        fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Head with duck-bill -->
+  <path d="M66,14 C70,10 75,10 78,14 C81,18 80,24 76,28 C72,31 67,31 65,27 C63,23 63,18 66,14Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- LONG CRANIAL CREST - the signature feature -->
+  <path d="M66,12 C64,8 62,4 61,0" stroke="#2a1808" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M66,12 C68,9 70,6 72,4 C74,2 76,1 78,2" stroke="#2a1808" stroke-width="0.7" fill="none"/>
+  <!-- Duck bill -->
+  <path d="M78,22 C82,22 86,24 87,27 C88,30 87,33 85,34 C83,35 80,34 78,32"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Eye -->
+  <circle cx="71" cy="18" r="1.8" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="71" cy="18" r="0.7" fill="#2a1808"/>
+  <!-- Mouth line -->
+  <path d="M78,26 C82,27 86,28 87,30" fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Forelimb -->
+  <path d="M48,34 C52,30 56,28 59,30 C61,31 61,35 59,38" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- Legs -->
+  <path d="M22,62 C20,68 18,74 17,80" fill="none" stroke="#2a1808" stroke-width="1.8"/>
+  <path d="M17,80 l-3,1 M17,80 l3,1 M17,80 l0,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M34,64 C32,70 31,75 30,80" fill="none" stroke="#2a1808" stroke-width="1.6"/>
+  <path d="M30,80 l-3,1 M30,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Tail -->
+  <path d="M14,50 C10,47 6,44 3,40 C1,37 0,34 2,32"
+        fill="none" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Body hatching -->
+  <path d="M24,38 l2,-4 M28,35 l2,-4 M32,33 l2,-4 M36,33 l2,-4 M40,34 l2,-4 M44,36 l2,-4"
+        stroke="#2a1808" stroke-width="0.45" opacity="0.48"/>
+</svg>`,
+  'Mosasaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Long streamlined body -->
+  <path d="M6,40 C10,34 18,30 28,28 C38,26 50,26 60,30 C68,33 74,38 76,44 C78,50 75,56 68,60 C60,64 50,66 40,65 C30,64 20,60 13,54 C7,48 4,44 6,40Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Head - large angular jaws -->
+  <path d="M72,34 C76,29 80,28 82,31 C84,34 83,40 80,44 C77,48 73,50 70,48 C67,46 66,42 68,38 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Lower jaw -->
+  <path d="M70,47 C73,51 78,53 82,52 C85,51 86,49 86,47" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- Teeth rows -->
+  <path d="M73,40 l2,5 M77,40 l2,5 M81,41 l1,5" stroke="#2a1808" stroke-width="0.7"/>
+  <path d="M74,46 l-1,4 M78,47 l-1,4" stroke="#2a1808" stroke-width="0.6"/>
+  <!-- Eye -->
+  <circle cx="76" cy="32" r="2" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="76" cy="32" r="0.8" fill="#2a1808"/>
+  <!-- Front flippers -->
+  <path d="M48,28 C48,22 52,16 56,14 C58,13 60,14 60,17 C60,20 58,24 56,28"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M30,30 C28,24 30,16 34,12 C36,10 39,11 39,14 C39,17 37,22 35,28"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Rear flippers -->
+  <path d="M48,64 C50,70 48,76 45,78 C43,79 41,78 41,75 C41,72 43,68 45,64"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M28,62 C28,68 26,74 24,76 C22,77 20,76 20,73 C20,70 22,66 24,62"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Tail with fluke -->
+  <path d="M6,42 C3,41 1,40 1,40" fill="none" stroke="#2a1808" stroke-width="1.8"/>
+  <path d="M2,38 C0,34 0,30 2,28 C3,27 4,28 4,30" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <path d="M2,42 C0,46 0,50 2,52 C3,53 4,52 4,50" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Scale pattern -->
+  <path d="M25,35 l1,-3 M30,33 l1,-3 M35,32 l1,-3 M40,32 l1,-3 M45,33 l1,-3 M50,34 l1,-3 M55,36 l1,-3 M60,39 l1,-3"
+        stroke="#2a1808" stroke-width="0.4" opacity="0.50"/>
+  <!-- Forked tongue -->
+  <path d="M82,40 C86,40 88,39 90,38 C91,38 92,37 91,37 M90,38 C91,39 92,40 91,40"
+        fill="none" stroke="#2a1808" stroke-width="0.8"/>
+</svg>`,
+  'Elasmosaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Barrel body - small relative to neck -->
+  <ellipse cx="46" cy="52" rx="14" ry="11"
+           fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- EXTREMELY long neck - half the body -->
+  <path d="M46,42 C46,36 46,30 46,24 C46,18 46,12 45,6 C44,2 42,0 40,1"
+        fill="none" stroke="#2a1808" stroke-width="2.0"/>
+  <!-- Neck width -->
+  <path d="M48,42 C48,36 48,30 47,24 C47,18 47,12 46,6"
+        fill="none" stroke="#2a1808" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <!-- Tiny head on long neck -->
+  <path d="M39,2 C42,0 46,0 48,3 C50,6 50,10 47,13 C44,16 40,15 38,12 C36,9 36,5 39,2Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Small teeth -->
+  <path d="M40,8 l2,4 M44,7 l1,4" stroke="#2a1808" stroke-width="0.7"/>
+  <!-- Eye -->
+  <circle cx="44" cy="5" r="1.5" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <circle cx="44" cy="5" r="0.6" fill="#2a1808"/>
+  <!-- Four large paddle flippers -->
+  <path d="M38,48 C32,44 25,42 20,44 C16,46 14,50 16,54 C18,58 24,60 30,58 C36,56 40,52 38,48Z"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M38,56 C32,60 26,64 22,68 C18,72 18,76 22,77 C26,78 32,75 37,70 C42,65 42,60 38,56Z"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M54,48 C60,44 67,42 72,44 C76,46 78,50 76,54 C74,58 68,60 62,58 C56,56 52,52 54,48Z"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M54,56 C60,60 66,64 70,68 C74,72 74,76 70,77 C66,78 60,75 55,70 C50,65 50,60 54,56Z"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Short tail -->
+  <path d="M46,62 C44,68 42,74 41,78" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Neck undulation lines -->
+  <path d="M44,36 l2,-2 M44,28 l2,-2 M44,20 l2,-2 M43,12 l2,-2"
+        stroke="#2a1808" stroke-width="0.4" opacity="0.45"/>
+</svg>`,
+  'Ichthyosaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dolphin-like streamlined body -->
+  <path d="M8,40 C12,30 22,24 34,22 C46,20 58,22 66,30 C74,38 76,48 72,56 C68,64 58,68 46,68 C34,68 22,64 14,56 C6,48 5,48 8,40Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Long pointed rostrum -->
+  <path d="M68,34 C72,29 76,27 80,28 C84,29 86,33 85,38 C84,43 80,46 76,46 C72,46 69,44 68,40Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Lower jaw -->
+  <path d="M68,40 C71,44 76,47 81,47 C84,47 86,45 86,43" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Fine teeth -->
+  <path d="M70,37 l2,5 M74,37 l2,5 M78,38 l1,5" stroke="#2a1808" stroke-width="0.6"/>
+  <!-- HUGE eye - ichthyosaurs had enormous eyes -->
+  <circle cx="66" cy="30" r="5" fill="rgba(200,185,160,0.08)" stroke="#2a1808" stroke-width="1.3"/>
+  <circle cx="66" cy="30" r="3" fill="none" stroke="#2a1808" stroke-width="0.7"/>
+  <circle cx="66" cy="30" r="1.5" fill="#2a1808"/>
+  <!-- Sclerotic ring hint -->
+  <circle cx="66" cy="30" r="4" fill="none" stroke="#2a1808" stroke-width="0.4" stroke-dasharray="2,2"/>
+  <!-- Dorsal fin -->
+  <path d="M42,22 C40,14 40,8 42,4 C43,1 45,0 47,2 C49,4 50,10 50,18 C50,22 46,22 42,22Z"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Pectoral flippers -->
+  <path d="M54,30 C56,24 60,18 64,16 C66,15 68,16 67,19 C66,22 62,26 58,30"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1"/>
+  <path d="M36,32 C34,26 36,18 40,14 C42,12 44,13 44,16 C44,19 42,24 40,30"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1"/>
+  <!-- Vertical tail fluke (key ichthyosaur feature - unlike fish) -->
+  <path d="M8,40 C5,38 2,36 1,36" fill="none" stroke="#2a1808" stroke-width="1.8"/>
+  <path d="M2,34 C0,30 0,26 2,24 C3,23 4,24 5,26 C6,28 7,32 7,36"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M2,42 C0,46 0,50 2,52 C3,53 4,52 5,50 C6,48 7,44 7,42"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+</svg>`,
+  'Megalodon': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Massive great-white-like body -->
+  <path d="M5,38 C8,26 18,16 32,12 C46,8 62,10 72,20 C80,28 82,40 78,52 C74,64 63,72 50,74 C37,76 24,72 14,62 C5,52 3,48 5,38Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Blunt massive head -->
+  <path d="M70,22 C76,18 82,18 85,24 C88,30 86,40 80,46 C74,52 66,54 62,50 C58,46 58,38 62,32 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- HUGE jaw open -->
+  <path d="M60,50 C63,58 68,64 75,66 C80,68 84,66 86,62 C88,58 86,52 82,48"
+        fill="rgba(200,185,160,0.08)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Large triangular teeth - ICONIC -->
+  <path d="M64,46 l4,10 M70,46 l4,10 M76,45 l4,10" stroke="#2a1808" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Lower teeth -->
+  <path d="M65,54 l-3,-8 M70,56 l-3,-8 M75,57 l-2,-8" stroke="#2a1808" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Eye - small relative to head size -->
+  <circle cx="74" cy="26" r="2.5" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <circle cx="74" cy="26" r="1" fill="#2a1808"/>
+  <!-- Gill slits -->
+  <path d="M55,28 C53,36 52,44 53,52" fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M49,30 C47,38 46,46 47,54" fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M44,33 C42,41 41,49 42,57" fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Dorsal fin - large -->
+  <path d="M42,14 C40,6 40,2 43,0 C45,-1 48,1 50,5 C52,9 53,14 52,18"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Pectoral fins -->
+  <path d="M60,26 C64,18 70,12 75,12 C77,12 78,14 76,17 C74,20 69,24 63,28"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M44,28 C40,18 38,10 40,6 C41,4 43,5 45,8 C47,11 48,18 48,26"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Tail fin - crescent -->
+  <path d="M5,40 C2,36 0,30 1,24 C2,22 4,22 5,25 C6,28 7,34 7,38"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M5,40 C2,46 0,52 1,58 C2,60 4,60 5,57 C6,54 7,48 7,42"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+</svg>`,
+  'Pteranodon': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Wings - long narrow, gliding pose -->
+  <path d="M38,38 C30,32 18,24 8,18 C4,15 2,14 2,16 C2,18 4,20 8,22 C18,28 28,34 36,40"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <path d="M38,38 C30,32 20,28 10,24 C6,22 3,22 3,24 C3,26 6,27 10,28 C20,32 30,36 38,40"
+        fill="rgba(200,185,160,0.08)" stroke="#2a1808" stroke-width="0.6" stroke-dasharray="3,2"/>
+  <!-- Right wing -->
+  <path d="M42,38 C50,32 62,24 72,18 C76,15 78,14 78,16 C78,18 76,20 72,22 C62,28 52,34 44,40"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Wing finger (elongated 4th digit) -->
+  <path d="M8,20 C16,28 26,34 36,40 M38,38 C42,36 48,34 56,30 C64,26 70,22 72,20"
+        fill="none" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Body - compact -->
+  <ellipse cx="40" cy="40" rx="6" ry="5"
+           fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Neck -->
+  <path d="M42,36 C44,32 46,28 48,26" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Head with long beak AND long cranial crest -->
+  <path d="M48,24 C52,20 58,18 62,20 C66,22 68,26 67,30 C66,34 62,36 58,35 C54,34 50,30 48,26Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- CREST (toothless beak extension backward) -->
+  <path d="M50,22 C48,18 46,14 44,12 C42,10 40,10 40,12 C40,14 42,16 44,18 C46,20 48,22 50,22"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Long toothless beak -->
+  <path d="M64,26 C68,24 72,24 76,26 C78,27 78,30 76,32 C74,34 70,34 67,33"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1"/>
+  <!-- Eye -->
+  <circle cx="58" cy="24" r="1.8" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <circle cx="58" cy="24" r="0.7" fill="#2a1808"/>
+  <!-- Small vestigial legs dangling -->
+  <path d="M38,44 l-2,6 M42,44 l2,6" fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Wing membrane ribs -->
+  <path d="M10,22 C22,30 32,36 38,40 M15,24 C26,32 34,37 38,40 M20,26 C30,33 36,38 38,40"
+        fill="none" stroke="#2a1808" stroke-width="0.4" opacity="0.45"/>
+  <path d="M66,24 C58,30 50,36 42,40 M60,24 C54,30 48,35 42,40"
+        fill="none" stroke="#2a1808" stroke-width="0.4" opacity="0.45"/>
+</svg>`,
+  'Anomalocaris': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Segmented body -->
+  <path d="M10,36 C14,28 22,24 32,23 C42,22 52,24 60,30 C68,36 70,44 66,52 C62,60 54,64 44,64 C34,64 24,60 16,52 C9,44 7,42 10,36Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Segment lines -->
+  <path d="M20,30 C22,36 22,44 20,50 M28,26 C30,34 30,44 28,52 M36,24 C38,32 38,46 36,54
+           M44,24 C46,32 46,46 44,54 M52,26 C54,34 54,46 52,54 M60,30 C62,38 62,46 60,52"
+        fill="none" stroke="#2a1808" stroke-width="0.7" opacity="0.65"/>
+  <!-- Lateral lobes (swimming flaps) -->
+  <path d="M20,32 l-6,-4 M20,38 l-7,-2 M20,44 l-7,2 M20,50 l-6,5" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <path d="M60,32 l6,-4 M60,38 l7,-2 M60,44 l7,2 M60,50 l6,5" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Fan tail -->
+  <path d="M36,64 C32,70 28,74 24,76 M40,64 C40,72 40,76 40,78 M44,64 C48,70 52,74 56,76"
+        fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Anterior appendages (grasping claws) -->
+  <path d="M28,24 C24,18 20,14 18,12 C16,10 14,10 14,12 C14,14 16,16 18,18 C20,20 22,22 24,24"
+        fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <path d="M18,14 C16,12 14,10 13,12 C12,14 13,16 15,17" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <path d="M14,14 l-3,-2 M14,12 l-2,-3" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- CIRCULAR MOUTH - key feature -->
+  <circle cx="40" cy="72" r="6" fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <path d="M34,72 C36,68 40,66 44,68 C48,70 50,74 48,78 C46,80 42,80 38,78 C34,76 33,74 34,72Z"
+        fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Radial plates in mouth -->
+  <path d="M40,68 l0,8 M36,70 l8,4 M44,70 l-8,4" stroke="#2a1808" stroke-width="0.6" opacity="0.7"/>
+  <!-- Eyes on stalks -->
+  <path d="M32,24 C30,20 28,17 27,16" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="26" cy="15" r="2.5" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="26" cy="15" r="1" fill="#2a1808"/>
+  <path d="M48,24 C50,20 52,17 53,16" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="54" cy="15" r="2.5" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="54" cy="15" r="1" fill="#2a1808"/>
+</svg>`,
+  'Trilobite': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Head shield (cephalon) -->
+  <path d="M20,22 C22,16 28,12 36,10 C44,8 52,10 58,16 C63,22 63,30 58,36 C53,40 46,42 40,42 C34,42 28,40 24,36 C20,32 18,28 20,22Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- THREE LOBES - the key feature -->
+  <!-- Axial lobe (center raised) -->
+  <path d="M34,12 C34,20 34,28 34,42 M40,10 C40,18 40,28 40,70 M46,12 C46,20 46,28 46,62"
+        fill="none" stroke="#2a1808" stroke-width="1.0" opacity="0.70"/>
+  <!-- Glabella (head lobe) -->
+  <ellipse cx="40" cy="22" rx="6" ry="8"
+           fill="rgba(200,185,160,0.15)" stroke="#2a1808" stroke-width="1.0"/>
+  <!-- Compound eyes -->
+  <ellipse cx="28" cy="22" rx="4" ry="3" fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1"/>
+  <path d="M25,20 l1,2 M27,19 l1,2 M29,19 l1,2 M31,20 l1,2" stroke="#2a1808" stroke-width="0.5" opacity="0.7"/>
+  <ellipse cx="52" cy="22" rx="4" ry="3" fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1"/>
+  <path d="M49,20 l1,2 M51,19 l1,2 M53,19 l1,2 M55,20 l1,2" stroke="#2a1808" stroke-width="0.5" opacity="0.7"/>
+  <!-- Antennae -->
+  <path d="M34,12 C32,8 28,4 24,2" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <path d="M46,12 C48,8 52,4 56,2" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- Thorax segments -->
+  <g fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.0">
+    <path d="M22,42 C24,40 34,39 40,39 C46,39 56,40 58,42 C60,44 60,46 58,48 C56,50 46,51 40,51 C34,51 24,50 22,48 C20,46 20,44 22,42Z"/>
+    <path d="M22,50 C24,48 34,47 40,47 C46,47 56,48 58,50 C60,52 60,54 58,56 C56,58 46,59 40,59 C34,59 24,58 22,56 C20,54 20,52 22,50Z"/>
+    <path d="M24,58 C26,56 34,55 40,55 C46,55 54,56 56,58 C58,60 58,62 56,64 C54,66 46,67 40,67 C34,67 26,66 24,64 C22,62 22,60 24,58Z"/>
+    <path d="M26,66 C28,64 34,63 40,63 C46,63 52,64 54,66 C56,68 56,70 54,72 C52,74 46,75 40,75 C34,75 28,74 26,72 C24,70 24,68 26,66Z"/>
+  </g>
+  <!-- Pleural lobes (side lobes with spines) -->
+  <path d="M22,44 l-5,-2 M20,50 l-5,-1 M20,56 l-5,0 M22,62 l-5,2 M25,68 l-4,3"
+        fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M58,44 l5,-2 M60,50 l5,-1 M60,56 l5,0 M58,62 l5,2 M55,68 l4,3"
+        fill="none" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Pygidium (tail) -->
+  <path d="M28,74 C30,78 36,80 40,80 C44,80 50,78 52,74"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+</svg>`,
+  'Dunkleosteus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Armored front section (dermal plates) -->
+  <path d="M20,30 C24,20 34,14 46,12 C58,10 68,16 74,26 C80,36 78,48 70,56 C62,64 50,68 38,66 C26,64 18,56 16,46 C14,36 16,38 20,30Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- BONY PLATE HEAD - key feature, the armored skull -->
+  <path d="M50,14 C60,12 70,16 76,24 C82,32 82,42 76,50 C70,56 60,60 50,58 C40,56 32,50 30,42 C28,34 32,26 38,20 C44,14 50,14 50,14Z"
+        fill="rgba(200,185,160,0.15)" stroke="#2a1808" stroke-width="1.6"/>
+  <!-- Plate sutures on head armor -->
+  <path d="M42,16 C44,24 46,34 46,44 M52,14 C52,24 52,34 52,46"
+        fill="none" stroke="#2a1808" stroke-width="0.9" opacity="0.65"/>
+  <path d="M36,22 C44,22 52,20 62,22 M34,32 C44,30 56,30 68,32 M34,42 C44,40 56,40 68,42"
+        fill="none" stroke="#2a1808" stroke-width="0.8" opacity="0.60"/>
+  <!-- BONY JAW PLATES (no teeth - bone blades) -->
+  <path d="M68,40 C72,38 76,38 79,42 C82,46 82,52 78,56 C74,60 68,62 63,60 C58,58 55,54 56,50 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Lower jaw plate -->
+  <path d="M56,50 C58,56 64,62 70,64 C75,66 79,64 81,60 C83,56 81,52 78,50"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Sharp bone blade edges (no teeth) -->
+  <path d="M60,46 C62,50 66,54 70,56 C74,58 77,56 79,52"
+        fill="none" stroke="#2a1808" stroke-width="1.8" stroke-linecap="square"/>
+  <path d="M60,50 C62,56 67,60 72,62"
+        fill="none" stroke="#2a1808" stroke-width="1.6" stroke-linecap="square"/>
+  <!-- Eye -->
+  <circle cx="58" cy="24" r="3" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <circle cx="58" cy="24" r="1.2" fill="#2a1808"/>
+  <!-- Unarmored tail half (contrast with heavy head) -->
+  <path d="M20,48 C14,48 8,46 4,42 C2,40 2,38 4,37"
+        fill="none" stroke="#2a1808" stroke-width="2.0"/>
+  <!-- Tail fin -->
+  <path d="M5,40 C2,35 0,28 2,24 C3,22 5,22 6,25 C7,28 8,34 8,40"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M5,40 C2,45 0,52 2,56 C3,58 5,58 6,55 C7,52 8,46 8,42"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Pectoral fins -->
+  <path d="M36,22 C32,14 30,8 32,4 C33,2 35,2 37,5 C39,8 40,14 40,22"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1"/>
+</svg>`,
+  'Woolly Mammoth': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Massive humped body -->
+  <path d="M14,56 C12,46 14,36 20,28 C26,20 36,16 47,16 C58,16 67,22 72,32 C77,42 76,54 70,62 C64,70 54,74 43,74 C32,74 20,68 14,58 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- High shoulder hump -->
+  <path d="M50,16 C54,12 58,10 62,12 C66,14 68,20 66,26 C64,32 58,36 52,36"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Head - sloping forehead -->
+  <path d="M62,30 C66,26 70,26 73,30 C76,34 76,40 73,44 C70,48 65,49 61,47 C57,45 55,40 56,35 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Trunk -->
+  <path d="M72,42 C76,46 78,52 76,58 C74,62 70,63 68,60 C66,57 66,52 68,48"
+        fill="none" stroke="#2a1808" stroke-width="2.0"/>
+  <!-- Trunk tip (S curve) -->
+  <path d="M68,60 C66,64 64,68 65,72 C66,74 68,74 70,72"
+        fill="none" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- CURVED TUSKS - iconic -->
+  <path d="M69,46 C74,44 79,44 82,46 C85,48 86,52 84,56 C82,60 78,62 74,60 C70,58 68,54 70,50"
+        fill="none" stroke="#2a1808" stroke-width="2.2"/>
+  <path d="M72,44 C76,40 82,38 86,42 C89,46 88,52 84,56"
+        fill="none" stroke="#2a1808" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <!-- Small eye -->
+  <circle cx="68" cy="34" r="2" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="68" cy="34" r="0.8" fill="#2a1808"/>
+  <!-- Ear (smaller than modern elephant) -->
+  <path d="M60,30 C56,26 54,22 56,20 C58,18 62,20 64,24 C66,28 65,32 62,32"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1"/>
+  <!-- Shaggy coat hatching -->
+  <path d="M20,40 l-3,6 M24,36 l-4,7 M28,34 l-4,7 M32,32 l-4,7 M36,30 l-4,7 M40,28 l-4,7 M44,27 l-4,7 M48,27 l-4,7 M52,28 l-3,7"
+        stroke="#2a1808" stroke-width="0.55" opacity="0.55"/>
+  <path d="M16,50 l-3,5 M18,56 l-2,5 M20,62 l-2,5" stroke="#2a1808" stroke-width="0.5" opacity="0.50"/>
+  <path d="M68,44 l3,5 M70,52 l2,5 M68,60 l2,5" stroke="#2a1808" stroke-width="0.5" opacity="0.50"/>
+  <!-- Legs - thick, column-like -->
+  <path d="M22,72 l0,8" stroke="#2a1808" stroke-width="3.5"/> <path d="M22,80 l-4,1 M22,80 l4,1" stroke="#2a1808" stroke-width="1"/>
+  <path d="M35,74 l0,6" stroke="#2a1808" stroke-width="3.5"/> <path d="M35,80 l-4,0 M35,80 l4,0" stroke="#2a1808" stroke-width="1"/>
+  <path d="M48,74 l0,6" stroke="#2a1808" stroke-width="3.5"/> <path d="M48,80 l-4,0 M48,80 l4,0" stroke="#2a1808" stroke-width="1"/>
+  <path d="M60,72 l0,8" stroke="#2a1808" stroke-width="3.5"/> <path d="M60,80 l-4,1 M60,80 l4,1" stroke="#2a1808" stroke-width="1"/>
+</svg>`,
+  'Smilodon': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stocky cat body -->
+  <path d="M12,50 C10,42 12,34 18,28 C24,22 33,19 43,19 C53,19 62,23 67,31 C72,39 71,50 66,58 C61,66 52,71 42,72 C32,73 22,68 16,60 C11,53 12,54 12,50Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Neck -->
+  <path d="M56,24 C60,19 64,17 67,19" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Broad cat head -->
+  <path d="M64,16 C70,12 77,13 80,19 C83,25 81,33 76,37 C71,41 65,41 61,37 C57,33 57,26 62,20 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Muzzle - broad -->
+  <path d="M76,28 C80,28 83,30 84,33 C85,36 83,39 80,40 C77,41 74,40 73,37"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1"/>
+  <!-- SABER TEETH - the defining feature -->
+  <path d="M72,34 C72,40 72,48 70,54 C69,58 66,62 64,62 C62,62 61,58 61,54 C61,48 63,40 65,34"
+        fill="rgba(255,250,240,0.30)" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Second saber -->
+  <path d="M76,33 C77,40 78,48 77,54 C76,58 73,62 71,62 C69,62 68,58 68,54 C68,48 69,40 70,34"
+        fill="rgba(255,250,240,0.25)" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Lower teeth (small by comparison) -->
+  <path d="M73,40 l1,4 M75,40 l1,4" stroke="#2a1808" stroke-width="0.7"/>
+  <!-- Eye - alert -->
+  <circle cx="70" cy="20" r="2.5" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <circle cx="70" cy="20" r="1" fill="#2a1808"/>
+  <!-- Nose -->
+  <path d="M80,30 C82,30 84,31 84,33" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <ellipse cx="81" cy="29" rx="2" ry="1.2" fill="#2a1808" opacity="0.7"/>
+  <!-- Whisker dots -->
+  <circle cx="77" cy="32" r="0.8" fill="#2a1808"/>
+  <circle cx="77" cy="35" r="0.8" fill="#2a1808"/>
+  <!-- Ears -->
+  <path d="M62,16 C60,10 62,6 66,6 C68,6 70,8 70,11" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Stocky legs -->
+  <path d="M18,70 l-2,10" stroke="#2a1808" stroke-width="2.0"/>
+  <path d="M16,80 l-3,1 M16,80 l0,1 M16,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M30,72 l-1,8" stroke="#2a1808" stroke-width="2.0"/>
+  <path d="M29,80 l-3,1 M29,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M50,72 l1,8" stroke="#2a1808" stroke-width="2.0"/>
+  <path d="M51,80 l-3,1 M51,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <path d="M62,70 l2,10" stroke="#2a1808" stroke-width="2.0"/>
+  <path d="M64,80 l-3,1 M64,80 l3,1" stroke="#2a1808" stroke-width="0.8"/>
+  <!-- Short bobtail -->
+  <path d="M12,52 C8,50 4,48 2,46" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- Fur hatching -->
+  <path d="M20,34 l2,-4 M24,31 l2,-4 M28,29 l2,-4 M32,28 l2,-4 M36,28 l2,-4 M40,28 l2,-4 M44,29 l2,-4 M48,30 l2,-4"
+        stroke="#2a1808" stroke-width="0.45" opacity="0.50"/>
+</svg>`,
+  'Megatherium': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Massive upright body -->
+  <path d="M18,72 C14,62 14,50 18,40 C22,30 30,22 40,18 C50,14 60,16 67,24 C74,32 74,44 70,54 C66,64 57,70 47,72 C37,74 24,74 18,72Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.4"/>
+  <!-- Standing upright on hind legs -->
+  <!-- Head - blunt, downward facing -->
+  <path d="M58,18 C64,14 70,14 74,19 C78,24 77,31 73,35 C69,39 63,40 59,37 C55,34 54,28 56,23 Z"
+        fill="rgba(200,185,160,0.12)" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- Blunt snout -->
+  <path d="M73,26 C77,26 80,28 81,31 C82,34 81,37 79,38 C77,39 74,38 73,36"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.0"/>
+  <!-- Eye -->
+  <circle cx="66" cy="21" r="2" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <circle cx="66" cy="21" r="0.8" fill="#2a1808"/>
+  <!-- Ear -->
+  <path d="M58,16 C56,11 58,7 62,7 C64,7 66,10 65,13" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- Long forearms reaching up/out to grab -->
+  <path d="M62,32 C68,28 74,26 78,28 C81,30 81,35 78,38 C75,40 71,40 68,38 C65,36 63,33 63,30"
+        fill="none" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- LARGE CURVED CLAWS on forearm -->
+  <path d="M78,38 C82,36 86,36 87,40 C88,44 85,48 81,48 C77,48 75,44 76,40"
+        fill="none" stroke="#2a1808" stroke-width="1.5"/>
+  <path d="M76,40 C80,38 84,40 85,44" stroke="#2a1808" stroke-width="1.1" fill="none"/>
+  <path d="M78,36 C82,34 86,36 87,40" stroke="#2a1808" stroke-width="1.1" fill="none"/>
+  <!-- Left arm (near side) -->
+  <path d="M48,28 C42,22 38,18 36,16 C34,14 32,15 32,18 C32,21 34,25 37,28"
+        fill="none" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Claws on left arm -->
+  <path d="M33,18 C29,16 26,18 26,22 C26,26 29,30 33,30"
+        fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <path d="M32,16 C28,14 24,16 24,20" stroke="#2a1808" stroke-width="1.1" fill="none"/>
+  <!-- Thick hind legs (supporting weight) -->
+  <path d="M24,70 l-2,10" stroke="#2a1808" stroke-width="4"/>
+  <path d="M22,80 l-5,1 M22,80 l0,1 M22,80 l5,1" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Claws on hindfeet -->
+  <path d="M18,80 C14,78 12,80 12,82" stroke="#2a1808" stroke-width="1.2" fill="none"/>
+  <path d="M36,72 l0,8" stroke="#2a1808" stroke-width="4"/>
+  <path d="M36,80 l-5,1 M36,80 l5,1" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- Massive tail (prop) -->
+  <path d="M18,70 C14,72 10,74 8,76 C6,78 6,80 8,80 C10,80 12,78 14,76"
+        fill="rgba(200,185,160,0.10)" stroke="#2a1808" stroke-width="1.5"/>
+  <!-- Shaggy fur hatching -->
+  <path d="M22,38 l-3,6 M26,34 l-3,6 M30,31 l-3,6 M34,29 l-3,6 M38,27 l-3,6 M42,26 l-3,6 M46,26 l-3,6 M50,27 l-3,6 M54,28 l-3,6"
+        stroke="#2a1808" stroke-width="0.5" opacity="0.50"/>
+  <path d="M20,50 l-3,5 M18,58 l-3,5 M18,64 l-2,5" stroke="#2a1808" stroke-width="0.5" opacity="0.45"/>
+</svg>`,
+
+  'Kronosaurus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Kronosaurus: massive short-necked pliosaur, huge head, four flippers -->
+  <!-- body -->
+  <ellipse cx="42" cy="44" rx="22" ry="12" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- enormous head -->
+  <path d="M20,36 Q8,34 4,40 Q8,48 20,48 Z" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- jaws / teeth -->
+  <path d="M4,40 Q6,38 8,40 Q10,38 12,40 Q14,38 16,40 Q18,38 20,40" stroke="#2a1808" stroke-width="0.9" fill="none"/>
+  <path d="M4,40 Q6,42 8,40 Q10,42 12,40 Q14,42 16,40 Q18,42 20,40" stroke="#2a1808" stroke-width="0.9" fill="none"/>
+  <!-- eye -->
+  <circle cx="10" cy="37" r="1.5" stroke="#2a1808" stroke-width="0.9" fill="none"/>
+  <!-- tail -->
+  <path d="M64,44 Q72,40 76,36 M64,44 Q72,48 76,52" stroke="#2a1808" stroke-width="1.2" fill="none"/>
+  <!-- four flippers -->
+  <path d="M30,54 Q26,62 20,65 Q24,56 30,54" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M50,54 Q54,62 60,64 Q56,55 50,54" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M30,35 Q26,28 20,25 Q24,34 30,35" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M50,35 Q54,28 60,26 Q56,35 50,35" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- body hatching -->
+  <path d="M36,35 l2,6 M40,34 l2,6 M44,34 l2,6 M48,35 l2,6 M52,36 l2,6" stroke="#2a1808" stroke-width="0.5" opacity="0.5"/>
+</svg>`,
+
+  'Xiphactinus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Xiphactinus: large bony fish, big upturned jaw, tall dorsal fin -->
+  <!-- body streamlined -->
+  <path d="M14,40 Q18,28 40,30 Q62,30 68,40 Q62,52 40,52 Q18,52 14,40 Z" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- tail fin forked -->
+  <path d="M68,40 Q76,32 78,28 M68,40 Q76,48 78,52" stroke="#2a1808" stroke-width="1.2" fill="none"/>
+  <!-- large upturned jaw / gaping mouth -->
+  <path d="M14,40 Q8,36 6,40 Q8,44 14,40" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <path d="M6,40 Q8,38 10,40 Q12,38 14,40" stroke="#2a1808" stroke-width="0.8" fill="none"/>
+  <!-- eye -->
+  <circle cx="16" cy="37" r="2" stroke="#2a1808" stroke-width="1" fill="none"/>
+  <circle cx="16" cy="37" r="0.7" fill="#2a1808"/>
+  <!-- tall dorsal fin -->
+  <path d="M32,30 Q34,16 38,12 Q42,16 44,30" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M34,24 l2,-4 M37,20 l2,-4 M40,22 l2,-4" stroke="#2a1808" stroke-width="0.5" opacity="0.5"/>
+  <!-- pectoral fin -->
+  <path d="M24,38 Q20,48 18,52 Q24,44 28,42" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- scale lines -->
+  <path d="M30,34 l1,4 M36,33 l1,4 M42,33 l1,4 M48,34 l1,4 M54,35 l1,4 M60,36 l1,4" stroke="#2a1808" stroke-width="0.5" opacity="0.45"/>
+</svg>`,
+
+  'Meganeura': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Meganeura: giant dragonfly, four large wings, long segmented body -->
+  <!-- thorax -->
+  <ellipse cx="40" cy="38" rx="6" ry="5" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- head -->
+  <circle cx="40" cy="30" r="5" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- compound eyes -->
+  <ellipse cx="37" cy="29" rx="2.5" ry="3" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <ellipse cx="43" cy="29" rx="2.5" ry="3" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- antennae -->
+  <path d="M38,25 Q36,20 34,16 M42,25 Q44,20 46,16" stroke="#2a1808" stroke-width="0.8" fill="none"/>
+  <!-- segmented abdomen -->
+  <path d="M40,43 L40,72" stroke="#2a1808" stroke-width="1.4"/>
+  <path d="M37,48 Q40,46 43,48 M37,53 Q40,51 43,53 M37,58 Q40,56 43,58 M37,63 Q40,61 43,63 M37,68 Q40,66 43,68" stroke="#2a1808" stroke-width="0.7" fill="none"/>
+  <!-- four wings - upper pair -->
+  <path d="M36,36 Q20,28 8,24 Q18,30 34,38" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <path d="M44,36 Q60,28 72,24 Q62,30 46,38" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- lower wing pair -->
+  <path d="M36,40 Q18,34 6,32 Q16,36 34,42" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <path d="M44,40 Q62,34 74,32 Q64,36 46,42" fill="none" stroke="#2a1808" stroke-width="1"/>
+  <!-- wing venation -->
+  <path d="M12,25 l4,6 M18,27 l3,5 M24,28 l3,5 M30,30 l2,5" stroke="#2a1808" stroke-width="0.4" opacity="0.5"/>
+  <path d="M68,25 l-4,6 M62,27 l-3,5 M56,28 l-3,5 M50,30 l-2,5" stroke="#2a1808" stroke-width="0.4" opacity="0.5"/>
+</svg>`,
+
+  'Quetzalcoatlus': `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quetzalcoatlus: enormous azhdarchid pterosaur, giraffe-necked, huge crest -->
+  <!-- long neck -->
+  <path d="M36,50 Q32,38 30,26 Q32,22 36,20" stroke="#2a1808" stroke-width="1.4" fill="none"/>
+  <!-- head with long toothless beak -->
+  <path d="M30,26 Q26,22 10,20 Q14,24 30,28 Z" fill="none" stroke="#2a1808" stroke-width="1.2"/>
+  <!-- cranial crest -->
+  <path d="M30,26 Q36,18 40,12 Q38,20 36,26" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <!-- eye -->
+  <circle cx="27" cy="24" r="1.5" stroke="#2a1808" stroke-width="0.9" fill="none"/>
+  <!-- body compact -->
+  <ellipse cx="46" cy="52" rx="14" ry="9" fill="none" stroke="#2a1808" stroke-width="1.3"/>
+  <!-- short tail -->
+  <path d="M60,52 Q66,50 70,48" stroke="#2a1808" stroke-width="1" fill="none"/>
+  <!-- massive left wing -->
+  <path d="M42,46 Q30,30 16,14 Q28,28 44,44" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M42,46 Q26,44 10,44 Q26,46 42,50" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- right wing -->
+  <path d="M52,46 Q64,30 76,14 Q64,28 54,44" fill="none" stroke="#2a1808" stroke-width="1.1"/>
+  <path d="M52,46 Q66,44 78,46 Q66,48 52,50" fill="none" stroke="#2a1808" stroke-width="0.9"/>
+  <!-- wing membrane hatching -->
+  <path d="M20,22 l4,8 M26,20 l4,8 M32,20 l4,8 M38,22 l3,8" stroke="#2a1808" stroke-width="0.4" opacity="0.45"/>
+  <!-- legs -->
+  <path d="M44,60 Q42,68 40,72 M50,60 Q52,68 54,72" stroke="#2a1808" stroke-width="1" fill="none"/>
+</svg>`,
+};
+
 const CREATURE_RANGES = {
   // ---- CAMBRIAN (continentKey: cambrian) ----
   "Anomalocaris": {
@@ -1802,37 +2610,329 @@ const SVG_MAPS = {
     <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~270 MYA</text>`,
   triassic: `
     <defs>
-      <radialGradient id="og_tr" cx="40%" cy="45%" r="75%">
+      <radialGradient id="og_tr" cx="35%" cy="45%" r="80%">
         <stop offset="0%" stop-color="#061828"/>
+        <stop offset="60%" stop-color="#041018"/>
         <stop offset="100%" stop-color="#020810"/>
       </radialGradient>
+      <radialGradient id="tethys_tr" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" stop-color="#1a4060" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="#0a2040" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="arid_tr" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#b8824a" stop-opacity="0"/>
+        <stop offset="40%" stop-color="#c07840" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#b8824a" stop-opacity="0"/>
+      </linearGradient>
     </defs>
+    <!-- Ocean background -->
     <rect width="800" height="400" fill="url(#og_tr)"/>
-    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
-    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
-    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
-    <text x="688" y="198" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">Tethys Sea</text>
-    <text x="72" y="200" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-5,72,200)">Panthalassa</text>
-    <path d="M230,108 C268,92 324,84 380,87 C426,90 462,102 482,120 C502,138 502,162 496,188 C490,212 476,235 458,255 C442,272 420,285 416,302 C413,320 430,338 442,355 C453,370 456,388 436,398 C408,410 365,405 318,395 C268,382 220,360 185,330 C152,302 130,265 118,225 C108,188 105,148 115,118 C125,92 168,90 196,92 C212,93 228,105 230,108Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="308" y="235" text-anchor="middle" fill="#4a2e08" font-size="18" font-weight="bold" font-family="system-ui,sans-serif">PANGAEA</text>
-    <text x="308" y="258" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="11" font-style="italic" font-family="system-ui,sans-serif">(Rifting begins)</text>
-    <line x1="275" y1="110" x2="260" y2="158" stroke="rgba(255,120,50,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
-    <line x1="255" y1="155" x2="238" y2="210" stroke="rgba(255,120,50,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
-    <circle cx="480" cy="145" r="5" fill="#ff4010" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
-    </circle><circle cx="382" cy="188" r="4" fill="#ff6020" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
-    </circle><circle cx="268" cy="252" r="3" fill="#ff7030" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
-    </circle>
-    <path d="M762,200 C772,178 775,222 762,232" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+    <!-- Subtle lat lines -->
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="0.8" stroke-dasharray="4,8"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.025)" stroke-width="0.5" stroke-dasharray="3,10"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.025)" stroke-width="0.5" stroke-dasharray="3,10"/>
+    <!-- Panthalassa label -->
+    <text x="68" y="200" text-anchor="middle" fill="rgba(100,160,220,0.40)" font-size="10" font-style="italic" font-family="Georgia,serif" transform="rotate(-8,68,200)">Panthalassa</text>
+    <text x="68" y="213" text-anchor="middle" fill="rgba(100,160,220,0.40)" font-size="9" font-style="italic" font-family="Georgia,serif" transform="rotate(-8,68,213)">Ocean</text>
+    <!-- Tethys Sea shallow zone (light blue fill BEFORE continent) -->
+    <path d="M490,115 C540,110 600,118 650,135 C695,150 728,172 740,198 C748,218 742,240 725,255 C705,272 675,278 642,272 C615,268 592,255 578,238 C558,215 555,185 565,162 C575,140 538,118 510,112 Z"
+          fill="rgba(80,140,200,0.18)" stroke="none"/>
+    <!-- PANGAEA - detailed path -->
+    <path d="
+      M188,78 C210,72 242,70 272,74 C302,78 328,88 348,98
+      C368,108 382,118 390,130 C398,142 395,155 385,162
+      C378,168 368,170 358,168 C348,166 340,160 338,152
+      C336,144 340,135 348,130 C356,125 365,125 370,130
+      C375,135 372,145 365,150
+      C360,154 352,155 346,152
+      C340,149 336,142 338,135
+      C340,128 348,122 358,120
+      C372,117 390,120 405,128
+      C422,137 435,150 440,165
+      C446,182 440,200 428,212
+      C415,225 396,230 378,228
+      C360,226 345,218 335,206
+      C325,194 320,180 318,165
+      C316,150 318,135 324,122
+      C330,109 340,98 352,90
+      M490,115 C470,105 445,98 418,92 C395,87 372,84 348,84
+      C324,84 300,88 278,95 C258,102 240,112 228,125
+      C218,136 212,150 212,164 C212,178 218,192 228,202
+      C238,212 252,218 268,220 C284,222 300,218 314,210
+      C328,202 338,190 342,176 C346,162 342,148 334,138
+      C326,128 315,122 303,120 C291,118 278,120 268,126
+      C258,132 252,142 250,153 C248,164 252,175 260,182
+      C268,189 278,192 290,190 C302,188 312,182 318,172
+      C324,162 322,150 315,142
+    " fill="none" stroke="none"/>
+    <!-- Main Pangaea continent -->
+    <path d="
+      M178,80 C205,72 240,68 275,72 C310,76 342,88 365,105
+      C388,122 400,145 402,168 C404,192 392,215 373,232
+      C355,248 330,258 308,265 C285,272 262,275 242,280
+      C222,285 204,292 192,305 C180,318 175,335 178,352
+      C181,368 192,380 208,385 C224,390 245,388 265,380
+      C285,372 302,358 312,342 C322,326 325,308 320,292
+      C315,276 303,262 288,252 C273,242 255,236 238,234
+      C221,232 204,234 190,240 C176,246 164,255 156,267
+      C148,279 144,293 144,308 C144,323 148,338 156,350
+      C164,362 176,370 190,375 C204,380 220,380 235,375
+      C250,370 262,360 270,348 C278,336 282,322 278,308
+      C274,294 262,282 248,274 C234,266 218,262 202,262
+      C186,262 170,266 158,274 C146,282 138,294 135,308
+      M178,80 C162,85 148,95 138,108 C128,121 122,136 118,152
+      C114,168 112,185 114,202 C116,219 122,235 132,248
+      C142,261 155,270 170,276 C185,282 202,282 218,276
+      C234,270 247,258 254,244 C261,230 262,214 256,200
+      C250,186 238,174 224,166 C210,158 193,154 178,154
+      C163,154 149,158 138,165 C127,172 120,182 118,194
+    " fill="none" stroke="none"/>
+
+    <!-- Pangaea as one solid shape - accurate Triassic supercontinent -->
+    <path d="
+      M175,82 C198,74 228,70 260,72 C292,74 322,82 348,95
+      C374,108 394,126 405,148 C415,168 414,190 403,210
+      C393,228 376,242 355,250 C334,258 310,260 288,256
+      C266,252 246,243 230,230 C214,217 203,200 198,182
+      C193,164 193,145 200,130 C207,115 218,103 232,96
+      C246,89 262,86 278,87 C294,88 308,93 318,102
+      C328,111 333,122 332,135 C331,148 324,158 313,165
+      C302,172 288,174 275,170 C262,166 252,157 246,146
+      C240,135 238,122 242,111 C246,100 254,92 264,88
+      C274,84 285,84 294,88 C303,92 309,100 310,110
+      C311,120 306,130 297,136 C288,142 276,144 265,140
+      C254,136 246,127 244,116
+      C244,116 238,108 230,106 C222,104 212,108 206,116
+      C200,124 198,135 200,146 C202,157 208,168 216,176
+      C224,184 234,190 245,192 C256,194 268,192 278,186
+      C288,180 295,170 298,159 C301,148 298,137 291,128
+      C284,119 273,114 262,113 C251,112 240,115 232,122
+      M494,116 C475,105 452,98 428,95 C404,92 379,93 356,98
+      C332,103 310,113 291,127
+    " fill="none" stroke="none"/>
+
+    <!-- ACTUAL PANGAEA - clean single polygon -->
+    <path d="M170,80 C198,72 232,68 268,70 C304,72 338,82 365,98
+             C392,114 410,136 415,160 C420,184 410,208 394,226
+             C378,244 355,255 330,260 C306,265 280,263 258,255
+             C236,247 218,234 206,218 C194,202 188,184 188,166
+             C188,148 196,132 210,120 C224,108 242,102 262,100
+             C282,98 302,102 318,112 C334,122 344,138 345,155
+             C346,172 338,188 325,198 C312,208 295,212 278,210
+             C262,208 247,200 237,189 C228,178 224,165 226,152
+             C228,140 234,130 244,124 C254,118 266,117 277,120
+             C288,123 297,130 301,140 C305,150 302,162 294,170
+             C286,178 274,182 262,180 C250,178 240,172 234,163
+             L230,155 C228,148 228,140 232,134 C236,128 243,124 250,122
+             M490,118 C469,108 445,102 420,100 C395,98 370,100 347,108
+             C323,116 302,130 285,148 C268,166 258,188 255,212
+             C252,236 256,260 267,280 C278,300 296,316 317,325
+             C338,334 362,335 385,328 C408,321 428,307 442,290
+             C456,273 463,252 463,232 C463,212 456,192 444,176
+             C432,160 416,148 398,142 C380,136 360,136 342,142
+             C324,148 308,160 298,176 C288,192 284,210 286,228
+             C288,246 296,262 308,274 C320,286 336,292 352,292
+             C368,292 382,286 393,276 C404,266 410,252 410,238
+             C410,224 404,210 394,200 C384,190 370,184 356,183
+             C342,182 328,185 317,192 C306,199 298,210 295,222
+             C292,234 294,247 300,257 C306,267 316,274 327,278
+             C338,282 350,282 360,278 C370,274 378,266 382,256
+             C386,246 385,235 380,226 C375,217 366,211 356,208
+             C346,205 336,207 327,212 C318,217 312,225 310,235
+             C308,245 310,256 316,264 C322,272 330,277 340,278
+             C350,279 360,276 368,270
+             M168,78 C148,88 132,104 120,124 C108,144 102,168 102,192
+             C102,216 110,240 124,260 C138,280 158,295 180,303
+             C202,311 226,312 248,306 C270,300 288,288 300,272
+             C312,256 318,236 316,216 C314,196 306,177 293,162
+             C280,147 262,136 243,130 C224,124 203,122 183,125
+             C163,128 145,136 131,148 C118,160 110,176 108,194
+             C106,212 110,230 120,245 C130,260 144,271 160,277
+             C176,283 194,282 210,276 C226,270 239,259 247,245
+             C255,231 258,215 255,199 C252,183 243,168 230,157
+             C218,146 202,140 186,138 C170,136 154,140 140,148
+             C127,156 118,168 114,182 C110,196 112,211 118,224
+             C124,237 135,247 148,252 C162,257 178,257 192,252
+             C206,247 218,237 226,224 C234,211 237,196 234,182
+             C231,168 223,156 212,147 C200,138 185,134 171,135
+             C157,136 144,141 134,150"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5" stroke-linejoin="round"/>
+
+    <!-- Pangaea - refined clean polygon based on actual PALEOMAP data -->
+    <path d="M168,82 C190,74 218,68 250,70 C282,72 314,82 340,98
+             C366,114 384,136 390,160 C396,184 388,208 374,224
+             C360,240 340,250 318,254 C296,258 272,255 252,246
+             C232,237 216,222 208,205 C200,188 198,170 204,154
+             C210,138 224,126 240,118 C256,110 275,108 293,112
+             C311,116 327,126 337,140 C347,154 350,170 346,186
+             C342,202 332,215 318,222 C304,229 288,230 273,225
+             C258,220 246,210 239,197 C232,184 230,170 234,157
+             C238,144 246,133 258,127 C270,121 283,120 295,124
+             C307,128 316,137 320,148 C324,159 322,172 315,181
+             C308,190 297,195 285,194 C273,193 262,187 255,178"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.8" stroke-linejoin="round" fill-opacity="0"/>
+
+    <!-- Use the existing approach but improve the Pangaea polygon significantly -->
+    <path d="M172,80 C194,72 222,68 254,70 C286,72 318,82 344,100
+             C370,118 386,142 390,168 C394,194 382,218 364,234
+             C346,250 322,258 298,260 C274,262 250,258 230,248
+             C210,238 194,222 184,204 C174,186 170,166 172,148
+             C174,130 182,114 194,102 C206,90 222,84 240,82
+             C258,80 277,82 295,90 C313,98 328,112 336,130
+             C344,148 345,168 338,186 C331,204 318,218 302,226
+             C286,234 268,236 250,231 C232,226 216,214 206,200
+             C196,186 192,170 194,154 C196,138 204,124 216,114
+             C228,104 244,98 260,97 C276,96 292,100 306,108
+             C320,116 330,128 335,143 C340,158 338,175 330,188
+             C322,201 309,210 294,214 C279,218 263,217 249,210
+             C235,203 224,192 218,179 C213,166 213,152 218,140
+             C223,128 232,119 244,113 C256,107 270,106 282,110
+             C294,114 304,122 309,133 C314,144 313,157 307,167
+             C301,177 291,183 279,185 C267,187 255,183 246,175
+             C237,167 232,156 233,145 C234,134 239,124 248,118
+      M170,80 C152,90 136,106 124,126 C112,146 106,170 106,195
+             C106,220 114,245 128,266 C142,287 162,303 185,311
+             C208,319 234,319 258,311 C282,303 302,287 315,267
+             C328,247 334,222 332,198 C330,174 320,152 305,134
+             C290,116 270,102 248,95 C226,88 202,86 180,90
+      M394,162 C398,148 406,135 417,126 C428,117 442,112 456,112
+             C470,112 483,116 494,124 C505,132 513,144 516,158
+             C519,172 516,186 508,198 C500,210 488,218 474,222
+             C460,226 445,224 432,216 C419,208 409,196 404,182
+      M516,158 C520,172 520,188 515,202 C510,216 500,228 488,236
+             C476,244 462,248 448,247 C434,246 420,240 410,230
+             C400,220 394,207 393,193
+      M172,260 C178,278 190,295 206,308 C222,321 242,328 263,329
+             C284,330 305,325 322,314 C339,303 351,286 356,268
+             C361,250 359,230 351,212 C343,194 329,179 313,169
+             C297,159 279,155 261,157 C243,159 226,167 213,180
+             C200,193 192,210 190,228 C188,246 192,264 200,279
+             C208,294 220,306 235,313 C250,320 267,321 282,316
+             C297,311 309,300 316,286 C323,272 324,256 319,241
+             C314,226 304,213 291,205 C278,197 263,193 248,195
+             C233,197 219,204 209,215 C199,226 194,241 194,256
+             C194,271 199,285 208,296 C217,307 229,314 243,317
+             C257,320 271,318 283,311 C295,304 304,293 308,279
+             C312,265 310,250 302,238 C294,226 282,218 268,214
+             C255,210 240,211 228,217 C216,223 207,233 203,245"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5" stroke-linejoin="round" fill-opacity="0"/>
+
+    <!-- PANGAEA - DEFINITIVE clean shape from PALEOMAP reconstructions -->
+    <!-- Northern Pangaea (Laurasia portion): N.America + Europe + W.Asia joined -->
+    <path d="M148,90 C165,80 188,74 214,74 C240,74 266,80 290,92
+             C314,104 334,122 346,144 C358,166 360,190 352,212
+             C344,234 328,250 308,258 C288,266 266,266 246,258
+             C226,250 210,236 200,220 C190,204 186,186 188,170
+             C190,154 198,140 210,130 C222,120 237,116 252,116
+             C267,116 281,121 292,130 C303,139 310,152 312,166
+             C314,180 310,194 302,204 C294,214 283,220 271,221
+             C259,222 247,219 238,212 C229,205 223,194 222,182
+             C221,170 225,158 233,150 C241,142 251,138 262,138
+             C273,138 283,142 290,150 C297,158 300,169 298,179
+             C296,189 289,197 280,202 C271,207 260,208 250,205
+             C241,202 233,195 229,186"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <!-- Southern Pangaea (Gondwana): S.America + Africa + India + Antarctica + Australia -->
+    <path d="M148,90 C130,102 115,118 104,136 C93,154 87,174 86,195
+             C85,216 89,237 98,255 C107,273 120,288 136,299
+             C152,310 171,317 192,320 C213,323 235,322 255,316
+             C275,310 292,299 304,285 C316,271 322,254 322,237
+             C322,220 316,203 305,190 C294,177 279,168 263,164
+             C247,160 230,161 215,168 C200,175 188,186 181,200
+             C174,214 172,230 175,246 C178,262 186,276 198,287
+             C210,298 224,304 240,306 C256,308 272,305 286,297
+             C300,289 311,277 317,263 C323,249 324,233 320,218
+             C316,203 308,190 297,180 C286,170 273,164 259,163
+             C245,162 231,165 219,172 C207,179 198,190 193,203
+             C188,216 188,230 193,243 C198,256 207,267 219,275
+             C231,283 244,287 258,286 C272,285 285,279 295,269
+             C305,259 311,246 312,232
+      M148,90 C158,112 165,136 168,162 C171,188 170,215 163,240
+             C156,265 144,288 128,306 C112,324 92,336 70,342
+      M322,237 C326,258 335,278 348,295 C361,312 378,325 397,332
+             C416,339 436,340 456,335 C476,330 494,319 508,304
+             C522,289 530,270 532,250 C534,230 530,210 520,192
+             C510,174 495,159 477,149 C459,139 438,135 417,136
+             C396,137 376,144 359,156 C342,168 329,184 321,202"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+
+    <!-- Tethys Sea (lighter blue gulf) -->
+    <path d="M486,112 C520,108 558,115 592,128 C626,141 656,162 674,186
+             C690,208 692,232 680,252 C668,272 645,283 618,285
+             C591,287 562,278 538,262 C514,246 496,223 488,198
+             C480,173 480,148 492,128 Z"
+          fill="rgba(80,140,210,0.22)" stroke="rgba(100,160,230,0.35)" stroke-width="0.8"/>
+    <text x="598" y="195" text-anchor="middle" fill="rgba(100,160,220,0.60)" font-size="11" font-style="italic" font-family="Georgia,serif">Tethys Sea</text>
+
+    <!-- Mountain ranges - Appalachian/Caledonian (hatched ridgeline, E coast of Laurasia) -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.55" fill="none">
+      <path d="M242,84 l3,-5 l3,5"/> <path d="M248,90 l3,-5 l3,5"/>
+      <path d="M253,97 l3,-5 l3,5"/> <path d="M258,105 l3,-5 l3,5"/>
+      <path d="M262,113 l3,-5 l3,5"/> <path d="M265,122 l3,-5 l3,5"/>
+      <path d="M267,131 l3,-5 l3,5"/> <path d="M268,140 l3,-5 l3,5"/>
+      <path d="M268,149 l3,-5 l3,5"/> <path d="M266,158 l3,-5 l3,5"/>
+    </g>
+    <text x="275" y="122" fill="rgba(90,48,12,0.65)" font-size="6.5" font-style="italic" font-family="Georgia,serif" transform="rotate(75,275,122)">Appalachians</text>
+
+    <!-- Variscan/Hercynian mountains (central Laurasia / Europe) -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.50" fill="none">
+      <path d="M300,90 l3,-5 l3,5"/> <path d="M308,90 l3,-5 l3,5"/>
+      <path d="M316,91 l3,-5 l3,5"/> <path d="M324,92 l3,-5 l3,5"/>
+      <path d="M332,93 l3,-5 l3,5"/> <path d="M340,95 l3,-5 l3,5"/>
+      <path d="M348,97 l3,-5 l3,5"/> <path d="M356,100 l3,-5 l3,5"/>
+    </g>
+    <text x="328" y="85" fill="rgba(90,48,12,0.60)" font-size="6" font-style="italic" font-family="Georgia,serif" text-anchor="middle">Variscan Mts.</text>
+
+    <!-- Ural Mountains (join zone E.Europe to W.Asia) -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.50" fill="none">
+      <path d="M420,80 l3,-6 l3,6"/> <path d="M420,90 l3,-6 l3,6"/>
+      <path d="M419,100 l3,-6 l3,6"/> <path d="M418,110 l3,-6 l3,6"/>
+      <path d="M418,120 l3,-6 l3,6"/> <path d="M419,130 l3,-6 l3,6"/>
+    </g>
+    <text x="432" y="105" fill="rgba(90,48,12,0.60)" font-size="6" font-style="italic" font-family="Georgia,serif" transform="rotate(85,432,105)">Urals</text>
+
+    <!-- Cape Fold Belt (southern Gondwana) -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.45" fill="none">
+      <path d="M350,370 l4,-5 l4,5"/> <path d="M360,372 l4,-5 l4,5"/>
+      <path d="M370,373 l4,-5 l4,5"/> <path d="M380,373 l4,-5 l4,5"/>
+    </g>
+
+    <!-- Arid interior zone of Pangaea -->
+    <path d="M160,130 C200,120 260,115 320,118 C380,121 440,130 480,145
+             C500,153 512,162 510,172 C508,182 492,188 465,190
+             C430,193 385,190 340,182 C295,174 252,160 218,148 C184,136 162,128 160,130Z"
+          fill="url(#arid_tr)" stroke="none"/>
+
+    <!-- Labels -->
+    <text x="300" y="180" text-anchor="middle" fill="#3a2008" font-size="20" font-weight="bold" font-family="Georgia,serif" opacity="0.85">PANGAEA</text>
+    <text x="300" y="196" text-anchor="middle" fill="#3a2008" font-size="10" font-style="italic" font-family="Georgia,serif" opacity="0.70">One Supercontinent</text>
+    <text x="210" y="118" text-anchor="middle" fill="#3a2008" font-size="9" font-style="italic" font-family="Georgia,serif" opacity="0.75">Laurasia</text>
+    <text x="350" y="310" text-anchor="middle" fill="#3a2008" font-size="9" font-style="italic" font-family="Georgia,serif" opacity="0.75">Gondwana</text>
+
+    <!-- Ocean current -->
+    <path d="M762,200 C772,178 775,222 762,232" stroke="rgba(60,130,200,0.15)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
       <animate attributeName="stroke-dashoffset" values="0;-26" dur="3s" repeatCount="indefinite"/>
     </path>
-    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/><ellipse cx="400" cy="2" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
-    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~235 MYA</text>`,
+    <path d="M50,170 C60,155 65,185 52,192" stroke="rgba(60,130,200,0.12)" stroke-width="1.2" fill="none" stroke-dasharray="7,5">
+      <animate attributeName="stroke-dashoffset" values="0;-24" dur="4s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Polar ice -->
+    <ellipse cx="400" cy="5" rx="280" ry="25" fill="rgba(210,235,255,0.20)"/>
+    <ellipse cx="400" cy="395" rx="310" ry="30" fill="rgba(210,235,255,0.15)"/>
+
+    <!-- Hotspot dots -->
+    <circle cx="428" cy="148" r="4" fill="#ff5010" opacity="0.65">
+      <animate attributeName="opacity" values="0.65;0.2;0.65" dur="2.2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="312" cy="185" r="3" fill="#ff7020" opacity="0.60">
+      <animate attributeName="opacity" values="0.60;0.2;0.60" dur="2.8s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+
+    <text x="12" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="Georgia,serif">~230 MYA</text>
+`,
   jurassic: `
     <defs>
       <radialGradient id="og_jr" cx="40%" cy="45%" r="75%">
@@ -1841,78 +2941,302 @@ const SVG_MAPS = {
       </radialGradient>
     </defs>
     <rect width="800" height="400" fill="url(#og_jr)"/>
-    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
-    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
-    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
-    <text x="245" y="185" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Proto-Atlantic</text>
-    <text x="680" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Tethys Sea</text>
-    <text x="72" y="295" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-12,72,295)">Panthalassa</text>
-    <path d="M85,108 C130,95 205,90 258,105 C298,118 328,142 332,168 C336,194 318,218 290,234 C262,248 228,252 195,242 C158,232 122,210 102,185 C82,160 75,135 88,118 Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="210" y="178" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
-    <path d="M348,142 C385,130 438,125 482,132 C520,138 545,155 548,178 C550,200 532,218 505,228 C475,238 438,238 408,228 C378,218 355,200 350,178 C347,162 350,145 348,142Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="448" y="182" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Europe</text>
-    <path d="M230,270 C278,252 355,243 435,245 C512,247 568,262 600,285 C628,306 630,335 610,360 C588,385 550,398 502,400 C450,402 390,396 335,380 C285,365 245,340 228,310 C214,284 218,268 230,270Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="420" y="316" text-anchor="middle" fill="#4a2e08" font-size="14" font-weight="bold" font-family="system-ui,sans-serif">Gondwana</text>
-    <path d="M665,158 C698,148 738,150 758,165 C775,178 772,198 752,212 C730,226 698,228 672,218 C648,208 642,185 665,158Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="710" y="192" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Asia</text>
-    <path d="M230,188 C240,175 255,175 268,182" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="0.8" stroke-dasharray="4,8"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.025)" stroke-width="0.5" stroke-dasharray="3,10"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.025)" stroke-width="0.5" stroke-dasharray="3,10"/>
+
+    <!-- Panthalassa -->
+    <text x="62" y="290" text-anchor="middle" fill="rgba(100,160,220,0.38)" font-size="10" font-style="italic" font-family="Georgia,serif" transform="rotate(-12,62,290)">Panthalassa</text>
+
+    <!-- Tethys Sea -->
+    <path d="M478,118 C510,112 548,118 582,132 C616,146 645,166 662,190 C678,212 680,236 668,255 C656,274 633,283 606,283 C579,283 550,274 526,258 C502,242 484,220 476,196 C468,172 468,148 480,130 Z"
+          fill="rgba(80,140,210,0.20)" stroke="rgba(100,160,230,0.30)" stroke-width="0.8"/>
+    <text x="594" y="192" text-anchor="middle" fill="rgba(100,160,220,0.58)" font-size="10" font-style="italic" font-family="Georgia,serif">Tethys Sea</text>
+
+    <!-- Proto-Atlantic (narrow seaway between N.America and Africa/Europe) -->
+    <path d="M255,100 C262,115 265,135 264,155 C263,175 258,195 250,210 C242,225 231,235 220,238 C209,241 198,236 192,225"
+          fill="none" stroke="rgba(80,140,210,0.30)" stroke-width="8" stroke-linecap="round"/>
+    <text x="245" y="172" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="8.5" font-style="italic" font-family="Georgia,serif" transform="rotate(-75,245,172)">Proto-Atlantic</text>
+
+    <!-- Sundance Sea (central North America, shallow epicontinental) -->
+    <path d="M108,118 C118,112 132,110 145,112 C158,114 168,120 172,130 C176,140 172,152 164,160 C156,168 145,172 134,170 C123,168 114,160 110,150 C106,140 106,128 108,118Z"
+          fill="rgba(100,160,220,0.22)" stroke="rgba(120,170,230,0.35)" stroke-width="0.7"/>
+    <text x="138" y="142" text-anchor="middle" fill="rgba(100,160,220,0.60)" font-size="7.5" font-style="italic" font-family="Georgia,serif">Sundance</text>
+    <text x="138" y="152" text-anchor="middle" fill="rgba(100,160,220,0.60)" font-size="7.5" font-style="italic" font-family="Georgia,serif">Sea</text>
+
+    <!-- LAURASIA: North America -->
+    <path d="M86,100 C108,90 136,84 164,84 C192,84 219,90 240,102
+             C261,114 275,132 280,152 C285,172 280,193 267,208
+             C254,223 234,232 213,235 C192,238 170,234 152,224
+             C134,214 120,198 112,180 C104,162 100,142 100,124 Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="184" y="165" text-anchor="middle" fill="#3a2008" font-size="10" font-weight="bold" font-family="Georgia,serif">N. America</text>
+
+    <!-- LAURASIA: Europe -->
+    <path d="M328,125 C348,117 372,114 395,118 C418,122 438,132 450,148
+             C462,164 464,182 458,198 C452,214 438,226 422,231
+             C406,236 388,234 372,226 C356,218 344,204 338,188
+             C332,172 330,154 334,140 Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="394" y="178" text-anchor="middle" fill="#3a2008" font-size="10" font-weight="bold" font-family="Georgia,serif">Europe</text>
+
+    <!-- LAURASIA: Asia (eastern, partially split) -->
+    <path d="M658,120 C678,112 702,110 722,116 C742,122 757,134 763,150
+             C769,166 764,184 752,196 C740,208 722,214 704,213
+             C686,212 669,204 658,192 C647,180 642,164 643,149 C644,134 650,124 658,120Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="703" y="168" text-anchor="middle" fill="#3a2008" font-size="9.5" font-weight="bold" font-family="Georgia,serif">Asia</text>
+
+    <!-- GONDWANA (southern landmass: S.America + Africa + India + Antarctica + Australia) -->
+    <path d="M102,255 C125,242 155,235 188,233 C221,231 255,235 285,245
+             C315,255 340,270 358,290 C376,310 385,333 384,355
+             C383,377 372,395 356,405 C340,415 320,417 300,412
+             C280,407 262,395 248,380 C234,365 226,346 224,327
+             C222,308 226,288 235,272 C244,256 258,244 274,238
+             C290,232 308,232 325,238 C342,244 356,255 365,270
+             C374,285 376,302 372,318 C368,334 358,347 345,355
+             C332,363 316,367 300,365 C284,363 270,355 260,344
+             C250,333 244,319 244,305 C244,291 250,277 260,267
+             C270,257 283,251 297,250 C311,249 325,252 337,260
+             C349,268 357,280 360,294 C363,308 360,322 352,333
+             C344,344 332,351 318,354 C304,357 290,355 278,348
+             C266,341 257,330 253,317
+      M384,265 C410,255 440,250 470,252 C500,254 528,263 550,278
+             C572,293 586,314 590,336 C594,358 587,380 572,395
+             C557,410 536,417 514,417 C492,417 470,410 452,396
+             C434,382 422,362 418,340 C414,318 416,296 424,278
+             C432,260 445,246 460,240 C475,234 492,233 508,238
+             C524,243 538,253 547,267 C556,281 560,297 558,313
+             C556,329 549,344 538,354 C527,364 513,370 498,371
+             C483,372 468,368 456,359 C444,350 436,337 432,322
+             C428,307 428,291 434,278 C440,265 451,254 464,248
+             C477,242 491,241 504,246 C517,251 527,260 533,273
+             C539,286 540,300 536,313
+      M102,255 C88,270 78,290 72,312 C66,334 66,357 72,378 C78,399 90,415 106,422"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="235" y="318" text-anchor="middle" fill="#3a2008" font-size="10" font-weight="bold" font-family="Georgia,serif">S. America</text>
+    <text x="468" y="305" text-anchor="middle" fill="#3a2008" font-size="10" font-weight="bold" font-family="Georgia,serif">Africa</text>
+
+    <!-- India (starting to rift) -->
+    <path d="M572,240 C584,232 598,228 612,230 C626,232 638,240 645,252
+             C652,264 652,278 644,290 C636,302 622,308 608,307
+             C594,306 581,298 574,286 C567,274 566,260 572,248 Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.3"/>
+    <text x="609" y="272" text-anchor="middle" fill="#3a2008" font-size="8.5" font-weight="bold" font-family="Georgia,serif">India</text>
+
+    <!-- Australia/Antarctica joined -->
+    <path d="M650,310 C668,300 690,296 712,300 C734,304 752,316 762,332
+             C772,348 770,366 758,378 C746,390 728,394 710,390
+             C692,386 676,374 666,358 C656,342 648,324 650,310Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.3"/>
+    <text x="706" y="348" text-anchor="middle" fill="#3a2008" font-size="8.5" font-weight="bold" font-family="Georgia,serif">Aus/Ant.</text>
+
+    <!-- Mountain ranges -->
+    <!-- Sierra Nevada/Andean orogen forming -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.50" fill="none">
+      <path d="M98,102 l3,-5 l3,5"/> <path d="M98,112 l3,-5 l3,5"/>
+      <path d="M97,122 l3,-5 l3,5"/> <path d="M97,132 l3,-5 l3,5"/>
+      <path d="M97,142 l3,-5 l3,5"/> <path d="M97,152 l3,-5 l3,5"/>
+    </g>
+    <text x="90" y="128" fill="rgba(90,48,12,0.55)" font-size="6" font-style="italic" font-family="Georgia,serif" transform="rotate(88,90,128)">Sierra/Andes</text>
+
+    <!-- Atlas mountains (Africa) -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.45" fill="none">
+      <path d="M450,252 l3,-5 l3,5"/> <path d="M458,250 l3,-5 l3,5"/>
+      <path d="M466,250 l3,-5 l3,5"/>
+    </g>
+
+    <!-- Ocean current animations -->
+    <path d="M228,180 C238,168 252,168 262,176" stroke="rgba(60,130,200,0.15)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
       <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
     </path>
-    <circle cx="362" cy="155" r="4" fill="#ff5020" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
-    </circle><circle cx="502" cy="175" r="3" fill="#ff7030" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
-    </circle><circle cx="255" cy="315" r="3" fill="#ff6030" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    <path d="M680,250 C695,240 710,242 718,252" stroke="rgba(60,130,200,0.12)" stroke-width="1.2" fill="none" stroke-dasharray="7,5">
+      <animate attributeName="stroke-dashoffset" values="0;-24" dur="5s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Hotspots / rifting indicators -->
+    <circle cx="270" cy="152" r="4" fill="#ff5010" opacity="0.65">
+      <animate attributeName="opacity" values="0.65;0.2;0.65" dur="2.2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2.2s" repeatCount="indefinite"/>
     </circle>
-    <ellipse cx="400" cy="398" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/><ellipse cx="400" cy="2" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
-    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~170 MYA</text>`,
+    <circle cx="466" cy="150" r="3" fill="#ff7020" opacity="0.55">
+      <animate attributeName="opacity" values="0.55;0.15;0.55" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="212" cy="248" r="3" fill="#ff6020" opacity="0.55">
+      <animate attributeName="opacity" values="0.55;0.15;0.55" dur="2.6s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+
+    <ellipse cx="400" cy="5" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <ellipse cx="400" cy="395" rx="300" ry="28" fill="rgba(210,235,255,0.15)"/>
+    <text x="12" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="Georgia,serif">~150 MYA</text>
+`,
   cretaceous: `
     <defs>
       <radialGradient id="og_cr" cx="40%" cy="45%" r="75%">
         <stop offset="0%" stop-color="#0a2040"/>
         <stop offset="100%" stop-color="#030a14"/>
       </radialGradient>
+      <linearGradient id="wis_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#6ab0d8" stop-opacity="0.25"/>
+        <stop offset="50%" stop-color="#8ac8e8" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#6ab0d8" stop-opacity="0.25"/>
+      </linearGradient>
     </defs>
     <rect width="800" height="400" fill="url(#og_cr)"/>
-    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="3,7"/>
-    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
-    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="2,8"/>
-    <text x="302" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Atlantic Ocean</text>
-    <text x="655" y="192" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif">Tethys Sea</text>
-    <text x="72" y="295" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="10" font-style="italic" font-family="system-ui,sans-serif" transform="rotate(-8,72,295)">Pacific</text>
-    <path d="M85,128 C130,115 195,112 248,125 C290,136 315,158 320,182 C324,206 308,228 282,242 C255,256 218,260 185,252 C148,244 118,226 100,204 C82,182 72,160 82,142 C85,132 83,128 85,128Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="195" y="188" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">N. America</text>
-    <path d="M205,232 C228,220 260,215 280,225 C298,235 302,258 296,285 C290,318 273,348 250,368 C228,385 205,390 188,378 C172,366 165,342 168,312 C171,278 178,248 192,234 C198,226 206,234 205,232Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="238" y="302" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">S. America</text>
-    <path d="M358,158 C395,145 480,135 572,130 C650,126 718,132 762,148 C795,162 800,182 790,202 C780,220 758,235 720,242 C680,250 625,252 570,248 C500,244 430,238 380,228 C345,220 335,208 340,192 C344,178 355,162 358,158Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="580" y="190" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Eurasia</text>
-    <path d="M395,218 C425,210 462,208 485,222 C508,236 515,262 512,292 C508,325 495,355 472,372 C450,388 420,392 398,380 C375,368 360,345 355,315 C349,280 350,248 365,230 C374,218 386,218 395,218Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="436" y="292" text-anchor="middle" fill="#4a2e08" font-size="11" font-weight="bold" font-family="system-ui,sans-serif">Africa</text>
-    <path d="M550,288 C565,278 582,276 592,285 C602,294 600,312 588,325 C575,337 556,340 544,332 C534,324 534,305 550,288Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="568" y="310" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">India</text>
-    <path d="M610,320 C640,310 678,308 705,320 C728,330 735,352 720,368 C705,382 675,388 645,382 C616,376 602,360 605,342 C606,332 608,322 610,320Z" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>
-    <text x="660" y="342" text-anchor="middle" fill="#4a2e08" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Australia</text>
-    <ellipse cx="400" cy="395" rx="350" ry="28" fill="rgba(180,210,245,0.2)" stroke="rgba(120,170,220,0.3)" stroke-width="1"/>
-    <text x="400" y="398" text-anchor="middle" fill="#5580a0" font-size="10" font-weight="bold" font-family="system-ui,sans-serif">Antarctica</text>
-    <path d="M350,188 C360,178 370,178 382,185" stroke="rgba(60,130,200,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
+    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="0.8" stroke-dasharray="4,8"/>
+    <line x1="0" y1="133" x2="800" y2="133" stroke="rgba(255,255,255,0.025)" stroke-width="0.5" stroke-dasharray="3,10"/>
+    <line x1="0" y1="267" x2="800" y2="267" stroke="rgba(255,255,255,0.025)" stroke-width="0.5" stroke-dasharray="3,10"/>
+
+    <!-- Pacific label -->
+    <text x="58" y="295" text-anchor="middle" fill="rgba(100,160,220,0.38)" font-size="10" font-style="italic" font-family="Georgia,serif" transform="rotate(-8,58,295)">Pacific</text>
+
+    <!-- Tethys Sea -->
+    <path d="M560,132 C590,126 622,130 650,142 C678,154 700,172 712,194
+             C724,216 722,240 708,258 C694,276 672,285 648,285
+             C624,285 600,276 580,260 C560,244 546,222 540,198
+             C534,174 534,150 546,134 Z"
+          fill="rgba(80,140,210,0.20)" stroke="rgba(100,160,230,0.28)" stroke-width="0.8"/>
+    <text x="645" y="198" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="9.5" font-style="italic" font-family="Georgia,serif">Tethys Sea</text>
+
+    <!-- Atlantic Ocean -->
+    <text x="310" y="192" text-anchor="middle" fill="rgba(100,160,220,0.45)" font-size="10" font-style="italic" font-family="Georgia,serif">Atlantic Ocean</text>
+
+    <!-- LARAMIDIA (western North America) -->
+    <path d="M78,110 C98,100 122,94 146,94 C170,94 192,100 208,112
+             C224,124 232,140 232,157 C232,174 224,190 210,200
+             C196,210 179,214 162,212 C145,210 129,202 118,190
+             C107,178 100,163 99,148 C98,133 99,118 104,108 Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="156" y="156" text-anchor="middle" fill="#3a2008" font-size="9" font-weight="bold" font-family="Georgia,serif">Laramidia</text>
+
+    <!-- WESTERN INTERIOR SEAWAY - the big feature! -->
+    <path d="M156,212 C158,222 159,234 158,246 C157,258 154,270 150,280
+             C146,290 140,298 134,300 C128,302 122,297 118,287
+             C114,277 112,264 112,250 C112,236 114,222 118,212 C122,202 128,196 134,196
+             C140,196 148,202 152,210 Z"
+          fill="url(#wis_grad)" stroke="rgba(100,160,220,0.40)" stroke-width="0.8"/>
+    <!-- WIS label -->
+    <text x="135" y="252" text-anchor="middle" fill="rgba(80,140,210,0.75)" font-size="7" font-style="italic" font-family="Georgia,serif" transform="rotate(-85,135,252)">W. Interior Seaway</text>
+
+    <!-- APPALACHIA (eastern North America - island chain) -->
+    <path d="M172,108 C186,100 202,96 218,98 C234,100 248,108 256,120
+             C264,132 264,147 256,158 C248,169 235,174 221,172
+             C207,170 194,163 186,152 C178,141 175,128 178,116 Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="218" y="138" text-anchor="middle" fill="#3a2008" font-size="9" font-weight="bold" font-family="Georgia,serif">Appalachia</text>
+
+    <!-- South America (separated from Africa) -->
+    <path d="M172,230 C190,220 212,215 234,216 C256,217 276,224 290,238
+             C304,252 310,270 308,288 C306,306 296,322 282,332
+             C268,342 251,345 235,340 C219,335 205,323 197,308
+             C189,293 186,276 188,260 C190,244 198,230 210,222
+             C222,214 237,212 252,215 C267,218 281,227 290,240
+             C299,253 302,268 299,282 C296,296 288,308 278,315
+             C268,322 256,324 244,320 C232,316 222,307 217,296
+             C212,285 212,272 217,261 C222,250 230,241 241,237
+             C252,233 264,233 274,238 C284,243 291,252 294,263
+             C297,274 295,286 288,295 C281,304 270,309 258,309
+             C246,309 235,304 227,295 C219,286 216,274 218,263
+             C220,252 226,243 235,237"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="245" y="278" text-anchor="middle" fill="#3a2008" font-size="9.5" font-weight="bold" font-family="Georgia,serif">S. America</text>
+
+    <!-- Eurasia (main landmass, high sea levels make archipelago) -->
+    <path d="M378,140 C408,130 445,125 484,124 C523,123 562,128 598,138
+             C634,148 664,162 682,180 C700,198 702,218 692,234
+             C682,250 660,260 634,264 C608,268 580,264 555,255
+             C530,246 508,231 492,213 C476,195 468,174 468,155
+             C468,136 476,120 490,110 C504,100 522,96 540,98
+             C558,100 575,108 588,120 C601,132 608,148 608,164
+             C608,180 601,195 588,205 C575,215 558,219 540,218
+             C522,217 505,210 493,199 C481,188 474,173 474,158
+             C474,143 481,130 492,122"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="548" y="180" text-anchor="middle" fill="#3a2008" font-size="10" font-weight="bold" font-family="Georgia,serif">Eurasia</text>
+
+    <!-- Africa -->
+    <path d="M402,218 C422,208 446,202 470,204 C494,206 516,215 532,230
+             C548,245 556,264 555,283 C554,302 545,320 530,332
+             C515,344 496,350 477,349 C458,348 440,340 426,327
+             C412,314 404,297 401,279 C398,261 400,242 408,228 Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.5"/>
+    <text x="479" y="281" text-anchor="middle" fill="#3a2008" font-size="10" font-weight="bold" font-family="Georgia,serif">Africa</text>
+
+    <!-- India (drifting north, island continent) -->
+    <path d="M582,260 C594,252 608,248 622,250 C636,252 648,260 655,272
+             C662,284 660,298 652,308 C644,318 631,323 618,320
+             C605,317 594,308 588,296 C582,284 580,270 582,260Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.3"/>
+    <text x="619" y="290" text-anchor="middle" fill="#3a2008" font-size="8.5" font-weight="bold" font-family="Georgia,serif">India</text>
+    <!-- Arrow showing India drifting north -->
+    <path d="M619,250 L619,240" stroke="#8a5010" stroke-width="1" marker-end="url(#arr)" opacity="0.5"/>
+
+    <!-- Australia + Antarctica (joined) -->
+    <path d="M650,318 C668,308 690,304 712,308 C734,312 752,324 760,340
+             C768,356 764,374 752,384 C740,394 723,396 706,390
+             C689,384 674,372 664,356 C654,340 648,323 650,315Z"
+          fill="#c8a87a" stroke="#90704a" stroke-width="1.3"/>
+    <text x="706" y="356" text-anchor="middle" fill="#3a2008" font-size="8.5" font-weight="bold" font-family="Georgia,serif">Aus./Ant.</text>
+
+    <!-- Shallow Tethys / chalk seas over Europe -->
+    <path d="M388,148 C402,142 418,140 433,144 C448,148 460,158 465,170
+             C470,182 467,195 458,204 C449,213 436,217 422,215
+             C408,213 396,205 389,194 C382,183 380,170 384,158 Z"
+          fill="rgba(100,160,220,0.15)" stroke="rgba(120,175,230,0.25)" stroke-width="0.7"/>
+
+    <!-- Mountain ranges -->
+    <!-- Rockies forming -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.55" fill="none">
+      <path d="M90,110 l3,-5 l3,5"/> <path d="M90,120 l3,-5 l3,5"/>
+      <path d="M90,130 l3,-5 l3,5"/> <path d="M90,140 l3,-5 l3,5"/>
+      <path d="M89,150 l3,-5 l3,5"/> <path d="M89,160 l3,-5 l3,5"/>
+      <path d="M89,170 l3,-5 l3,5"/> <path d="M89,180 l3,-5 l3,5"/>
+    </g>
+    <text x="82" y="148" fill="rgba(90,48,12,0.55)" font-size="6" font-style="italic" font-family="Georgia,serif" transform="rotate(88,82,148)">Rockies</text>
+
+    <!-- Andes forming -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.48" fill="none">
+      <path d="M176,230 l-3,-5 l-3,5"/> <path d="M174,242 l-3,-5 l-3,5"/>
+      <path d="M173,254 l-3,-5 l-3,5"/> <path d="M172,266 l-3,-5 l-3,5"/>
+    </g>
+    <text x="164" y="252" fill="rgba(90,48,12,0.50)" font-size="5.5" font-style="italic" font-family="Georgia,serif" transform="rotate(88,164,252)">Andes</text>
+
+    <!-- Alps beginning -->
+    <g stroke="#7a4a18" stroke-width="0.7" opacity="0.45" fill="none">
+      <path d="M484,155 l3,-5 l3,5"/> <path d="M492,153 l3,-5 l3,5"/>
+      <path d="M500,152 l3,-5 l3,5"/> <path d="M508,153 l3,-5 l3,5"/>
+    </g>
+    <text x="496" y="148" fill="rgba(90,48,12,0.50)" font-size="5.5" font-style="italic" font-family="Georgia,serif" text-anchor="middle">Alps</text>
+
+    <!-- Ocean currents -->
+    <path d="M350,185 C360,175 375,175 385,185" stroke="rgba(60,130,200,0.13)" stroke-width="1.5" fill="none" stroke-dasharray="8,5">
       <animate attributeName="stroke-dashoffset" values="0;-26" dur="4s" repeatCount="indefinite"/>
     </path>
-    <circle cx="510" cy="195" r="4" fill="#ff5020" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
-    </circle><circle cx="225" cy="182" r="3" fill="#ff7030" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
-    </circle><circle cx="420" cy="375" r="3" fill="#ff6030" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    <path d="M228,215 C236,225 240,238 234,248" stroke="rgba(60,130,200,0.12)" stroke-width="1.2" fill="none" stroke-dasharray="7,5">
+      <animate attributeName="stroke-dashoffset" values="0;-24" dur="5s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Hotspot indicators -->
+    <circle cx="500" cy="195" r="4" fill="#ff5010" opacity="0.65">
+      <animate attributeName="opacity" values="0.65;0.2;0.65" dur="2.2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="4;6;4" dur="2.2s" repeatCount="indefinite"/>
     </circle>
-    <ellipse cx="400" cy="2" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
-    <text x="10" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">~90 MYA</text>`,
+    <circle cx="222" cy="180" r="3" fill="#ff7020" opacity="0.55">
+      <animate attributeName="opacity" values="0.55;0.15;0.55" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="618" cy="252" r="3" fill="#ff6020" opacity="0.55">
+      <animate attributeName="opacity" values="0.55;0.15;0.55" dur="2.6s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;5;3" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+
+    <ellipse cx="400" cy="5" rx="280" ry="22" fill="rgba(210,235,255,0.18)"/>
+    <ellipse cx="400" cy="395" rx="340" ry="32" fill="rgba(210,235,255,0.18)"/>
+    <text x="400" y="398" text-anchor="middle" fill="#4a7090" font-size="9.5" font-weight="bold" font-family="Georgia,serif">Antarctica</text>
+    <text x="12" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="Georgia,serif">~90 MYA</text>
+`,
   paleogene: `
     <defs>
       <radialGradient id="og_pg" cx="40%" cy="45%" r="75%">
@@ -2415,7 +3739,7 @@ function renderCreatures(period) {
       `<button class="expand-btn" onclick="toggleExpanded('${expandedId}')">📖 Full Entry</button>` : '';
     card.innerHTML = `
       <div class="creature-top">
-        <div class="creature-emoji">${c.emoji}</div>
+        <div class="${CREATURE_SPRITES[c.name] ? 'creature-sprite' : 'creature-emoji'}">${CREATURE_SPRITES[c.name] || c.emoji}</div>
         <div class="creature-title">
           <div class="creature-name"><span class="fun-fact-pulse">⚡</span>${c.name}</div>
           <div class="creature-size">${c.size}</div>
@@ -2520,59 +3844,43 @@ function closeFactPopup() {
 }
 
 // ============================================================
-// MAP ZOOM / PAN  (cursor-centered, transform on #paleoMap SVG)
+// MAP ZOOM / PAN
 // ============================================================
 let mapScale = 1, mapX = 0, mapY = 0;
 let isDragging = false, lastX = 0, lastY = 0;
-let pinchDist = 0, pinchMidX = 0, pinchMidY = 0;
+let pinchDist = 0;
 
 function applyMapTransform() {
-  // Transform is on the SVG element itself (transform-origin:0 0)
-  document.getElementById('paleoMap').style.transform =
-    `translate(${mapX}px,${mapY}px) scale(${mapScale})`;
+  const wrapper = document.getElementById('svgWrapper');
+  wrapper.style.transform = `translate(${mapX}px,${mapY}px) scale(${mapScale})`;
 }
 
 function clampMapTransform() {
   const area = document.getElementById('mapArea');
   const w = area.offsetWidth, h = area.offsetHeight;
-  // With transform-origin:0 0, valid range is [w*(1-scale), 0] for x and y
-  mapX = Math.min(0, Math.max(w * (1 - mapScale), mapX));
-  mapY = Math.min(0, Math.max(h * (1 - mapScale), mapY));
+  const maxX = w * (mapScale - 1) / 2;
+  const maxY = h * (mapScale - 1) / 2;
+  mapX = Math.max(-maxX, Math.min(maxX, mapX));
+  mapY = Math.max(-maxY, Math.min(maxY, mapY));
 }
 
-function resetMapTransform() { mapScale = 1; mapX = 0; mapY = 0; applyMapTransform(); }
-
-function zoomAt(cx, cy, factor) {
-  // cx, cy: cursor position relative to mapArea container
-  const oldScale = mapScale;
-  mapScale = Math.max(1, Math.min(6, mapScale * factor));
-  if (mapScale <= 1) { mapX = 0; mapY = 0; }
-  else {
-    mapX = cx - (cx - mapX) * (mapScale / oldScale);
-    mapY = cy - (cy - mapY) * (mapScale / oldScale);
-  }
-  clampMapTransform();
+document.getElementById('svgWrapper').addEventListener('dblclick', e => {
+  if (mapScale > 1) { mapScale = 1; mapX = 0; mapY = 0; }
+  else { mapScale = 2; }
   applyMapTransform();
-}
-
-const mapAreaEl = document.getElementById('mapArea');
-
-mapAreaEl.addEventListener('dblclick', e => {
-  if (mapScale > 1) { resetMapTransform(); return; }
-  const r = mapAreaEl.getBoundingClientRect();
-  zoomAt(e.clientX - r.left, e.clientY - r.top, 2.5);
 });
 
-mapAreaEl.addEventListener('wheel', e => {
+document.getElementById('svgWrapper').addEventListener('wheel', e => {
   e.preventDefault();
-  const r = mapAreaEl.getBoundingClientRect();
-  zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.15 : 0.87);
+  mapScale = Math.max(1, Math.min(5, mapScale * (e.deltaY < 0 ? 1.12 : 0.89)));
+  if (mapScale <= 1) { mapX = 0; mapY = 0; }
+  clampMapTransform();
+  applyMapTransform();
 }, { passive: false });
 
-mapAreaEl.addEventListener('mousedown', e => {
+document.getElementById('svgWrapper').addEventListener('mousedown', e => {
   if (mapScale <= 1) return;
   isDragging = true; lastX = e.clientX; lastY = e.clientY;
-  mapAreaEl.style.cursor = 'grabbing';
 });
 document.addEventListener('mousemove', e => {
   if (!isDragging) return;
@@ -2580,31 +3888,26 @@ document.addEventListener('mousemove', e => {
   lastX = e.clientX; lastY = e.clientY;
   clampMapTransform(); applyMapTransform();
 });
-document.addEventListener('mouseup', () => {
-  isDragging = false;
-  mapAreaEl.style.cursor = '';
-});
+document.addEventListener('mouseup', () => { isDragging = false; });
 
-// Touch pinch-to-zoom + pan
-mapAreaEl.addEventListener('touchstart', e => {
+// Touch pinch/pan
+document.getElementById('svgWrapper').addEventListener('touchstart', e => {
   if (e.touches.length === 2) {
     pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                            e.touches[0].clientY - e.touches[1].clientY);
-    const r = mapAreaEl.getBoundingClientRect();
-    pinchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left;
-    pinchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top;
   } else if (e.touches.length === 1 && mapScale > 1) {
     isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
   }
 }, { passive: true });
-
-mapAreaEl.addEventListener('touchmove', e => {
+document.getElementById('svgWrapper').addEventListener('touchmove', e => {
   if (e.touches.length === 2) {
     e.preventDefault();
     const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                          e.touches[0].clientY - e.touches[1].clientY);
-    zoomAt(pinchMidX, pinchMidY, d / pinchDist);
+    mapScale = Math.max(1, Math.min(5, mapScale * d / pinchDist));
     pinchDist = d;
+    if (mapScale <= 1) { mapX = 0; mapY = 0; }
+    clampMapTransform(); applyMapTransform();
   } else if (e.touches.length === 1 && isDragging) {
     mapX += e.touches[0].clientX - lastX; mapY += e.touches[0].clientY - lastY;
     lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
@@ -2614,183 +3917,15 @@ mapAreaEl.addEventListener('touchmove', e => {
 document.addEventListener('touchend', () => { isDragging = false; });
 
 // ============================================================
-// PERIOD NAVIGATION
-// ============================================================
-function jumpPeriod(dir) {
-  const sorted = [...PERIODS].sort((a,b) => b.start - a.start); // newest first = left on slider
-  const cur = activePeriod || getPeriod(currentMya);
-  const idx = sorted.findIndex(p => p.id === cur.id);
-  const next = sorted[Math.max(0, Math.min(sorted.length - 1, idx + dir))];
-  if (!next || next.id === cur.id) return;
-  const mya = (next.start + next.end) / 2;
-  const sliderVal = myaToSlider(mya);
-  document.getElementById('timeSlider').value = sliderVal;
-  document.getElementById('myaDisplay').textContent = fmtMya(mya);
-  resetMapTransform();
-  renderDisplay(mya);
-}
-
-document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  if (e.key === 'ArrowLeft')  jumpPeriod(-1);
-  if (e.key === 'ArrowRight') jumpPeriod(1);
-});
-
-// ============================================================
 // SLIDER EVENTS
 // ============================================================
-let _lastSliderPeriodId = null;
 document.getElementById('timeSlider').addEventListener('input', function() {
   const mya = sliderToMya(this.value);
   document.getElementById('myaDisplay').textContent = fmtMya(mya);
   const period = getPeriod(mya);
-  if (period && period.id !== _lastSliderPeriodId) {
-    _lastSliderPeriodId = period.id;
-    resetMapTransform();
-  }
   clearTimeout(renderSliderTimer);
   renderSliderTimer = setTimeout(() => renderDisplay(mya), 100);
 });
-
-// ============================================================
-// HIGH-QUALITY PALEOGEOGRAPHIC MAPS OVERRIDE
-// ============================================================
-;(function(){
-  const G=(la,lo)=>[Math.round((lo+180)*800/360),Math.round((90-la)*400/180)];
-  const P=(pts,z=1)=>{const c=pts.map(([la,lo])=>G(la,lo).join(','));return 'M'+c[0]+c.slice(1).map(v=>' L'+v).join('')+(z?' Z':'');};
-  const land=(d,label,lx,ly,fs=13)=>`<path d="${d}" fill="#c8a87a" stroke="#a08050" stroke-width="1.5"/>`+(label?`<text x="${lx}" y="${ly}" text-anchor="middle" fill="#4a2e08" font-size="${fs}" font-weight="bold" font-family="system-ui,sans-serif">${label}</text>`:'');
-  const sea=(t,x,y,r=0,fs=11)=>`<text x="${x}" y="${y}" text-anchor="middle" fill="rgba(100,160,220,0.55)" font-size="${fs}" font-style="italic" font-family="system-ui,sans-serif"${r?` transform="rotate(${r},${x},${y})"`:''} >${t}</text>`;
-  const mya=(t)=>`<text x="12" y="22" fill="rgba(200,168,122,0.7)" font-size="12" font-weight="bold" font-family="system-ui,sans-serif">${t}</text>`;
-  const bg=(id,c1,c2)=>`<defs><radialGradient id="bg${id}" cx="40%" cy="48%" r="75%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient></defs><rect width="800" height="400" fill="url(#bg${id})"/>`;
-  const iceband=(lat,op=0.75)=>`<path d="${P([[lat,-180],[lat,180],[90,180],[90,-180]])}" fill="rgba(210,232,255,${op})" stroke="rgba(180,210,240,0.4)" stroke-width="0.5"/>`;
-  const antice=(lat,op=0.75)=>`<path d="${P([[lat,-180],[lat,180],[-90,180],[-90,-180]])}" fill="rgba(210,232,255,${op})" stroke="rgba(180,210,240,0.4)" stroke-width="0.5"/>`;
-
-  /* ── MODERN continent shapes ───────────────────────────── */
-  const NA  =P([[70,-165],[48,-124],[38,-122],[22,-106],[9,-79],[15,-86],[20,-87],[25,-80],[35,-76],[44,-66],[47,-52],[55,-59],[60,-65],[68,-85],[70,-100]]);
-  const SA  =P([[12,-72],[5,-52],[0,-50],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-68],[-56,-66],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-77]]);
-  const EU  =P([[72,-10],[65,-20],[58,-5],[52,14],[44,8],[36,-9],[36,3],[38,22],[44,28],[54,18],[60,24],[65,27],[70,30]]);
-  const AF  =P([[37,-5],[31,32],[12,44],[11,51],[2,41],[-5,40],[-12,40],[-28,33],[-34,18],[-28,16],[-18,12],[-5,-10],[0,-17],[14,-17],[22,-17],[30,-10]]);
-  const AS  =P([[26,36],[42,28],[37,37],[42,50],[55,60],[72,53],[73,105],[68,130],[60,141],[52,135],[42,132],[35,128],[22,114],[10,104],[8,99],[8,77],[22,68],[27,56]]);
-  const AU  =P([[-14,130],[-14,136],[-19,148],[-27,153],[-38,145],[-38,140],[-35,117],[-28,114],[-22,114],[-18,122]]);
-  const GR  =P([[76,-70],[83,-45],[83,-20],[75,-18],[70,-25],[64,-52],[70,-52]]);
-  const ANT =P([[-67,-180],[-67,180],[-90,180],[-90,-180]]);
-
-  /* ── CRETACEOUS (~90 MYA) variants ────────────────────── */
-  const SA_K=P([[10,-65],[5,-52],[0,-48],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-54,-68],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-72]]);
-  const AF_K=P([[35,-5],[30,34],[10,44],[10,51],[2,41],[-5,40],[-12,40],[-28,34],[-35,20],[-20,12],[-5,-8],[0,-16],[14,-16],[22,-17],[30,-10]]);
-  const IND_K=P([[5,70],[-5,73],[-15,74],[-18,70],[-8,64],[5,64]]);
-  const AS_K =P([[26,36],[42,28],[38,37],[42,50],[55,60],[70,55],[73,105],[68,130],[60,141],[52,135],[42,132],[35,128],[22,114],[10,104],[8,99],[22,68],[27,56]]);
-  const AUANT_K=P([[-14,130],[-14,136],[-20,148],[-28,153],[-38,150],[-50,145],[-65,130],[-75,80],[-75,30],[-70,10],[-65,0],[-65,-30],[-55,-50],[-45,-65],[-40,145],[-38,140],[-28,114],[-18,122]]);
-
-  /* ── JURASSIC (~170 MYA) ── Laurasia + Gondwana ─────── */
-  const LAUR_J=P([[68,-165],[48,-124],[38,-120],[22,-104],[9,-79],[15,-86],[20,-87],[25,-80],[35,-76],[44,-64],[47,-52],[52,-25],[55,-10],[52,20],[55,55],[50,80],[45,120],[35,115],[25,108],[10,96],[15,78],[25,62],[35,46],[42,30],[48,10],[52,-20],[55,-30],[50,-40]]);
-  const GOND_J=P([[12,-60],[5,-52],[0,-48],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-67],[-65,-55],[-75,-20],[-80,0],[-80,60],[-75,90],[-65,120],[-50,140],[-35,142],[-20,148],[-10,130],[0,120],[8,85],[5,65],[0,55],[-5,40],[-12,40],[-28,34],[-35,22],[-20,12],[-5,-8],[0,-17],[14,-17],[22,-17],[30,-10],[35,-5]]);
-
-  /* ── PANGAEA (~250 MYA) ─────────────────────────────── */
-  const PANGAEA=P([[58,-40],[65,-5],[68,40],[60,52],[55,60],[65,60],[45,120],[35,115],[25,110],[10,88],[-5,42],[-15,40],[-35,38],[-55,22],[-70,5],[-75,0],[-75,-25],[-65,-50],[-55,-65],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-77],[10,-78],[20,-75],[30,-80],[40,-72],[50,-55]]);
-
-  /* ── CARBONIFEROUS (~320 MYA) ── Proto-Pangaea ─────── */
-  const EURAMER=P([[65,-35],[70,5],[68,40],[60,50],[55,55],[65,55],[70,30],[72,5],[68,-25],[62,-25],[55,-30],[50,-40],[44,-64],[47,-52],[55,-45],[60,-20],[35,-5],[36,5],[30,10],[28,20],[28,-10],[30,-30],[35,-52],[44,-65],[50,-56]]);
-  const GOND_C =P([[5,-40],[0,-45],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-67],[-65,-50],[-75,-10],[-80,20],[-80,60],[-75,90],[-65,120],[-50,140],[-30,148],[-15,140],[0,120],[8,85],[5,65],[0,55],[-5,40],[-25,38],[-40,22],[-55,22],[-60,20],[-55,10],[-30,10],[-15,8],[0,-8],[5,-12],[5,-30]]);
-  const SIBE_C =P([[25,130],[35,145],[25,160],[15,155],[10,140],[15,128]]);
-
-  /* ── CAMBRIAN (~520 MYA) ── scattered plates ────────── */
-  const GOND_CB=P([[5,-20],[0,-10],[-5,10],[-5,30],[-10,50],[-20,70],[-30,80],[-45,80],[-60,65],[-70,30],[-75,0],[-75,-30],[-65,-50],[-50,-60],[-35,-55],[-20,-50],[-5,-40],[0,-30]]);
-  const LAUR_CB=P([[30,-70],[40,-50],[45,-30],[35,-15],[20,-15],[10,-25],[10,-45],[15,-60],[25,-70]]);
-  const BALT_CB=P([[15,30],[20,45],[10,55],[-5,55],[-10,45],[-5,35],[5,30]]);
-  const SIBE_CB=P([[25,140],[35,155],[25,170],[15,165],[10,150],[15,138]]);
-
-  /* ═══════════ ASSEMBLE TEMPLATES ═══════════ */
-  function mkmap(id,c1,c2,content){ return bg(id,c1,c2)+content; }
-
-  Object.assign(SVG_MAPS, {
-
-    cryogenian: mkmap('cryo','#010a18','#000408',
-      `<rect width="800" height="400" fill="rgba(180,220,255,0.08)"/>` +
-      antice(25,0.60)+
-      `<path d="${P([[25,-180],[25,180],[-25,180],[-25,-180]])}" fill="rgba(210,232,255,0.40)" stroke="none"/>` +
-      antice(-25,0.72)+
-      land(P([[5,10],[10,30],[-5,40],[-20,35],[-30,20],[-25,0],[-10,-10],[0,-5]]),'',0,0)+
-      land(P([[10,-50],[20,-35],[15,-20],[5,-15],[-5,-20],[-10,-40],[-5,-50],[5,-50]]),'',0,0)+
-      sea('SNOWBALL EARTH',400,188,0,26)+sea('720 – 635 Million Years Ago',400,216,0,13)+
-      mya('~700 MYA')
-    ),
-
-    cambrian: mkmap('camb','#0a2040','#030a14',
-      land(GOND_CB,'Gondwana',390,290,14)+
-      land(LAUR_CB,'Laurentia',320,125,11)+
-      land(BALT_CB,'Baltica',488,190,10)+
-      land(SIBE_CB,'Siberia',718,172,10)+
-      antice(-75,0.6)+
-      sea('Iapetus Ocean',300,182,0,10)+sea('Panthalassa',120,290,-18,10)+
-      sea('Paleo-Tethys',560,148,0,10)+mya('~520 MYA')
-    ),
-
-    carboniferous: mkmap('carb','#0a2040','#030a14',
-      land(GOND_C,'Gondwana',440,310,13)+
-      land(EURAMER,'Euramerica',375,118,13)+
-      land(SIBE_C,'Siberia',698,168,10)+
-      antice(-75,0.6)+
-      sea('Tethys Sea',558,198,0,10)+sea('Rheic Ocean',308,222,-15,10)+
-      sea('Panthalassa',105,248,-18,11)+mya('~320 MYA')
-    ),
-
-    pangaea: mkmap('pang','#0a2040','#030a14',
-      land(PANGAEA,'Pangaea',445,182,18)+
-      antice(-75,0.6)+
-      sea('Panthalassa',128,225,0,12)+sea('Tethys Sea',618,162,15,11)+
-      mya('~250 MYA')
-    ),
-
-    jurassic: mkmap('jura','#0a2040','#030a14',
-      land(LAUR_J,'Laurasia',385,112,13)+
-      land(GOND_J,'Gondwana',428,292,14)+
-      antice(-73,0.6)+
-      sea('Tethys Sea',572,188,0,11)+sea('Proto-Atlantic',255,182,-15,10)+
-      sea('Panthalassa',118,258,-18,11)+mya('~170 MYA')
-    ),
-
-    cretaceous: mkmap('kret','#0a2040','#030a14',
-      land(NA    ,'N. America',162,118,11)+
-      land(SA_K  ,'S. America',262,252,10)+
-      land(EU    ,'Europe',    418,86,10)+
-      land(AF_K  ,'Africa',    425,195,11)+
-      land(AS_K  ,'Asia',      585,108,12)+
-      land(IND_K ,'India',     562,212,9)+
-      land(AUANT_K,'Aus-Antarctica',605,308,10)+
-      sea('Atlantic',312,188,0,10)+sea('Tethys Sea',528,172,0,10)+
-      sea('Indian Ocean',488,252,0,10)+mya('~90 MYA')
-    ),
-
-    paleogene: mkmap('paleo','#0a2040','#030a14',
-      land(NA  ,'N. America',162,118,11)+
-      land(SA  ,'S. America',262,252,10)+
-      land(EU  ,'Europe',    418,86,10)+
-      land(AF  ,'Africa',    428,195,11)+
-      land(AS  ,'Asia',      585,112,12)+
-      land(AU  ,'Australia', 692,262,10)+
-      land(GR  ,'',0,0)+
-      antice(-68,0.65)+
-      sea('Atlantic Ocean',315,182,0,10)+sea('Indian Ocean',498,252,0,10)+
-      mya('~45 MYA')
-    ),
-
-    modern: mkmap('mod','#0a2040','#030a14',
-      land(NA  ,'N. America',162,118,11)+
-      land(SA  ,'S. America',262,252,10)+
-      land(EU  ,'Europe',    418,86,10)+
-      land(AF  ,'Africa',    428,195,11)+
-      land(AS  ,'Asia',      585,112,12)+
-      land(AU  ,'Australia', 692,262,10)+
-      land(GR  ,'',0,0)+
-      antice(-67,0.75)+iceband(74,0.35)+
-      sea('Atlantic Ocean',315,182,0,10)+sea('Pacific Ocean',132,198,0,11)+
-      sea('Indian Ocean',498,252,0,10)+sea('Arctic Ocean',398,22,0,9)+
-      mya('~0 MYA')
-    ),
-
-  });
-})();
 
 // ============================================================
 // INIT
