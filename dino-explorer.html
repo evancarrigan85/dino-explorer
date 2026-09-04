@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🦕 Dino Time Explorer</title>
+<meta name="description" content="Slide through 720+ million years of life on Earth — hand-drawn paleogeographic maps, 100+ creatures with fossil ranges, and every geological period from Snowball Earth to today.">
+<meta property="og:title" content="🦕 Dino Time Explorer">
+<meta property="og:description" content="Slide through 720+ million years of life on Earth — hand-drawn paleogeographic maps, 100+ creatures, every geological period.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%95%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -252,7 +258,7 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
   <div class="logo">🦕</div>
   <div>
     <h1>Dino Time Explorer</h1>
-    <div class="sub">Slide through 541 million years of life on Earth</div>
+    <div class="sub">Slide through 720+ million years of life on Earth</div>
   </div>
   <span class="era-badge" id="eraBadge">Paleozoic Era</span>
   <div class="mya-display" id="myaDisplay">541 MYA</div>
@@ -263,13 +269,14 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
   <div id="periodLabels"></div>
   <div id="sliderWrapper">
     <div id="sliderTrack"></div>
-    <input type="range" class="time-slider" id="timeSlider" min="0" max="1000" value="0" step="1">
+    <input type="range" class="time-slider" id="timeSlider" min="0" max="1000" value="0" step="1"
+      aria-label="Geological time slider" aria-valuemin="0" aria-valuemax="1000">
   </div>
   <div style="display:flex;align-items:center;padding:0 8px 2px">
     <div id="timelineHint">← drag slider · use ◀ ▶ to jump periods · scroll map to zoom</div>
     <div class="period-nav">
-      <button class="nav-btn" onclick="jumpPeriod(-1)" title="Previous period (←)">◀</button>
-      <button class="nav-btn" onclick="jumpPeriod(1)" title="Next period (→)">▶</button>
+      <button class="nav-btn" onclick="jumpPeriod(-1)" title="Previous period (←)" aria-label="Previous period">◀</button>
+      <button class="nav-btn" onclick="jumpPeriod(1)" title="Next period (→)" aria-label="Next period">▶</button>
     </div>
   </div>
 </div>
@@ -299,16 +306,16 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
 
   <!-- RIGHT: tabs + content -->
   <div class="right-panel" id="rightPanel">
-    <div class="tab-bar">
-      <button class="tab-btn active" data-tab="creatures" onclick="switchTab('creatures')">🦕 Creatures</button>
-      <button class="tab-btn" data-tab="geo" onclick="switchTab('geo')">🌋 Geology</button>
-      <button class="tab-btn" data-tab="ask" onclick="switchTab('ask')">💬 Ask</button>
+    <div class="tab-bar" role="tablist" aria-label="Panel views">
+      <button class="tab-btn active" data-tab="creatures" onclick="switchTab('creatures')" role="tab" aria-selected="true" aria-controls="creaturesPanel" id="tab-creatures">🦕 Creatures</button>
+      <button class="tab-btn" data-tab="geo" onclick="switchTab('geo')" role="tab" aria-selected="false" aria-controls="geoPanel" id="tab-geo">🌋 Geology</button>
+      <button class="tab-btn" data-tab="ask" onclick="switchTab('ask')" role="tab" aria-selected="false" aria-controls="askPanel" id="tab-ask">💬 Ask</button>
     </div>
     <div class="panel-title" id="panelTitle">🌊 Life in This Period</div>
     <div class="panel-content" id="panelContent">
-      <div id="creaturesPanel" class="creatures-list"></div>
-      <div id="geoPanel" class="geo-list" style="display:none"></div>
-      <div id="askPanel" class="ask-panel" style="display:none">
+      <div id="creaturesPanel" class="creatures-list" role="tabpanel" aria-labelledby="tab-creatures"></div>
+      <div id="geoPanel" class="geo-list" style="display:none" role="tabpanel" aria-labelledby="tab-geo"></div>
+      <div id="askPanel" class="ask-panel" style="display:none" role="tabpanel" aria-labelledby="tab-ask">
         <div class="ask-hint">
           <span class="emoji">💬</span>
           Ask me anything about prehistoric life, continental drift, or what you see here!
@@ -2448,6 +2455,13 @@ function renderDisplay(mya) {
   // Render current tab content
   if (currentTab === 'creatures') renderCreatures(period);
   else if (currentTab === 'geo') renderGeoFeatures(period);
+
+  // Accessibility: announce period + age on the slider
+  const slider = document.getElementById('timeSlider');
+  slider.setAttribute('aria-valuenow', String(myaToSlider(mya)));
+  slider.setAttribute('aria-valuetext', period.name + ', ' + fmtMya(mya));
+
+  updateHash();
 }
 
 // ============================================================
@@ -2504,7 +2518,9 @@ function renderCreatures(period) {
         activeCreatureName = null;
         updateMap(period, null);
       }
+      updateHash();
     });
+    if (c.name === activeCreatureName) card.classList.add('active');
     list.appendChild(card);
   });
 }
@@ -2553,7 +2569,9 @@ function renderGeoFeatures(period) {
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.tab === tab);
+    const on = b.dataset.tab === tab;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
   });
   document.getElementById('creaturesPanel').style.display = tab === 'creatures' ? 'block' : 'none';
   document.getElementById('geoPanel').style.display = tab === 'geo' ? 'block' : 'none';
@@ -2691,6 +2709,46 @@ function jumpPeriod(dir) {
   resetMapTransform();
   renderDisplay(mya);
 }
+
+// ============================================================
+// URL HASH SYNC  (#periodId  or  #periodId/creature-slug)
+// ============================================================
+function slugify(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+let _hashSuppress = false;
+function updateHash() {
+  if (!activePeriod) return;
+  const parts = [activePeriod.id];
+  if (activeCreatureName) parts.push(slugify(activeCreatureName));
+  const next = '#' + parts.join('/');
+  if (location.hash === next) return;
+  _hashSuppress = true;
+  history.replaceState(null, '', next);
+  _hashSuppress = false;
+}
+
+function applyHash() {
+  const raw = (location.hash || '').replace(/^#/, '');
+  if (!raw) return false;
+  const [pid, cslug] = raw.split('/').map(decodeURIComponent);
+  const period = PERIODS.find(p => p.id === pid);
+  if (!period) return false;
+  const mya = (period.start + period.end) / 2;
+  // Pre-set state so renderDisplay's period-change check preserves the creature
+  activePeriod = period;
+  activeCreatureName = cslug
+    ? (period.creatures.find(c => slugify(c.name) === cslug) || {}).name || null
+    : null;
+  const sliderVal = myaToSlider(mya);
+  document.getElementById('timeSlider').value = sliderVal;
+  resetMapTransform();
+  renderDisplay(mya);
+  return true;
+}
+
+window.addEventListener('hashchange', () => { if (!_hashSuppress) applyHash(); });
 
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -3560,8 +3618,8 @@ document.getElementById('timeSlider').addEventListener('input', function() {
 // ============================================================
 if (!activePeriod) activePeriod = getPeriod(541);
 buildPeriodLabels();
-renderDisplay(541);
-setTimeout(() => showFact('🦕', 'Welcome, time explorers! 🌍 Drag the slider to travel through 541+ million years. Double-click the map to zoom. Click any creature to see its fossil range!'), 800);
+if (!applyHash()) renderDisplay(541);
+setTimeout(() => showFact('🦕', 'Welcome, time explorers! 🌍 Drag the slider to travel through 720+ million years. Double-click the map to zoom. Click any creature to see its fossil range!'), 800);
 </script>
 </body>
 </html>
