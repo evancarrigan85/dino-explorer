@@ -2325,7 +2325,11 @@ function updateMap(period, creatureName) {
   svgContent = applyAntiqueStyle(svgContent);
 
   // Build full content: defs + grid (behind) + map content + overlays
-  mapEl.innerHTML = ANTIQUE_DEFS + MAP_GRID + svgContent + GRAIN_OVERLAY + CORNER_MARKS + COMPASS_ROSE + VIGNETTE;
+  // Every map from the override set already supplies its own compass, paper
+  // grain and vignette via mkmap() -> bg()/compass()/aged(). Re-adding the
+  // wrapper's copies drew a second compass rose in the opposite corner and
+  // stacked the grain and vignette two and three deep.
+  mapEl.innerHTML = ANTIQUE_DEFS + MAP_GRID + svgContent + CORNER_MARKS;
 
   // Show creature range overlay if requested
   if (creatureName && CREATURE_RANGES[creatureName]) {
@@ -2715,7 +2719,96 @@ document.getElementById('timeSlider').addEventListener('input', function() {
 // ============================================================
 ;(function(){
   const G=(la,lo)=>[Math.round((lo+180)*800/360),Math.round((90-la)*400/180)];
-  const P=(pts,z=1)=>{const c=pts.map(([la,lo])=>G(la,lo).join(','));return 'M'+c[0]+c.slice(1).map(v=>' L'+v).join('')+(z?' Z':'');};
+
+  /* Raw straight-line polygon. Used for map-edge rectangles (ice bands) where
+     smoothing/roughening would pull the corners off the canvas edge. */
+  const Praw=(pts,z=1)=>{const c=pts.map(([la,lo])=>G(la,lo).join(','));return 'M'+c[0]+c.slice(1).map(v=>' L'+v).join('')+(z?' Z':'');};
+
+  /* ── COASTLINE GEOMETRY ──────────────────────────────────────────────
+     The source outlines are coarse polygons (10-35 vertices). Drawn as
+     straight segments they read as faceted vector blobs. Three passes fix
+     that: deterministic noise -> fractal roughening -> curve smoothing. */
+
+  // Deterministic hash noise in -1..1. Seeded rather than Math.random() so a
+  // coastline is identical on every render instead of shimmering.
+  const rnd = (i, s=1) => {
+    const h = Math.sin(i * 127.1 + s * 311.7) * 43758.5453;
+    return (h - Math.floor(h)) * 2 - 1;
+  };
+
+  // Recursive midpoint displacement. Each pass inserts a midpoint per segment
+  // and pushes it along the segment normal, carving inlets, bays and
+  // headlands. Amplitude decays per pass so large bays get fine detail rather
+  // than noise piling on noise.
+  const roughen = (pts, iters=3, amp=0.28) => {
+    let p = pts.slice();
+    for (let it = 0; it < iters; it++) {
+      const out = [], decay = amp / Math.pow(1.9, it);
+      for (let i = 0; i < p.length; i++) {
+        const a = p[i], b = p[(i + 1) % p.length];
+        out.push(a);
+        const dx = b[0] - a[0], dy = b[1] - a[1];
+        const len = Math.hypot(dx, dy) || 1;
+        const j = rnd(i + it * 97 + Math.round(len), it + 1) * len * decay;
+        out.push([(a[0]+b[0])/2 - dy/len*j, (a[1]+b[1])/2 + dx/len*j]);
+      }
+      p = out;
+    }
+    return p;
+  };
+
+  // Closed Catmull-Rom spline emitted as cubic beziers: flowing coast instead
+  // of visible facets.
+  const smooth = (pts, t=0.5) => {
+    const n = pts.length, f = v => v.toFixed(1);
+    let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+    for (let i = 0; i < n; i++) {
+      const p0 = pts[(i-1+n)%n], p1 = pts[i], p2 = pts[(i+1)%n], p3 = pts[(i+2)%n];
+      d += ` C${f(p1[0] + (p2[0]-p0[0])/6*t)} ${f(p1[1] + (p2[1]-p0[1])/6*t)}`
+         + ` ${f(p2[0] - (p3[0]-p1[0])/6*t)} ${f(p2[1] - (p3[1]-p1[1])/6*t)}`
+         + ` ${f(p2[0])} ${f(p2[1])}`;
+    }
+    return d + ' Z';
+  };
+
+  /* Coastal stipple: dotted bands echoing the shoreline out to sea — the
+     signature texture of engraved antique charts. Offset outward from the
+     shape centroid, which is accurate enough for blobby landmasses. */
+  const stipple = (pts, bands=3, gap=3.2) => {
+    const cx = pts.reduce((s,p)=>s+p[0],0)/pts.length;
+    const cy = pts.reduce((s,p)=>s+p[1],0)/pts.length;
+    // One <path> of dots per band rather than hundreds of <circle> elements:
+    // same look, a fraction of the markup and DOM nodes.
+    let out = '';
+    for (let b = 1; b <= bands; b++) {
+      const off = b * gap, op = (0.30 - b*0.07).toFixed(2);
+      let d = '';
+      for (let i = 0; i < pts.length; i += 4) {
+        const [x,y] = pts[i];
+        const dx = x-cx, dy = y-cy, L = Math.hypot(dx,dy) || 1;
+        const px = (x+dx/L*off).toFixed(1), py = (y+dy/L*off).toFixed(1);
+        d += `M${px} ${py}m-.5 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0`;
+      }
+      if (d) out += `<path d="${d}" fill="#1b3a5c" opacity="${op}"/>`;
+    }
+    return out;
+  };
+
+  /* Landmass path builder. Returns a String carrying the projected points on
+     a .pts property, so land() can derive coastal stipple from the same
+     geometry without every call site having to pass it separately. */
+  const P = (pts, z=1) => {
+    // Roughening passes scale inversely with source detail: a 60-point
+    // surveyed coast only needs a light pass, a 10-point sketch needs three.
+    // Without this the dense outlines would gain 8x points and turn to fuzz.
+    const n = pts.length;
+    const iters = n > 40 ? 1 : n > 20 ? 2 : 3;
+    const amp   = n > 40 ? 0.16 : n > 20 ? 0.22 : 0.28;
+    const xy = roughen(pts.map(([la,lo]) => G(la,lo)), iters, amp);
+    const s = new String(smooth(xy));
+    s.pts = xy;
+    return s;
+  };
 
   /* ── STORYBOOK PAINTED BACKGROUND ──
      A warm watercolor ocean with subtle paper texture + gentle wave lines.
@@ -2801,19 +2894,30 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       `<rect width="800" height="400" fill="url(#vig_${id})"/>`;
   };
 
-  /* Painted landmass: gradient fill + hand-drawn wobble + hatching + label in Cinzel */
+  /* Painted landmass: coastal stipple + gradient fill + hatching + Cinzel label.
+     The coastline detail now comes from real spline/fractal geometry in P(),
+     so the old hd_filter displacement is gone — it only smeared the inlets. */
+  let _lid = 0;
   const land = (id, d, label, lx, ly, fs=14) => {
+    // The coastline is now 2-4 KB of curve data and gets drawn in five
+    // layers. Emitting it once in <defs> and referencing it with <use> keeps
+    // one copy instead of five — the difference between a map that repaints
+    // instantly on the slider and one that stutters.
+    const pid = `c${id}${_lid++}`;
     return (
+      `<defs><path id="${pid}" d="${d}"/></defs>` +
       // coastal shelf halo (shallow sea lighter)
-      `<path d="${d}" fill="url(#shelf_${id})" transform="scale(1.04)" transform-origin="400 200" opacity="0.65"/>` +
+      `<use href="#${pid}" fill="url(#shelf_${id})" transform="scale(1.04)" transform-origin="400 200" opacity="0.65"/>` +
+      // engraved-chart stipple bands in the water around the shore
+      (d.pts ? stipple(d.pts) : '') +
       // outer coastline shadow for depth
-      `<path d="${d}" fill="none" stroke="rgba(70,40,12,0.60)" stroke-width="3" stroke-linejoin="round" filter="url(#hd_filter)"/>` +
-      // base land fill with hand-drawn wobble
-      `<path d="${d}" fill="url(#ld_${id})" stroke="rgba(100,60,20,0.95)" stroke-width="1.2" stroke-linejoin="round" filter="url(#hd_filter)"/>` +
+      `<use href="#${pid}" fill="none" stroke="rgba(70,40,12,0.60)" stroke-width="3" stroke-linejoin="round"/>` +
+      // base land fill
+      `<use href="#${pid}" fill="url(#ld_${id})" stroke="rgba(100,60,20,0.95)" stroke-width="1.2" stroke-linejoin="round"/>` +
       // interior wash for depth
-      `<path d="${d}" fill="url(#ld2_${id})" opacity="0.75"/>` +
+      `<use href="#${pid}" fill="url(#ld2_${id})" opacity="0.75"/>` +
       // subtle terrain hatching on interior
-      `<path d="${d}" fill="url(#hatch45)" opacity="0.08"/>` +
+      `<use href="#${pid}" fill="url(#hatch45)" opacity="0.08"/>` +
       // label in Cinzel (proper cartographic font)
       (label ? `<text x="${lx}" y="${ly}" text-anchor="middle" font-family="'Cinzel','Georgia','Book Antiqua',serif" font-size="${fs}" font-weight="700" fill="#2e1506" letter-spacing="1.5" style="paint-order:stroke fill;stroke:rgba(245,228,180,0.9);stroke-width:3.5px">${label}</text>` : '')
     );
@@ -2822,17 +2926,71 @@ document.getElementById('timeSlider').addEventListener('input', function() {
   /* Sea name — italic Cinzel with parchment halo */
   const sea = (t, x, y, r=0, fs=12) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="'Cinzel','Georgia','Book Antiqua',serif" font-style="italic" font-size="${fs}" fill="#122848" opacity="0.82" letter-spacing="2"${r?` transform="rotate(${r},${x},${y})"`:''} style="paint-order:stroke fill;stroke:rgba(220,200,155,0.78);stroke-width:3px">${t}</text>`;
 
-  /* Ornate date cartouche — top-left scroll shape */
-  const mya = (t) => `
-    <g transform="translate(12,10)">
-      <rect x="0" y="0" width="120" height="30" rx="4" fill="rgba(242,222,175,0.95)" stroke="rgba(100,60,18,0.75)" stroke-width="1.2"/>
-      <rect x="2" y="2" width="116" height="26" rx="3" fill="none" stroke="rgba(100,60,18,0.35)" stroke-width="0.6"/>
-      <text x="60" y="20" text-anchor="middle" font-family="'Cinzel Decorative','Cinzel','Georgia',serif" font-size="11" font-weight="700" fill="#3a1e06" letter-spacing="1.5">${t}</text>
+  /* Decorative title cartouche — scrolled panel with the period name and date,
+     the way an engraved chart announces itself. */
+  const mya = (t, title) => {
+    const W = title ? 210 : 128, H = title ? 52 : 32, cx = W/2;
+    const scroll = (sx, dir) =>            // curled scrollwork on each end
+      `<path d="M${sx} 6 q${9*dir} 0 ${9*dir} ${H/2-6} q0 ${H/2-6} ${-9*dir} ${H/2-6}`
+      + ` q${5*dir} ${-(H/2-6)} 0 ${-(H-12)} Z" fill="rgba(228,204,152,0.95)"`
+      + ` stroke="rgba(96,58,16,0.7)" stroke-width="0.9"/>`
+      + `<circle cx="${sx+6*dir}" cy="${H/2}" r="2.1" fill="none" stroke="rgba(96,58,16,0.6)" stroke-width="0.8"/>`;
+    return `
+    <g transform="translate(14,10)">
+      ${scroll(0,-1)}${scroll(W,1)}
+      <rect x="0" y="0" width="${W}" height="${H}" rx="2" fill="rgba(243,224,178,0.96)" stroke="rgba(96,58,16,0.8)" stroke-width="1.3"/>
+      <rect x="3.5" y="3.5" width="${W-7}" height="${H-7}" rx="1" fill="none" stroke="rgba(96,58,16,0.4)" stroke-width="0.7"/>
+      ${title ? `<text x="${cx}" y="21" text-anchor="middle" font-family="'Cinzel Decorative','Cinzel','Georgia',serif" font-size="12.5" font-weight="700" fill="#3a1e06" letter-spacing="1.2">${title}</text>
+      <line x1="${cx-46}" y1="28" x2="${cx+46}" y2="28" stroke="rgba(96,58,16,0.5)" stroke-width="0.7"/>
+      <path d="M${cx-4} 28 l4 -3 l4 3 l-4 3 Z" fill="rgba(96,58,16,0.65)"/>
+      <text x="${cx}" y="43" text-anchor="middle" font-family="'Cinzel','Georgia',serif" font-size="10.5" fill="#4a2a08" letter-spacing="2">${t}</text>`
+      : `<text x="${cx}" y="${H/2+4}" text-anchor="middle" font-family="'Cinzel Decorative','Cinzel','Georgia',serif" font-size="11" font-weight="700" fill="#3a1e06" letter-spacing="1.5">${t}</text>`}
     </g>`;
+  };
+
+  /* Aged paper — fold creases, foxing blooms and worn edges, laid over the
+     finished map so every layer sits under the same sheet of old paper. */
+  const aged = (id) => {
+    let g = '<g pointer-events="none">';
+    // Fold creases: the sheet was folded into eighths. Each crease is a dark
+    // valley with a lighter lifted edge beside it.
+    [200,400,600].forEach(x=>{
+      g += `<line x1="${x}" y1="0" x2="${x}" y2="400" stroke="rgba(70,44,14,0.16)" stroke-width="1.1"/>`
+         + `<line x1="${x+1.4}" y1="0" x2="${x+1.4}" y2="400" stroke="rgba(255,246,220,0.20)" stroke-width="1"/>`;
+    });
+    [200].forEach(y=>{
+      g += `<line x1="0" y1="${y}" x2="800" y2="${y}" stroke="rgba(70,44,14,0.14)" stroke-width="1.1"/>`
+         + `<line x1="0" y1="${y+1.4}" x2="800" y2="${y+1.4}" stroke="rgba(255,246,220,0.18)" stroke-width="1"/>`;
+    });
+    // Foxing — the rusty age-blooms on old paper. Seeded per map so each
+    // period has its own stain pattern but never re-rolls between renders.
+    const seed = id.length + id.charCodeAt(0);
+    for (let i = 0; i < 26; i++) {
+      const x = 30 + Math.abs(rnd(i, seed)) * 740;
+      const y = 20 + Math.abs(rnd(i + 50, seed)) * 360;
+      const r = 2.5 + Math.abs(rnd(i + 100, seed)) * 9;
+      const op = (0.03 + Math.abs(rnd(i + 150, seed)) * 0.05).toFixed(3);
+      g += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${r.toFixed(1)}" ry="${(r*0.72).toFixed(1)}" fill="#7a4a12" opacity="${op}"/>`;
+    }
+    // Worn, darkened edges
+    g += `<defs><linearGradient id="wearT_${id}" x1="0" y1="0" x2="0" y2="1">`
+       + `<stop offset="0%" stop-color="rgba(74,42,10,0.34)"/><stop offset="100%" stop-color="rgba(74,42,10,0)"/></linearGradient>`
+       + `<linearGradient id="wearB_${id}" x1="0" y1="1" x2="0" y2="0">`
+       + `<stop offset="0%" stop-color="rgba(74,42,10,0.34)"/><stop offset="100%" stop-color="rgba(74,42,10,0)"/></linearGradient>`
+       + `<linearGradient id="wearL_${id}" x1="0" y1="0" x2="1" y2="0">`
+       + `<stop offset="0%" stop-color="rgba(74,42,10,0.30)"/><stop offset="100%" stop-color="rgba(74,42,10,0)"/></linearGradient>`
+       + `<linearGradient id="wearR_${id}" x1="1" y1="0" x2="0" y2="0">`
+       + `<stop offset="0%" stop-color="rgba(74,42,10,0.30)"/><stop offset="100%" stop-color="rgba(74,42,10,0)"/></linearGradient></defs>`
+       + `<rect width="800" height="26" fill="url(#wearT_${id})"/>`
+       + `<rect y="374" width="800" height="26" fill="url(#wearB_${id})"/>`
+       + `<rect width="22" height="400" fill="url(#wearL_${id})"/>`
+       + `<rect x="778" width="22" height="400" fill="url(#wearR_${id})"/>`;
+    return g + '</g>';
+  };
 
   /* Ice caps — painted polar regions */
   const iceband = (id, lat, op=0.85) => {
-    const d = P([[lat,-180],[lat,180],[90,180],[90,-180]]);
+    const d = Praw([[lat,-180],[lat,180],[90,180],[90,-180]]);
     return `<path d="${d}" fill="url(#ice_${id})" opacity="${op}"/>` +
       `<path d="${d}" fill="none" stroke="rgba(120,150,190,0.55)" stroke-width="1" stroke-dasharray="2 3"/>` +
       // snowflake specks
@@ -2842,7 +3000,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       }).join('');
   };
   const antice = (id, lat, op=0.85) => {
-    const d = P([[lat,-180],[lat,180],[-90,180],[-90,-180]]);
+    const d = Praw([[lat,-180],[lat,180],[-90,180],[-90,-180]]);
     const yTop = Math.round((90-lat)*400/180);
     return `<path d="${d}" fill="url(#ice_${id})" opacity="${op}"/>` +
       `<path d="${d}" fill="none" stroke="rgba(120,150,190,0.55)" stroke-width="1" stroke-dasharray="2 3"/>` +
@@ -2853,16 +3011,67 @@ document.getElementById('timeSlider').addEventListener('input', function() {
   };
 
   /* Mountain range — tiny painted triangles with snow caps */
+  /* Relief hachures — the engraved-map convention for terrain: short tapered
+     strokes running downslope, dense on steep ground. Reads as a real
+     surveyed range rather than a row of triangle pictograms. */
   const mountains = (points, opts={}) => {
-    const c = opts.color || '#6b4a2a';
+    const ink = opts.color || '#4a3116';
     const snow = opts.snow !== false;
-    return points.map(([la,lo,s=1])=>{
+    return points.map(([la,lo,s=1], mi)=>{
       const [x,y] = G(la,lo);
-      const h = 8*s, w = 10*s;
-      const shade = `<path d="M${x-w} ${y+2} L${x} ${y-h} L${x+w} ${y+2} Z" fill="${c}" stroke="#3a2508" stroke-width="0.6" stroke-linejoin="round"/>`;
-      const cap = snow ? `<path d="M${x-w*0.45} ${y-h*0.35} L${x} ${y-h} L${x+w*0.45} ${y-h*0.35} L${x+w*0.15} ${y-h*0.25} L${x} ${y-h*0.55} L${x-w*0.15} ${y-h*0.25} Z" fill="#f4faff" opacity="0.95"/>` : '';
-      return shade + cap;
+      const w = 13*s, h = 9*s;
+      let g = '';
+      // Ridge spine, slightly irregular so ranges don't look stamped
+      const kink = rnd(mi*13, 3) * 1.6;
+      g += `<path d="M${(x-w).toFixed(1)} ${(y+2.5).toFixed(1)} Q${(x-w*0.4).toFixed(1)} ${(y-h*0.9+kink).toFixed(1)} ${x} ${(y-h).toFixed(1)}`
+         + ` Q${(x+w*0.45).toFixed(1)} ${(y-h*0.85-kink).toFixed(1)} ${(x+w).toFixed(1)} ${(y+2.5).toFixed(1)}"`
+         + ` fill="none" stroke="${ink}" stroke-width="${(0.9*s).toFixed(2)}" stroke-linecap="round" opacity="0.85"/>`;
+      // Hachures fanning down both flanks
+      const n = Math.max(5, Math.round(9*s));
+      for (let i = 0; i <= n; i++) {
+        const t = i/n;                       // 0..1 across the ridge
+        const rx = x - w + 2*w*t;
+        const ry = y - h*Math.sin(Math.PI*t) + 1.5;   // ridge height at t
+        const len = (2.2 + 4.2*Math.sin(Math.PI*t)) * s;
+        const lean = (t - 0.5) * 3.2 * s;    // strokes splay outward downslope
+        const jit = rnd(mi*31 + i, 5) * 0.5;
+        g += `<line x1="${rx.toFixed(1)}" y1="${ry.toFixed(1)}"`
+           + ` x2="${(rx+lean+jit).toFixed(1)}" y2="${(ry+len).toFixed(1)}"`
+           + ` stroke="${ink}" stroke-width="${(0.55*s).toFixed(2)}" stroke-linecap="round"`
+           + ` opacity="${(0.30 + 0.34*Math.sin(Math.PI*t)).toFixed(2)}"/>`;
+      }
+      // Snow only on the higher peaks
+      if (snow && s >= 1) {
+        g += `<path d="M${(x-w*0.28).toFixed(1)} ${(y-h*0.52).toFixed(1)} Q${(x-w*0.1).toFixed(1)} ${(y-h*0.95).toFixed(1)} ${x} ${(y-h).toFixed(1)}`
+           + ` Q${(x+w*0.12).toFixed(1)} ${(y-h*0.93).toFixed(1)} ${(x+w*0.28).toFixed(1)} ${(y-h*0.5).toFixed(1)}"`
+           + ` fill="none" stroke="#f2f8ff" stroke-width="${(1.5*s).toFixed(2)}" stroke-linecap="round" opacity="0.85"/>`;
+      }
+      return g;
     }).join('');
+  };
+
+  /* River systems — drawn as tapering ink courses with tributaries, the way
+     an engraver would. Points are [lat,lon] from source to mouth. */
+  const river = (pts, opts={}) => {
+    if (pts.length < 2) return '';
+    const xy = pts.map(([la,lo]) => G(la,lo));
+    const ink = opts.color || '#2b5878';
+    // Smooth the course with a quadratic chain
+    let d = `M${xy[0][0]} ${xy[0][1]}`;
+    for (let i = 1; i < xy.length; i++) {
+      const p = xy[i-1], c = xy[i];
+      d += ` Q${((p[0]+c[0])/2 + rnd(i,7)*2.5).toFixed(1)} ${((p[1]+c[1])/2 + rnd(i,11)*2.5).toFixed(1)} ${c[0]} ${c[1]}`;
+    }
+    // Two passes: a soft under-stroke, then the crisp course widening to the mouth
+    let g = `<path d="${d}" fill="none" stroke="${ink}" stroke-width="${opts.w||2.1}" stroke-linecap="round" opacity="0.22"/>`
+          + `<path d="${d}" fill="none" stroke="${ink}" stroke-width="${(opts.w||2.1)*0.5}" stroke-linecap="round" opacity="0.65"/>`;
+    // Tributaries branching off the upper course
+    (opts.trib||[]).forEach(([la,lo,toIdx],i)=>{
+      const a = G(la,lo), b = xy[Math.min(toIdx, xy.length-1)];
+      g += `<path d="M${a[0]} ${a[1]} Q${((a[0]+b[0])/2+rnd(i,13)*3).toFixed(1)} ${((a[1]+b[1])/2+rnd(i,17)*3).toFixed(1)} ${b[0]} ${b[1]}"`
+         + ` fill="none" stroke="${ink}" stroke-width="0.75" stroke-linecap="round" opacity="0.5"/>`;
+    });
+    return g;
   };
 
   /* Volcano — red cone with smoke */
@@ -2985,39 +3194,39 @@ document.getElementById('timeSlider').addEventListener('input', function() {
   };
 
   /* ── MODERN continent shapes ───────────────────────────── */
-  const NA  =P([[70,-165],[48,-124],[38,-122],[22,-106],[9,-79],[15,-86],[20,-87],[25,-80],[35,-76],[44,-66],[47,-52],[55,-59],[60,-65],[68,-85],[70,-100]]);
-  const SA  =P([[12,-72],[5,-52],[0,-50],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-68],[-56,-66],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-77]]);
-  const EU  =P([[72,-10],[65,-20],[58,-5],[52,14],[44,8],[36,-9],[36,3],[38,22],[44,28],[54,18],[60,24],[65,27],[70,30]]);
-  const AF  =P([[37,-5],[31,32],[12,44],[11,51],[2,41],[-5,40],[-12,40],[-28,33],[-34,18],[-28,16],[-18,12],[-5,-10],[0,-17],[14,-17],[22,-17],[30,-10]]);
-  const AS  =P([[26,36],[42,28],[37,37],[42,50],[55,60],[72,53],[73,105],[68,130],[60,141],[52,135],[42,132],[35,128],[22,114],[10,104],[8,99],[8,77],[22,68],[27,56]]);
-  const AU  =P([[-14,130],[-14,136],[-19,148],[-27,153],[-38,145],[-38,140],[-35,117],[-28,114],[-22,114],[-18,122]]);
-  const GR  =P([[76,-70],[83,-45],[83,-20],[75,-18],[70,-25],[64,-52],[70,-52]]);
-  const ANT =P([[-67,-180],[-67,180],[-90,180],[-90,-180]]);
+  const NA  =P([[71,-156],[70,-143],[69,-132],[70,-125],[68,-114],[68,-103],[66,-92],[64,-82],[61,-77],[57,-77],[52,-79],[55,-85],[60,-90],[62,-94],[59,-93],[55,-87],[51,-80],[55,-74],[59,-66],[56,-61],[52,-56],[48,-53],[46,-60],[44,-66],[41,-71],[38,-75],[35,-76],[32,-80],[28,-80],[25,-81],[28,-83],[30,-87],[29,-91],[27,-97],[24,-98],[20,-97],[18,-94],[15,-93],[12,-86],[9,-82],[11,-86],[15,-93],[19,-104],[23,-110],[28,-114],[32,-117],[37,-122],[42,-124],[47,-124],[52,-129],[57,-136],[60,-143],[58,-153],[56,-161],[59,-164],[63,-166],[66,-163],[69,-165]]);
+  const SA  =P([[12,-71],[11,-74],[8,-77],[5,-77],[2,-79],[-2,-80],[-6,-81],[-10,-78],[-14,-76],[-18,-71],[-22,-70],[-26,-71],[-30,-71],[-34,-72],[-38,-73],[-42,-74],[-46,-75],[-50,-75],[-54,-71],[-55,-67],[-52,-69],[-48,-66],[-44,-65],[-40,-62],[-37,-57],[-34,-54],[-31,-51],[-28,-49],[-25,-48],[-22,-41],[-18,-39],[-14,-39],[-10,-36],[-6,-35],[-3,-39],[-1,-45],[0,-50],[3,-51],[5,-53],[7,-57],[9,-60],[10,-64],[11,-69]]);
+  const EU  =P([[71,28],[70,20],[68,15],[65,12],[62,6],[59,5],[58,8],[56,8],[55,11],[54,13],[54,19],[55,21],[57,22],[59,24],[60,28],[59,31],[57,28],[56,21],[54,19],[52,14],[54,9],[53,5],[51,3],[49,0],[47,-2],[44,-1],[43,3],[42,3],[41,0],[39,-1],[37,-3],[36,-6],[37,-9],[39,-9],[41,-9],[43,-8],[44,-2],[46,-1],[48,-5],[49,-2],[51,1],[53,4],[55,7],[57,7],[58,4],[59,5],[62,5],[64,10],[66,14],[69,18],[70,24]]);
+  const AF  =P([[37,-6],[36,1],[37,9],[34,11],[33,15],[31,20],[31,26],[31,32],[28,34],[24,36],[20,38],[17,39],[15,40],[12,43],[11,48],[10,51],[7,49],[4,46],[1,42],[-3,41],[-7,39],[-11,40],[-15,41],[-19,36],[-22,35],[-25,33],[-29,32],[-32,29],[-34,26],[-34,20],[-33,18],[-30,17],[-27,15],[-23,14],[-19,12],[-15,12],[-11,13],[-7,12],[-4,9],[0,9],[4,9],[5,4],[5,-1],[4,-6],[6,-10],[9,-14],[12,-16],[15,-17],[19,-16],[22,-17],[25,-15],[28,-13],[31,-10],[34,-8]]);
+  const AS  =P([[40,28],[38,26],[36,30],[36,36],[37,41],[40,49],[37,50],[30,48],[26,52],[25,57],[24,60],[25,63],[23,67],[21,72],[16,74],[12,75],[8,77],[10,80],[14,80],[17,83],[20,87],[22,89],[21,92],[17,95],[13,98],[9,99],[6,101],[2,103],[6,100],[10,107],[13,109],[17,108],[21,109],[23,113],[22,117],[25,119],[29,122],[32,121],[35,120],[38,122],[40,124],[43,130],[46,138],[50,142],[54,142],[59,143],[62,152],[60,160],[62,170],[66,171],[69,161],[70,150],[73,141],[74,130],[76,113],[76,100],[73,80],[70,73],[68,67],[66,62],[62,60],[58,58],[54,55],[50,50],[46,48],[43,42],[41,38],[41,32]]);
+  const AU  =P([[-11,132],[-12,137],[-15,141],[-18,146],[-21,149],[-25,153],[-28,153],[-32,153],[-35,150],[-38,147],[-39,144],[-38,141],[-35,138],[-33,135],[-32,132],[-34,124],[-35,118],[-33,115],[-30,115],[-26,113],[-22,114],[-20,119],[-18,122],[-16,124],[-14,127],[-12,130]]);
+  const GR  =P([[83,-33],[81,-22],[78,-19],[75,-20],[72,-22],[69,-24],[66,-35],[61,-43],[60,-45],[64,-51],[67,-53],[70,-54],[73,-56],[76,-60],[78,-68],[80,-66],[82,-52],[83,-40]]);
+  const ANT =Praw([[-67,-180],[-67,180],[-90,180],[-90,-180]]);
 
   /* ── CRETACEOUS (~90 MYA) variants ────────────────────── */
-  const SA_K=P([[10,-65],[5,-52],[0,-48],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-54,-68],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-72]]);
-  const AF_K=P([[35,-5],[30,34],[10,44],[10,51],[2,41],[-5,40],[-12,40],[-28,34],[-35,20],[-20,12],[-5,-8],[0,-16],[14,-16],[22,-17],[30,-10]]);
-  const IND_K=P([[5,70],[-5,73],[-15,74],[-18,70],[-8,64],[5,64]]);
-  const AS_K =P([[26,36],[42,28],[38,37],[42,50],[55,60],[70,55],[73,105],[68,130],[60,141],[52,135],[42,132],[35,128],[22,114],[10,104],[8,99],[22,68],[27,56]]);
-  const AUANT_K=P([[-14,130],[-14,136],[-20,148],[-28,153],[-38,150],[-50,145],[-65,130],[-75,80],[-75,30],[-70,10],[-65,0],[-65,-30],[-55,-50],[-45,-65],[-40,145],[-38,140],[-28,114],[-18,122]]);
+  const SA_K=P([[10,-64],[8,-70],[5,-74],[2,-77],[-2,-79],[-6,-80],[-10,-77],[-14,-75],[-18,-71],[-22,-70],[-26,-70],[-30,-70],[-34,-71],[-38,-72],[-42,-73],[-46,-73],[-50,-72],[-52,-68],[-49,-66],[-45,-64],[-41,-61],[-37,-56],[-33,-52],[-29,-49],[-25,-47],[-21,-42],[-17,-39],[-13,-38],[-9,-36],[-5,-36],[-2,-41],[0,-47],[3,-51],[6,-56],[8,-60]]);
+  const AF_K=P([[34,-4],[33,4],[32,12],[31,20],[30,28],[29,34],[25,36],[21,38],[17,40],[13,43],[10,48],[7,47],[3,44],[0,41],[-4,41],[-8,40],[-12,41],[-16,38],[-20,35],[-24,33],[-28,32],[-32,28],[-34,22],[-33,18],[-30,16],[-26,14],[-22,12],[-18,10],[-14,10],[-10,9],[-6,8],[-2,7],[2,7],[5,3],[5,-2],[7,-7],[10,-11],[14,-14],[18,-14],[22,-14],[26,-12],[30,-9]]);
+  const IND_K=P([[8,68],[5,71],[1,73],[-3,74],[-8,75],[-13,74],[-17,72],[-18,68],[-15,64],[-10,62],[-5,62],[0,63],[4,65]]);
+  const AS_K =P([[40,28],[38,26],[36,32],[37,40],[39,48],[36,50],[30,49],[26,54],[25,60],[24,65],[22,70],[19,76],[16,80],[14,85],[15,90],[18,94],[16,98],[12,100],[8,102],[12,106],[16,109],[20,110],[23,114],[22,118],[26,120],[30,122],[34,121],[38,123],[42,130],[46,138],[51,142],[56,143],[60,152],[62,165],[66,170],[69,160],[71,148],[73,136],[75,120],[74,102],[71,84],[68,70],[64,62],[58,58],[52,52],[46,46],[42,36]]);
+  const AUANT_K=P([[-12,130],[-14,138],[-18,145],[-22,150],[-27,153],[-32,152],[-36,148],[-38,143],[-36,138],[-34,132],[-33,126],[-35,120],[-33,115],[-29,114],[-24,113],[-21,117],[-19,123],[-22,130],[-30,137],[-40,143],[-50,147],[-60,145],[-68,132],[-74,105],[-76,70],[-75,35],[-72,8],[-68,-14],[-63,-34],[-57,-52],[-50,-64],[-42,-66],[-35,-56],[-31,-34],[-28,-4],[-24,34],[-20,72],[-15,104]]);
 
   /* ── JURASSIC (~170 MYA) ── Laurasia + Gondwana ─────── */
-  const LAUR_J=P([[68,-165],[48,-124],[38,-120],[22,-104],[9,-79],[15,-86],[20,-87],[25,-80],[35,-76],[44,-64],[47,-52],[52,-25],[55,-10],[52,20],[55,55],[50,80],[45,120],[35,115],[25,108],[10,96],[15,78],[25,62],[35,46],[42,30],[48,10],[52,-20],[55,-30],[50,-40]]);
-  const GOND_J=P([[12,-60],[5,-52],[0,-48],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-67],[-65,-55],[-75,-20],[-80,0],[-80,60],[-75,90],[-65,120],[-50,140],[-35,142],[-20,148],[-10,130],[0,120],[8,85],[5,65],[0,55],[-5,40],[-12,40],[-28,34],[-35,22],[-20,12],[-5,-8],[0,-17],[14,-17],[22,-17],[30,-10],[35,-5]]);
+  const LAUR_J=P([[68,-160],[60,-140],[52,-128],[44,-122],[36,-118],[28,-108],[20,-96],[14,-86],[10,-78],[16,-84],[22,-86],[28,-80],[34,-76],[40,-70],[46,-62],[50,-52],[52,-40],[54,-28],[52,-16],[50,-6],[52,4],[54,14],[52,24],[54,36],[52,48],[54,58],[50,70],[48,82],[46,96],[44,110],[40,120],[34,116],[28,110],[22,102],[16,94],[14,84],[20,74],[26,64],[32,54],[38,44],[44,32],[48,20],[52,8],[56,-6],[58,-20],[56,-34],[52,-46],[56,-60],[60,-80],[64,-110],[66,-138]]);
+  const GOND_J=P([[12,-58],[8,-52],[4,-48],[0,-46],[-4,-36],[-10,-37],[-16,-42],[-22,-44],[-28,-50],[-34,-58],[-40,-64],[-46,-66],[-52,-66],[-58,-58],[-64,-46],[-70,-28],[-76,-6],[-80,20],[-80,50],[-76,80],[-70,106],[-62,126],[-52,138],[-42,144],[-32,148],[-22,146],[-14,136],[-6,124],[0,110],[6,92],[8,74],[6,60],[2,52],[-2,44],[-8,42],[-14,42],[-20,40],[-26,36],[-32,26],[-34,18],[-30,14],[-24,12],[-18,10],[-12,8],[-6,-2],[-2,-12],[2,-18],[8,-18],[14,-18],[20,-16],[26,-12],[32,-8],[36,-4]]);
 
   /* ── PANGAEA (~250 MYA) ─────────────────────────────── */
-  const PANGAEA=P([[58,-40],[65,-5],[68,40],[60,52],[55,60],[65,60],[45,120],[35,115],[25,110],[10,88],[-5,42],[-15,40],[-35,38],[-55,22],[-70,5],[-75,0],[-75,-25],[-65,-50],[-55,-65],[-45,-73],[-35,-72],[-25,-70],[-12,-77],[-5,-80],[0,-78],[5,-77],[10,-78],[20,-75],[30,-80],[40,-72],[50,-55]]);
+  const PANGAEA=P([[58,-38],[62,-22],[66,-4],[68,16],[66,36],[62,50],[58,58],[62,60],[58,74],[54,88],[50,102],[46,116],[40,118],[34,112],[28,106],[22,98],[16,90],[10,80],[4,62],[0,48],[-6,42],[-12,40],[-18,40],[-24,38],[-30,36],[-38,32],[-46,26],[-54,20],[-62,10],[-70,2],[-76,-8],[-76,-24],[-72,-38],[-66,-50],[-58,-62],[-50,-70],[-42,-72],[-34,-72],[-26,-70],[-18,-74],[-10,-79],[-4,-80],[2,-78],[8,-77],[14,-78],[20,-76],[26,-78],[32,-80],[38,-74],[44,-68],[50,-56],[54,-46]]);
 
   /* ── CARBONIFEROUS (~320 MYA) ── Proto-Pangaea ─────── */
-  const EURAMER=P([[65,-35],[70,5],[68,40],[60,50],[55,55],[65,55],[70,30],[72,5],[68,-25],[62,-25],[55,-30],[50,-40],[44,-64],[47,-52],[55,-45],[60,-20],[35,-5],[36,5],[30,10],[28,20],[28,-10],[30,-30],[35,-52],[44,-65],[50,-56]]);
-  const GOND_C =P([[5,-40],[0,-45],[-5,-35],[-10,-37],[-23,-43],[-30,-50],[-35,-58],[-45,-65],[-55,-67],[-65,-50],[-75,-10],[-80,20],[-80,60],[-75,90],[-65,120],[-50,140],[-30,148],[-15,140],[0,120],[8,85],[5,65],[0,55],[-5,40],[-25,38],[-40,22],[-55,22],[-60,20],[-55,10],[-30,10],[-15,8],[0,-8],[5,-12],[5,-30]]);
-  const SIBE_C =P([[25,130],[35,145],[25,160],[15,155],[10,140],[15,128]]);
+  const EURAMER=P([[64,-36],[68,-16],[70,4],[68,24],[64,42],[60,50],[64,54],[68,44],[71,26],[72,4],[70,-16],[66,-28],[60,-26],[54,-30],[48,-40],[44,-56],[46,-64],[52,-58],[58,-44],[56,-24],[48,-12],[40,-4],[36,4],[32,10],[28,18],[26,10],[28,-2],[30,-16],[32,-32],[36,-48],[42,-60],[48,-66],[54,-60],[58,-50]]);
+  const GOND_C =P([[6,-38],[2,-44],[-2,-40],[-6,-36],[-12,-38],[-18,-42],[-24,-46],[-30,-52],[-36,-58],[-44,-64],[-52,-66],[-60,-56],[-68,-40],[-74,-16],[-78,10],[-80,40],[-78,68],[-72,94],[-64,118],[-54,136],[-42,146],[-30,148],[-20,142],[-10,130],[-2,116],[4,98],[8,80],[6,64],[2,54],[-2,46],[-8,42],[-14,40],[-20,38],[-26,38],[-34,32],[-42,24],[-50,22],[-58,20],[-62,18],[-58,12],[-50,10],[-42,10],[-34,10],[-26,9],[-18,8],[-10,6],[-4,-4],[0,-10],[4,-14],[6,-26]]);
+  const SIBE_C =P([[26,128],[32,138],[36,148],[32,158],[26,162],[20,158],[14,150],[12,140],[16,132],[22,128]]);
 
   /* ── CAMBRIAN (~520 MYA) ── scattered plates ────────── */
-  const GOND_CB=P([[5,-20],[0,-10],[-5,10],[-5,30],[-10,50],[-20,70],[-30,80],[-45,80],[-60,65],[-70,30],[-75,0],[-75,-30],[-65,-50],[-50,-60],[-35,-55],[-20,-50],[-5,-40],[0,-30]]);
-  const LAUR_CB=P([[30,-70],[40,-50],[45,-30],[35,-15],[20,-15],[10,-25],[10,-45],[15,-60],[25,-70]]);
-  const BALT_CB=P([[15,30],[20,45],[10,55],[-5,55],[-10,45],[-5,35],[5,30]]);
-  const SIBE_CB=P([[25,140],[35,155],[25,170],[15,165],[10,150],[15,138]]);
+  const GOND_CB=P([[6,-22],[2,-14],[-2,-8],[-4,4],[-4,16],[-8,28],[-12,42],[-18,56],[-24,68],[-32,78],[-40,82],[-50,80],[-58,72],[-66,58],[-72,38],[-76,16],[-76,-8],[-72,-30],[-64,-48],[-54,-58],[-44,-58],[-34,-56],[-24,-52],[-14,-48],[-6,-42],[0,-34],[4,-28]]);
+  const LAUR_CB=P([[30,-70],[34,-62],[38,-54],[42,-44],[44,-34],[42,-24],[38,-16],[32,-12],[26,-12],[20,-14],[14,-20],[10,-28],[8,-38],[10,-48],[14,-58],[20,-66],[26,-70]]);
+  const BALT_CB=P([[16,28],[20,36],[22,44],[20,52],[14,56],[6,58],[-2,56],[-8,50],[-10,42],[-8,34],[-2,29],[6,27],[12,27]]);
+  const SIBE_CB=P([[26,138],[32,148],[36,158],[32,168],[26,172],[20,168],[14,160],[12,150],[16,142],[22,138]]);
 
   /* ═══════════ PALETTE PRESETS ═══════════ */
   // Warm parchment/storybook palette variations per era
@@ -3042,7 +3251,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
               land:{hi:'#e8cc94', mid:'#c89858', lo:'#906028', inner:'#543210'} },
   };
 
-  function mkmap(id, pal, content){ return bg(id, pal) + content + compass(); }
+  function mkmap(id, pal, content){ return bg(id, pal) + content + compass() + aged(id); }
 
   Object.assign(SVG_MAPS, {
 
@@ -3065,7 +3274,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       }).join('') +
       sea('❄ SNOWBALL EARTH ❄',400,188,0,22)+
       sea('The whole planet is frozen!',400,215,0,13)+
-      mya('~700 MYA')
+      mya('~700 MYA','Snowball Earth')
     ),
 
     // ═══════════ CAMBRIAN — scattered southern plates ═══════════
@@ -3082,7 +3291,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Iapetus Ocean',290,175,0,11)+
       sea('Panthalassa',130,290,-12,12)+
       sea('Paleo-Tethys',580,140,0,11)+
-      mya('~520 MYA')
+      mya('~520 MYA','The Cambrian World')
     ),
 
     // ═══════════ ORDOVICIAN — seas full of life, ending in ice ═══════════
@@ -3098,7 +3307,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Iapetus Ocean',290,175,0,11)+
       sea('Panthalassa',130,280,-12,12)+
       sea('Paleo-Tethys',580,140,0,11)+
-      mya('~460 MYA')
+      mya('~460 MYA','The Ordovician World')
     ),
 
     // ═══════════ SILURIAN — jawed fish, first plants on land ═══════════
@@ -3116,7 +3325,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Iapetus closing',285,170,0,10)+
       sea('Rheic Ocean',305,235,-10,11)+
       sea('Panthalassa',130,270,-12,12)+
-      mya('~430 MYA')
+      mya('~430 MYA','The Silurian World')
     ),
 
     // ═══════════ DEVONIAN — age of fishes ═══════════
@@ -3134,7 +3343,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Rheic Ocean',290,230,-10,11)+
       sea('Panthalassa',120,260,-12,12)+
       sea('Paleo-Tethys',600,180,0,11)+
-      mya('~380 MYA')
+      mya('~380 MYA','The Devonian World')
     ),
 
     // ═══════════ CARBONIFEROUS — coal swamps & giant bugs ═══════════
@@ -3154,7 +3363,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Tethys Sea',558,198,0,11)+
       sea('Rheic (closing)',290,220,-12,11)+
       sea('Panthalassa',110,248,-15,12)+
-      mya('~320 MYA')
+      river([[40,-55],[30,-42],[20,-30],[10,-22]],{trib:[[38,-38,2],[26,-16,3]]})+river([[25,25],[14,32],[4,38]],{trib:[[18,18,1]]})+mya('~320 MYA','The Carboniferous World')
     ),
 
     // ═══════════ PERMIAN — PANGAEA, great deserts ═══════════
@@ -3174,7 +3383,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       antice('perm',-75,0.65)+
       sea('Panthalassa',128,225,0,13)+
       sea('Tethys Sea',618,162,15,12)+
-      mya('~270 MYA')
+      river([[52,-30],[40,-22],[28,-14],[16,-8]],{trib:[[44,-8,2]]})+river([[40,70],[26,62],[12,55]],{trib:[[32,84,1]]})+mya('~270 MYA','The Permian World')
     ),
 
     // ═══════════ TRIASSIC — Pangaea splitting ═══════════
@@ -3190,7 +3399,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       antice('tri',-72,0.6)+
       sea('Panthalassa',128,225,0,13)+
       sea('Tethys Sea',618,162,15,12)+
-      mya('~235 MYA')
+      river([[50,-32],[38,-24],[26,-16],[14,-10]],{trib:[[42,-10,2]]})+river([[-8,30],[-20,36],[-32,42]],{trib:[[-16,20,1]]})+mya('~235 MYA','The Triassic World')
     ),
 
     // ═══════════ JURASSIC — Laurasia + Gondwana, dinosaur paradise ═══════════
@@ -3210,7 +3419,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Tethys Sea',572,188,0,12)+
       sea('Proto-Atlantic',270,180,-75,11)+
       sea('Panthalassa',118,258,-12,13)+
-      mya('~170 MYA')
+      river([[48,-112],[40,-102],[32,-95]],{trib:[[44,-92,1]]})+river([[-18,20],[-26,28],[-34,34]],{trib:[[-24,12,1]]})+river([[46,60],[40,78],[34,94]],{})+mya('~170 MYA','The Jurassic World')
     ),
 
     // ═══════════ CRETACEOUS — continents close to modern, T.rex time ═══════════
@@ -3237,7 +3446,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Atlantic',312,188,-15,11)+
       sea('Tethys Sea',528,172,0,11)+
       sea('Indian Ocean',488,252,0,11)+
-      mya('~90 MYA')
+      river([[52,-108],[44,-100],[34,-96],[26,-94]],{trib:[[46,-88,2]],w:2.4})+river([[6,18],[-4,22],[-14,26]],{trib:[[0,10,1]]})+river([[44,88],[36,104],[30,118]],{})+mya('~90 MYA','The Cretaceous World')
     ),
 
     // ═══════════ PALEOGENE — modern shapes, mammals rising ═══════════
@@ -3258,7 +3467,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       antice('paleo',-68,0.7)+
       sea('Atlantic Ocean',315,182,-15,11)+
       sea('Indian Ocean',498,252,0,11)+
-      mya('~45 MYA')
+      river([[48,-104],[38,-96],[30,-91]],{trib:[[42,-84,1]]})+river([[-6,26],[-4,18],[-6,12]],{trib:[[2,20,1]]})+river([[2,32],[16,32],[30,31]],{})+mya('~45 MYA','The Paleogene World')
     ),
 
     // ═══════════ NEOGENE — grasslands spread, apes evolve ═══════════
@@ -3285,7 +3494,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Atlantic Ocean',315,182,-15,11)+
       sea('Pacific Ocean',132,198,0,12)+
       sea('Indian Ocean',498,252,0,11)+
-      mya('~10 MYA')
+      river([[-10,-74],[-6,-64],[-2,-54],[0,-50]],{trib:[[-12,-60,2]],w:2.5})+river([[2,32],[16,32],[30,31]],{})+river([[46,-95],[38,-92],[30,-90]],{trib:[[42,-86,1]]})+river([[33,96],[31,110],[31,121]],{})+mya('~10 MYA','The Neogene World')
     ),
 
     // ═══════════ QUATERNARY — Ice Age! ═══════════
@@ -3311,7 +3520,7 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Atlantic',315,188,-15,11)+
       sea('Pacific',132,200,0,12)+
       sea('Indian',498,252,0,11)+
-      mya('~20,000 YA')
+      river([[-10,-74],[-6,-64],[-2,-54],[0,-50]],{trib:[[-12,-60,2]],w:2.5})+river([[2,32],[16,32],[30,31]],{})+river([[52,6],[54,3],[56,1]],{trib:[[51,8,1]]})+mya('~20,000 YA','The Ice Age World')
     ),
 
     // ═══════════ HOLOCENE — today's world ═══════════
@@ -3335,10 +3544,15 @@ document.getElementById('timeSlider').addEventListener('input', function() {
       sea('Pacific Ocean',132,198,0,12)+
       sea('Indian Ocean',498,252,0,11)+
       sea('Arctic Ocean',398,28,0,10)+
-      mya('~TODAY')
+      river([[-10,-74],[-6,-64],[-2,-54],[0,-50]],{trib:[[-12,-60,2]],w:2.5})+river([[2,32],[16,32],[30,31]],{})+river([[47,-95],[38,-91],[29,-89]],{trib:[[42,-85,1]]})+river([[-5,25],[-4,18],[-6,12]],{})+river([[33,96],[31,110],[31,121]],{})+river([[52,85],[62,80],[70,73]],{})+mya('~TODAY','The World Today')
     ),
 
   });
+
+  // The base map set still defines its own 'holocene' entry, and
+  // getSvgForPeriod() prefers period.id over continentKey — so without this
+  // alias the Human Age period keeps rendering the old pre-antique map.
+  SVG_MAPS.holocene = SVG_MAPS.modern;
 })();
 
 // ============================================================
