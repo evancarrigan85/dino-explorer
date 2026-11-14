@@ -1,0 +1,142 @@
+<!-- HEADER -->
+<header>
+  <div class="logo">🦕</div>
+  <div>
+    <h1>Dino Time Explorer</h1>
+    <div class="sub">Slide through 720 million years of life on a moving Earth</div>
+  </div>
+  <span class="era-badge" id="eraBadge">Paleozoic Era</span>
+  <div class="mya-display" id="myaDisplay">539 MYA</div>
+</header>
+
+<!-- TIMELINE -->
+<div id="timelineBar">
+  <div class="tl-top">
+    <div class="tl-presets" id="tlPresets" role="group" aria-label="Zoom the timeline to a range"></div>
+    <div class="tl-zoom">
+      <span>Zoom</span>
+      <button class="sq-btn" id="tlOut" title="Zoom the timeline out" aria-label="Zoom timeline out">−</button>
+      <button class="sq-btn" id="tlIn" title="Zoom the timeline in" aria-label="Zoom timeline in">+</button>
+    </div>
+  </div>
+  <div id="tlOverview" title="All of time — drag the white window to move it, drag its edges to zoom">
+    <div id="ovBlocks"></div>
+    <div id="ovBrush"><i class="l"></i><i class="r"></i></div>
+    <div id="ovCursor"></div>
+  </div>
+  <div id="tlDetail">
+    <div id="tlEvents"></div>
+    <div class="tl-rows">
+      <div class="tl-row" id="rowPeriods"></div>
+      <div class="tl-row sub" id="rowEpochs"></div>
+      <div class="tl-row sub2" id="rowAges"></div>
+    </div>
+    <div id="tlTicks"></div>
+    <input type="range" class="time-slider" id="timeSlider" min="0" max="10000" value="0" step="1"
+      aria-label="Geological time">
+  </div>
+  <div class="tl-bottom">
+    <button id="playBtn" title="Play through time">▶ Play</button>
+    <div id="timelineHint">Drag to travel through time · scroll or pinch on the timeline to zoom in · drag the white window above to move</div>
+    <div class="period-nav">
+      <button class="nav-btn" id="prevBtn" title="Previous period (←)" aria-label="Previous period">◀</button>
+      <button class="nav-btn" id="nextBtn" title="Next period (→)" aria-label="Next period">▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+  <div class="left-panel">
+    <div class="period-info" id="periodInfo">
+      <div class="period-era-label" id="periodEraLabel"></div>
+      <div class="period-name" id="periodName"></div>
+      <div class="period-years" id="periodYears"></div>
+      <div class="period-desc" id="periodDesc"></div>
+    </div>
+    <div class="map-area" id="mapArea">
+      <canvas id="mapCanvas" aria-label="World map showing where the continents were at the selected time"></canvas>
+      <canvas id="mapFx"></canvas>
+      <div id="cartouche"><div class="ct-title" id="ctTitle"></div><div class="ct-date" id="ctDate"></div></div>
+      <div class="map-ctl">
+        <button class="map-btn" id="mapGlobe" title="Switch between flat map and globe" aria-label="Switch between flat map and globe">🌐</button>
+        <button class="map-btn" id="mapIn" title="Zoom in" aria-label="Zoom map in">+</button>
+        <button class="map-btn" id="mapOut" title="Zoom out" aria-label="Zoom map out">−</button>
+        <button class="map-btn" id="mapReset" title="Reset the view" aria-label="Reset map view">⟲</button>
+      </div>
+      <svg class="compass" viewBox="-46 -46 92 92" aria-hidden="true">
+        <circle r="30" fill="rgba(242,222,170,0.9)" stroke="rgba(90,52,14,0.7)" stroke-width="1.3"/>
+        <circle r="22" fill="none" stroke="rgba(90,52,14,0.25)" stroke-width="0.6" stroke-dasharray="2,2.5"/>
+        <polygon points="0,-27 3.5,-11 0,-7 -3.5,-11" fill="#2e1506"/><polygon points="0,27 3.5,11 0,7 -3.5,11" fill="#2e1506"/>
+        <polygon points="27,0 11,3.5 7,0 11,-3.5" fill="#2e1506"/><polygon points="-27,0 -11,3.5 -7,0 -11,-3.5" fill="#2e1506"/>
+        <g fill="#c08822"><polygon points="0,-20 2.5,-9 0,-6.5 -2.5,-9" transform="rotate(45)"/><polygon points="0,-20 2.5,-9 0,-6.5 -2.5,-9" transform="rotate(135)"/>
+        <polygon points="0,-20 2.5,-9 0,-6.5 -2.5,-9" transform="rotate(225)"/><polygon points="0,-20 2.5,-9 0,-6.5 -2.5,-9" transform="rotate(315)"/></g>
+        <circle r="4.5" fill="#2e1506"/><circle r="2.5" fill="#d4a030"/>
+        <text y="-33" text-anchor="middle" font-family="Cinzel,Georgia,serif" font-size="9" font-weight="700" fill="#1a0a02">N</text>
+      </svg>
+      <button id="mapNote" title="About this map">ⓘ Continents move with their plates · tap for how this map is made</button>
+      <div id="mapAbout" role="dialog" aria-label="About this map">
+        <button class="x" id="mapAboutX" aria-label="Close">✕</button>
+        <h4>How this map is made</h4>
+        <p><b>The land moves the way the science says it did.</b> Every piece of today's coastline is attached to the tectonic plate it sits on and carried back to where that plate was — using a published reconstruction of plate motions covering the last billion years (Merdith and colleagues, 2021).</p>
+        <p><b>The outlines are today's coasts.</b> That makes continents recognisable, but real shorelines changed as seas rose and fell — for instance, a seaway covered the middle of North America in the Cretaceous. Before 410 million years ago the map shows the model's ancient continental blocks instead.</p>
+        <p><b>Green, tan and white are a sketch, not a measurement:</b> a simple picture of wet, dry and cold belts by latitude, with ice where the rocks record ice ages. Before plants reached land, the land is drawn bare.</p>
+        <p><b>Fossil markers</b> sit where each fossil was found, moved to where that spot was when the animal was alive.</p>
+      </div>
+      <div id="mapTip"></div>
+    </div>
+    <div class="events-ribbon hidden" id="eventsRibbon" title="Open the Insights tab">
+      <span class="event-icon" id="eventIcon">💥</span>
+      <span id="eventText"></span>
+    </div>
+  </div>
+
+  <div class="right-panel" id="rightPanel">
+    <div class="tab-bar" role="tablist" aria-label="Panel views">
+      <button class="tab-btn active" data-tab="life" role="tab" aria-selected="true" aria-controls="pane-life" id="tab-life">🦕 Life</button>
+      <button class="tab-btn" data-tab="humans" role="tab" aria-selected="false" aria-controls="pane-humans" id="tab-humans">🧍 Humans</button>
+      <button class="tab-btn" data-tab="insights" role="tab" aria-selected="false" aria-controls="pane-insights" id="tab-insights">🔎 Insights</button>
+      <button class="tab-btn" data-tab="geo" role="tab" aria-selected="false" aria-controls="pane-geo" id="tab-geo">🌋 Geology</button>
+    </div>
+    <div class="panel-content" id="panelContent">
+      <div class="tabpane on" id="pane-life" role="tabpanel" aria-labelledby="tab-life">
+        <div class="life-ctl">
+          <input id="q" type="search" placeholder="Search animals…" aria-label="Search animals" autocomplete="off">
+          <div class="seg" id="scopeSeg" role="group" aria-label="Which animals to list">
+            <button data-scope="now" class="on" title="Animals alive at the moment on the timeline">Alive now</button>
+            <button data-scope="view" title="Animals that lived within the part of the timeline you are zoomed to">In view</button>
+            <button data-scope="period" title="Animals of this geological period">This period</button>
+            <button data-scope="all" title="Every animal on the site">All time</button>
+          </div>
+          <div class="chips" id="typeChips" role="group" aria-label="Filter by kind of animal"></div>
+          <div class="chips" id="dtypeChips" role="group" aria-label="Filter by branch of the family tree"></div>
+          <div class="sortrow">
+            <label for="sortSel">Sort</label>
+            <select id="sortSel">
+              <option value="old">Oldest first</option>
+              <option value="young">Youngest first</option>
+              <option value="name">A – Z</option>
+              <option value="size">Biggest first</option>
+              <option value="tree">By family tree</option>
+            </select>
+            <span class="count" id="lifeCount"></span>
+            <button class="linkbtn" id="rollBtn" title="Jump to a random animal">🎲 Surprise me</button>
+          </div>
+        </div>
+        <div class="creatures-list" id="lifeList"></div>
+      </div>
+      <div class="tabpane" id="pane-humans" role="tabpanel" aria-labelledby="tab-humans"></div>
+      <div class="tabpane" id="pane-insights" role="tabpanel" aria-labelledby="tab-insights"></div>
+      <div class="tabpane" id="pane-geo" role="tabpanel" aria-labelledby="tab-geo"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FACT POPUP -->
+<div id="factPopup" role="status" aria-live="polite">
+  <div class="fp-inner">
+    <span id="fpEmoji">🦕</span>
+    <span id="fpText"></span>
+  </div>
+  <button class="fp-close" id="fpClose" aria-label="Close">✕</button>
+</div>

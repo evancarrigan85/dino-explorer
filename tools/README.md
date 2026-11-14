@@ -2,6 +2,24 @@
 
 `dino-explorer.html` is a single self-contained page — open it in a browser; no build step is needed to use or edit it. Animals, periods, the human family and the time scale are plain data near the top of the main `<script>`; edit them in place.
 
+The page is built from `tools/source/` with one command:
+
+```
+node tools/source/assemble.mjs dino-explorer.html
+```
+
+It checks every animal (fields present, dates inside its period, valid fossil sites) and prints a count. Where to edit:
+
+| File | Holds |
+|---|---|
+| `data_new.js`, `data_more.js` | Animals added since the rebuild (one row each in `data_more.js`) |
+| `data_fix.js` | Dates, fossil sites and corrections for the original animals (kept in `original.html`) |
+| `data_class.js` | Lineage (family-tree path) for every animal |
+| `data_hominins.js` | The human family and its turning points |
+| `data_periods.js` | Period insights, museum notes, fossil sites, map labels |
+| `data_time.js` | Epochs, ages and timeline events |
+| `engine.js` / `app.js` / `style.css` / `body.html` | Map renderer, page logic, styles, markup |
+
 Two blocks inside the page are **generated** and marked `GENERATED … do not edit`:
 
 | Block | Made by |
