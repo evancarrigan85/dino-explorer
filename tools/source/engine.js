@@ -116,8 +116,10 @@ const WorldMap = (() => {
   let stamp = 0;
   function famRot(fi, t) {
     const F = fams[fi];
-    if (F.stamp === stamp) return F.ok ? F.m : null;
-    F.stamp = stamp;
+    // cache per frame AND per time: a frame asks about one moment, but a trail
+    // or a lookup asks about many in a row
+    if (F.stamp === stamp && F.tt === t) return F.ok ? F.m : null;
+    F.stamp = stamp; F.tt = t;
     const T = F.t, n = T.length;
     if (t > T[n - 1] + 1e-6) { F.ok = false; return null; }
     let i = 0;
@@ -214,7 +216,7 @@ const WorldMap = (() => {
   let centerLon = 0;                          // flat view central meridian
   let proj = null, baseScale = 1, baseT = [0, 0];
   let dirty = true, raf = 0;
-  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [] };
+  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], pin: null };
   let selected = null, hits = [], rings = [];
   let pal = null;
   const QS = 4;                               // soft effects are built at 1/4 size
@@ -723,6 +725,30 @@ const WorldMap = (() => {
       }
     }
     for (const m of layers.markers) { if (m === sel) continue; for (const s of m.sites) { if (medal(m, s.at, false)) break; } }
+    // a dropped pin: its whole journey as a dotted trail, today's spot, and where it is now
+    const PN = layers.pin;
+    if (PN) {
+      let prev = null;
+      c.save(); c.setLineDash([3, 3]); c.lineWidth = 1.6; c.strokeStyle = 'rgba(176,32,20,0.55)'; c.beginPath();
+      for (const [tt, lo, la] of PN.trail) {
+        const p = project([lo, la]);
+        if (p && prev && Math.abs(p[0] - prev[0]) < W / 3) c.lineTo(p[0], p[1]); else if (p) c.moveTo(p[0], p[1]);
+        prev = p;
+      }
+      c.stroke(); c.restore();
+      const today = project(locate(PN.at, 0));
+      if (today && t > 0.5) { c.beginPath(); c.arc(today[0], today[1], 4, 0, 7); c.lineWidth = 1.5; c.strokeStyle = '#b02014'; c.stroke(); text(c, 'today', today[0] + 7, today[1], 9 * zs, { align: 'left', weight: 400, spacing: 0.4, haloW: 2.6, color: '#7a1a10' }); }
+      const p = project(locate(PN.at, t));
+      if (p) {
+        const r = 7 * zs;
+        c.save(); c.shadowColor = 'rgba(0,0,0,0.45)'; c.shadowBlur = 4; c.shadowOffsetY = 1.5;
+        c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(p[0] - r * 0.78, p[1] - r * 1.55); c.arc(p[0], p[1] - r * 2, r, Math.PI * 0.82, Math.PI * 0.18, false); c.closePath();
+        c.fillStyle = '#d0281a'; c.fill(); c.restore();
+        c.beginPath(); c.arc(p[0], p[1] - r * 2, r * 0.38, 0, 7); c.fillStyle = '#fff4e0'; c.fill();
+        text(c, PN.name, p[0], p[1] - r * 3.6, 11.5 * zs, { spacing: 0.5, weight: 700, haloW: 3.6, color: '#5a1008' });
+        hits.push({ x: p[0], y: p[1] - r * 2, r: r + 3, pin: PN });
+      }
+    }
     // latitude ticks on the flat map
     if (mode === 'flat' && zoom < 1.3) {
       for (const la of [60, 30, 0, -30, -60]) {
@@ -804,6 +830,26 @@ const WorldMap = (() => {
   // ── public API ─────────────────────────────────────────────────────
   Object.assign(api, {
     MAXT, attach, locate,
+    /* The present-day place under a tap at the current time: find the plate
+       piece under the point, then undo that plate's rotation. Null over sea. */
+    pickPresent(x, y) {
+      if (!proj || !proj.invert) return null;
+      const ll = proj.invert([x, y]); if (!ll || !isFinite(ll[0]) || !isFinite(ll[1])) return null;
+      if (mode === 'globe') { const r = proj.rotate(); if (d3.geoDistance(ll, [-r[0], -r[1]]) > Math.PI / 2) return null; }
+      const p = toXYZ(ll[1], ll[0]); stamp++;
+      for (const q of polys) {
+        if (!visible(q, time)) continue;
+        const m = famRot(q.f, time); if (!m) continue;
+        const [a, b, cc] = q.c;
+        if ((m[0] * a + m[1] * b + m[2] * cc) * p[0] + (m[3] * a + m[4] * b + m[5] * cc) * p[1] + (m[6] * a + m[7] * b + m[8] * cc) * p[2] < q.cosr - 0.02) continue;
+        const r0 = q.rings[0], R = new Float32Array(r0.length);
+        for (let i = 0; i < r0.length; i += 3) { const X = r0[i], Y = r0[i + 1], Z = r0[i + 2]; R[i] = m[0] * X + m[1] * Y + m[2] * Z; R[i + 1] = m[3] * X + m[4] * Y + m[5] * Z; R[i + 2] = m[6] * X + m[7] * Y + m[8] * Z; }
+        if (!ringContains(R, p)) continue;
+        const v = [m[0] * p[0] + m[3] * p[1] + m[6] * p[2], m[1] * p[0] + m[4] * p[1] + m[7] * p[2], m[2] * p[0] + m[5] * p[1] + m[8] * p[2]];
+        return { lat: Math.asin(Math.max(-1, Math.min(1, v[2]))) * R2D, lon: Math.atan2(v[1], v[0]) * R2D };
+      }
+      return null;
+    },
     init(cv, fxCanvas) {
       canvas = cv; ctx = cv.getContext('2d');
       fx = fxCanvas; fctx = fx.getContext('2d');

@@ -146,6 +146,22 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 #mapAbout h4{font-family:'Cinzel',Georgia,serif;font-size:.8rem;letter-spacing:.8px;margin-bottom:5px}
 #mapAbout p{margin-bottom:6px}
 #mapAbout .x{position:absolute;right:8px;top:6px;border:none;background:none;font-size:1rem;cursor:pointer;color:#5a3010}
+#pinPanel{position:absolute;right:54px;top:10px;z-index:6;width:min(300px,calc(100% - 70px));background:rgba(248,234,196,.98);color:#2e1a08;
+  border:1.3px solid rgba(96,58,16,.85);border-radius:6px;padding:11px 12px;font-size:.74rem;box-shadow:0 6px 24px rgba(20,10,0,.5);display:none}
+#pinPanel.show{display:block}
+#pinPanel h4{font-family:'Cinzel',Georgia,serif;font-size:.8rem;letter-spacing:.6px;margin-bottom:7px}
+#pinPanel .x{position:absolute;right:8px;top:6px;border:none;background:none;font-size:1rem;cursor:pointer;color:#5a3010}
+#pinSearch{width:100%;padding:6px 8px;border:1px solid rgba(96,58,16,.6);border-radius:6px;font-size:.8rem;background:#fffaf0;color:#2e1a08;font-family:inherit}
+.pin-row{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+#pinPanel .linkbtn{color:#7a2a10;border-color:rgba(96,58,16,.5);background:#fff7e6}
+.pin-hint{margin-top:6px;color:#6a4a20;font-size:.7rem}
+#pinCard{position:absolute;left:10px;bottom:30px;z-index:5;width:min(330px,calc(100% - 20px));background:rgba(12,20,40,0.93);color:#e8eef8;
+  border:1px solid rgba(255,255,255,0.18);border-left:4px solid #d0281a;border-radius:8px;padding:9px 12px 9px 11px;font-size:.73rem;line-height:1.45;display:none;box-shadow:0 4px 16px rgba(0,0,0,.45)}
+#pinCard.show{display:block}
+#pinCard b{color:#fff}#pinCard .pc-h{font-size:.82rem;font-weight:800;margin-bottom:2px;padding-right:18px}
+#pinCard .pc-x{position:absolute;right:6px;top:4px;border:none;background:none;color:#9aa8c0;font-size:.95rem;cursor:pointer}
+#pinCard .pc-near{margin-top:4px;color:#b9c5da}
+#pinCard .pc-note{margin-top:3px;color:#8d9ab2;font-size:.64rem}#pinCard .pc-near span{cursor:pointer;color:#f0c040}
 #mapTip{position:absolute;z-index:7;pointer-events:none;background:rgba(12,20,40,0.94);color:#f4ecd0;
   padding:4px 10px;border-radius:6px;font-size:0.72rem;font-weight:600;white-space:nowrap;display:none;
   border:1px solid rgba(255,255,255,0.18);transform:translate(-50%,-135%)}
@@ -359,4 +375,8 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
   #cartouche{padding:3px 9px}#cartouche .ct-title{font-size:.66rem}#cartouche .ct-date{font-size:.6rem}
   .map-btn{width:32px;height:32px}
   .tab-btn{font-size:.72rem;padding:10px 2px}
+  #pinCard{bottom:26px;padding:6px 26px 6px 9px;font-size:.66rem;line-height:1.35;width:calc(100% - 64px)}
+  #pinCard .pc-near,#pinCard .pc-note{display:none}
+  #pinCard .pc-h{font-size:.72rem}
+  #pinPanel{right:50px;width:calc(100% - 64px)}
 }

@@ -62,6 +62,7 @@
         <button class="map-btn" id="mapGlobe" title="Switch between flat map and globe" aria-label="Switch between flat map and globe">🌐</button>
         <button class="map-btn" id="mapIn" title="Zoom in" aria-label="Zoom map in">+</button>
         <button class="map-btn" id="mapOut" title="Zoom out" aria-label="Zoom map out">−</button>
+        <button class="map-btn" id="mapPin" title="Where was my town?" aria-label="Where was my town?">📍</button>
         <button class="map-btn" id="mapReset" title="Reset the view" aria-label="Reset map view">⟲</button>
       </div>
       <svg class="compass" viewBox="-46 -46 92 92" aria-hidden="true">
@@ -83,6 +84,15 @@
         <p><b>Green, tan and white are a sketch, not a measurement:</b> a simple picture of wet, dry and cold belts by latitude, with ice where the rocks record ice ages. Before plants reached land, the land is drawn bare.</p>
         <p><b>Fossil markers</b> sit where each fossil was found, moved to where that spot was when the animal was alive.</p>
       </div>
+      <div id="pinPanel" role="dialog" aria-label="Where was my town?">
+        <button class="x" id="pinPanelX" aria-label="Close">✕</button>
+        <h4>📍 Where was my town?</h4>
+        <input id="pinSearch" list="cityList" placeholder="Type a city…" autocomplete="off" aria-label="Search for a city">
+        <datalist id="cityList"></datalist>
+        <div class="pin-row"><button class="linkbtn" id="pinGeo">🧭 Use my location</button><button class="linkbtn" id="pinClear">Remove pin</button></div>
+        <div class="pin-hint" id="pinHint">…or tap any land on the map.</div>
+      </div>
+      <div id="pinCard"></div>
       <div id="mapTip"></div>
     </div>
     <div class="events-ribbon hidden" id="eventsRibbon" title="Open the Insights tab">

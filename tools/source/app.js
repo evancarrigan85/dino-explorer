@@ -31,7 +31,7 @@ ALL.forEach(c => {
   c.len = best;
   c.search = (c.name + ' ' + (c.nick || '') + ' ' + c.c + ' ' + (c.means || '')).toLowerCase();
 });
-const sitesOf = c => c._s || (c._s = (c.sites || []).map(([la, lo, label]) => ({ at: WorldMap.attach(la, lo, Math.min(c.t[0], (c.t[0] + c.t[1]) / 2 + 1)), label })));
+const sitesOf = c => c._s || (c._s = (c.sites || []).map(([la, lo, label]) => ({ at: WorldMap.attach(la, lo, c.t[0]), label })));
 
 // ── time ────────────────────────────────────────────────────────────
 const T_MAX = 720, MIN_SPAN = 0.02;
@@ -105,6 +105,7 @@ function setTime(t, o = {}) {
     updateMarkers(now);
     schedulePanel(o.fast ? 140 : 0);
   }
+  if (S.pin) updatePinCard();
   if (S.tab === 'humans') {
     updateHumansCursor();
     const ck = CULTURES.filter(c => culActive(c)).map(c => c.id).join('|');
@@ -637,6 +638,64 @@ function bindGeo() {
   });
 }
 
+// ── "Where was my town?" ────────────────────────────────────────────
+const CITIES = ('Toronto,43.65,-79.38;Montréal,45.5,-73.57;Vancouver,49.28,-123.12;Calgary,51.05,-114.07;Edmonton,53.55,-113.49;Ottawa,45.42,-75.7;Winnipeg,49.9,-97.14;' +
+  'Halifax,44.65,-63.57;Québec City,46.81,-71.21;Saskatoon,52.13,-106.67;Regina,50.45,-104.6;Victoria,48.43,-123.37;St. John\'s,47.56,-52.71;Whitehorse,60.72,-135.06;Yellowknife,62.45,-114.37;Iqaluit,63.75,-68.52;Drumheller,51.46,-112.71;' +
+  'New York,40.71,-74.01;Los Angeles,34.05,-118.24;Chicago,41.88,-87.63;Houston,29.76,-95.37;Phoenix,33.45,-112.07;Denver,39.74,-104.99;Seattle,47.61,-122.33;San Francisco,37.77,-122.42;Miami,25.76,-80.19;Atlanta,33.75,-84.39;Boston,42.36,-71.06;Washington DC,38.9,-77.04;Dallas,32.78,-96.8;Salt Lake City,40.76,-111.89;Anchorage,61.22,-149.9;Honolulu,21.31,-157.86;' +
+  'Mexico City,19.43,-99.13;Havana,23.11,-82.37;Bogotá,4.71,-74.07;Lima,-12.05,-77.04;Santiago,-33.45,-70.67;Buenos Aires,-34.6,-58.38;São Paulo,-23.55,-46.63;Rio de Janeiro,-22.91,-43.17;Manaus,-3.12,-60.02;Caracas,10.48,-66.9;Quito,-0.18,-78.47;La Paz,-16.5,-68.15;' +
+  'London,51.51,-0.13;Edinburgh,55.95,-3.19;Dublin,53.35,-6.26;Paris,48.86,2.35;Madrid,40.42,-3.7;Lisbon,38.72,-9.14;Rome,41.9,12.5;Berlin,52.52,13.4;Amsterdam,52.37,4.9;Brussels,50.85,4.35;Zürich,47.38,8.54;Vienna,48.21,16.37;Prague,50.08,14.44;Warsaw,52.23,21.01;Stockholm,59.33,18.07;Oslo,59.91,10.75;Copenhagen,55.68,12.57;Helsinki,60.17,24.94;Reykjavík,64.15,-21.94;Athens,37.98,23.73;Istanbul,41.01,28.98;Kyiv,50.45,30.52;Moscow,55.76,37.62;' +
+  'Cairo,30.04,31.24;Casablanca,33.57,-7.59;Lagos,6.52,3.38;Accra,5.6,-0.19;Nairobi,-1.29,36.82;Addis Ababa,9.03,38.74;Johannesburg,-26.2,28.05;Cape Town,-33.92,18.42;Kinshasa,-4.44,15.27;Dar es Salaam,-6.79,39.21;Antananarivo,-18.88,47.51;' +
+  'Dubai,25.2,55.27;Riyadh,24.71,46.68;Tehran,35.69,51.39;Jerusalem,31.77,35.21;Mumbai,19.08,72.88;Delhi,28.61,77.21;Kolkata,22.57,88.36;Karachi,24.86,67.0;Kathmandu,27.72,85.32;Dhaka,23.81,90.41;Bangkok,13.76,100.5;Singapore,1.35,103.82;Jakarta,-6.21,106.85;Manila,14.6,120.98;' +
+  'Beijing,39.9,116.41;Shanghai,31.23,121.47;Hong Kong,22.32,114.17;Seoul,37.57,126.98;Tokyo,35.68,139.69;Osaka,34.69,135.5;Ulaanbaatar,47.89,106.91;' +
+  'Sydney,-33.87,151.21;Melbourne,-37.81,144.96;Brisbane,-27.47,153.03;Perth,-31.95,115.86;Adelaide,-34.93,138.6;Darwin,-12.46,130.84;Hobart,-42.88,147.33;Auckland,-36.85,174.76;Wellington,-41.29,174.78;Christchurch,-43.53,172.64')
+  .split(';').map(s => { const [n, a, b] = s.split(','); return [n, +a, +b]; });
+const KM = (la1, lo1, la2, lo2) => { const r = Math.PI / 180, a = Math.sin((la2 - la1) * r / 2) ** 2 + Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin((lo2 - lo1) * r / 2) ** 2; return 12742 * Math.asin(Math.min(1, Math.sqrt(a))); };
+function setPin(lat, lon, name, quiet) {
+  if (lat == null) { S.pin = null; WorldMap.setLayers({ pin: null }); $('pinCard').classList.remove('show'); writeHash(); return; }
+  const at = WorldMap.attach(lat, lon, T_MAX), trail = [];
+  for (let t = 0; t <= T_MAX; t += 1.5) { const p = WorldMap.locate(at, t); if (p) trail.push([t, p[0], p[1]]); }
+  S.pin = { lat, lon, name: name || (Math.abs(lat).toFixed(1) + '°' + (lat >= 0 ? 'N' : 'S') + ' ' + Math.abs(lon).toFixed(1) + '°' + (lon >= 0 ? 'E' : 'W')), at };
+  WorldMap.setLayers({ pin: { at, name: S.pin.name, trail } });
+  updatePinCard(); writeHash();
+  if (!quiet) { $('pinPanel').classList.remove('show'); WorldMap.lookAt(at); }
+}
+function updatePinCard() {
+  const P = S.pin, card = $('pinCard'); if (!P) { card.classList.remove('show'); return; }
+  const now = WorldMap.locate(P.at, S.t);
+  let html = `<button class="pc-x" aria-label="Remove pin">✕</button><div class="pc-h">📍 ${esc(P.name)} · ${esc(fmtAgo(S.t))}</div>`;
+  if (!now) html += 'This piece of land has no reconstructed position this far back.';
+  else {
+    const la = now[1], A = Math.abs(la), moved = KM(P.lat, P.lon, la, now[0]);
+    const belt = S.period.id === 'cryogenian' ? 'probably buried under the ice of Snowball Earth' : A < 10 ? 'right by the equator — hot and wet' : A < 30 ? 'in the tropics\' dry belt — think savanna or desert' : A < 55 ? 'in the mid-latitudes — warm to temperate' : A < 70 ? 'far ' + (la > 0 ? 'north' : 'south') + ' — cool, with long dark winters' : 'near the ' + (la > 0 ? 'North' : 'South') + ' Pole';
+    html += S.t < 0.05 ? `Here today, at ${A.toFixed(0)}°${la >= 0 ? 'N' : 'S'}.` : `It was at <b>${A.toFixed(0)}°${la >= 0 ? 'N' : 'S'}</b>, ${belt}. That is about <b>${years(Math.round(moved / 100) * 100)} km</b> from where it is now.`;
+    const near = [];
+    for (const c of ALL) { if (!c.sites || !alive(c, S.t)) continue; let best = 1e9, lab = ''; for (const s of c.sites) { const d = KM(P.lat, P.lon, s[0], s[1]); if (d < best) { best = d; lab = s[2]; } } near.push([best, c, lab]); }
+    near.sort((a, b) => a[0] - b[0]);
+    const top = near.slice(0, 3);
+    if (top.length) html += `<div class="pc-near">${top[0][0] < 2000 ? 'Lived nearby' : 'Nearest fossils from this moment'}: ${top.map(([d, c]) => `<span data-key="${c.key}">${c.emoji} ${esc(c.name)}</span> (${years(Math.round(d / 10) * 10)} km)`).join(', ')}</div>`;
+    html += '<div class="pc-note">The dotted line is its whole journey. Coastlines are today\'s, so it may have been under a shallow sea.</div>';
+  }
+  card.innerHTML = html; card.classList.add('show');
+}
+function bindPin() {
+  $('cityList').innerHTML = CITIES.map(c => `<option value="${esc(c[0])}">`).join('');
+  $('mapPin').onclick = () => { $('pinPanel').classList.toggle('show'); $('mapAbout').classList.remove('show'); if ($('pinPanel').classList.contains('show')) setTimeout(() => $('pinSearch').focus(), 50); };
+  $('pinPanelX').onclick = () => $('pinPanel').classList.remove('show');
+  const go = () => { const q = $('pinSearch').value.trim().toLowerCase(); if (!q) return; const c = CITIES.find(c => c[0].toLowerCase() === q) || CITIES.find(c => c[0].toLowerCase().startsWith(q)); if (c) { setPin(c[1], c[2], c[0]); $('pinSearch').value = ''; } else $('pinHint').textContent = 'Not in the list — tap the map instead, or use your location.'; };
+  $('pinSearch').addEventListener('change', go); $('pinSearch').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+  $('pinGeo').onclick = () => {
+    if (!navigator.geolocation) { $('pinHint').textContent = 'Location is not available in this browser.'; return; }
+    $('pinHint').textContent = 'Finding you…';
+    navigator.geolocation.getCurrentPosition(p => { $('pinHint').textContent = '…or tap any land on the map.'; setPin(+p.coords.latitude.toFixed(2), +p.coords.longitude.toFixed(2), 'My place'); },
+      () => { $('pinHint').textContent = 'Could not get your location — type a city or tap the map.'; }, { timeout: 10000 });
+  };
+  $('pinClear').onclick = () => { setPin(null); $('pinPanel').classList.remove('show'); };
+  $('pinCard').addEventListener('click', e => {
+    if (e.target.closest('.pc-x')) { setPin(null); return; }
+    const k = e.target.closest('[data-key]'); if (k) { if (S.tab !== 'life') switchTab('life'); select(k.dataset.key, { keep: true }); }
+  });
+}
+
 // ── popup, hash, map wiring ─────────────────────────────────────────
 let factTimer = 0;
 function showFact(emoji, html) {
@@ -649,12 +708,14 @@ function closeFact() { $('factPopup').classList.remove('show'); clearTimeout(fac
 
 function writeHash() {
   const parts = [String(S.t) + 'mya']; if (S.sel && BY_KEY[S.sel]) parts.push(S.sel);
+  if (S.pin) parts.push('pin=' + S.pin.lat.toFixed(2) + ',' + S.pin.lon.toFixed(2) + ',' + encodeURIComponent(S.pin.name));
   const next = '#' + parts.join('/');
   if (location.hash !== next) { try { history.replaceState(null, '', next); } catch (e) {} }
 }
 function readHash() {
   const raw = decodeURIComponent((location.hash || '').replace(/^#/, '')); if (!raw) return false;
-  const [a, b] = raw.split('/'); let t;
+  const segs = raw.split('/'), pinSeg = segs.find(s => s.startsWith('pin=')), [a, b] = segs.filter(s => !s.startsWith('pin=')); let t;
+  if (pinSeg) { const [la, lo, ...nm] = pinSeg.slice(4).split(','); if (isFinite(+la) && isFinite(+lo)) setTimeout(() => setPin(+la, +lo, nm.join(',') || null, true), 0); }
   const m = /^([0-9.]+)mya$/.exec(a);
   if (m) t = parseFloat(m[1]); else { const p = PERIODS.find(p => p.id === a); if (!p) return false; t = (p.start + p.end) / 2; }
   if (!(t >= 0)) return false;
@@ -672,16 +733,21 @@ function init() {
     superocean: SUPEROCEAN,
     notes: ICE_AGE_NOTES.map(([name, lat, lon, what]) => ({ text: name + ' · ' + what, lat, lon, from: 2.58, to: 0.0117 })),
   });
-  WorldMap.onPick = h => {
-    if (!h) { $('mapAbout').classList.remove('show'); return; }
+  WorldMap.onPick = (h, x, y) => {
+    if (!h) {
+      $('mapAbout').classList.remove('show');
+      if ($('pinPanel').classList.contains('show')) { const q = WorldMap.pickPresent(x, y); if (q) setPin(+q.lat.toFixed(2), +q.lon.toFixed(2), null); else $('pinHint').textContent = 'That spot was open ocean then — tap land, or type a city.'; }
+      return;
+    }
     if (h.marker) select(h.marker.key, { fromMap: true, keep: true });
+    else if (h.pin) updatePinCard();
     else if (h.place && h.place.key.startsWith('cul:')) selectCulture(h.place.key.slice(4), true);
     else if (h.place) { selectPlace(h.place.key, h.place.at, h.place.icon || '📍', '<b>' + esc(h.place.name) + '</b> — ' + esc(h.place.note || '')); if (S.sel !== h.place.key) closeFact(); }
   };
   const tip = $('mapTip');
   WorldMap.onHover = (h, x, y) => {
     if (!h) { tip.style.display = 'none'; return; }
-    tip.innerHTML = h.marker ? esc(h.marker.name) + '<small>click for its story</small>' : esc(h.place.name);
+    tip.innerHTML = h.marker ? esc(h.marker.name) + '<small>click for its story</small>' : h.pin ? esc(h.pin.name) + '<small>your pin</small>' : esc(h.place.name);
     tip.style.display = 'block'; tip.style.left = x + 'px'; tip.style.top = y + 'px';
   };
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
@@ -696,7 +762,7 @@ function init() {
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }
   });
   window.addEventListener('hashchange', readHash);
-  bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo();
+  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo();
   renderTimeline();
   if (!readHash()) {
     setTime(150);

@@ -76,6 +76,13 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('food web drawn with links', await p.evaluate(() => document.querySelectorAll('#pane-insights .fw-node').length >= 8 && document.querySelectorAll('#pane-insights .fw-link.proof').length >= 2));
   await p.click('#pane-insights .fw-node[data-key="tyrannosaurus-rex"]'); await p.waitForTimeout(400);
   ok('tapping a food-web animal opens its card', await p.evaluate(() => S.tab === 'life' && S.sel === 'tyrannosaurus-rex'));
+  // where was my town?
+  await p.evaluate(() => { setTime(150); setPin(51.05, -114.07, 'Calgary'); }); await p.waitForTimeout(250);
+  ok('pin card shows a past latitude and distance', await p.evaluate(() => /Calgary/.test(document.getElementById('pinCard').innerText) && /km/.test(document.getElementById('pinCard').innerText) && document.getElementById('pinCard').classList.contains('show')));
+  ok('pin is in the link', await p.evaluate(() => { writeHash(); return /pin=51\.05,-114\.07,Calgary/.test(location.hash); }));
+  ok('Calgary was near the equator 300 MYA', await p.evaluate(() => { const q = WorldMap.locate(S.pin.at, 300); return q && Math.abs(q[1]) < 25; }), JSON.stringify(await p.evaluate(() => WorldMap.locate(S.pin.at, 300))));
+  ok('tapping land maps back to today', await p.evaluate(() => { setTime(0); WorldMap._draw(); const cv = document.getElementById('mapCanvas').getBoundingClientRect(); for (let i = 0; i < 400; i++) { const x = cv.width * (0.2 + 0.6 * ((i * 37) % 100) / 100), y = cv.height * (0.25 + 0.5 * ((i * 61) % 100) / 100); const q = WorldMap.pickPresent(x, y); if (q) { const back = WorldMap.locate(WorldMap.attach(q.lat, q.lon, 0), 0); return Math.abs(back[1] - q.lat) < 0.5; } } return false; }));
+  await p.evaluate(() => setPin(null));
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));
