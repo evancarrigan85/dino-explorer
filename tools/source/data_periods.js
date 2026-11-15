@@ -10,7 +10,7 @@ const PERIOD_EDITS = {
     event: '⚠️ THE GREAT DYING: around nine in ten ocean species and seven in ten land vertebrates wiped out — the worst extinction in Earth\'s history, driven by colossal volcanic eruptions in Siberia.',
     funFact: 'The Permian ends with the worst extinction in Earth\'s entire history. Volcanoes in Siberia flood an area the size of a continent with lava, pumping out greenhouse gases that overheat the planet and strip the oceans of oxygen. Around nine in ten ocean species vanish.' },
   jurassic: { funFact: 'Some of the longest animals EVER to walk on land lived in the Jurassic! Supersaurus reached about 33–35 meters — longer than a blue whale, though far lighter. (The heaviest land animals of all, the titanosaurs, came later, in the Cretaceous.)' },
-  cretaceous: { event: '⚠️ K–Pg EXTINCTION: An asteroid slams into Earth! Dinosaurs die — but birds survive and thrive. Mammals inherit the world.' },
+  cretaceous: { funFact: 'An asteroid about 10 km wide hits Earth at around 20 km per second. The blast is roughly a million times more powerful than the biggest nuclear bomb ever tested. About three-quarters of all species vanish — including every dinosaur except the birds.', event: '⚠️ K–Pg EXTINCTION: An asteroid slams into Earth! Dinosaurs die — but birds survive and thrive. Mammals inherit the world.' },
   quaternary: { name: 'Quaternary', title: 'Ice Age', end: 0.0117,
     funFact: 'Woolly mammoths were still alive on a remote Arctic island when the ancient Egyptians were building the Great Pyramid. The last ones died only about 4,000 years ago — and why they finally vanished is still debated.' },
   holocene: { name: 'Holocene', title: 'Human Age', start: 0.0117,

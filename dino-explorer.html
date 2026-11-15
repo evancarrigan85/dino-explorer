@@ -312,6 +312,19 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .site:hover,.site.sel{background:rgba(240,192,64,.08)}
 .site b{color:#eef2f9;display:block}
 .site .d{color:#c0492a;font-size:.7rem;padding-top:2px}
+.fw{background:#0b101c;border:1px solid var(--border);border-radius:9px;padding:4px;margin-top:4px}
+.fw-band{fill:transparent}.fw-band.b3{fill:rgba(220,70,40,.07)}.fw-band.b2{fill:rgba(240,160,60,.05)}.fw-band.b1{fill:rgba(90,180,90,.05)}.fw-band.b0{fill:rgba(60,140,90,.09)}
+.fw-tier{font-size:7.5px;fill:#6f7c94;text-transform:uppercase;letter-spacing:.6px}
+.fw-node rect{fill:#182033;stroke:#34405e;stroke-width:1}.fw-node rect.t0{fill:#16301f;stroke:#2f6b45}.fw-node rect.t3{fill:#331a16;stroke:#7a3a2a}
+.fw-node.link{cursor:pointer}.fw-node.link:hover rect{stroke:var(--accent);stroke-width:1.6}
+.fw-lab{fill:#dfe6f3}
+.fw-link{fill:none;stroke-width:1.5;cursor:pointer}.fw-link.proof{stroke:#ff9a5a;stroke-width:1.9}.fw-link.likely{stroke:#7f9cc6;stroke-dasharray:4 3;opacity:.8}
+.fw-link:hover{stroke-width:3;opacity:1}
+.fw-key{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.64rem;color:#aab6cc;margin-top:6px}
+.fw-key i{display:inline-block;width:16px;height:0;border-top:2px solid #ff9a5a;margin-right:4px;vertical-align:middle}.fw-key i.likely{border-top:2px dashed #7f9cc6}
+.fw-note{font-size:.72rem;color:#d9e1ee;margin-top:5px;min-height:1em}
+.fw-how{margin-top:6px;font-size:.72rem;color:#b9c5da}.fw-how summary{cursor:pointer;color:var(--accent);font-weight:700}
+.fw-how div{margin-top:6px;line-height:1.4}.fw-how .proof{color:#ff9a5a;font-size:.64rem}.fw-how .likely{color:#7f9cc6;font-size:.64rem}
 .src{margin-top:14px;font-size:.64rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--border);padding-top:8px}
 
 /* --- Geology tab --- */
@@ -884,7 +897,7 @@ const PERIODS = [
   ]
 },
 {
-  id:"cretaceous", name:"Cretaceous", era:"Mesozoic Era", start:143, end:66, color:"#1a9e5e", textColor:"#25cf80", desc:"Dinosaurs THRIVE in tropical seas and steamy jungles. New flowering plants emerge. Tyrannosaurus appears — the largest land predator ever. Then a space rock changes everything in an instant.", funFact:"An asteroid 10 km wide hits Earth at 20 km per second. The explosion is 10,000 times bigger than the biggest nuclear bomb. In an instant, the era of the dinosaurs ends. 70% of all species vanish.", event:"⚠️ K–Pg EXTINCTION: An asteroid slams into Earth! Dinosaurs die — but birds survive and thrive. Mammals inherit the world.", eventIcon:"☄️",
+  id:"cretaceous", name:"Cretaceous", era:"Mesozoic Era", start:143, end:66, color:"#1a9e5e", textColor:"#25cf80", desc:"Dinosaurs THRIVE in tropical seas and steamy jungles. New flowering plants emerge. Tyrannosaurus appears — the largest land predator ever. Then a space rock changes everything in an instant.", funFact:"An asteroid about 10 km wide hits Earth at around 20 km per second. The blast is roughly a million times more powerful than the biggest nuclear bomb ever tested. About three-quarters of all species vanish — including every dinosaur except the birds.", event:"⚠️ K–Pg EXTINCTION: An asteroid slams into Earth! Dinosaurs die — but birds survive and thrive. Mammals inherit the world.", eventIcon:"☄️",
   insight: { "big": "A hothouse world of flowering plants, giant dinosaurs and high seas — ended in a day by an asteroid.", "signs": [ [ "🌡", "Climate", "One of the warmest times of the last 500 million years, peaking about 90 MYA. Forests and dinosaurs lived near both poles." ], [ "🌊", "Sea level", "Perhaps 100–250 m higher than today. A seaway split North America in two." ], [ "💨", "CO₂", "Around 1,000 parts per million or more (today: about 425)." ], [ "🌸", "Life", "Flowering plants appear about 130 MYA and take over. Bees, ants, snakes and modern bird groups arrive." ], [ "🌍", "Continents", "South America and Africa part; India breaks away and races north." ] ], "know": "A thin layer of clay found all over the world is rich in iridium — rare in Earth's crust, common in asteroids (Luis and Walter Alvarez, 1980). The same layer holds shocked quartz and beads of melted rock. The buried crater, 180 km across, was identified at Chicxulub, Mexico, in 1991.", "today": "Birds are living dinosaurs — about 11,000 species of them. And the asteroid shows that the dominant animals of an age can vanish quickly, opening the way for others: in this case mammals, and eventually us.", "ext": { "name": "End-Cretaceous (K–Pg) mass extinction", "when": "66 MYA", "toll": "About 75% of species, including every dinosaur except the birds", "cause": "An asteroid about 10 km wide struck the Yucatán. Soot and dust blocked the Sun and stopped photosynthesis for months to years. Enormous eruptions in India (the Deccan Traps) were already under way and may have added to the stress." } },
   creatures: [
     {"name":"Tyrannosaurus rex","emoji":"🦖","diet":"carn","size":"~12-13 meters, 9 tons","habitat":"Semi-arid floodplains","lived":"68–66 MYA","t":[68,66],"g":"dino","c":"Dinosaurs › Theropods › Tyrannosaurs","fact":"The skull of “Sue” (FMNH PR 2081, Field Museum, Chicago) shows healed bite marks from another T. rex — direct fossil evidence they fought each other. Her thigh bone is 1.33 meters long.","know":"Growth rings in the bones, like tree rings, show a teenage growth spurt of about 2 kg a day; few T. rex lived past 30. Fossil dung packed with crushed bone confirms the bone-shattering bite — the strongest of any land animal known.","debate":"Was the smaller “Nanotyrannus” a separate species or a teenage T. rex? A nearly full-grown skeleton described in 2025 points to a separate species — an argument that has run for over 30 years.","taxonomy":"Dinosauria › Saurischia › Theropoda › Tyrannosauridae › Tyrannosaurinae","discovery":"First described by Henry Fairfield Osborn in 1905 (AMNH 973). Holotype discovered in 1902 near Hell Creek Formation, Montana by Barnum Brown.","keyResearchers":"Osborn, H.F. (1905), Brown, B. (1902), Horner & Lessem (1993), Hutchinson & Garcia (2002)","citation":"Osborn, H.F. (1905). Tyrannosaurus and other Cretaceous carnivorous dinosaurs. Bulletin of the AMNH 21:259–265.","sites":[[47.6,-106.9,"Hell Creek, Montana"],[45,-102,"Faith, South Dakota — “Sue”"],[49.5,-108.8,"Eastend, Saskatchewan — “Scotty”"],[43,-104.6,"Lance Formation, Wyoming"]]},
@@ -1518,6 +1531,81 @@ const MILESTONES = [
   [0.022,"🧊","People in Ice Age America", "Footprints at White Sands, New Mexico."],
   [0.0115,"🌾","Farming begins", "Wheat, barley and lentils in the Fertile Crescent — and independently on other continents soon after."],
 ];
+// ============================================================
+// FOOD WEBS — who ate whom, one real ecosystem per period
+// ============================================================
+// nodes: id: [label, emoji, tier, siteName?]
+//   tier 0 = makes its own food (plants, algae, microbes)
+//   tier 1 = plant-eaters, grazers and filter-feeders
+//   tier 2 = hunters
+//   tier 3 = top predators
+//   siteName links the node to that animal's card on the site.
+// links: [eaten, eater, 'proof' | 'likely', note]
+//   proof  = fossil evidence of the meal itself: stomach contents, bite
+//            marks, droppings, chemistry of bones, feeding traces
+//   likely = inferred from teeth, jaws, size and who lived together
+const FOODWEBS = {
+  cryogenian: { title: 'A microbial world under the ice', where: 'Meltwater pools and ice-free seas',
+    note: 'No animal yet ate another animal. Life was almost all microscopic, powered by sunlight reaching through thin ice.',
+    nodes: { sun: ['Cyanobacteria mats', '🟢', 0, 'Stromatolite'], alg: ['Algae & acritarchs', '🦠', 0, 'Acritarch'], pro: ['Single-celled grazers', '🔬', 1], spo: ['Earliest sponges', '🫧', 1, 'Earliest Sponges'] },
+    links: [['sun', 'pro', 'proof', 'Vase-shaped microfossils — tiny shells of amoeba-like cells — appear just before Snowball Earth, with holes drilled in algae: the first known grazing.'], ['alg', 'pro', 'likely'], ['sun', 'spo', 'likely', 'Sponges filter bacteria from the water.']] },
+  ediacaran: { title: 'The garden of Ediacara', where: 'Shallow sea floor, South Australia and the White Sea',
+    note: 'Most Ediacaran life fed on the thick microbial mats that carpeted the sea floor, or absorbed food straight from the water. The first predators appear at the very end.',
+    nodes: { mat: ['Microbial mats', '🟫', 0], dis: ['Dissolved food in water', '💧', 0], dic: ['Dickinsonia', '🫓', 1, 'Dickinsonia'], yor: ['Yorgia', '🫓', 1, 'Yorgia'], kim: ['Kimberella', '🐌', 1, 'Kimberella'], fra: ['Fractofusus', '🌿', 1, 'Fractofusus'], clo: ['Cloudina', '🐚', 1, 'Cloudina'], dri: ['Unknown driller', '❓', 2] },
+    links: [['mat', 'dic', 'proof', 'Trails of body-shaped prints where it sat and digested the mat beneath it.'], ['mat', 'yor', 'proof', 'Feeding prints ending at the body.'], ['mat', 'kim', 'proof', 'Fan-shaped scratch marks raked into the mat beside the fossils.'], ['dis', 'fra', 'likely', 'No mouth: it probably absorbed nutrients through its surface.'], ['dis', 'clo', 'likely'], ['clo', 'dri', 'proof', 'Neat round holes bored through Cloudina tubes — the oldest evidence of predators.']] },
+  cambrian: { title: 'The Burgess Shale sea', where: 'Foot of a reef, British Columbia',
+    note: 'The first food web we can reconstruct in detail: hunters, scavengers, filter-feeders and grazers, with eyes and claws everywhere.',
+    nodes: { pla: ['Plankton', '🦠', 0], mat: ['Algae & microbial mats', '🌿', 0], tri: ['Trilobites', '🪲', 1, 'Trilobite'], wiw: ['Wiwaxia', '🐌', 1, 'Wiwaxia'], mar: ['Marella', '🦐', 1, 'Marella'], pik: ['Pikaia', '🐟', 1, 'Pikaia'], hyo: ['Hyoliths', '🐚', 1], ott: ['Ottoia', '🪱', 2, 'Ottoia'], opa: ['Opabinia', '🦐', 2, 'Opabinia'], san: ['Sanctacaris', '🦐', 2, 'Sanctacaris'], ano: ['Anomalocaris', '🦐', 3, 'Anomalocaris'] },
+    links: [['mat', 'wiw', 'likely', 'Rasping mouthparts for grazing mats.'], ['mat', 'tri', 'likely'], ['pla', 'pik', 'likely'], ['pla', 'mar', 'likely'], ['pla', 'hyo', 'likely'], ['hyo', 'ott', 'proof', 'Hyolith shells found inside Ottoia guts — and sometimes other Ottoia: it was a cannibal too.'], ['mar', 'opa', 'likely'], ['mar', 'san', 'likely'], ['tri', 'ano', 'likely', 'Healed bite wounds on trilobites are often blamed on radiodonts — though whether its claws could crack shells is debated.'], ['pik', 'ano', 'likely']] },
+  ordovician: { title: 'A tropical Ordovician sea', where: 'Shallow seas over North America and the Baltic',
+    note: 'Filter-feeders boomed — brachiopods, graptolites, sea lilies. At the top: giant shelled cephalopods and the first sea scorpions.',
+    nodes: { pla: ['Plankton', '🦠', 0], gra: ['Graptolites', '🪶', 1, 'Didymograptus (Graptolite)'], bra: ['Brachiopods', '🐚', 1, 'Strophomena (Brachiopod)'], tri: ['Trilobites', '🪲', 1, 'Isotelus'], jaw: ['Jawless fish', '🐟', 1, 'Jawless Fish (Agnathan)'], con: ['Conodonts', '🐟', 2, 'Conodonts'], eur: ['Sea scorpions', '🦂', 2, 'Eurypterid (Sea Scorpion)'], ort: ['Orthoceras', '🦑', 2, 'Orthoceras'], cam: ['Cameroceras', '🦑', 3, 'Cameroceras'] },
+    links: [['pla', 'gra', 'likely'], ['pla', 'bra', 'likely'], ['pla', 'jaw', 'likely'], ['pla', 'con', 'likely', 'Wear on conodont teeth shows they sliced food.'], ['tri', 'eur', 'likely'], ['jaw', 'eur', 'likely'], ['tri', 'ort', 'likely'], ['jaw', 'cam', 'likely'], ['ort', 'cam', 'likely']] },
+  silurian: { title: 'Reefs, lagoons — and the first land food chain', where: 'Lagoons of Scotland and New York; the first green shores',
+    note: 'Two food webs side by side: a sea ruled by giant sea scorpions, and a tiny new one on land, where the first millipedes ate the first plants.',
+    nodes: { pla: ['Plankton', '🦠', 0], coo: ['First land plants', '🌱', 0, 'Cooksonia'], the: ['Thelodus', '🐟', 1, 'Thelodus'], mil: ['Early millipedes', '🐛', 1, 'Pneumodesmus'], aca: ['First jawed fish', '🐟', 2, 'Early Jawed Fish (Acanthodian)'], eur: ['Eurypterus', '🦂', 2, 'Eurypterus'], bro: ['Brontoscorpio', '🦂', 2, 'Brontoscorpio'], pte: ['Pterygotus', '🦂', 3, 'Pterygotus (Giant Eurypterid)'] },
+    links: [['pla', 'the', 'likely'], ['pla', 'aca', 'likely'], ['coo', 'mil', 'likely', 'Millipedes still eat rotting plants today.'], ['mil', 'bro', 'likely'], ['the', 'eur', 'likely'], ['the', 'pte', 'likely'], ['aca', 'pte', 'likely', 'Its big serrated claws and forward-facing eyes suggest it hunted fast fish.']] },
+  devonian: { title: 'The Age of Fishes', where: 'The Cleveland Shale sea and the rivers of Laurussia',
+    note: 'Armoured fish, the first sharks and lobe-finned fish filled every role. On land, the first forests rose.',
+    nodes: { pla: ['Plankton', '🦠', 0], arc: ['First forests', '🌳', 0, 'Archaeopteris Tree'], tit: ['Titanichthys', '🐟', 1, 'Titanichthys'], bot: ['Bothriolepis', '🐟', 1, 'Bothriolepis'], fis: ['Small fish', '🐟', 1], cla: ['Cladoselache', '🦈', 2, 'Cladoselache'], eus: ['Eusthenopteron', '🐟', 2, 'Eusthenopteron'], tik: ['Tiktaalik', '🐟', 2, 'Tiktaalik'], dun: ['Dunkleosteus', '🐟', 3, 'Dunkleosteus'], hyn: ['Hyneria', '🐟', 3, 'Hyneria'] },
+    links: [['pla', 'tit', 'likely', 'Toothless jaws: a plankton strainer.'], ['arc', 'bot', 'likely', 'Leaves and plant debris washed into the rivers fed bottom-feeders.'], ['pla', 'fis', 'likely'], ['fis', 'cla', 'proof', 'Cladoselache fossils have whole fish in their stomachs — swallowed tail-first.'], ['fis', 'eus', 'likely'], ['fis', 'tik', 'likely'], ['fis', 'dun', 'likely'], ['cla', 'dun', 'likely', 'Armour plates of other big fish carry wounds that match its blade-like jaws.'], ['eus', 'hyn', 'likely'], ['tik', 'hyn', 'likely']] },
+  carboniferous: { title: 'The coal swamp', where: 'Tropical forest swamps of Euramerica',
+    note: 'Giant club-moss trees fed a world of giant arthropods. The first reptiles hunted insects in the undergrowth.',
+    nodes: { lep: ['Club-moss trees', '🌲', 0, 'Lepidodendron'], fer: ['Ferns & seed ferns', '🌿', 0, 'Medullosa'], art: ['Arthropleura', '🐛', 1, 'Arthropleura'], ins: ['Plant-eating insects', '🪳', 1], mag: ['Mazothairos', '🦟', 1, 'Mazothairos'], meg: ['Meganeura', '🪰', 2, 'Meganeura'], hyl: ['Hylonomus', '🦎', 2, 'Hylonomus'], sco: ['Pulmonoscorpius', '🦂', 2, 'Pulmonoscorpius'], ery: ['Eryops', '🐸', 3, 'Eryops'] },
+    links: [['lep', 'art', 'likely', 'Plant fragments and spores in its gut region have been reported, but meat-eating is not ruled out.'], ['fer', 'ins', 'likely'], ['fer', 'mag', 'likely', 'A beak for sucking plant juices.'], ['ins', 'meg', 'likely', 'Like a dragonfly: caught insects in flight.'], ['ins', 'hyl', 'likely'], ['ins', 'sco', 'likely'], ['hyl', 'sco', 'likely'], ['hyl', 'ery', 'likely'], ['ins', 'ery', 'likely']] },
+  permian: { title: 'Life on Pangaea', where: 'River plains of Russia and South Africa',
+    note: 'Plant-eating proto-mammals and armoured reptiles grazed; sabre-toothed gorgonopsians hunted them.',
+    nodes: { glo: ['Glossopteris forests', '🌳', 0, 'Glossopteris'], fer: ['Ferns & horsetails', '🌿', 0], sct: ['Scutosaurus', '🦏', 1, 'Scutosaurus'], mos: ['Moschops', '🐂', 1, 'Moschops'], dii: ['Diictodon', '🐹', 1, 'Diictodon'], lys: ['Lystrosaurus', '🐗', 1, 'Lystrosaurus'], gor: ['Gorgonopsids', '🦁', 3, 'Gorgonopsid'], ino: ['Inostrancevia', '🦁', 3, 'Inostrancevia'], the: ['Euchambersia', '🐍', 2, 'Euchambersia'] },
+    links: [['glo', 'lys', 'likely'], ['glo', 'mos', 'likely'], ['fer', 'sct', 'likely'], ['fer', 'dii', 'likely'], ['dii', 'the', 'likely'], ['dii', 'gor', 'likely'], ['mos', 'gor', 'likely'], ['lys', 'gor', 'likely'], ['sct', 'ino', 'likely', 'Both lived along the Northern Dvina river in Russia; its 12-cm sabres were made for big prey.']] },
+  triassic: { title: 'The Chinle forest', where: 'Late Triassic Arizona and New Mexico',
+    note: 'Early dinosaurs were small and rare. Crocodile-line reptiles ruled the top of the food chain.',
+    nodes: { con: ['Conifers & ferns', '🌲', 0], pla: ['Placerias', '🐗', 1, 'Placerias'], des: ['Desmatosuchus', '🐊', 1, 'Desmatosuchus'], eff: ['Effigia', '🐊', 1, 'Effigia'], cro: ['Small crocodile relatives', '🦎', 2], coe: ['Coelophysis', '🦖', 2, 'Coelophysis'], pos: ['Postosuchus', '🐊', 3, 'Postosuchus'] },
+    links: [['con', 'pla', 'likely'], ['con', 'des', 'likely', 'A pig-like snout for rooting.'], ['con', 'eff', 'likely'], ['cro', 'coe', 'proof', 'Bones inside Coelophysis bellies were long said to be its own babies — proof of cannibalism. A 2006 restudy showed they were a small crocodile relative.'], ['pla', 'pos', 'likely'], ['des', 'pos', 'likely'], ['coe', 'pos', 'likely']] },
+  jurassic: { title: 'The Morrison floodplain', where: 'Western North America, about 150 million years ago',
+    note: 'A world of giants: several kinds of sauropod sharing the same plains, each feeding at a different height.',
+    nodes: { con: ['Conifers & cycads', '🌲', 0], fer: ['Ferns & horsetails', '🌿', 0], dip: ['Diplodocus', '🦕', 1, 'Diplodocus'], cam: ['Camarasaurus', '🦕', 1, 'Camarasaurus'], ste: ['Stegosaurus', '🦕', 1, 'Stegosaurus'], dry: ['Dryosaurus', '🦕', 1, 'Dryosaurus'], orn: ['Ornitholestes', '🦖', 2, 'Ornitholestes'], cer: ['Ceratosaurus', '🦖', 2, 'Ceratosaurus'], all: ['Allosaurus', '🦖', 3, 'Allosaurus'] },
+    links: [['fer', 'dip', 'likely', 'Peg teeth for stripping low plants; its neck swept a wide circle of ground.'], ['con', 'cam', 'likely', 'Spoon teeth for tougher, higher leaves.'], ['fer', 'ste', 'likely'], ['fer', 'dry', 'likely'], ['dry', 'orn', 'likely'], ['dry', 'cer', 'likely'], ['dip', 'all', 'proof', 'Sauropod bones carry Allosaurus tooth marks — though much may have been scavenged.'], ['ste', 'all', 'likely', 'An Allosaurus tail bone pierced by a Stegosaurus spike shows the meals fought back.'], ['cam', 'all', 'proof']] },
+  cretaceous: { title: 'Hell Creek — the last dinosaurs', where: 'Montana and the Dakotas, 66 million years ago',
+    note: 'The best-known dinosaur food web of all — and the one that the asteroid ended.',
+    nodes: { flo: ['Flowering plants & conifers', '🌸', 0], tri: ['Triceratops', '🦕', 1, 'Triceratops'], edm: ['Edmontosaurus', '🦕', 1, 'Edmontosaurus'], ank: ['Ankylosaurus', '🦕', 1, 'Ankylosaurus'], pac: ['Pachycephalosaurus', '🦕', 1, 'Pachycephalosaurus'], the: ['Thescelosaurus', '🦕', 1, 'Thescelosaurus'], did: ['Didelphodon', '🦡', 2, 'Didelphodon'], anz: ['Anzu', '🐦', 2, 'Anzu'], dak: ['Dakotaraptor', '🦖', 2, 'Dakotaraptor'], rex: ['Tyrannosaurus rex', '🦖', 3, 'Tyrannosaurus rex'] },
+    links: [['flo', 'tri', 'likely'], ['flo', 'edm', 'proof', 'Edmontosaurus mummies preserve stomach contents of conifer needles, seeds and twigs.'], ['flo', 'ank', 'likely'], ['flo', 'pac', 'likely'], ['flo', 'the', 'likely'], ['flo', 'anz', 'likely', 'Toothless beak: plants, perhaps small animals too.'], ['the', 'dak', 'likely'], ['the', 'did', 'likely'], ['tri', 'rex', 'proof', 'Triceratops hip bones are scored with T. rex tooth marks from pulling the head off to reach the neck meat.'], ['edm', 'rex', 'proof', 'An Edmontosaurus tail has a healed T. rex bite — it was attacked alive and escaped.'], ['the', 'rex', 'likely'], ['pac', 'rex', 'likely']] },
+  paleogene: { title: 'The Messel forest lake', where: 'Germany, 47 million years ago',
+    note: 'Mammals and birds rebuilt the food web after the asteroid. Messel preserves actual stomach contents.',
+    nodes: { fru: ['Fruit, leaves & seeds', '🍇', 0], ins: ['Insects', '🪲', 1], ant: ['Giant ants', '🐜', 1, 'Titanomyrma'], hor: ['Eurohippus', '🐴', 1, 'Eurohippus'], ida: ['Darwinius', '🐒', 1, 'Darwinius (“Ida”)'], gas: ['Gastornis', '🦤', 1, 'Gastornis (Giant Bird)'], lep: ['Leptictidium', '🐀', 2, 'Leptictidium'], eur: ['Eurotamandua', '🐜', 2, 'Eurotamandua'], cro: ['Boverisuchus', '🐊', 3, 'Boverisuchus (“hoofed crocodile”)'] },
+    links: [['fru', 'hor', 'proof', 'Messel horses have leaves and grape seeds preserved in their stomachs.'], ['fru', 'ida', 'proof', 'Fruit and leaves in its gut.'], ['fru', 'gas', 'likely', 'Once drawn as a fearsome hunter; its beak shape and bone chemistry point to a plant-eater (2014).'], ['fru', 'ins', 'likely'], ['ins', 'lep', 'proof', 'Insect remains in its stomach.'], ['ant', 'eur', 'likely'], ['ins', 'eur', 'likely'], ['hor', 'cro', 'likely'], ['lep', 'cro', 'likely']] },
+  neogene: { title: 'The Pisco coast', where: 'The coast of Peru, about 10–5 million years ago',
+    note: 'A sea of giants: baleen whales grazing plankton, and two of the largest predators ever hunting them.',
+    nodes: { pla: ['Plankton', '🦠', 0], sgr: ['Seagrass', '🌿', 0], fis: ['Sardines & small fish', '🐟', 1], cla: ['Clams', '🐚', 1], bal: ['Small baleen whales', '🐋', 1], tha: ['Thalassocnus', '🦥', 1, 'Thalassocnus'], odo: ['Odobenocetops', '🐋', 2, 'Odobenocetops'], meg: ['Megalodon', '🦈', 3, 'Megalodon'], liv: ['Livyatan', '🐋', 3, 'Livyatan'] },
+    links: [['pla', 'bal', 'likely'], ['pla', 'fis', 'likely'], ['pla', 'cla', 'likely'], ['sgr', 'tha', 'proof', 'Its teeth are worn by sand swallowed while grazing seagrass.'], ['cla', 'odo', 'likely'], ['bal', 'meg', 'proof', 'Whale bones from Pisco and elsewhere carry megalodon bite marks, many aimed at the flippers and tail.'], ['bal', 'liv', 'likely', 'Teeth of 36 cm, in both jaws, for big prey.'], ['fis', 'meg', 'likely']] },
+  quaternary: { title: 'Ice Age Los Angeles — La Brea', where: 'Southern California, 50,000–11,000 years ago',
+    note: 'Animals stuck in the tar attracted predators that got stuck too — so La Brea holds far more meat-eaters than plant-eaters.',
+    nodes: { gra: ['Grass & shrubs', '🌾', 0], mam: ['Columbian mammoth', '🦣', 1, 'Columbian Mammoth'], bis: ['Bison', '🦬', 1, 'Bison latifrons'], cam: ['Camels', '🐪', 1, 'Camelops'], slo: ['Ground sloths', '🦥', 1, 'Giant Ground Sloth'], smi: ['Smilodon', '🐅', 3, 'Saber-toothed Cat (Smilodon)'], dir: ['Dire wolf', '🐺', 2, 'Dire Wolf (Aenocyon dirus)'], lio: ['American lion', '🦁', 3, 'American Lion'], arc: ['Short-faced bear', '🐻', 2, 'Arctodus (Short-Faced Bear)'], ter: ['Teratornis', '🦅', 2, 'Teratornis'] },
+    links: [['gra', 'mam', 'likely'], ['gra', 'bis', 'proof', 'Tooth wear and chemistry show grazing.'], ['gra', 'cam', 'likely'], ['gra', 'slo', 'likely'], ['bis', 'smi', 'proof', 'Chemistry of Smilodon bones and tooth wear: bison, horses, camels — and a preference for prey from wooded areas.'], ['bis', 'dir', 'proof', 'Dire wolves ate mostly open-grassland grazers such as bison and horses.'], ['cam', 'lio', 'likely'], ['slo', 'smi', 'likely'], ['bis', 'arc', 'likely', 'Hunter, scavenger or mostly plant-eater? Bone chemistry suggests it ate a mixed diet.'], ['bis', 'ter', 'likely']] },
+  holocene: { title: 'Today — and what we took', where: 'Oceans and islands of the modern world',
+    note: 'The food web we live in. People are now at the top of nearly every one — and some of the animals on this map were eaten to extinction.',
+    nodes: { pla: ['Plankton', '🦠', 0], kel: ['Kelp', '🌿', 0], kri: ['Krill', '🦐', 1], fis: ['Fish', '🐟', 1], sea: ['Steller\'s sea cow', '🦭', 1, "Steller's Sea Cow (Hydrodamalis gigas)"], dod: ['Dodo', '🦤', 1, 'Dodo (Raphus cucullatus)'], pas: ['Passenger pigeon', '🐦', 1, 'Passenger Pigeon (Ectopistes migratorius)'], blu: ['Blue whale', '🐋', 1, 'Blue Whale'], sha: ['Great white shark', '🦈', 3, 'Great White Shark'], hum: ['Humans', '🧍', 3, 'Humans Today'] },
+    links: [['pla', 'kri', 'proof', 'Observed every day.'], ['kri', 'blu', 'proof', 'Up to about 16 tonnes of krill a day in the feeding season.'], ['pla', 'fis', 'proof'], ['kel', 'sea', 'proof', 'Described by Georg Steller in 1741, browsing kelp.'], ['fis', 'sha', 'proof'], ['fis', 'hum', 'proof'], ['sea', 'hum', 'proof', 'Hunted to extinction within 27 years of its discovery.'], ['dod', 'hum', 'proof', 'Sailors, and the rats, pigs and monkeys they brought, wiped it out by about 1662.'], ['pas', 'hum', 'proof', 'Billions shot and netted; the last died in 1914.']] },
+};
 // ============================================================
 // WAYS OF LIFE — how people lived: homes, settlements, cultures
 // ============================================================
@@ -3455,12 +3543,52 @@ function renderInsights() {
     <div class="ins-sec"><h4>🔎 How do we know?</h4>${esc(I.know)}</div>
     <div class="ins-sec"><h4>🌍 Why it matters today</h4>${esc(I.today)}</div>
     ${I.ext ? `<div class="ext"><h4>☠️ ${esc(I.ext.name)}</h4><dl><dt>When</dt><dd>${esc(I.ext.when)}</dd><dt>Lost</dt><dd>${esc(I.ext.toll)}</dd><dt>Cause</dt><dd>${esc(I.ext.cause)}</dd></dl></div>` : ''}
+    ${foodWebHTML(p)}
     ${p.funFact ? `<div class="ins-sec"><h4>💡 Did you know?</h4>${esc(p.funFact)}</div>` : ''}
     ${sites.length ? `<div class="ins-sec"><h4>📍 Famous fossil sites — shown on the map</h4>${sites.map(s => `<div class="site${S.sel === 'site:' + slug(s[0]) ? ' sel' : ''}" data-key="site:${slug(s[0])}"><span class="d">◆</span><div><b>${esc(s[0])}</b>${esc(s[4])}</div></div>`).join('')}</div>` : ''}
     <div class="src">Dates follow the International Chronostratigraphic Chart (2024 edition), rounded — older books give slightly different numbers. Temperature, CO₂ and sea-level figures are published estimates with real uncertainty; where specialists disagree, the text says so. Continents: plate model of Merdith et al. (2021), <i>Earth-Science Reviews</i> 214. Coastlines: Natural Earth.</div></div>`;
 }
+// ── food web: one real ecosystem per period, drawn as tiers ──
+const BY_NAME = Object.fromEntries(ALL.map(c => [c.name, c]));
+function foodWebHTML(p) {
+  const w = FOODWEBS[p.id]; if (!w) return '';
+  const W = 380, TH = 74, H = TH * 4 + 6, ids = Object.keys(w.nodes), pos = {};
+  for (let tier = 0; tier < 4; tier++) {
+    const row = ids.filter(id => w.nodes[id][2] === tier), n = row.length, bw = Math.min(88, (W - 8) / Math.max(1, n) - 6);
+    row.forEach((id, i) => { pos[id] = { x: 4 + (W - 8) * (i + 0.5) / n, y: H - 6 - TH * tier - TH / 2, w: bw }; });
+  }
+  const NH = 40;
+  const links = w.links.map(([a, b, kind, note], i) => {
+    const A = pos[a], B = pos[b]; if (!A || !B) return '';
+    const x1 = A.x, y1 = A.y - NH / 2, x2 = B.x, y2 = B.y + NH / 2 + 3;
+    const mx = (x1 + x2) / 2 + (x1 === x2 ? 14 : 0), my = (y1 + y2) / 2;
+    return `<path class="fw-link ${kind}" data-i="${i}" d="M${x1.toFixed(1)} ${y1} Q${mx.toFixed(1)} ${my} ${x2.toFixed(1)} ${y2}" marker-end="url(#fwArrow${kind === 'proof' ? 'P' : 'L'})"><title>${esc(w.nodes[a][0])} → eaten by ${esc(w.nodes[b][0])}${note ? ' — ' + esc(note) : ''}</title></path>`;
+  }).join('');
+  const split = s => { if (s.length <= 13) return [s]; const k = s.lastIndexOf(' ', 13); return k > 3 ? [s.slice(0, k), s.slice(k + 1)] : [s]; };
+  const nodes = ids.map(id => {
+    const [label, emoji, tier, site] = w.nodes[id], P = pos[id], c = site && BY_NAME[site], lines = split(label);
+    return `<g class="fw-node${c ? ' link' : ''}" ${c ? `data-key="${c.key}"` : ''} transform="translate(${(P.x - P.w / 2).toFixed(1)},${P.y - NH / 2})">
+      <rect width="${P.w.toFixed(1)}" height="${NH}" rx="7" class="t${tier}"/>
+      <text x="${(P.w / 2).toFixed(1)}" y="15" text-anchor="middle" font-size="14">${emoji}</text>
+      ${lines.map((l, j) => `<text x="${(P.w / 2).toFixed(1)}" y="${lines.length > 1 ? 26 + j * 9.5 : 31}" text-anchor="middle" font-size="${Math.min(lines.length > 1 ? 8 : 8.8, (P.w - 4) / (l.length * 0.56)).toFixed(1)}" class="fw-lab">${esc(l)}</text>`).join('')}
+      ${c ? `<title>${esc(c.name)} — tap to open its card</title>` : ''}</g>`;
+  }).join('');
+  const tiers = ['Makes its own food', 'Plant-eaters & filter-feeders', 'Hunters', 'Top predators'];
+  const proofs = w.links.filter(l => l[3]);
+  return `<div class="ins-sec"><h4>🍖 Who ate whom — ${esc(w.title)}</h4><div style="color:var(--muted);font-size:.7rem;margin-bottom:5px">${esc(w.where)}. ${esc(w.note)}</div>
+    <div class="fw"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Food web: ${esc(w.title)}">
+      <defs><marker id="fwArrowP" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#ff9a5a"/></marker>
+      <marker id="fwArrowL" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#7f9cc6"/></marker></defs>
+      ${[3, 2, 1, 0].map(t => `<rect x="0" y="${H - 6 - TH * (t + 1)}" width="${W}" height="${TH}" class="fw-band b${t}"/><text x="4" y="${H - 6 - TH * (t + 1) + 9}" class="fw-tier">${tiers[t]}</text>`).join('')}
+      ${links}${nodes}</svg></div>
+    <div class="fw-key"><span><i class="proof"></i>Fossil proof of the meal</span><span><i class="likely"></i>Likely, from teeth, size and who lived together</span><span>Arrows point to the eater · tap an animal to open it</span></div>
+    <div class="fw-note" id="fwNote"></div>
+    ${proofs.length ? `<details class="fw-how"><summary>How do we know who ate whom? (${proofs.length})</summary>${proofs.map(l => `<div><b>${esc(w.nodes[l[0]][0])} → ${esc(w.nodes[l[1]][0])}</b> <span class="${l[2]}">${l[2] === 'proof' ? 'fossil proof' : 'likely'}</span><br>${esc(l[3])}</div>`).join('')}</details>` : ''}</div>`;
+}
 function bindInsights() {
   $('pane-insights').addEventListener('click', e => {
+    const fn = e.target.closest('.fw-node.link'); if (fn) { const k = fn.dataset.key; switchTab('life'); select(k, { keep: true }); return; }
+    const fl = e.target.closest('.fw-link'); if (fl) { const w = FOODWEBS[S.period.id], l = w.links[+fl.dataset.i]; $('fwNote').innerHTML = `<b>${esc(w.nodes[l[0]][0])}</b> eaten by <b>${esc(w.nodes[l[1]][0])}</b> — ${l[2] === 'proof' ? 'fossil proof' : 'likely'}${l[3] ? ': ' + esc(l[3]) : '.'}`; return; }
     const el = e.target.closest('.site'); if (!el) return;
     const s = SITES.find(x => 'site:' + slug(x[0]) === el.dataset.key), pl = placeCache['s' + s[0] + S.period.id];
     if (pl) selectPlace(pl.key, pl.at);

@@ -70,6 +70,12 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('culture travels in time and opens its profile', await p.evaluate(() => S.sel === 'cul:catalhoyuk' && S.t < 0.0095 && S.t > 0.0077 && /Homes and settlements/i.test(document.querySelector('#pane-humans .profile').innerText)), JSON.stringify(await p.evaluate(() => [S.sel, S.t])));
   ok('culture pins on the map', await p.evaluate(() => CULTURES.filter(c => culActive(c)).some(c => c.id === 'catalhoyuk')));
   await p.click('#tab-life'); await p.waitForTimeout(150);
+  // food webs
+  ok('every period has a food web', await p.evaluate(() => PERIODS.every(q => FOODWEBS[q.id] && Object.keys(FOODWEBS[q.id].nodes).length >= 4)));
+  await p.evaluate(() => setTime(67)); await p.click('#tab-insights'); await p.waitForTimeout(250);
+  ok('food web drawn with links', await p.evaluate(() => document.querySelectorAll('#pane-insights .fw-node').length >= 8 && document.querySelectorAll('#pane-insights .fw-link.proof').length >= 2));
+  await p.click('#pane-insights .fw-node[data-key="tyrannosaurus-rex"]'); await p.waitForTimeout(400);
+  ok('tapping a food-web animal opens its card', await p.evaluate(() => S.tab === 'life' && S.sel === 'tyrannosaurus-rex'));
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));

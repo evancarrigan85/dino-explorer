@@ -51,6 +51,7 @@ for (const set of [NEW, MORE, CENOZOIC, EARLY]) for (const [pid, list] of Object
 }
 // weird & wonderful
 const allC = periods.flatMap(p => p.creatures);
+const allNames = new Set(allC.map(c => c.name));
 for (const n of WEIRD_NAMES) { const c = allC.find(x => x.name === n); if (c) c.weird = 1; else problems.push('weird: no animal named ' + n); }
 // checks
 const keys = new Set(HOMININS.map(h => h.id));
@@ -92,6 +93,10 @@ for (const p of periods) {
 data += '];\n\n';
 const hsrc = fs.readFileSync(SRC + 'data_hominins.js', 'utf8');
 data += hsrc.slice(0, hsrc.indexOf("if (typeof module")).trim() + '\n';
+const { FOODWEBS } = require('./data_foodweb.js');
+for (const [pid, w] of Object.entries(FOODWEBS)) { if (!byId[pid]) problems.push('foodweb: bad period ' + pid); for (const [id, n] of Object.entries(w.nodes)) if (n[3] && !allNames.has(n[3])) problems.push('foodweb ' + pid + ': no animal named ' + n[3]); for (const l of w.links) if (!w.nodes[l[0]] || !w.nodes[l[1]]) problems.push('foodweb ' + pid + ': bad link ' + l.join('>')); }
+const fsrc = fs.readFileSync(SRC + 'data_foodweb.js', 'utf8');
+data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 const csrc = fs.readFileSync(SRC + 'data_cultures.js', 'utf8');
 data += csrc.slice(0, csrc.indexOf("if (typeof module")).trim() + '\n';
 data += `const HOMININ_LINEAGE = ${J(C.HOMININ_LINEAGE)};\n\n`;

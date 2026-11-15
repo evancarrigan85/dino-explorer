@@ -566,12 +566,52 @@ function renderInsights() {
     <div class="ins-sec"><h4>🔎 How do we know?</h4>${esc(I.know)}</div>
     <div class="ins-sec"><h4>🌍 Why it matters today</h4>${esc(I.today)}</div>
     ${I.ext ? `<div class="ext"><h4>☠️ ${esc(I.ext.name)}</h4><dl><dt>When</dt><dd>${esc(I.ext.when)}</dd><dt>Lost</dt><dd>${esc(I.ext.toll)}</dd><dt>Cause</dt><dd>${esc(I.ext.cause)}</dd></dl></div>` : ''}
+    ${foodWebHTML(p)}
     ${p.funFact ? `<div class="ins-sec"><h4>💡 Did you know?</h4>${esc(p.funFact)}</div>` : ''}
     ${sites.length ? `<div class="ins-sec"><h4>📍 Famous fossil sites — shown on the map</h4>${sites.map(s => `<div class="site${S.sel === 'site:' + slug(s[0]) ? ' sel' : ''}" data-key="site:${slug(s[0])}"><span class="d">◆</span><div><b>${esc(s[0])}</b>${esc(s[4])}</div></div>`).join('')}</div>` : ''}
     <div class="src">Dates follow the International Chronostratigraphic Chart (2024 edition), rounded — older books give slightly different numbers. Temperature, CO₂ and sea-level figures are published estimates with real uncertainty; where specialists disagree, the text says so. Continents: plate model of Merdith et al. (2021), <i>Earth-Science Reviews</i> 214. Coastlines: Natural Earth.</div></div>`;
 }
+// ── food web: one real ecosystem per period, drawn as tiers ──
+const BY_NAME = Object.fromEntries(ALL.map(c => [c.name, c]));
+function foodWebHTML(p) {
+  const w = FOODWEBS[p.id]; if (!w) return '';
+  const W = 380, TH = 74, H = TH * 4 + 6, ids = Object.keys(w.nodes), pos = {};
+  for (let tier = 0; tier < 4; tier++) {
+    const row = ids.filter(id => w.nodes[id][2] === tier), n = row.length, bw = Math.min(88, (W - 8) / Math.max(1, n) - 6);
+    row.forEach((id, i) => { pos[id] = { x: 4 + (W - 8) * (i + 0.5) / n, y: H - 6 - TH * tier - TH / 2, w: bw }; });
+  }
+  const NH = 40;
+  const links = w.links.map(([a, b, kind, note], i) => {
+    const A = pos[a], B = pos[b]; if (!A || !B) return '';
+    const x1 = A.x, y1 = A.y - NH / 2, x2 = B.x, y2 = B.y + NH / 2 + 3;
+    const mx = (x1 + x2) / 2 + (x1 === x2 ? 14 : 0), my = (y1 + y2) / 2;
+    return `<path class="fw-link ${kind}" data-i="${i}" d="M${x1.toFixed(1)} ${y1} Q${mx.toFixed(1)} ${my} ${x2.toFixed(1)} ${y2}" marker-end="url(#fwArrow${kind === 'proof' ? 'P' : 'L'})"><title>${esc(w.nodes[a][0])} → eaten by ${esc(w.nodes[b][0])}${note ? ' — ' + esc(note) : ''}</title></path>`;
+  }).join('');
+  const split = s => { if (s.length <= 13) return [s]; const k = s.lastIndexOf(' ', 13); return k > 3 ? [s.slice(0, k), s.slice(k + 1)] : [s]; };
+  const nodes = ids.map(id => {
+    const [label, emoji, tier, site] = w.nodes[id], P = pos[id], c = site && BY_NAME[site], lines = split(label);
+    return `<g class="fw-node${c ? ' link' : ''}" ${c ? `data-key="${c.key}"` : ''} transform="translate(${(P.x - P.w / 2).toFixed(1)},${P.y - NH / 2})">
+      <rect width="${P.w.toFixed(1)}" height="${NH}" rx="7" class="t${tier}"/>
+      <text x="${(P.w / 2).toFixed(1)}" y="15" text-anchor="middle" font-size="14">${emoji}</text>
+      ${lines.map((l, j) => `<text x="${(P.w / 2).toFixed(1)}" y="${lines.length > 1 ? 26 + j * 9.5 : 31}" text-anchor="middle" font-size="${Math.min(lines.length > 1 ? 8 : 8.8, (P.w - 4) / (l.length * 0.56)).toFixed(1)}" class="fw-lab">${esc(l)}</text>`).join('')}
+      ${c ? `<title>${esc(c.name)} — tap to open its card</title>` : ''}</g>`;
+  }).join('');
+  const tiers = ['Makes its own food', 'Plant-eaters & filter-feeders', 'Hunters', 'Top predators'];
+  const proofs = w.links.filter(l => l[3]);
+  return `<div class="ins-sec"><h4>🍖 Who ate whom — ${esc(w.title)}</h4><div style="color:var(--muted);font-size:.7rem;margin-bottom:5px">${esc(w.where)}. ${esc(w.note)}</div>
+    <div class="fw"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Food web: ${esc(w.title)}">
+      <defs><marker id="fwArrowP" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#ff9a5a"/></marker>
+      <marker id="fwArrowL" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#7f9cc6"/></marker></defs>
+      ${[3, 2, 1, 0].map(t => `<rect x="0" y="${H - 6 - TH * (t + 1)}" width="${W}" height="${TH}" class="fw-band b${t}"/><text x="4" y="${H - 6 - TH * (t + 1) + 9}" class="fw-tier">${tiers[t]}</text>`).join('')}
+      ${links}${nodes}</svg></div>
+    <div class="fw-key"><span><i class="proof"></i>Fossil proof of the meal</span><span><i class="likely"></i>Likely, from teeth, size and who lived together</span><span>Arrows point to the eater · tap an animal to open it</span></div>
+    <div class="fw-note" id="fwNote"></div>
+    ${proofs.length ? `<details class="fw-how"><summary>How do we know who ate whom? (${proofs.length})</summary>${proofs.map(l => `<div><b>${esc(w.nodes[l[0]][0])} → ${esc(w.nodes[l[1]][0])}</b> <span class="${l[2]}">${l[2] === 'proof' ? 'fossil proof' : 'likely'}</span><br>${esc(l[3])}</div>`).join('')}</details>` : ''}</div>`;
+}
 function bindInsights() {
   $('pane-insights').addEventListener('click', e => {
+    const fn = e.target.closest('.fw-node.link'); if (fn) { const k = fn.dataset.key; switchTab('life'); select(k, { keep: true }); return; }
+    const fl = e.target.closest('.fw-link'); if (fl) { const w = FOODWEBS[S.period.id], l = w.links[+fl.dataset.i]; $('fwNote').innerHTML = `<b>${esc(w.nodes[l[0]][0])}</b> eaten by <b>${esc(w.nodes[l[1]][0])}</b> — ${l[2] === 'proof' ? 'fossil proof' : 'likely'}${l[3] ? ': ' + esc(l[3]) : '.'}`; return; }
     const el = e.target.closest('.site'); if (!el) return;
     const s = SITES.find(x => 'site:' + slug(x[0]) === el.dataset.key), pl = placeCache['s' + s[0] + S.period.id];
     if (pl) selectPlace(pl.key, pl.at);

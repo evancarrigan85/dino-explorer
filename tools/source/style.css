@@ -297,6 +297,19 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .site:hover,.site.sel{background:rgba(240,192,64,.08)}
 .site b{color:#eef2f9;display:block}
 .site .d{color:#c0492a;font-size:.7rem;padding-top:2px}
+.fw{background:#0b101c;border:1px solid var(--border);border-radius:9px;padding:4px;margin-top:4px}
+.fw-band{fill:transparent}.fw-band.b3{fill:rgba(220,70,40,.07)}.fw-band.b2{fill:rgba(240,160,60,.05)}.fw-band.b1{fill:rgba(90,180,90,.05)}.fw-band.b0{fill:rgba(60,140,90,.09)}
+.fw-tier{font-size:7.5px;fill:#6f7c94;text-transform:uppercase;letter-spacing:.6px}
+.fw-node rect{fill:#182033;stroke:#34405e;stroke-width:1}.fw-node rect.t0{fill:#16301f;stroke:#2f6b45}.fw-node rect.t3{fill:#331a16;stroke:#7a3a2a}
+.fw-node.link{cursor:pointer}.fw-node.link:hover rect{stroke:var(--accent);stroke-width:1.6}
+.fw-lab{fill:#dfe6f3}
+.fw-link{fill:none;stroke-width:1.5;cursor:pointer}.fw-link.proof{stroke:#ff9a5a;stroke-width:1.9}.fw-link.likely{stroke:#7f9cc6;stroke-dasharray:4 3;opacity:.8}
+.fw-link:hover{stroke-width:3;opacity:1}
+.fw-key{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.64rem;color:#aab6cc;margin-top:6px}
+.fw-key i{display:inline-block;width:16px;height:0;border-top:2px solid #ff9a5a;margin-right:4px;vertical-align:middle}.fw-key i.likely{border-top:2px dashed #7f9cc6}
+.fw-note{font-size:.72rem;color:#d9e1ee;margin-top:5px;min-height:1em}
+.fw-how{margin-top:6px;font-size:.72rem;color:#b9c5da}.fw-how summary{cursor:pointer;color:var(--accent);font-weight:700}
+.fw-how div{margin-top:6px;line-height:1.4}.fw-how .proof{color:#ff9a5a;font-size:.64rem}.fw-how .likely{color:#7f9cc6;font-size:.64rem}
 .src{margin-top:14px;font-size:.64rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--border);padding-top:8px}
 
 /* --- Geology tab --- */
