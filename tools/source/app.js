@@ -116,7 +116,9 @@ function setTime(t, o = {}) {
 function updateClock(fromSlider) {
   const t = S.t, p = S.period;
   $('myaDisplay').textContent = fmtAgo(t);
-  $('ctDate').textContent = fmtAgo(t).toUpperCase();
+  const sl = WorldMap.seaLevel(t);
+  $('ctDate').textContent = fmtAgo(t).toUpperCase() + (sl <= -10 ? ' · SEA ' + sl + ' M' : sl >= 4 ? ' · SEA +' + sl + ' M' : '');
+  $('ctDate').title = sl <= -10 ? 'Sea level about ' + (-sl) + ' m lower than today — the paler land around today’s coasts was dry ground' : '';
   if (!fromSlider) $('timeSlider').value = Math.round(posOf(t) * 10000);
   $('timeSlider').setAttribute('aria-valuetext', p.name + ', ' + fmtAgo(t));
   $('ovCursor').style.left = storyPos(t) / 10 + '%';

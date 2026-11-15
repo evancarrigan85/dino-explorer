@@ -108,6 +108,9 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#lifeList [data-chart-branch="Arthropods"]'); await p.waitForTimeout(150);
   ok('chart: tapping a branch lists its animals', await p.evaluate(() => S.view === 'list' && S.branch === 'Arthropods' && document.querySelectorAll('#lifeList [data-key]').length >= 20));
   await p.evaluate(() => { S.type = 'all'; S.branch = 'all'; S.scope = 'now'; renderLife(); });
+  // Ice Age sea level
+  ok('sea level: about -125 m at the last glacial peak, 0 today, none before the Ice Age', await p.evaluate(() => WorldMap.seaLevel(0.021) <= -120 && WorldMap.seaLevel(0) === 0 && WorldMap.seaLevel(5) === 0 && WorldMap.seaLevel(0.125) > 0));
+  ok('sea level: shelf shapes loaded, none wrapping the planet', await p.evaluate(() => SHELF_DATA.length > 50 && SHELF_DATA.every(r => { const c = []; for (let k = 0; k < r[0].length; k += 2) c.push([r[0][k] / 10, r[0][k + 1] / 10]); c.push(c[0]); return d3.geoArea({ type: 'Polygon', coordinates: [c] }) < Math.PI; })));
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));

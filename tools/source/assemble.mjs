@@ -110,6 +110,7 @@ const total = periods.reduce((n, p) => n + p.creatures.length, 0) + HOMININS.len
 const css = fs.readFileSync(SRC + 'style.css', 'utf8'), body = fs.readFileSync(SRC + 'body.html', 'utf8');
 const d3 = fs.readFileSync(SRC + 'd3-geo-bundle.min.js', 'utf8').trim();
 const plates = fs.readFileSync(SRC + 'plates-data.js', 'utf8').trim();
+const shelf = fs.readFileSync(SRC + 'shelf-data.js', 'utf8').trim();
 const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
 let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
 if (!/\ninit\(\);$/.test(app)) throw new Error('app.js must end with init();');
@@ -147,6 +148,12 @@ ${d3}
 ${plates}
 </script>
 <!-- ─── END GENERATED: plate data ─── -->
+
+<!-- ─── GENERATED: continental shelves for Ice Age sea level. Rebuild with tools/build_shelf.py — do not edit ─── -->
+<script>
+${shelf}
+</script>
+<!-- ─── END GENERATED: shelves ─── -->
 
 <script>
 ${data.trim()}

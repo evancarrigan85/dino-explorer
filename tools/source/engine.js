@@ -360,6 +360,31 @@ const WorldMap = (() => {
   }
   const SHEET_GEO = {}; for (const k in SHEETS) SHEET_GEO[k] = sheetGeo(k);
 
+  // ── Ice Age sea level ──────────────────────────────────────────────
+  // Metres relative to today, simplified from published sea-level
+  // reconstructions of the last 800,000 years (100,000-year cycles, about
+  // 120–130 m lower at each glacial peak). Before 800,000 years ago the
+  // cycles were shorter (41,000 years) and shallower; that part is drawn as
+  // a smooth 41,000-year wave. Before 2.6 million years ago: no lowstands.
+  const SL = [[0, 0], [6, -2], [8, -15], [11.7, -55], [14, -80], [15, -100], [19, -125], [26, -128], [30, -90], [45, -75], [60, -85], [70, -80], [80, -25], [90, -50],
+    [100, -25], [110, -45], [118, -10], [125, 6], [130, -30], [135, -110], [150, -120], [160, -110], [190, -80], [200, -30], [215, -10], [230, -60], [240, -5], [255, -80],
+    [270, -110], [290, -60], [325, 0], [340, -60], [360, -105], [380, -40], [405, 5], [420, -60], [435, -125], [460, -70], [480, -40], [500, -70], [530, -30], [560, -80],
+    [600, -60], [630, -120], [660, -60], [690, -30], [720, -70], [760, -50], [790, -100], [800, -60]];
+  function seaLevel(t) {
+    const ka = t * 1000;
+    if (ka > 2580) return 0;
+    if (ka > 800) return Math.round(-45 + 30 * Math.cos(2 * Math.PI * (ka - 800) / 41));
+    let i = 0; while (i < SL.length - 2 && SL[i + 1][0] < ka) i++;
+    const [a0, b0] = SL[i], [a1, b1] = SL[i + 1], k = Math.max(0, Math.min(1, (ka - a0) / (a1 - a0)));
+    return Math.round(b0 + (b1 - b0) * k);
+  }
+  const SHELF_GEO = (typeof SHELF_DATA === 'undefined' ? [] : SHELF_DATA).map(rings => {
+    const g = { type: 'Polygon', coordinates: rings.map(r => { const c = []; for (let i = 0; i < r.length; i += 2) c.push([r[i] / 10, r[i + 1] / 10]); c.push(c[0]); return c; }) };
+    if (d3.geoArea(g) > 2 * Math.PI) g.coordinates.forEach(r => r.reverse());
+    return g;
+  });
+  let shelfKey = '', shelfP = null, seabed = null;
+
   // ── drawing ────────────────────────────────────────────────────────
   const sink = {
     p: null, _l: NaN, _p: NaN,
@@ -508,6 +533,22 @@ const WorldMap = (() => {
     c.setLineDash([5, 4]); c.lineWidth = 0.9; c.strokeStyle = 'rgba(40,48,66,0.42)';
     c.stroke(geoP({ type: 'LineString', coordinates: Array.from({ length: 73 }, (_, i) => [-180 + i * 5, 0]) }));
     c.setLineDash([]);
+
+    // Ice Age: the continental shelves come out of the sea as the water drops
+    const sl = seaLevel(t);
+    if (sl < -8 && SHELF_GEO.length) {
+      const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
+      if (vk !== shelfKey) { shelfKey = vk; shelfP = geoP({ type: 'GeometryCollection', geometries: SHELF_GEO }); }
+      const f = Math.min(1, -sl / 120);
+      c.globalAlpha = 0.25 + 0.7 * f; c.fillStyle = '#efe2b8'; c.fill(shelfP);
+      if (!seabed) {                                         // dotted texture: dry seabed, not old land
+        const sb = document.createElement('canvas'); sb.width = sb.height = Math.round(9 * dpr);
+        const sc = sb.getContext('2d'); sc.fillStyle = 'rgba(120,84,34,0.55)'; sc.beginPath(); sc.arc(2 * dpr, 2 * dpr, 0.75 * dpr, 0, 7); sc.arc(6.5 * dpr, 6.5 * dpr, 0.75 * dpr, 0, 7); sc.fill();
+        seabed = c.createPattern(sb, 'repeat'); seabed.setTransform && seabed.setTransform(new DOMMatrix([1 / dpr, 0, 0, 1 / dpr, 0, 0]));
+      }
+      c.globalAlpha = 0.2 + 0.6 * f; c.fillStyle = seabed; c.fill(shelfP);
+      c.globalAlpha = 1;
+    }
 
     // ── land, built on its own layer so overlapping blocks merge ──
     const lp = landPath(t);
@@ -663,7 +704,7 @@ const WorldMap = (() => {
     }
     // notes: things today's coastline cannot show (Ice Age land bridges)
     for (const N of layers.notes) {
-      if (t > N.from || t < N.to) continue;
+      if (t > N.from || t < N.to || seaLevel(t) > -40) continue;
       const p = project([N.lon, N.lat]); if (!p || !inView(p[0], p[1], 10)) continue;
       const size = 9.5 * zs;
       c.beginPath(); c.arc(p[0], p[1], 2.2, 0, 7); c.fillStyle = 'rgba(40,70,60,0.85)'; c.fill();
@@ -783,7 +824,7 @@ const WorldMap = (() => {
     W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     for (const cv of [canvas, fx, land, sheet]) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     for (const cv of q) { cv.width = Math.ceil(canvas.width / QS); cv.height = Math.ceil(canvas.height / QS); }
-    makePaper(); makePatterns(); setupProjection();
+    seabed = null; makePaper(); makePatterns(); setupProjection();
   }
 
   // ── pointer, wheel and touch ───────────────────────────────────────
@@ -829,7 +870,7 @@ const WorldMap = (() => {
 
   // ── public API ─────────────────────────────────────────────────────
   Object.assign(api, {
-    MAXT, attach, locate,
+    MAXT, attach, locate, seaLevel,
     /* The present-day place under a tap at the current time: find the plate
        piece under the point, then undo that plate's rotation. Null over sea. */
     pickPresent(x, y) {
