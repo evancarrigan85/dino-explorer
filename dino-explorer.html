@@ -259,6 +259,22 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .sizecmp{margin-top:8px;padding:7px 8px;background:#0b101c;border:1px solid var(--border);border-radius:7px}
 .sizecmp span{display:block;font-size:.7rem;color:#c9d3e6;margin-top:3px}
 #rollBtn,#weirdBtn{padding:3px 9px;white-space:nowrap}
+#chartBtn.on{background:rgba(240,192,64,.18);border-color:var(--accent)}
+.rc{--lab:132px;position:relative;margin:4px 6px 0}
+.rc-axis{display:grid;grid-template-columns:var(--lab) 1fr;height:14px}.rc-axis .rc-track{position:relative}
+.rc-axis span{position:absolute;transform:translateX(-50%);font-size:.56rem;color:#8a97af}
+.rc-body{position:relative}
+.rc-ext{position:absolute;top:0;bottom:0;width:1.5px;background:rgba(224,70,50,.65);z-index:1;pointer-events:none}
+.rc-cur{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 5px #fff;z-index:2;pointer-events:none}
+.rc-row{display:grid;grid-template-columns:var(--lab) 1fr;align-items:center;height:22px;cursor:pointer;border-radius:5px}
+.rc-row:hover{background:rgba(255,255,255,.05)}.rc-row.open{background:rgba(240,192,64,.08)}
+.rc-lab{font-size:.7rem;font-weight:700;color:#dfe6f3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:6px}
+.rc-lab small{font-weight:500;color:var(--muted);margin-left:4px}
+.rc-row.branch .rc-lab{font-weight:500;color:#aebbd2;padding-left:14px;font-size:.66rem}
+.rc-track{position:relative;height:100%}
+.rc-bar{position:absolute;top:6px;height:10px;border-radius:5px;opacity:.45}
+.rc-row.branch .rc-bar{top:8px;height:6px}
+.rc-row.now .rc-bar{opacity:1;box-shadow:0 0 5px rgba(255,255,255,.25)}
 #weirdBtn.on{background:rgba(240,192,64,.18);border-color:var(--accent)}
 .sortrow{flex-wrap:wrap}
 .found{font-size:.7rem;color:#9fb3d1;margin-top:6px}
@@ -549,6 +565,7 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
             </select>
             <span class="count" id="lifeCount"></span>
             <button class="linkbtn" id="weirdBtn" aria-pressed="false" title="Show only the strangest animals">🤪 Weird only</button>
+            <button class="linkbtn" id="chartBtn" aria-pressed="false" title="See when each group of animals lived">📊 Chart</button>
             <button class="linkbtn" id="rollBtn" title="Jump to a random animal">🎲 Surprise me</button>
           </div>
         </div>
@@ -3122,7 +3139,7 @@ function storyPos(t) {
 }
 const tidy = t => { if (t <= 0) return 0; const m = Math.pow(10, 3 - Math.floor(Math.log10(t))); return Math.round(t * m) / m; };
 
-const S = { t: 150, weird: false, period: null, tab: 'life', sel: null, scope: 'now', type: 'all', branch: 'all', sort: 'old', q: '', win: [T_MAX, 0], playing: false };
+const S = { t: 150, view: 'list', weird: false, period: null, tab: 'life', sel: null, scope: 'now', type: 'all', branch: 'all', sort: 'old', q: '', win: [T_MAX, 0], playing: false };
 const isFull = () => S.win[0] >= T_MAX - 1e-6 && S.win[1] <= 1e-9;
 const span = () => S.win[0] - S.win[1];
 // position (0..1) across the detail timeline ⇄ time. Linear once zoomed in.
@@ -3479,6 +3496,35 @@ function cardHTML(c, open) {
     ${L.join('')}</div>`;
 }
 const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${c.emoji}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
+// ── when each group lived: a range chart, oldest group at the top ──
+const EXT_LINES = [[445, 'End-Ordovician'], [372, 'Late Devonian'], [252, 'The Great Dying'], [201, 'End-Triassic'], [66, 'The asteroid']];
+function chartHTML() {
+  const pool = ALL.filter(c => !S.weird || c.weird), x = t => (storyPos(t) / 10).toFixed(2);
+  const spanOf = list => [Math.max(...list.map(c => c.t[0])), Math.min(...list.map(c => c.t[1]))];
+  const row = (label, list, cls, attrs, color) => {
+    const [a, b] = spanOf(list), alive = list.some(c => alive_(c));
+    return `<div class="rc-row ${cls}${alive ? ' now' : ''}" ${attrs} title="${esc(label)}: ${esc(fmtLong(a))} → ${esc(fmtLong(b))} · ${list.length} on this site">
+      <div class="rc-lab">${label}<small>${list.length}</small></div>
+      <div class="rc-track"><div class="rc-bar" style="left:${x(a)}%;width:${Math.max(0.8, x(b) - x(a))}%;background:${color}"></div></div></div>`;
+  };
+  const alive_ = c => alive(c, S.t);
+  const kinds = TYPE_ORDER.map(g => [g, pool.filter(c => c.g === g)]).filter(([, l]) => l.length).sort((p, q) => spanOf(q[1])[0] - spanOf(p[1])[0]);
+  const COL = { micro: '#7fb3a8', plant: '#5fae62', invert: '#c98d4b', fish: '#4f9fd6', amphib: '#7bc47f', synapsid: '#c97a5b', reptile: '#9dbb5a', croc: '#6f9a5d', marine: '#3fb3c4', ptero: '#b78ad6', dino: '#e2a33a', bird: '#e2d05a', mammal: '#d2765c', hominin: '#f0c040' };
+  let rows = '';
+  for (const [g, list] of kinds) {
+    rows += row(`${TYPES[g][0]} ${TYPES[g][1]}`, list, 'kind' + (S.type === g ? ' open' : ''), `data-chart-type="${g}"`, COL[g]);
+    if (S.type === g) {
+      const br = {}; list.forEach(c => (br[c.path[1] || c.path[0]] = br[c.path[1] || c.path[0]] || []).push(c));
+      Object.entries(br).sort((p, q) => spanOf(q[1])[0] - spanOf(p[1])[0]).forEach(([b, l]) => { rows += row(esc(b), l, 'branch', `data-chart-branch="${esc(b)}" data-chart-of="${g}"`, COL[g]); });
+    }
+  }
+  const ticks = [[539, '539 M'], [252, '252'], [66, '66'], [2.58, '2.6'], [0, 'now']];
+  return `<div class="list-h">When each group lived<small>Oldest at the top. Tap a group to see its branches, a branch to list its animals.</small></div>
+    <div class="rc"><div class="rc-axis"><div></div><div class="rc-track">${ticks.map(([t, l]) => `<span style="left:${x(t)}%">${l}</span>`).join('')}</div></div>
+      <div class="rc-body">${EXT_LINES.map(([t, n]) => `<div class="rc-ext" style="left:calc(var(--lab) + (100% - var(--lab)) * ${x(t)} / 100)" title="${esc(n)} — ${t} million years ago"></div>`).join('')}
+      <div class="rc-cur" style="left:calc(var(--lab) + (100% - var(--lab)) * ${x(S.t)} / 100)"></div>${rows}</div></div>
+    <div class="hf-note">Bars span the animals on this site, so they show when each group appears here — not always its full history. Red lines are the five great mass extinctions; the white line is now on the timeline. Bars for groups alive at that moment are bright. Time is stretched toward the present so recent groups are visible.</div>`;
+}
 function renderLife() {
   const scope = scopeItems().filter(c => !S.weird || c.weird);
   // chips: kinds present in this scope, then the branches of the chosen kind
@@ -3491,6 +3537,7 @@ function renderLife() {
   if (S.branch !== 'all' && !bc[S.branch]) S.branch = 'all';
   const bks = Object.keys(bc).sort();
   $('dtypeChips').innerHTML = bks.length > 1 ? `<button class="chip${S.branch === 'all' ? ' on' : ''}" data-branch="all">All ${esc(TYPES[S.type][1].toLowerCase())}</button>` + bks.map(b => `<button class="chip${S.branch === b ? ' on' : ''}" data-branch="${esc(b)}">${esc(b)}<small>${bc[b]}</small></button>`).join('') : '';
+  if (S.view === 'chart') { $('lifeList').innerHTML = chartHTML(); $('lifeCount').textContent = ''; return; }
   if (S.branch !== 'all') items = items.filter(c => c.path[1] === S.branch);
   const gi = c => TYPE_ORDER.indexOf(c.g);
   const cmp = { old: (a, b) => b.t[0] - a.t[0] || a.name.localeCompare(b.name), young: (a, b) => a.t[1] - b.t[1] || a.t[0] - b.t[0],
@@ -3534,6 +3581,11 @@ function bindLife() {
   $('dtypeChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; S.branch = b.dataset.branch; updateMarkers(); renderLife(); });
   $('sortSel').addEventListener('change', e => { S.sort = e.target.value; renderLife(); });
   $('weirdBtn').addEventListener('click', () => { S.weird = !S.weird; $('weirdBtn').classList.toggle('on', S.weird); $('weirdBtn').setAttribute('aria-pressed', String(S.weird)); updateMarkers(); renderLife(); });
+  $('chartBtn').addEventListener('click', () => { S.view = S.view === 'chart' ? 'list' : 'chart'; $('chartBtn').classList.toggle('on', S.view === 'chart'); $('chartBtn').setAttribute('aria-pressed', String(S.view === 'chart')); renderLife(); });
+  $('lifeList').addEventListener('click', e => {
+    const kt = e.target.closest('[data-chart-type]'); if (kt) { S.type = S.type === kt.dataset.chartType ? 'all' : kt.dataset.chartType; S.branch = 'all'; updateMarkers(); renderLife(); e.stopPropagation(); return; }
+    const kb = e.target.closest('[data-chart-branch]'); if (kb) { S.type = kb.dataset.chartOf; S.branch = kb.dataset.chartBranch; S.view = 'list'; S.scope = 'all'; S.sort = 'old'; $('sortSel').value = 'old'; $('chartBtn').classList.remove('on'); document.querySelectorAll('#scopeSeg button').forEach(x => x.classList.toggle('on', x.dataset.scope === 'all')); updateMarkers(); renderLife(); e.stopPropagation(); }
+  }, true);
   $('rollBtn').addEventListener('click', () => {
     const pool = ALL.filter(c => typeOK(c) && c.key !== S.sel && c.sites && c.sites.length);
     const c = pool[Math.floor(Math.random() * pool.length)]; if (!c) return;

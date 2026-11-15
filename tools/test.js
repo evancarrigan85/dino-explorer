@@ -100,6 +100,14 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   for (let i = 0; i < 10; i++) { const nx = await p.$('#pane-quiz [data-qz-act="next"]'); if (!nx) break; await nx.click(); await p.waitForTimeout(80); const op = await p.$('#pane-quiz [data-qz-opt="0"]:not([disabled])'); if (op) { await op.click(); await p.waitForTimeout(60); } }
   ok('quiz: a full round reaches the score screen', await p.evaluate(() => QZ.done && /\/ 10/.test(document.getElementById('pane-quiz').innerText)));
   await p.click('#tab-life'); await p.waitForTimeout(150);
+  // range chart
+  await p.click('#tab-life'); await p.click('#chartBtn'); await p.waitForTimeout(200);
+  ok('chart: a bar per kind of animal', await p.evaluate(() => document.querySelectorAll('#lifeList .rc-row.kind').length >= 12));
+  await p.click('#lifeList [data-chart-type="invert"]'); await p.waitForTimeout(150);
+  ok('chart: trilobites end at the Great Dying', await p.evaluate(() => { const r = document.querySelector('#lifeList [data-chart-branch="Arthropods"]'); return !!r && document.querySelectorAll('#lifeList .rc-row.branch').length >= 4; }));
+  await p.click('#lifeList [data-chart-branch="Arthropods"]'); await p.waitForTimeout(150);
+  ok('chart: tapping a branch lists its animals', await p.evaluate(() => S.view === 'list' && S.branch === 'Arthropods' && document.querySelectorAll('#lifeList [data-key]').length >= 20));
+  await p.evaluate(() => { S.type = 'all'; S.branch = 'all'; S.scope = 'now'; renderLife(); });
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));
