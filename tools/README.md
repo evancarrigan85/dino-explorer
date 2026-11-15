@@ -1,5 +1,7 @@
 # Tools
 
+See `../CLAUDE.md` for the working rules and `../docs/PLAN.md` for what is next.
+
 `dino-explorer.html` is a single self-contained page — open it in a browser; no build step is needed to use or edit it. Animals, periods, the human family and the time scale are plain data near the top of the main `<script>`; edit them in place.
 
 The page is built from `tools/source/` with one command:
@@ -18,6 +20,10 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_hominins.js` | The human family and its turning points |
 | `data_periods.js` | Period insights, museum notes, fossil sites, map labels |
 | `data_time.js` | Epochs, ages and timeline events |
+| `data_cultures.js`, `data_drowned.js`, `data_foodweb.js` | Ways of life, drowned sites, food webs |
+| `data_finds.js` | The Finds tab: the history of fossil discovery |
+| `data_climate.js` | Global temperature, one value per million years (Scotese et al. 2021) |
+| `refs_wanted.txt` → `refs.json` | References we want to cite → what `verify_refs.py` confirmed in Crossref |
 | `engine.js` / `app.js` / `style.css` / `body.html` | Map renderer, page logic, styles, markup |
 
 Two blocks inside the page are **generated** and marked `GENERATED … do not edit`:
@@ -26,6 +32,8 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 |---|---|
 | d3-geo (map projections, ISC licence) | `npx esbuild tools/d3entry.js --bundle --minify --format=iife --global-name=d3` (after `npm i d3-geo@3 esbuild`) |
 | `PLATE_DATA` (moving continents) | `build_plates.py` → `encode_plates.mjs` |
+| `SHELF_PACKED` (Ice Age shorelines) | `build_shelf.py` |
+| `RELIEF_PACKED` (today's high ground) | `build_relief.py` |
 
 ## Rebuilding the plate data
 
