@@ -30,7 +30,7 @@ for (const p of periods) {
   [p.start, p.end] = T.PERIOD_BOUNDS[p.id];
   p.insight = P.INSIGHTS[p.id]; if (!p.insight) problems.push('no insight: ' + p.id);
 }
-byId.cryogenian.mapTitle = 'Snowball Earth'; byId.quaternary.mapTitle = 'The Ice Age World'; byId.holocene.mapTitle = 'The World Today';
+byId.cryogenian.mapTitle = 'Snowball Earth'; byId.quaternary.mapTitle = 'The Ice Age World'; byId.holocene.mapTitle = 'After the Ice Age';
 const ORDER = ['name', 'emoji', 'diet', 'size', 'habitat', 'lived', 't', 'g', 'c', 'means', 'fact', 'know', 'debate', 'taxonomy', 'discovery', 'keyResearchers', 'citation', 'weird', 'sites'];
 const tidy = c => { const o = {}; for (const k of ORDER) if (c[k] !== undefined && c[k] !== '') o[k] = c[k]; return o; };
 for (const p0 of old.PERIODS) {
@@ -97,6 +97,8 @@ const { FOODWEBS } = require('./data_foodweb.js');
 for (const [pid, w] of Object.entries(FOODWEBS)) { if (!byId[pid]) problems.push('foodweb: bad period ' + pid); for (const [id, n] of Object.entries(w.nodes)) if (n[3] && !allNames.has(n[3])) problems.push('foodweb ' + pid + ': no animal named ' + n[3]); for (const l of w.links) if (!w.nodes[l[0]] || !w.nodes[l[1]]) problems.push('foodweb ' + pid + ': bad link ' + l.join('>')); }
 const fsrc = fs.readFileSync(SRC + 'data_foodweb.js', 'utf8');
 data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
+const dsrc = fs.readFileSync(SRC + 'data_drowned.js', 'utf8');
+data += dsrc.slice(dsrc.indexOf('// ===='), dsrc.indexOf("if (typeof module")).trim() + '\n';
 const csrc = fs.readFileSync(SRC + 'data_cultures.js', 'utf8');
 data += csrc.slice(0, csrc.indexOf("if (typeof module")).trim() + '\n';
 data += `const HOMININ_LINEAGE = ${J(C.HOMININ_LINEAGE)};\n\n`;

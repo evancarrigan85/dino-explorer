@@ -361,12 +361,14 @@ const WorldMap = (() => {
   const SHEET_GEO = {}; for (const k in SHEETS) SHEET_GEO[k] = sheetGeo(k);
 
   // ── Ice Age sea level ──────────────────────────────────────────────
-  // Metres relative to today, simplified from published sea-level
-  // reconstructions of the last 800,000 years (100,000-year cycles, about
+  // Global average ("eustatic") sea level in metres relative to today. The
+  // last 30,000 years follow Lambeck et al. (2014, PNAS), including the fast
+  // rise of meltwater pulse 1A about 14,500 years ago; older values are
+  // simplified from published reconstructions of the last 800,000 years (100,000-year cycles, about
   // 120–130 m lower at each glacial peak). Before 800,000 years ago the
   // cycles were shorter (41,000 years) and shallower; that part is drawn as
   // a smooth 41,000-year wave. Before 2.6 million years ago: no lowstands.
-  const SL = [[0, 0], [6, -2], [8, -15], [11.7, -55], [14, -80], [15, -100], [19, -125], [26, -128], [30, -90], [45, -75], [60, -85], [70, -80], [80, -25], [90, -50],
+  const SL = [[0, 0], [2, 0], [4, -1], [6, -3], [7, -6], [8, -15], [8.5, -20], [9, -28], [10, -40], [11.5, -55], [12.5, -65], [14.2, -80], [14.7, -100], [16.5, -110], [19, -125], [21, -130], [26, -130], [30, -90], [45, -75], [60, -85], [70, -80], [80, -25], [90, -50],
     [100, -25], [110, -45], [118, -10], [125, 6], [130, -30], [135, -110], [150, -120], [160, -110], [190, -80], [200, -30], [215, -10], [230, -60], [240, -5], [255, -80],
     [270, -110], [290, -60], [325, 0], [340, -60], [360, -105], [380, -40], [405, 5], [420, -60], [435, -125], [460, -70], [480, -40], [500, -70], [530, -30], [560, -80],
     [600, -60], [630, -120], [660, -60], [690, -30], [720, -70], [760, -50], [790, -100], [800, -60]];
@@ -378,12 +380,29 @@ const WorldMap = (() => {
     const [a0, b0] = SL[i], [a1, b1] = SL[i + 1], k = Math.max(0, Math.min(1, (ka - a0) / (a1 - a0)));
     return Math.round(b0 + (b1 - b0) * k);
   }
-  const SHELF_GEO = (typeof SHELF_DATA === 'undefined' ? [] : SHELF_DATA).map(rings => {
-    const g = { type: 'Polygon', coordinates: rings.map(r => { const c = []; for (let i = 0; i < r.length; i += 2) c.push([r[i] / 10, r[i + 1] / 10]); c.push(c[0]); return c; }) };
-    if (d3.geoArea(g) > 2 * Math.PI) g.coordinates.forEach(r => r.reverse());
-    return g;
-  });
-  let shelfKey = '', shelfP = null, seabed = null;
+  // Shorelines at each sea-level drop (metres below today): decode the packed levels.
+  const SHELF_LV = (() => {
+    if (typeof SHELF_PACKED === 'undefined') return [];
+    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', lut = new Int8Array(128);
+    for (let i = 0; i < 64; i++) lut[A.charCodeAt(i)] = i;
+    const d = SHELF_PACKED; let pos = 0;
+    const u = () => { let r = 0, sh = 0, c; do { c = lut[d.charCodeAt(pos++)]; r += (c & 31) * Math.pow(2, sh); sh += 5; } while (c & 32); return r; };
+    const z = () => { const v = u(); return v % 2 ? -(v + 1) / 2 : v / 2; };
+    const out = [], nl = u();
+    for (let l = 0; l < nl; l++) {
+      const metres = u(), np = u(), geoms = [];
+      for (let p = 0; p < np; p++) {
+        const nr = u(), rings = [];
+        for (let r = 0; r < nr; r++) { const n = u(), ring = []; let x = 0, y = 0; for (let i = 0; i < n; i++) { x += z(); y += z(); ring.push([x / 10, y / 10]); } ring.push(ring[0]); rings.push(ring); }
+        const g = { type: 'Polygon', coordinates: rings };
+        if (d3.geoArea(g) > 2 * Math.PI) rings.forEach(r => r.reverse());
+        geoms.push(g);
+      }
+      out.push({ m: metres, geo: { type: 'GeometryCollection', geometries: geoms } });
+    }
+    return out;
+  })();
+  let shelfKey = '', shelfP = {}, seabed = null;
 
   // ── drawing ────────────────────────────────────────────────────────
   const sink = {
@@ -536,17 +555,22 @@ const WorldMap = (() => {
 
     // Ice Age: the continental shelves come out of the sea as the water drops
     const sl = seaLevel(t);
-    if (sl < -8 && SHELF_GEO.length) {
+    if (sl < -1 && SHELF_LV.length) {
       const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
-      if (vk !== shelfKey) { shelfKey = vk; shelfP = geoP({ type: 'GeometryCollection', geometries: SHELF_GEO }); }
-      const f = Math.min(1, -sl / 120);
-      c.globalAlpha = 0.25 + 0.7 * f; c.fillStyle = '#efe2b8'; c.fill(shelfP);
+      if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; }
+      const lv = i => shelfP[i] || (shelfP[i] = geoP(SHELF_LV[i].geo));
+      // the deepest level already reached is drawn in full; the next one fades in
+      const drop = -sl; let k = -1; while (k + 1 < SHELF_LV.length && SHELF_LV[k + 1].m <= drop) k++;
+      const nxt = k + 1 < SHELF_LV.length ? k + 1 : -1, lo = k >= 0 ? SHELF_LV[k].m : 0;
+      const frac = nxt >= 0 ? (drop - lo) / (SHELF_LV[nxt].m - lo) : 0;
+      const layersToDraw = []; if (k >= 0) layersToDraw.push([k, 1]); if (nxt >= 0 && frac > 0.02) layersToDraw.push([nxt, frac]);
+      for (const [i, a] of layersToDraw) { c.globalAlpha = 0.92 * a; c.fillStyle = '#efe2b8'; c.fill(lv(i)); }
       if (!seabed) {                                         // dotted texture: dry seabed, not old land
         const sb = document.createElement('canvas'); sb.width = sb.height = Math.round(9 * dpr);
-        const sc = sb.getContext('2d'); sc.fillStyle = 'rgba(120,84,34,0.55)'; sc.beginPath(); sc.arc(2 * dpr, 2 * dpr, 0.75 * dpr, 0, 7); sc.arc(6.5 * dpr, 6.5 * dpr, 0.75 * dpr, 0, 7); sc.fill();
+        const sc = sb.getContext('2d'); sc.fillStyle = 'rgba(120,84,34,0.55)'; sc.beginPath(); sc.arc(2 * dpr, 2 * dpr, 0.75 * dpr, 0, 7); sc.moveTo(7.25 * dpr, 6.5 * dpr); sc.arc(6.5 * dpr, 6.5 * dpr, 0.75 * dpr, 0, 7); sc.fill();
         seabed = c.createPattern(sb, 'repeat'); seabed.setTransform && seabed.setTransform(new DOMMatrix([1 / dpr, 0, 0, 1 / dpr, 0, 0]));
       }
-      c.globalAlpha = 0.2 + 0.6 * f; c.fillStyle = seabed; c.fill(shelfP);
+      for (const [i, a] of layersToDraw) { c.globalAlpha = 0.65 * a; c.fillStyle = seabed; c.fill(lv(i)); }
       c.globalAlpha = 1;
     }
 

@@ -108,7 +108,7 @@ function setTime(t, o = {}) {
   if (S.pin) updatePinCard();
   if (S.tab === 'humans') {
     updateHumansCursor();
-    const ck = CULTURES.filter(c => culActive(c)).map(c => c.id).join('|');
+    const ck = CULTURES.filter(c => culActive(c)).map(c => c.id).join('|') + '#' + DROWNED.filter(d => drwShown(d)).map(d => d.id + (drwWet(d) ? 'w' : 'd')).join('|');
     if (ck !== lastCulKey) { lastCulKey = ck; updatePlaces(); document.querySelectorAll('.cul-item').forEach(el => el.classList.toggle('now', ck.split('|').includes(el.dataset.cul))); }
   }
   clearTimeout(hashTimer); hashTimer = setTimeout(writeHash, 350);
@@ -157,11 +157,17 @@ const CUL = Object.fromEntries(CULTURES.map(c => [c.id, c]));
 const culActive = (c, t = S.t) => t <= c.t[0] * 1.06 + Math.max(0.0002, slack(t)) && t >= c.t[1] * 0.94 - Math.max(0.0002, slack(t));
 const fmtYearsAgo = t => t <= 1e-9 ? 'today' : t >= 1 ? t + ' million years ago' : years(Math.round(t * 1e6 / 100) * 100) + ' years ago';
 let lastCulKey = '';
+// drowned places: shown from when people lived there until today
+const DRW = Object.fromEntries(DROWNED.map(d => [d.id, d]));
+const drwShown = (d, t = S.t) => t <= d.lived[0] * 1.15 + 0.0005;
+const drwWet = (d, t = S.t) => t <= d.drowned;
+const CAUSE = { sea: '🌊 Drowned by the rising sea', lake: '🌊 Drowned by a rising lake', quake: '💥 Sank in earthquakes', volcano: '🌋 Sank as volcanic ground subsided' };
 function updatePlaces() {
   const p = S.period; let places = [];
   const mid = (p.start + p.end) / 2;
   if (S.tab === 'insights') places = SITES.filter(s => s[3].includes(p.id)).map(s => placeCache['s' + s[0] + p.id] || (placeCache['s' + s[0] + p.id] = { key: 'site:' + slug(s[0]), name: s[0], note: s[4], at: WorldMap.attach(s[1], s[2], mid) }));
-  else if (S.tab === 'humans') places = CULTURES.filter(c => culActive(c)).flatMap(c => c.sites.map((s, i) => placeCache['c' + c.id + i] || (placeCache['c' + c.id + i] = { key: 'cul:' + c.id, name: s[2].split(/,| —/)[0], note: c.name, icon: c.icon, at: WorldMap.attach(s[0], s[1], (c.t[0] + c.t[1]) / 2) })));
+  else if (S.tab === 'humans') places = CULTURES.filter(c => culActive(c)).flatMap(c => c.sites.map((s, i) => placeCache['c' + c.id + i] || (placeCache['c' + c.id + i] = { key: 'cul:' + c.id, name: s[2].split(/,| —/)[0], note: c.name, icon: c.icon, at: WorldMap.attach(s[0], s[1], (c.t[0] + c.t[1]) / 2) })))
+    .concat(DROWNED.filter(d => drwShown(d)).map(d => { const pc = placeCache['d' + d.id] || (placeCache['d' + d.id] = { key: 'drw:' + d.id, name: d.name.split(' —')[0], note: d.story, at: WorldMap.attach(d.site[0], d.site[1], 0.1) }); pc.icon = drwWet(d) ? '🌊' : d.icon; return pc; }));
   else if (S.tab === 'geo') places = GEO_FEATURES.filter(f => f.at && f.periods.includes(p.id)).map(f => placeCache['g' + f.id + p.id] || (placeCache['g' + f.id + p.id] = { key: 'geo:' + f.id, name: f.name, note: f.shortDesc, icon: f.icon, at: WorldMap.attach(f.at[0], f.at[1], mid) }));
   WorldMap.setLayers({ places });
 }
@@ -231,7 +237,7 @@ function jumpPeriod(dir) {
 
 // ── the zoomable timeline ───────────────────────────────────────────
 const PRESETS = [['All time', T_MAX, 0], ['Paleozoic', 539, 252], ['Age of Dinosaurs', 252, 66], ['Age of Mammals', 66, 0],
-  ['Last 10 million years', 10, 0], ['Last million years', 1, 0], ['Last 100,000 years', 0.1, 0]];
+  ['Last 10 million years', 10, 0], ['Last million years', 1, 0], ['Last 100,000 years', 0.1, 0], ['Since the Ice Age', 0.03, 0]];
 const ABBR = { cryogenian: 'Cryo', ediacaran: 'Edi', cambrian: 'Cam', ordovician: 'Ord', silurian: 'Sil', devonian: 'Dev', carboniferous: 'Carb', permian: 'Perm',
   triassic: 'Tri', jurassic: 'Jur', cretaceous: 'Cret', paleogene: 'Pg', neogene: 'Ng', quaternary: 'Q', holocene: 'H' };
 function setWindow(a, b, keepTime) {
@@ -357,7 +363,7 @@ function switchTab(tab) {
   S.tab = tab; closeFact();
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
-  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && S.sel.startsWith('cul:'))) { S.sel = null; WorldMap.select(null); }
+  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && /^(cul|drw):/.test(S.sel))) { S.sel = null; WorldMap.select(null); }
   updatePlaces(); renderPanel();
   $('panelContent').scrollTop = 0;
 }
@@ -547,8 +553,9 @@ function renderHumans() {
       <div class="hf-cursor" id="hfCursor"></div></div></div>
     <div class="hf-legend">${Object.keys(GROUPS).map(g => `<span><i class="g-${g}"></i>${GROUPS[g]}</span>`).join('')}</div>
     <div class="hf-note" id="hfNote"></div>
-    ${S.sel && S.sel.startsWith('cul:') && CUL[S.sel.slice(4)] ? cultureHTML(CUL[S.sel.slice(4)]) : sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
+    ${S.sel && S.sel.startsWith('drw:') && DRW[S.sel.slice(4)] ? drownedHTML(DRW[S.sel.slice(4)]) : S.sel && S.sel.startsWith('cul:') && CUL[S.sel.slice(4)] ? cultureHTML(CUL[S.sel.slice(4)]) : sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
     <div class="ms"><div class="list-h" style="padding-left:2px">Ways of life <small>homes, settlements and cultures — tap one, or a pin on the map</small></div>${CULTURES.map(c => `<div class="ms-item cul-item${culActive(c) ? ' now' : ''}${S.sel === 'cul:' + c.id ? ' sel' : ''}" data-cul="${c.id}"><span class="when">${c.t[0] >= 1 ? c.t[0] + ' MYA' : years(Math.round(c.t[0] * 1e6 / 100) * 100) + ' yrs'}</span><span>${c.icon}</span><div><b>${esc(c.name)}</b><span>${esc(c.where)}</span></div></div>`).join('')}</div>
+    <div class="ms"><div class="list-h" style="padding-left:2px">Drowned worlds <small>places people lived that are now under water — 🌊 on the map once flooded</small></div>${DROWNED.map(d => `<div class="ms-item cul-item drw-item${drwShown(d) ? ' now' : ''}${S.sel === 'drw:' + d.id ? ' sel' : ''}" data-drw="${d.id}"><span class="when">${d.drowned >= 0.001 ? years(Math.round(d.drowned * 1e6 / 100) * 100) + ' yrs' : Math.round(d.drowned * 1e6) + ' yrs'}</span><span>${d.icon}</span><div><b>${esc(d.name)}</b><span>${esc(d.where)} · ${esc(d.depth)}</span></div></div>`).join('')}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Turning points</div>${ms}</div></div>`;
   updateHumansCursor();
 }
@@ -568,6 +575,30 @@ function cultureHTML(c) {
     ${sec('🏠 Homes and settlements', c.home)}${sec('🍖 Food', c.food)}${sec('🛠 Tools and inventions', c.tools)}${sec('🎨 Art and beliefs', c.beliefs)}
     ${sec('🔎 How do we know?', c.know)}${sec('❓ Still debated', c.debate)}
     <div class="found">📍 <b>On the map:</b> ${c.sites.map(s => esc(s[2])).join(' · ')}</div></div>`;
+}
+function drownedHTML(d) {
+  const sec = (t, b) => b ? `<div class="label-sec"><h5>${t}</h5>${esc(b)}</div>` : '';
+  const now = S.t > d.lived[0] ? 'People had not arrived yet at this moment on the timeline.' : S.t > d.drowned ? 'At this moment on the timeline it is dry land — people are living here.' : 'At this moment on the timeline it is under water.';
+  return `<div class="profile culture drowned" data-key="drw:${d.id}"><h3 style="font-style:normal">${d.icon} ${esc(d.name)}</h3>
+    <dl class="facts"><dt>Where</dt><dd>${esc(d.where)}</dd><dt>People</dt><dd>${esc(fmtLong(d.lived[0]).replace(' ago', ''))} → ${esc(fmtLong(d.lived[1]))}</dd><dt>Drowned</dt><dd>${esc(fmtLong(d.drowned))}</dd><dt>Today</dt><dd>${esc(d.depth)}</dd><dt>Why</dt><dd>${CAUSE[d.cause]}</dd></dl>
+    <div class="drw-now">${now}</div>
+    <div class="creature-fact">${esc(d.story)}</div>${sec('🔎 How do we know?', d.know)}${sec('❓ Still debated', d.debate)}
+    <div class="found">📍 <b>On the map:</b> ${esc(d.site[2])}</div></div>`;
+}
+function selectDrowned(id, fromMap) {
+  const d = DRW[id]; if (!d) return;
+  S.sel = 'drw:' + id; WorldMap.select(S.sel);
+  if (S.tab !== 'humans') switchTab('humans');
+  const target = tidy((d.lived[0] + d.lived[1]) / 2);
+  const look = () => { const pl = placeCache['d' + id]; if (pl) WorldMap.lookAt(pl.at); };
+  if (Math.abs(S.t - target) > Math.max(0.0005, target * 0.15)) {
+    const sp = Math.max(0.02, d.lived[0] * 1.6);
+    if (isFull() || span() > sp * 3 || target > S.win[0] || target < S.win[1]) setWindow(Math.min(T_MAX, sp), 0, true);
+    goTo(target, () => { updatePlaces(); look(); renderHumans(); });
+  } else { updatePlaces(); look(); }
+  renderHumans();
+  if (fromMap && window.innerWidth < 768) showFact(d.icon, '<b>' + esc(d.name) + '</b> — ' + esc(d.story));
+  setTimeout(() => { const el = document.querySelector('#pane-humans .profile'); if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 80);
 }
 function selectCulture(id, fromMap) {
   const c = CUL[id]; if (!c) return;
@@ -589,6 +620,7 @@ function selectCulture(id, fromMap) {
 function bindHumans() {
   $('pane-humans').addEventListener('click', e => {
     const g = e.target.closest('[data-goto]'); if (g) { if (!isFull() && S.win[0] < 7) setWindow(10, 0, true); goTo(+g.dataset.goto); return; }
+    const dw = e.target.closest('.drw-item'); if (dw) { selectDrowned(dw.dataset.drw); return; }
     const cu = e.target.closest('.cul-item'); if (cu) { selectCulture(cu.dataset.cul); return; }
     const m = e.target.closest('.ms-item'); if (m) { goTo(+m.dataset.t); return; }
     const r = e.target.closest('.hf-row'); if (r) select(r.dataset.key);
@@ -780,6 +812,7 @@ function init() {
     if (h.marker) select(h.marker.key, { fromMap: true, keep: true });
     else if (h.pin) updatePinCard();
     else if (h.place && h.place.key.startsWith('cul:')) selectCulture(h.place.key.slice(4), true);
+    else if (h.place && h.place.key.startsWith('drw:')) selectDrowned(h.place.key.slice(4), true);
     else if (h.place) { selectPlace(h.place.key, h.place.at, h.place.icon || '📍', '<b>' + esc(h.place.name) + '</b> — ' + esc(h.place.note || '')); if (S.sel !== h.place.key) closeFact(); }
   };
   const tip = $('mapTip');

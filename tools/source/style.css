@@ -309,6 +309,8 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .cul-item.now{opacity:1;background:rgba(240,192,64,.07)}
 .cul-item.sel{background:rgba(240,192,64,.16);outline:1px solid var(--accent)}
 .profile.culture{border-color:#58a6c8}
+.profile.drowned{border-color:#3fb3c4}
+.drw-now{margin:6px 0 2px;font-size:.74rem;font-weight:700;color:#7fd3e0}
 .list-h small{display:block;margin:2px 0 0}
 
 /* --- Insights tab --- */
