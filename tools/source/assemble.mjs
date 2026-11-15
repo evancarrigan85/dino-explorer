@@ -13,6 +13,7 @@ const T = require('./data_time.js');
 const C = require('./data_class.js');
 let MORE = {}; try { MORE = require('./data_more.js').MORE; } catch (e) {}
 const { CENOZOIC, WEIRD_NAMES } = require('./data_cenozoic.js');
+const { EARLY } = require('./data_early.js');
 const slug = s => String(s).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const problems = [];
 
@@ -43,7 +44,7 @@ for (const p0 of old.PERIODS) {
     byId[m.move || p0.id].creatures.push(tidy(c));
   }
 }
-for (const set of [NEW, MORE, CENOZOIC]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
+for (const set of [NEW, MORE, CENOZOIC, EARLY]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
   const c = Object.assign({}, c0); c.g = C.G_FIX[c.name] || c.g; c.c = c.c || C.LINEAGE[c.name];
   if (!byId[pid]) { problems.push('bad period ' + pid); continue; }
   byId[pid].creatures.push(tidy(c));
