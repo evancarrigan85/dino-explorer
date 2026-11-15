@@ -50,7 +50,7 @@ function storyPos(t) {
 }
 const tidy = t => { if (t <= 0) return 0; const m = Math.pow(10, 3 - Math.floor(Math.log10(t))); return Math.round(t * m) / m; };
 
-const S = { t: 150, period: null, tab: 'life', sel: null, scope: 'now', type: 'all', branch: 'all', sort: 'old', q: '', win: [T_MAX, 0], playing: false };
+const S = { t: 150, weird: false, period: null, tab: 'life', sel: null, scope: 'now', type: 'all', branch: 'all', sort: 'old', q: '', win: [T_MAX, 0], playing: false };
 const isFull = () => S.win[0] >= T_MAX - 1e-6 && S.win[1] <= 1e-9;
 const span = () => S.win[0] - S.win[1];
 // position (0..1) across the detail timeline ⇄ time. Linear once zoomed in.
@@ -139,7 +139,7 @@ function renderPeriod() {
 }
 
 // ── what the map shows ──────────────────────────────────────────────
-const typeOK = c => (S.type === 'all' || c.g === S.type) && (S.branch === 'all' || c.path[1] === S.branch);
+const typeOK = c => (S.type === 'all' || c.g === S.type) && (S.branch === 'all' || c.path[1] === S.branch) && (!S.weird || c.weird);
 function updateMarkers(now) {
   now = now || ALL.filter(c => alive(c, S.t));
   WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c) })) });
@@ -390,13 +390,13 @@ function cardHTML(c, open) {
     </div></div>
     ${c.habitat ? `<div class="creature-habitat">🏠 ${esc(c.habitat)}</div>` : ''}
     <div class="creature-fact">${esc(c.fact)}</div>
-    <div class="creature-chips"><span class="diet-chip diet-${c.diet}">${DIET[c.diet] || esc(c.diet)}</span><span class="habitat-badge">${TYPES[c.g][0]} ${TYPES[c.g][1]}</span>${!open && (c.know || c.debate) ? '<span class="habitat-badge">🔎 How do we know?</span>' : ''}</div>
+    <div class="creature-chips"><span class="diet-chip diet-${c.diet}">${DIET[c.diet] || esc(c.diet)}</span><span class="habitat-badge">${TYPES[c.g][0]} ${TYPES[c.g][1]}</span>${c.weird ? '<span class="habitat-badge">🤪 Weird & wonderful</span>' : ''}${!open && (c.know || c.debate) ? '<span class="habitat-badge">🔎 How do we know?</span>' : ''}</div>
     <div class="lineage">🧬 <b>${esc(c.path[0])}</b>${c.path.slice(1).map(s => ' › ' + esc(s)).join('')}</div>
     ${L.join('')}</div>`;
 }
 const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${c.emoji}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
 function renderLife() {
-  const scope = scopeItems();
+  const scope = scopeItems().filter(c => !S.weird || c.weird);
   // chips: kinds present in this scope, then the branches of the chosen kind
   const counts = {}; scope.forEach(c => counts[c.g] = (counts[c.g] || 0) + 1);
   if (S.type !== 'all' && !counts[S.type]) counts[S.type] = 0;
@@ -449,6 +449,7 @@ function bindLife() {
   $('typeChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; S.type = b.dataset.type; S.branch = 'all'; updateMarkers(); renderLife(); });
   $('dtypeChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; S.branch = b.dataset.branch; updateMarkers(); renderLife(); });
   $('sortSel').addEventListener('change', e => { S.sort = e.target.value; renderLife(); });
+  $('weirdBtn').addEventListener('click', () => { S.weird = !S.weird; $('weirdBtn').classList.toggle('on', S.weird); $('weirdBtn').setAttribute('aria-pressed', String(S.weird)); updateMarkers(); renderLife(); });
   $('rollBtn').addEventListener('click', () => {
     const pool = ALL.filter(c => typeOK(c) && c.key !== S.sel && c.sites && c.sites.length);
     const c = pool[Math.floor(Math.random() * pool.length)]; if (!c) return;

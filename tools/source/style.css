@@ -227,7 +227,9 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .label-sec .tax{font-style:italic;color:#9fb0c8}
 .sizecmp{margin-top:8px;padding:7px 8px;background:#0b101c;border:1px solid var(--border);border-radius:7px}
 .sizecmp span{display:block;font-size:.7rem;color:#c9d3e6;margin-top:3px}
-#rollBtn{padding:3px 9px;white-space:nowrap}
+#rollBtn,#weirdBtn{padding:3px 9px;white-space:nowrap}
+#weirdBtn.on{background:rgba(240,192,64,.18);border-color:var(--accent)}
+.sortrow{flex-wrap:wrap}
 .found{font-size:.7rem;color:#9fb3d1;margin-top:6px}
 .found b{color:#c9d6ea;font-weight:600}
 .crow{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:7px;cursor:pointer;border:1px solid transparent}
@@ -236,7 +238,7 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .crow .n{flex:1;min-width:0;font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .crow .n small{display:block;font-weight:500;color:var(--muted);font-size:.64rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .crow .w{flex:0 0 auto;font-size:.64rem;color:var(--accent);opacity:.9;text-align:right;white-space:nowrap}
-.crow.alive .n::after{content:'●';color:#58d68d;font-size:.5rem;margin-left:5px;vertical-align:middle}
+.crow.alive .w::before{content:'● ';color:#58d68d;font-size:.55rem;vertical-align:1px}
 
 /* --- Human family tab --- */
 .hf{padding:8px 10px 14px}

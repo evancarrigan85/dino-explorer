@@ -12,6 +12,7 @@ const P = require('./data_periods.js');
 const T = require('./data_time.js');
 const C = require('./data_class.js');
 let MORE = {}; try { MORE = require('./data_more.js').MORE; } catch (e) {}
+const { CENOZOIC, WEIRD_NAMES } = require('./data_cenozoic.js');
 const slug = s => String(s).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const problems = [];
 
@@ -29,7 +30,7 @@ for (const p of periods) {
   p.insight = P.INSIGHTS[p.id]; if (!p.insight) problems.push('no insight: ' + p.id);
 }
 byId.cryogenian.mapTitle = 'Snowball Earth'; byId.quaternary.mapTitle = 'The Ice Age World'; byId.holocene.mapTitle = 'The World Today';
-const ORDER = ['name', 'emoji', 'diet', 'size', 'habitat', 'lived', 't', 'g', 'c', 'means', 'fact', 'know', 'debate', 'taxonomy', 'discovery', 'keyResearchers', 'citation', 'sites'];
+const ORDER = ['name', 'emoji', 'diet', 'size', 'habitat', 'lived', 't', 'g', 'c', 'means', 'fact', 'know', 'debate', 'taxonomy', 'discovery', 'keyResearchers', 'citation', 'weird', 'sites'];
 const tidy = c => { const o = {}; for (const k of ORDER) if (c[k] !== undefined && c[k] !== '') o[k] = c[k]; return o; };
 for (const p0 of old.PERIODS) {
   for (const c0 of p0.creatures) {
@@ -42,11 +43,14 @@ for (const p0 of old.PERIODS) {
     byId[m.move || p0.id].creatures.push(tidy(c));
   }
 }
-for (const set of [NEW, MORE]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
+for (const set of [NEW, MORE, CENOZOIC]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
   const c = Object.assign({}, c0); c.g = C.G_FIX[c.name] || c.g; c.c = c.c || C.LINEAGE[c.name];
   if (!byId[pid]) { problems.push('bad period ' + pid); continue; }
   byId[pid].creatures.push(tidy(c));
 }
+// weird & wonderful
+const allC = periods.flatMap(p => p.creatures);
+for (const n of WEIRD_NAMES) { const c = allC.find(x => x.name === n); if (c) c.weird = 1; else problems.push('weird: no animal named ' + n); }
 // checks
 const keys = new Set(HOMININS.map(h => h.id));
 const TYPES = ['dino', 'bird', 'ptero', 'marine', 'croc', 'reptile', 'synapsid', 'mammal', 'hominin', 'amphib', 'fish', 'invert', 'plant', 'micro'];

@@ -57,6 +57,12 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('branch filter narrows list', await p.evaluate(() => { const n = document.querySelectorAll('#lifeList [data-key]').length; return n > 20 && n < ALL.filter(c => c.g === 'dino').length; }));
   await p.selectOption('#sortSel', 'size'); await p.waitForTimeout(150);
   ok('sort by size puts a giant first', await p.evaluate(() => BY_KEY[document.querySelector('#lifeList [data-key]').dataset.key].len >= 12));
+  // weird filter
+  await p.selectOption('#sortSel', 'old'); await p.click('#dtypeChips [data-branch="all"]'); await p.click('#typeChips [data-type="all"]');
+  await p.click('#weirdBtn'); await p.waitForTimeout(200);
+  ok('weird filter keeps only weird animals', await p.evaluate(() => { const ks = [...document.querySelectorAll('#lifeList [data-key]')].map(e => e.dataset.key); return ks.length > 60 && ks.every(k => BY_KEY[k].weird); }));
+  await p.click('#weirdBtn'); await p.waitForTimeout(150);
+  ok('Age of Mammals has 150+ animals', await p.evaluate(() => ALL.filter(c => c.t[0] <= 66).length >= 150));
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));
