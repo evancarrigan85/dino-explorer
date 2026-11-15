@@ -110,7 +110,10 @@ const total = periods.reduce((n, p) => n + p.creatures.length, 0) + HOMININS.len
 const css = fs.readFileSync(SRC + 'style.css', 'utf8'), body = fs.readFileSync(SRC + 'body.html', 'utf8');
 const d3 = fs.readFileSync(SRC + 'd3-geo-bundle.min.js', 'utf8').trim();
 const plates = fs.readFileSync(SRC + 'plates-data.js', 'utf8').trim();
-const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
+const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
+let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
+if (!/\ninit\(\);$/.test(app)) throw new Error('app.js must end with init();');
+app = app.replace(/\ninit\(\);$/, '\n\n' + quiz + '\n\ninit();');
 const desc = `Slide through 720 million years of life on a moving Earth — continents that drift with real plate-tectonic data, ${Math.floor(total / 10) * 10}+ animals placed where their fossils were found, the whole human family, and a zoomable timeline from Snowball Earth to today.`;
 const html = `<!DOCTYPE html>
 <html lang="en">

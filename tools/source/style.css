@@ -326,6 +326,23 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .fw-note{font-size:.72rem;color:#d9e1ee;margin-top:5px;min-height:1em}
 .fw-how{margin-top:6px;font-size:.72rem;color:#b9c5da}.fw-how summary{cursor:pointer;color:var(--accent);font-weight:700}
 .fw-how div{margin-top:6px;line-height:1.4}.fw-how .proof{color:#ff9a5a;font-size:.64rem}.fw-how .likely{color:#7f9cc6;font-size:.64rem}
+.qz{padding:10px 12px 16px}
+.qz-top{display:flex;gap:6px;flex-wrap:wrap}.qz-top .seg{flex:1;margin-top:0;min-width:150px}
+.qz-prog{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin:10px 2px 4px}
+.qz-bar{height:6px;border-radius:3px;background:#0b101c;overflow:hidden}.qz-bar i{display:block;height:100%;background:linear-gradient(90deg,#c0792d,#f0c040);transition:width .3s}
+.qz-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:10px}
+.qz-emoji{font-size:2.4rem;text-align:center;line-height:1.1}
+.qz-q{font-size:1rem;font-weight:800;text-align:center;line-height:1.35;margin:6px 0 12px;color:#fff}
+.qz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.qz-opts.two{grid-template-columns:1fr 1fr}
+.qz-opt{background:#0f1626;border:1.5px solid #34405e;color:#e8eef8;border-radius:10px;padding:12px 8px;font-size:.84rem;font-weight:700;cursor:pointer;line-height:1.25;min-height:56px}
+.qz-opt:hover:not(:disabled){border-color:var(--accent);background:rgba(240,192,64,.08)}
+.qz-opt.right{border-color:#3fbf6a;background:rgba(63,191,106,.18)}.qz-opt.wrong{border-color:#e0563a;background:rgba(224,86,58,.18)}.qz-opt.dim{opacity:.45}
+.qz-fb{margin-top:12px;font-size:.8rem;line-height:1.5;color:#d3dced;padding:9px 11px;border-radius:9px}
+.qz-fb.yes{background:rgba(63,191,106,.12)}.qz-fb.no{background:rgba(224,86,58,.1)}.qz-fb b{color:#fff}
+.qz-acts{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+.qz-next{margin-left:auto;background:var(--accent);color:#1a1205;border:none;border-radius:9px;padding:9px 16px;font-weight:800;font-size:.84rem;cursor:pointer}
+.qz-end{text-align:center;padding:24px 14px}.qz-stars{font-size:2.2rem}.qz-big{font-size:2rem;font-weight:900;color:var(--accent);margin:6px 0}
+.qz-best{color:var(--muted);font-size:.74rem;margin:8px 0 14px}.qz-end .qz-next{margin:0 auto}
 .src{margin-top:14px;font-size:.64rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--border);padding-top:8px}
 
 /* --- Geology tab --- */

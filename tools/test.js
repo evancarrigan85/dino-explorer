@@ -83,6 +83,23 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('Calgary was near the equator 300 MYA', await p.evaluate(() => { const q = WorldMap.locate(S.pin.at, 300); return q && Math.abs(q[1]) < 25; }), JSON.stringify(await p.evaluate(() => WorldMap.locate(S.pin.at, 300))));
   ok('tapping land maps back to today', await p.evaluate(() => { setTime(0); WorldMap._draw(); const cv = document.getElementById('mapCanvas').getBoundingClientRect(); for (let i = 0; i < 400; i++) { const x = cv.width * (0.2 + 0.6 * ((i * 37) % 100) / 100), y = cv.height * (0.25 + 0.5 * ((i * 61) % 100) / 100); const q = WorldMap.pickPresent(x, y); if (q) { const back = WorldMap.locate(WorldMap.attach(q.lat, q.lon, 0), 0); return Math.abs(back[1] - q.lat) < 0.5; } } return false; }));
   await p.evaluate(() => setPin(null));
+  // quiz: thousands of generated questions, each with exactly one right answer
+  const qbad = await p.evaluate(() => { const bad = []; let n = 0;
+    for (const mode of ['kids', 'expert']) for (const scope of ['all', 'period']) for (const per of PERIODS) {
+      S.period = per; QZ.mode = mode; QZ.scope = scope;
+      for (let r = 0; r < 6; r++) { newRound(); if (QZ.round.length < 10) bad.push(mode + '/' + scope + '/' + per.id + ': only ' + QZ.round.length + ' questions');
+        for (const q of QZ.round) { n++; const texts = q.opts.map(o => o.t);
+          if (q.opts.filter(o => o.ok).length !== 1) bad.push('answers≠1: ' + q.q);
+          if (new Set(texts).size !== texts.length) bad.push('duplicate option: ' + q.q + ' ' + texts.join(' | '));
+          if (texts.some(t => !t || /undefined|NaN|null/.test(t)) || /undefined|NaN/.test(q.q + q.why)) bad.push('broken text: ' + q.q); } } }
+    S.period = getPeriod(S.t); QZ.mode = 'kids'; QZ.scope = 'all'; newRound(); return { n, bad: [...new Set(bad)] }; });
+  ok('quiz: ' + qbad.n + ' generated questions all valid', qbad.bad.length === 0, '\n    ' + qbad.bad.slice(0, 12).join('\n    '));
+  await p.click('#tab-quiz'); await p.waitForTimeout(200);
+  await p.click('#pane-quiz [data-qz-opt="0"]'); await p.waitForTimeout(150);
+  ok('quiz: answering shows feedback', await p.evaluate(() => !!document.querySelector('#pane-quiz .qz-fb') && QZ.picked === 0));
+  for (let i = 0; i < 10; i++) { const nx = await p.$('#pane-quiz [data-qz-act="next"]'); if (!nx) break; await nx.click(); await p.waitForTimeout(80); const op = await p.$('#pane-quiz [data-qz-opt="0"]:not([disabled])'); if (op) { await op.click(); await p.waitForTimeout(60); } }
+  ok('quiz: a full round reaches the score screen', await p.evaluate(() => QZ.done && /\/ 10/.test(document.getElementById('pane-quiz').innerText)));
+  await p.click('#tab-life'); await p.waitForTimeout(150);
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));

@@ -348,10 +348,11 @@ function renderPanel() {
   if (S.tab === 'life') renderLife();
   else if (S.tab === 'humans') renderHumans();
   else if (S.tab === 'insights') renderInsights();
+  else if (S.tab === 'quiz') renderQuiz();
   else renderGeo();
 }
 function switchTab(tab) {
-  S.tab = tab;
+  S.tab = tab; closeFact();
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
   if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && S.sel.startsWith('cul:'))) { S.sel = null; WorldMap.select(null); }
@@ -762,7 +763,7 @@ function init() {
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }
   });
   window.addEventListener('hashchange', readHash);
-  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo();
+  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz();
   renderTimeline();
   if (!readHash()) {
     setTime(150);
