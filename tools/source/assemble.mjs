@@ -102,10 +102,25 @@ data += dsrc.slice(dsrc.indexOf('// ===='), dsrc.indexOf("if (typeof module")).t
 // ── peer-reviewed sources (verified against Crossref by tools/verify_refs.py) ──
 const RAW = JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8'));
 const { CULTURES } = require('./data_cultures.js'), { DROWNED } = require('./data_drowned.js');
+const { FINDS, FIND_ERAS, FIND_THEMES } = require('./data_finds.js');
+{ const seen = new Set();
+  for (const f of FINDS) {
+    if (seen.has(f.id)) problems.push('find ' + f.id + ': duplicate id'); seen.add(f.id);
+    if (!FIND_ERAS.some(e => e[0] === f.era)) problems.push('find ' + f.id + ': unknown era ' + f.era);
+    if (!FIND_THEMES[f.theme]) problems.push('find ' + f.id + ': unknown theme ' + f.theme);
+    if (f.animal && !allNames.has(f.animal)) problems.push('find ' + f.id + ': no animal card named ' + f.animal);
+    if (f.hom && !HOMININS.some(h => h.id === f.hom)) problems.push('find ' + f.id + ': no hominin ' + f.hom);
+    if (f.at && !(Math.abs(f.at[0]) <= 90 && Math.abs(f.at[1]) <= 180)) problems.push('find ' + f.id + ': bad coordinates');
+    if (!f.story || !f.who || !f.where || !f.when || typeof f.year !== 'number') problems.push('find ' + f.id + ': missing a field');
+  }
+  const fsrc = fs.readFileSync(SRC + 'data_finds.js', 'utf8');
+  data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
+}
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], m: id => ['plates', 'sealevel', 'time'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
+  if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
   REFS[k] = { a: r.authors.length ? r.authors.join(', ').replace(', et al.', ' et al.') : '', y: r.year, t: r.title, j: r.journal, d: r.doi };
   for (const t of r.targets) {
     const [kind, ...rest] = t.split(':'), id = rest.join(':');
@@ -129,6 +144,8 @@ const css = fs.readFileSync(SRC + 'style.css', 'utf8'), body = fs.readFileSync(S
 const d3 = fs.readFileSync(SRC + 'd3-geo-bundle.min.js', 'utf8').trim();
 const plates = fs.readFileSync(SRC + 'plates-data.js', 'utf8').trim();
 const shelf = fs.readFileSync(SRC + 'shelf-data.js', 'utf8').trim();
+const relief = fs.readFileSync(SRC + 'relief-data.js', 'utf8').trim();
+{ const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }
 const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
 let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
 if (!/\ninit\(\);$/.test(app)) throw new Error('app.js must end with init();');
@@ -170,6 +187,10 @@ ${plates}
 <!-- ─── GENERATED: continental shelves for Ice Age sea level. Rebuild with tools/build_shelf.py — do not edit ─── -->
 <script>
 ${shelf}
+</script>
+<!-- ─── GENERATED: today's high ground, for the Ice Age map. Rebuild with tools/build_relief.py — do not edit ─── -->
+<script>
+${relief}
 </script>
 <!-- ─── END GENERATED: shelves ─── -->
 

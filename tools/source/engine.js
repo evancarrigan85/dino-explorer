@@ -381,11 +381,10 @@ const WorldMap = (() => {
     return Math.round(b0 + (b1 - b0) * k);
   }
   // Shorelines at each sea-level drop (metres below today): decode the packed levels.
-  const SHELF_LV = (() => {
-    if (typeof SHELF_PACKED === 'undefined') return [];
+  const unpackLevels = d => {
     const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', lut = new Int8Array(128);
     for (let i = 0; i < 64; i++) lut[A.charCodeAt(i)] = i;
-    const d = SHELF_PACKED; let pos = 0;
+    let pos = 0;
     const u = () => { let r = 0, sh = 0, c; do { c = lut[d.charCodeAt(pos++)]; r += (c & 31) * Math.pow(2, sh); sh += 5; } while (c & 32); return r; };
     const z = () => { const v = u(); return v % 2 ? -(v + 1) / 2 : v / 2; };
     const out = [], nl = u();
@@ -401,8 +400,11 @@ const WorldMap = (() => {
       out.push({ m: metres, geo: { type: 'GeometryCollection', geometries: geoms } });
     }
     return out;
-  })();
-  let shelfKey = '', shelfP = {}, seabed = null;
+  };
+  const SHELF_LV = typeof SHELF_PACKED === 'undefined' ? [] : unpackLevels(SHELF_PACKED);
+  // Today's high ground (metres above the sea). Mountains are young, so it is only drawn for the Ice Age and after.
+  const RELIEF_LV = typeof RELIEF_PACKED === 'undefined' ? [] : unpackLevels(RELIEF_PACKED);
+  let shelfKey = '', shelfP = {}, reliefP = {}, seabed = null;
 
   // ── drawing ────────────────────────────────────────────────────────
   const sink = {
@@ -555,9 +557,9 @@ const WorldMap = (() => {
 
     // Ice Age: the continental shelves come out of the sea as the water drops
     const sl = seaLevel(t);
+    const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
+    if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; }
     if (sl < -1 && SHELF_LV.length) {
-      const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
-      if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; }
       const lv = i => shelfP[i] || (shelfP[i] = geoP(SHELF_LV[i].geo));
       // the deepest level already reached is drawn in full; the next one fades in
       const drop = -sl; let k = -1; while (k + 1 < SHELF_LV.length && SHELF_LV[k + 1].m <= drop) k++;
@@ -591,6 +593,13 @@ const WorldMap = (() => {
         L.fillStyle = beltColor(la + 3);
         L.fill(capPath(false, 90 - la)); L.fill(capPath(true, 90 - la));
       }
+    }
+    // today's mountains, tinted darker the higher they stand — only while the ranges were where they are now
+    const rf = t <= 2.6 ? 1 : t >= 5 ? 0 : (5 - t) / 2.4;
+    if (rf > 0 && RELIEF_LV.length) {
+      const al = [0.13, 0.16, 0.2];
+      RELIEF_LV.forEach((lv, i) => { L.globalAlpha = (al[i] || 0.15) * rf; L.fillStyle = '#5a3610'; L.fill(reliefP[i] || (reliefP[i] = geoP(lv.geo))); });
+      L.globalAlpha = 1;
     }
     // land ice, feathered at its edge
     for (const [south, r] of [[true, I.s], [false, I.n]]) {

@@ -1,9 +1,9 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate  x:<find id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
-merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates
+merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
-spratt2016 | Spratt | 2016 | A Late Pleistocene sea level stack | m:sealevel
+spratt2016 | Spratt | 2016 | A Late Pleistocene sea level stack | m:sealevel | 10.5194/cp-12-1079-2016
 cohen2013 | Cohen | 2013 | The ICS International Chronostratigraphic Chart | m:time
 hoffman1998 | Hoffman | 1998 | A Neoproterozoic Snowball Earth | p:cryogenian
 love2009 | Love | 2009 | Fossil steroids record the appearance of Demospongiae during the Cryogenian period | a:Earliest Sponges, p:cryogenian
@@ -18,7 +18,7 @@ mitchell2015 | Mitchell | 2015 | Reconstructing the reproductive mode of an Edia
 bengtson1992 | Bengtson | 1992 | Predatorial borings in late Precambrian mineralized exoskeletons | a:Cloudina, f:ediacaran
 rahman2015 | Rahman | 2015 | Suspension feeding in the enigmatic Ediacaran organism Tribrachidium demonstrates complexity of Neoproterozoic ecosystems | a:Tribrachidium
 vannier2012 | Vannier | 2012 | Gut contents as direct indicators for trophic relationships in the Cambrian marine ecosystem | a:Ottoia, f:cambrian
-smith2015h | Smith | 2015 | Hallucigenia's head and the pharyngeal armature of early ecdysozoans | a:Hallucigenia
+smith2015h | Smith | 2015 | Hallucigenia's head and the pharyngeal armature of early ecdysozoans | a:Hallucigenia, x:burgess 
 morris2014 | Morris | 2014 | A primitive fish from the Cambrian of North America | a:Metaspriggina
 zeng2020 | Zeng | 2020 | An early Cambrian euarthropod with radiodont-like raptorial appendages | a:Kylinxia
 caron2016 | Caron | 2016 | Waptia and the diversification of brood care in early arthropods | a:Waptia
@@ -38,7 +38,7 @@ zhu2013 | Zhu | 2013 | A Silurian placoderm with osteichthyan-like marginal jaw 
 briggs2016 | Briggs | 2016 | Tiny individuals attached to a new Silurian arthropod suggest a unique mode of brood care | a:Aquilonifer
 wells1963 | Wells | 1963 | Coral growth and geochronometry | p:devonian
 algeo1998 | Algeo | 1998 | Terrestrial-marine teleconnections in the Devonian: links between the evolution of land plants, weathering processes, and marine anoxic events | p:devonian
-daeschler2006 | Daeschler | 2006 | A Devonian tetrapod-like fish and the evolution of the tetrapod body plan | a:Tiktaalik
+daeschler2006 | Daeschler | 2006 | A Devonian tetrapod-like fish and the evolution of the tetrapod body plan | a:Tiktaalik, x:tiktaalik 
 long2008 | Long | 2008 | Live birth in the Devonian period | a:Materpiscis
 niedzwiedzki2010 | Niedźwiedzki | 2010 | Tetrapod trackways from the early Middle Devonian period of Poland | a:Zachełmie trackmaker
 braddy2008 | Braddy | 2008 | Giant claw reveals the largest ever arthropod | a:Jaekelopterus
@@ -79,13 +79,13 @@ xu2006 | Xu | 2006 | A basal tyrannosauroid dinosaur from the Late Jurassic of C
 li2010 | Li | 2010 | Plumage color patterns of an extinct dinosaur | a:Anchiornis
 wang2017 | Wang | 2017 | Extreme ontogenetic changes in a ceratosaurian theropod | a:Limusaurus
 sander2006 | Sander | 2006 | Bone histology indicates insular dwarfism in a new Late Jurassic sauropod dinosaur | a:Europasaurus
-tschopp2015 | Tschopp | 2015 | A specimen-level phylogenetic analysis and taxonomic revision of Diplodocidae (Dinosauria, Sauropoda) | a:Brontosaurus, a:Apatosaurus
+tschopp2015 | Tschopp | 2015 | A specimen-level phylogenetic analysis and taxonomic revision of Diplodocidae (Dinosauria, Sauropoda) | a:Brontosaurus, a:Apatosaurus, x:bonewars 
 lambert2010 | Lambert | 2010 | The giant bite of a new raptorial sperm whale from the Miocene epoch of Peru | a:Livyatan, f:neogene
 erickson2004 | Erickson | 2004 | Gigantism and comparative life-history parameters of tyrannosaurid dinosaurs | a:Tyrannosaurus rex
 depalma2013 | DePalma | 2013 | Physical evidence of predatory behavior in Tyrannosaurus rex | a:Tyrannosaurus rex, a:Edmontosaurus, f:cretaceous
-ibrahim2020 | Ibrahim | 2020 | Tail-propelled aquatic locomotion in a theropod dinosaur | a:Spinosaurus
+ibrahim2020 | Ibrahim | 2020 | Tail-propelled aquatic locomotion in a theropod dinosaur | a:Spinosaurus, x:spinosaurus 
 xu2012 | Xu | 2012 | A gigantic feathered dinosaur from the Lower Cretaceous of China | a:Yutyrannus
-brown2017 | Brown | 2017 | An exceptionally preserved three-dimensional armored dinosaur reveals insights into coloration and Cretaceous predator-prey dynamics | a:Borealopelta
+brown2017 | Brown | 2017 | An exceptionally preserved three-dimensional armored dinosaur reveals insights into coloration and Cretaceous predator-prey dynamics | a:Borealopelta, x:borealopelta 
 smithwick2017 | Smithwick | 2017 | Countershading and stripes in the theropod dinosaur Sinosauropteryx reveal heterogeneous habitats in the Early Cretaceous Jehol Biota | a:Sinosauropteryx
 vinther2016 | Vinther | 2016 | 3D camouflage in an ornithischian dinosaur | a:Psittacosaurus
 li2012 | Li | 2012 | Reconstruction of Microraptor and the evolution of iridescent plumage | a:Microraptor
@@ -101,9 +101,9 @@ arbour2017 | Arbour | 2017 | A new ankylosaurine dinosaur from the Judith River 
 sampson2010 | Sampson | 2010 | New horned dinosaurs from Utah provide evidence for intracontinental dinosaur endemism | a:Kosmoceratops
 cau2017 | Cau | 2017 | Synchrotron scanning reveals amphibious ecomorphology in a new clade of bird-like dinosaurs | a:Halszkaraptor
 carr2017 | Carr | 2017 | A new tyrannosaur with evidence for anagenesis and crocodile-like facial sensory system | a:Daspletosaurus
-horner1979 | Horner | 1979 | Nest of juveniles provides evidence of family structure among dinosaurs | a:Maiasaura
-norell1995 | Norell | 1995 | A nesting dinosaur | a:Citipati, a:Oviraptor
-norell1994 | Norell | 1994 | A theropod dinosaur embryo and the affinities of the Flaming Cliffs dinosaur eggs | a:Oviraptor
+horner1979 | Horner | 1979 | Nest of juveniles provides evidence of family structure among dinosaurs | a:Maiasaura, x:maiasaura
+norell1995 | Norell | 1995 | A nesting dinosaur | a:Citipati, a:Oviraptor, x:gobi 
+norell1994 | Norell | 1994 | A theropod dinosaur embryo and the affinities of the Flaming Cliffs dinosaur eggs | a:Oviraptor, x:gobi 
 peterson2013 | Peterson | 2013 | Cranial pathologies in a specimen of Pachycephalosaurus | a:Pachycephalosaurus
 rogers2003 | Rogers | 2003 | Cannibalism in the Madagascan dinosaur Majungatholus atopus | a:Majungasaurus
 fisher2000 | Fisher | 2000 | Cardiovascular evidence for an intermediate or higher metabolic rate in an ornithischian dinosaur | a:Thescelosaurus
@@ -112,8 +112,8 @@ field2018 | Field | 2018 | Complete Ichthyornis skull illuminates mosaic assembl
 clarke2016 | Clarke | 2016 | Fossil evidence of the avian vocal organ from the Mesozoic | a:Vegavis
 wilson2016 | Wilson | 2016 | A large carnivorous mammal from the Late Cretaceous and the North American origin of marsupials | a:Didelphodon
 field2020 | Field | 2020 | Late Cretaceous neornithine from Europe illuminates the origins of crown birds | a:Asteriornis
-alvarez1980 | Alvarez | 1980 | Extraterrestrial cause for the Cretaceous-Tertiary extinction | p:cretaceous
-hildebrand1991 | Hildebrand | 1991 | Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico | p:cretaceous
+alvarez1980 | Alvarez | 1980 | Extraterrestrial cause for the Cretaceous-Tertiary extinction | p:cretaceous, x:asteroid 
+hildebrand1991 | Hildebrand | 1991 | Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico | p:cretaceous, x:asteroid 
 schulte2010 | Schulte | 2010 | The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary | p:cretaceous | 10.1126/science.1177265
 head2009 | Head | 2009 | Giant boid snake from the Palaeocene neotropics reveals hotter past equatorial temperatures | a:Titanoboa
 westerhold2020 | Westerhold | 2020 | An astronomically dated record of Earth's climate and its predictability over the last 66 million years | p:paleogene, p:neogene
@@ -168,17 +168,17 @@ senut2001 | Senut | 2001 | First hominid from the Miocene (Lukeino Formation, Ke
 haileselassie2001 | Haile-Selassie | 2001 | Late Miocene hominids from the Middle Awash, Ethiopia | h:kadabba
 white2009 | White | 2009 | Ardipithecus ramidus and the paleobiology of early hominids | h:ramidus
 haileselassie2019 | Haile-Selassie | 2019 | A 3.8-million-year-old hominin cranium from Woranso-Mille, Ethiopia | h:anamensis
-johanson1976 | Johanson | 1976 | Plio–Pleistocene hominid discoveries in Hadar, Ethiopia | h:afarensis
-leakey1979 | Leakey | 1979 | Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania | h:afarensis
+johanson1976 | Johanson | 1976 | Plio–Pleistocene hominid discoveries in Hadar, Ethiopia | h:afarensis, x:lucy 
+leakey1979 | Leakey | 1979 | Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania | h:afarensis, x:laetoli 
 alemseged2006 | Alemseged | 2006 | A juvenile early hominin skeleton from Dikika, Ethiopia | h:afarensis
 leakey2001 | Leakey | 2001 | New hominin genus from eastern Africa shows diverse middle Pliocene lineages | h:kenyanthropus
 harmand2015 | Harmand | 2015 | 3.3-million-year-old stone tools from Lomekwi 3, West Turkana, Kenya | h:kenyanthropus, c:oldowan
-dart1925 | Dart | 1925 | Australopithecus africanus: The man-ape of South Africa | h:africanus
-berger2006 | Berger | 2006 | Brief communication: Predatory bird damage to the Taung type-skull of Australopithecus africanus Dart 1925 | h:africanus
+dart1925 | Dart | 1925 | Australopithecus africanus: The man-ape of South Africa | h:africanus, x:taung 
+berger2006 | Berger | 2006 | Brief communication: Predatory bird damage to the Taung type-skull of Australopithecus africanus Dart 1925 | h:africanus, x:taung 
 asfaw1999 | Asfaw | 1999 | Australopithecus garhi: a new species of early hominid from Ethiopia | h:garhi
 deheinzelin1999 | de Heinzelin | 1999 | Environment and behavior of 2.5-million-year-old Bouri hominids | h:garhi
 walker1986 | Walker | 1986 | 2.5-Myr Australopithecus boisei from west of Lake Turkana, Kenya | h:aethiopicus
-leakey1959 | Leakey | 1959 | A new fossil skull from Olduvai | h:boisei
+leakey1959 | Leakey | 1959 | A new fossil skull from Olduvai | h:boisei, x:zinj 
 cerling2011 | Cerling | 2011 | Diet of Paranthropus boisei in the early Pleistocene of East Africa | h:boisei
 madupe2025 | Madupe | 2025 | Enamel proteins reveal biological sex and genetic variability in southern African Paranthropus | h:robustus
 berger2010 | Berger | 2010 | Australopithecus sediba: a new species of Homo-like australopith from South Africa | h:sediba
@@ -186,27 +186,27 @@ henry2012 | Henry | 2012 | The diet of Australopithecus sediba | h:sediba
 leakey1964 | Leakey | 1964 | A new species of the genus Homo from Olduvai Gorge | h:habilis
 villmoare2015 | Villmoare | 2015 | Early Homo at 2.8 Ma from Ledi-Geraru, Afar, Ethiopia | h:habilis
 leakey2012 | Leakey | 2012 | New fossils from Koobi Fora in northern Kenya confirm taxonomic diversity in early Homo | h:rudolfensis
-brown1985 | Brown | 1985 | Early Homo erectus skeleton from west Lake Turkana, Kenya | h:erectus
+brown1985 | Brown | 1985 | Early Homo erectus skeleton from west Lake Turkana, Kenya | h:erectus, x:turkana
 lordkipanidze2013 | Lordkipanidze | 2013 | A complete skull from Dmanisi, Georgia, and the evolutionary biology of early Homo | h:erectus
 berna2012 | Berna | 2012 | Microstratigraphic evidence of in situ fire in the Acheulean strata of Wonderwerk Cave, Northern Cape province, South Africa | h:erectus, c:fire
 bermudez1997 | Bermúdez de Castro | 1997 | A hominid from the Lower Pleistocene of Atapuerca, Spain: possible ancestor to Neandertals and modern humans | h:antecessor
 welker2020 | Welker | 2020 | The dental proteome of Homo antecessor | h:antecessor
 meyer2016 | Meyer | 2016 | Nuclear DNA sequences from the Middle Pleistocene Sima de los Huesos hominins | h:heidelbergensis
 thieme1997 | Thieme | 1997 | Lower Palaeolithic hunting spears from Germany | h:heidelbergensis
-berger2015 | Berger | 2015 | Homo naledi, a new species of the genus Homo from the Dinaledi Chamber, South Africa | h:naledi
+berger2015 | Berger | 2015 | Homo naledi, a new species of the genus Homo from the Dinaledi Chamber, South Africa | h:naledi, x:naledi 
 dirks2017 | Dirks | 2017 | The age of Homo naledi and associated sediments in the Rising Star Cave, South Africa | h:naledi
 green2010 | Green | 2010 | A draft sequence of the Neandertal genome | h:neanderthal | 10.1126/science.1188021
 jaubert2016 | Jaubert | 2016 | Early Neanderthal constructions deep in Bruniquel Cave in southwestern France | h:neanderthal, c:neanderthal-life
-reich2010 | Reich | 2010 | Genetic history of an archaic hominin group from Denisova Cave in Siberia | h:denisovan
+reich2010 | Reich | 2010 | Genetic history of an archaic hominin group from Denisova Cave in Siberia | h:denisovan, x:denisova 
 slon2018 | Slon | 2018 | The genome of the offspring of a Neanderthal mother and a Denisovan father | h:denisovan
 chen2019 | Chen | 2019 | A late Middle Pleistocene Denisovan mandible from the Tibetan Plateau | h:denisovan
 huertasanchez2014 | Huerta-Sánchez | 2014 | Altitude adaptation in Tibetans caused by introgression of Denisovan-like DNA | h:denisovan
-brown2004 | Brown | 2004 | A new small-bodied hominin from the Late Pleistocene of Flores, Indonesia | h:floresiensis
-sutikna2016 | Sutikna | 2016 | Revised stratigraphy and chronology for Homo floresiensis at Liang Bua in Indonesia | h:floresiensis
+brown2004 | Brown | 2004 | A new small-bodied hominin from the Late Pleistocene of Flores, Indonesia | h:floresiensis, x:flores 
+sutikna2016 | Sutikna | 2016 | Revised stratigraphy and chronology for Homo floresiensis at Liang Bua in Indonesia | h:floresiensis, x:flores
 vandenbergh2016 | van den Bergh | 2016 | Homo floresiensis-like fossils from the early Middle Pleistocene of Flores | h:floresiensis
 detroit2019 | Détroit | 2019 | A new species of Homo from the Late Pleistocene of the Philippines | h:luzonensis
-hublin2017 | Hublin | 2017 | New fossils from Jebel Irhoud, Morocco and the pan-African origin of Homo sapiens | h:sapiens
-bennett2021 | Bennett | 2021 | Evidence of humans in North America during the Last Glacial Maximum | h:sapiens, c:monte-verde
+hublin2017 | Hublin | 2017 | New fossils from Jebel Irhoud, Morocco and the pan-African origin of Homo sapiens | h:sapiens, x:irhoud 
+bennett2021 | Bennett | 2021 | Evidence of humans in North America during the Last Glacial Maximum | h:sapiens, c:monte-verde, x:whitesands 
 clarkson2017 | Clarkson | 2017 | Human occupation of northern Australia by 65,000 years ago | h:sapiens, c:first-australians
 plummer2023 | Plummer | 2023 | Expanded geographic distribution and dietary strategies of the earliest Oldowan hominins and Paranthropus | c:oldowan
 lepre2011 | Lepre | 2011 | An earlier origin for the Acheulian | c:acheulean
@@ -242,3 +242,33 @@ benjamin2020 | Benjamin | 2020 | Aboriginal artefacts on the continental shelf r
 smith2015b | Smith | 2015 | Sedimentary DNA from a submerged site reveals wheat in the British Isles 8000 years ago | d:bouldnor
 weninger2008 | Weninger | 2008 | The catastrophic final flooding of Doggerland by the Storegga Slide tsunami | d:doggerland
 tamm2007 | Tamm | 2007 | Beringian standstill and spread of Native American founders | d:beringia
+# ── finds: the history of discovery ──
+mayor1993 | Mayor | 1993 | Griffins and Arimaspeans | x:griffin
+witton2024 | Witton | 2024 | Did the horned dinosaur Protoceratops inspire the griffin? | x:griffin
+mayor2007 | Mayor | 2007 | Place names describing fossils in oral traditions | x:firstamericans
+baucon2010 | Baucon | 2010 | Leonardo da Vinci, the founding father of ichnology | x:leonardo
+delair2002 | Delair | 2002 | The earliest discoveries of dinosaurs: the records re-examined | x:plot
+torrens1995 | Torrens | 1995 | Mary Anning (1799–1847) of Lyme; 'the greatest fossilist the world ever knew' | x:anning
+buckland1824 | Buckland | 1824 | Notice on the Megalosaurus or great Fossil Lizard of Stonesfield | x:buckland, a:Megalosaurus
+mantell1825 | Mantell | 1825 | Notice on the Iguanodon, a newly discovered fossil reptile, from the sandstone of Tilgate forest, in Sussex | x:mantell, a:Iguanodon | 10.1098/rstl.1825.0010
+owen1863 | Owen | 1863 | On the Archeopteryx of von Meyer, with a description of the fossil remains of a long-tailed species, from the lithographic stone of Solenhofen | x:archaeopteryx, a:Archaeopteryx
+schmitz2002 | Schmitz | 2002 | The Neandertal type site revisited: interdisciplinary investigations of skeletal remains from the Neander Valley, Germany | x:neanderthal
+davidson2002 | Davidson | 2002 | Bonehead mistakes: the background in scientific literature and illustrations for Edward Drinker Cope's first restoration of Elasmosaurus platyurus | x:elasmosaurus, a:Elasmosaurus
+shen2009 | Shen | 2009 | Age of Zhoukoudian Homo erectus determined with 26Al/10Be burial dating | x:peking, h:erectus
+zhang2024 | Zhang | 2024 | The demise of the giant ape Gigantopithecus blacki | x:gigantopithecus, a:Gigantopithecus
+ford1958 | Ford | 1958 | Pre-Cambrian fossils from Charnwood Forest | x:charnia, a:Charnia
+wegener1912 | Wegener | 1912 | Die Entstehung der Kontinente | x:wegener
+vine1963 | Vine | 1963 | Magnetic anomalies over oceanic ridges | x:seafloor
+ostrom1973 | Ostrom | 1973 | The ancestry of birds | x:deinonychus, a:Deinonychus
+brochu2003 | Brochu | 2003 | Osteology of Tyrannosaurus rex: insights from a nearly complete skeleton and high-resolution computed tomographic analysis of the skull | x:sue, a:Tyrannosaurus rex
+chen1998 | Chen | 1998 | An exceptionally well-preserved theropod dinosaur from the Yixian Formation of China | x:sinosauropteryx, a:Sinosauropteryx
+zhang2010 | Zhang | 2010 | Fossilized melanosomes and the colour of Cretaceous dinosaurs and birds | x:sinosauropteryx, a:Sinosauropteryx
+schweitzer2005 | Schweitzer | 2005 | Soft-tissue vessels and cellular preservation in Tyrannosaurus rex | x:softtissue, a:Tyrannosaurus rex
+xing2016 | Xing | 2016 | A feathered dinosaur tail with primitive plumage trapped in mid-Cretaceous amber | x:amber
+ibrahim2014 | Ibrahim | 2014 | Semiaquatic adaptations in a giant predatory dinosaur | x:spinosaurus, a:Spinosaurus
+richter2017 | Richter | 2017 | The age of the hominin fossils from Jebel Irhoud, Morocco, and the origins of the Middle Stone Age | x:irhoud, h:sapiens
+pigati2023 | Pigati | 2023 | Independent age estimates resolve the controversy of ancient human footprints at White Sands | x:whitesands
+krause2010 | Krause | 2010 | The complete mitochondrial DNA genome of an unknown hominin from southern Siberia | x:denisova, h:denisovan
+# ── climate ──
+scotese2021 | Scotese | 2021 | Phanerozoic paleotemperatures: The earth's changing climate during the last 540 million years | m:climate | 10.1016/j.earscirev.2021.103503
+tierney2020 | Tierney | 2020 | Glacial cooling and climate sensitivity revisited | m:climate | 10.1038/s41586-020-2617-x

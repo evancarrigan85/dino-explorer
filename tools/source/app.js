@@ -118,6 +118,8 @@ function updateClock(fromSlider) {
   $('myaDisplay').textContent = fmtAgo(t);
   const sl = WorldMap.seaLevel(t);
   $('ctDate').textContent = fmtAgo(t).toUpperCase() + (sl <= -10 ? ' · SEA ' + sl + ' M' : sl >= 4 ? ' · SEA +' + sl + ' M' : '');
+  const T = globalTemp(t), dT = T == null ? 0 : T - TEMP_TODAY;
+  $('ctTemp').textContent = T == null ? '' : '🌡 about ' + Math.round(T) + ' °C · ' + (Math.abs(dT) < 0.75 ? 'much like today' : Math.round(Math.abs(dT)) + '° ' + (dT > 0 ? 'warmer' : 'colder') + ' than today');
   $('ctDate').title = sl <= -10 ? 'Sea level about ' + (-sl) + ' m lower than today — the paler land around today’s coasts was dry ground' : '';
   if (!fromSlider) $('timeSlider').value = Math.round(posOf(t) * 10000);
   $('timeSlider').setAttribute('aria-valuetext', p.name + ', ' + fmtAgo(t));
@@ -149,6 +151,7 @@ function renderPeriod() {
 const typeOK = c => (S.type === 'all' || c.g === S.type) && (S.branch === 'all' || c.path[1] === S.branch) && (!S.weird || c.weird);
 function updateMarkers(now) {
   now = now || ALL.filter(c => alive(c, S.t));
+  if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
   WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c) })) });
 }
 const placeCache = {};
@@ -168,6 +171,8 @@ function updatePlaces() {
   if (S.tab === 'insights') places = SITES.filter(s => s[3].includes(p.id)).map(s => placeCache['s' + s[0] + p.id] || (placeCache['s' + s[0] + p.id] = { key: 'site:' + slug(s[0]), name: s[0], note: s[4], at: WorldMap.attach(s[1], s[2], mid) }));
   else if (S.tab === 'humans') places = CULTURES.filter(c => culActive(c)).flatMap(c => c.sites.map((s, i) => placeCache['c' + c.id + i] || (placeCache['c' + c.id + i] = { key: 'cul:' + c.id, name: s[2].split(/,| —/)[0], note: c.name, icon: c.icon, at: WorldMap.attach(s[0], s[1], (c.t[0] + c.t[1]) / 2) })))
     .concat(DROWNED.filter(d => drwShown(d)).map(d => { const pc = placeCache['d' + d.id] || (placeCache['d' + d.id] = { key: 'drw:' + d.id, name: d.name.split(' —')[0], note: d.story, at: WorldMap.attach(d.site[0], d.site[1], 0.1) }); pc.icon = drwWet(d) ? '🌊' : d.icon; return pc; }));
+  else if (S.tab === 'finds') places = FINDS.filter(f => f.at && (S.sel === 'find:' + f.id || (f.age == null ? S.t < 0.0117 : f.age <= p.start && f.age > p.end)))
+    .map(f => placeCache['f' + f.id] || (placeCache['f' + f.id] = { key: 'find:' + f.id, name: f.title, note: f.when + ' · ' + f.where, icon: f.icon, at: WorldMap.attach(f.at[0], f.at[1], f.age || 0) }));
   else if (S.tab === 'geo') places = GEO_FEATURES.filter(f => f.at && f.periods.includes(p.id)).map(f => placeCache['g' + f.id + p.id] || (placeCache['g' + f.id + p.id] = { key: 'geo:' + f.id, name: f.name, note: f.shortDesc, icon: f.icon, at: WorldMap.attach(f.at[0], f.at[1], mid) }));
   WorldMap.setLayers({ places });
 }
@@ -357,14 +362,15 @@ function renderPanel() {
   else if (S.tab === 'humans') renderHumans();
   else if (S.tab === 'insights') renderInsights();
   else if (S.tab === 'quiz') renderQuiz();
+  else if (S.tab === 'finds') renderFinds();
   else renderGeo();
 }
 function switchTab(tab) {
   S.tab = tab; closeFact();
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
-  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && /^(cul|drw):/.test(S.sel))) { S.sel = null; WorldMap.select(null); }
-  updatePlaces(); renderPanel();
+  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && /^(cul|drw):/.test(S.sel)) && !(tab === 'finds' && /^find:/.test(S.sel))) { S.sel = null; WorldMap.select(null); }
+  updateMarkers(); updatePlaces(); renderPanel();
   $('panelContent').scrollTop = 0;
 }
 
@@ -398,7 +404,7 @@ function allSourcesHTML() {
   const n = Object.keys(REFS).length, has = t => !!SRCMAP[t];
   const rate = (list, f) => { const k = list.filter(f).length; return `${k} of ${list.length}`; };
   const cov = [['animal entries', rate(ALL.filter(c => !c.hom), c => has('a:' + c.name))], ['human species', rate(HOMININS, h => has('h:' + h.id))], ['cultures', rate(CULTURES, c => has('c:' + c.id))],
-    ['drowned sites', rate(DROWNED, d => has('d:' + d.id))], ['periods', rate(PERIODS, p => has('p:' + p.id))], ['food webs', rate(Object.keys(FOODWEBS), id => has('f:' + id))]];
+    ['drowned sites', rate(DROWNED, d => has('d:' + d.id))], ['periods', rate(PERIODS, p => has('p:' + p.id))], ['food webs', rate(Object.keys(FOODWEBS), id => has('f:' + id))], ['discovery stories', rate(FINDS, f => has('x:' + f.id))]];
   const keys = Object.keys(REFS).sort((x, y) => REFS[x].a.localeCompare(REFS[y].a) || REFS[x].y - REFS[y].y);
   return `<details class="fw-how all-src"><summary>📚 All ${n} peer-reviewed sources on this site</summary>
     <div class="src-note">Every reference is checked against the Crossref DOI registry — title, year and first author must match a registered paper before it can appear here. Coverage so far: ${cov.map(c => `${c[1]} ${c[0]}`).join(' · ')}. Entries without a listed source draw on standard references and museum summaries, and are being sourced one by one.</div>
@@ -409,6 +415,7 @@ function cardHTML(c, open) {
   const sec = (title, body) => body ? `<div class="label-sec"><h5>${title}</h5>${body}</div>` : '';
   if (open) {
     L.push(sizeHTML(c));
+    L.push(findLinks(c));
     L.push(srcHTML(c.hom ? 'h:' + c.key : 'a:' + c.name));
     L.push(sec('🔎 How do we know?', esc(c.know || '')));
     L.push(sec('❓ Still debated', esc(c.debate || '')));
@@ -644,6 +651,67 @@ function bindHumans() {
   });
 }
 
+// --- Finds: how people found out ---
+const FIND = Object.fromEntries(FINDS.map(f => [f.id, f]));
+const findLinks = c => { const fs = FINDS.filter(f => c.hom ? f.hom === c.key : f.animal === c.name); return fs.length ? `<div class="found find-links">⛏️ <b>How it was found:</b> ${fs.map(f => `<button class="linkbtn" data-find="${f.id}">${esc(f.title)} · ${esc(f.when)}</button>`).join(' ')}</div>` : ''; };
+// years on the strip: ancient times squeezed on the left, the last two centuries given most of the room
+const findX = y => y < 1600 ? 1 + 9 * clamp((y + 700) / 2300, 0, 1) : y < 1800 ? 10 + 12 * (y - 1600) / 200 : 22 + 77 * (y - 1800) / 230;
+function findHTML(f) {
+  const sec = (t, b) => b ? `<div class="label-sec"><h5>${t}</h5>${esc(b)}</div>` : '';
+  const c = f.animal && ALL.find(x => x.name === f.animal), h = f.hom && BY_KEY[f.hom];
+  return `<div class="profile culture find" data-key="find:${f.id}"><h3 style="font-style:normal">${f.icon} ${esc(f.title)}</h3>
+    <dl class="facts"><dt>When</dt><dd>${esc(f.when)}</dd><dt>Who</dt><dd>${esc(f.who)}</dd><dt>Where</dt><dd>${esc(f.where)}</dd>${f.age != null ? `<dt>Fossil age</dt><dd>${esc(fmtLong(f.age))}</dd>` : ''}</dl>
+    <div class="creature-fact">${esc(f.story)}</div>
+    ${sec('🙃 What they got wrong', f.wrong)}${sec('🙋 Who gets left out', f.left)}${sec('❓ Still debated', f.debate)}${sec('💡 Why it mattered', f.mattered)}
+    ${c || h ? `<div class="found">${c ? `<button class="linkbtn" data-meet="${c.key}">${c.emoji} Meet ${esc(c.name)}</button> ` : ''}${h ? `<button class="linkbtn" data-meet="${h.key}" data-hom="1">🧍 Meet ${esc(shortName(h.name))}</button>` : ''}</div>` : ''}
+    ${f.at ? `<div class="found">📍 <b>On the map:</b> ${f.age != null ? 'the pin marks the spot — carried back to where it was on Earth when this fossil was alive.' : 'the pin marks the place today.'}</div>` : ''}${srcHTML('x:' + f.id)}</div>`;
+}
+function renderFinds() {
+  const th = S.findTheme || 'all', show = f => th === 'all' || f.theme === th, sel = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)];
+  const lanes = Object.keys(FIND_THEMES), ticks = [[-700, 'ancient'], [1600, '1600'], [1800, '1800'], [1850, '1850'], [1900, '1900'], [1950, '1950'], [2000, '2000']];
+  const dots = FINDS.map(f => `<button class="fd th-${f.theme}${show(f) ? '' : ' off'}${sel === f ? ' sel' : ''}" data-find="${f.id}" style="left:${findX(f.year).toFixed(2)}%;top:${lanes.indexOf(f.theme) * 16 + 4}px" title="${esc(f.when + ' — ' + f.title)}" aria-label="${esc(f.when + ', ' + f.title)}"></button>`).join('');
+  const n1800 = FINDS.filter(f => f.year < 1800).length;
+  $('pane-finds').innerHTML = `<div class="hf finds">
+    <div class="hf-intro">Nobody has ever seen a living dinosaur. Everything on this site was worked out from finds like these — ${FINDS.length} of them, from ancient guesses to last year’s laboratories. People got a lot wrong on the way, and the cards say what.</div>
+    <div class="chips" id="findChips"><button class="chip${th === 'all' ? ' on' : ''}" data-theme="all">All <small>${FINDS.length}</small></button>${lanes.map(k => `<button class="chip${th === k ? ' on' : ''}" data-theme="${k}">${FIND_THEMES[k]} <small>${FINDS.filter(f => f.theme === k).length}</small></button>`).join('')}</div>
+    <div class="fstrip" aria-label="Finds by year"><div class="fs-in" style="height:${lanes.length * 16 + 6}px">${ticks.map(([y]) => `<i style="left:${findX(y)}%"></i>`).join('')}${dots}</div>
+      <div class="hf-axis fs-axis">${ticks.map(([y, l]) => `<span style="left:${findX(y)}%">${l}</span>`).join('')}</div></div>
+    <div class="hf-legend">${lanes.map(k => `<span><i class="th-${k}"></i>${FIND_THEMES[k].replace(/^\S+ /, '')}</span>`).join('')}</div>
+    <div class="hf-note">Each dot is a find. ${n1800} come from before 1800 — what people knew before fossil science began.</div>
+    ${sel ? findHTML(sel) : '<div class="empty">Tap a dot or a row — the map jumps to the world that fossil lived in.</div>'}
+    ${FIND_ERAS.map(([id, name, sub]) => { const fs = FINDS.filter(f => f.era === id && show(f)).sort((a, b) => a.year - b.year); return fs.length ? `<div class="ms"><div class="list-h" style="padding-left:2px">${esc(name)} <small>${esc(sub)}</small></div>${fs.map(f => `<div class="ms-item cul-item find-item now${sel === f ? ' sel' : ''}" data-find="${f.id}"><span class="when">${esc(f.when)}</span><span>${f.icon}</span><div><b>${esc(f.title)}</b><span>${esc(f.who.split(/;|, with| \(/)[0])} · ${esc(f.where.split(/,| \(/)[0])}</span></div></div>`).join('')}</div>` : ''; }).join('')}
+    <div class="src">Dates are when a fossil was found or first described. Where a story is a later legend or still argued over, the card says so.</div></div>`;
+}
+function selectFind(id, fromMap) {
+  const f = FIND[id]; if (!f) return;
+  S.sel = 'find:' + id; WorldMap.select(S.sel);
+  updateMarkers();
+  if (S.tab !== 'finds') switchTab('finds');
+  const look = () => { updatePlaces(); const pl = placeCache['f' + id]; if (pl) WorldMap.lookAt(pl.at); };
+  if (f.at) {
+    const target = f.age == null ? 0 : f.age;
+    if (Math.abs(S.t - target) > Math.max(0.0005, target * 0.02)) {
+      // a young fossil needs the timeline zoomed in before its moment is wide enough to stand on
+      const sp = Math.max(0.03, target * 4);
+      if (!isFull() && (target > S.win[0] || target < S.win[1] || span() > sp * 40)) setWindow(T_MAX, 0, true);
+      if (isFull() && target < 5) setWindow(Math.min(T_MAX, sp), 0, true);
+      goTo(target, () => { look(); renderFinds(); });
+    } else look();
+  } else updatePlaces();
+  renderFinds();
+  if (fromMap && window.innerWidth < 768) showFact(f.icon, '<b>' + esc(f.title) + '</b> (' + esc(f.when) + ') — ' + esc(f.story));
+  setTimeout(() => { const el = document.querySelector('#pane-finds .profile'); if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 80);
+}
+function bindFinds() {
+  $('pane-finds').addEventListener('click', e => {
+    const ch = e.target.closest('[data-theme]'); if (ch) { S.findTheme = ch.dataset.theme; renderFinds(); return; }
+    const m = e.target.closest('[data-meet]'); if (m) { switchTab(m.dataset.hom ? 'humans' : 'life'); select(m.dataset.meet, { keep: true }); return; }
+    const f = e.target.closest('[data-find]'); if (f) selectFind(f.dataset.find);
+  });
+  // "How it was found" buttons on animal and human cards, anywhere else on the page
+  document.addEventListener('click', e => { const f = e.target.closest('[data-find]'); if (f && !f.closest('#pane-finds')) { e.stopPropagation(); e.preventDefault(); selectFind(f.dataset.find); } }, true);
+}
+
 // --- Insights ---
 function renderInsights() {
   const p = S.period, I = p.insight, sites = SITES.filter(s => s[3].includes(p.id));
@@ -785,6 +853,26 @@ function bindPin() {
   });
 }
 
+// ── climate ─────────────────────────────────────────────────────────
+// Earth's average temperature at a moment, °C (null before 540 Ma, where the curve stops).
+// The source curve has one value per million years, which hides the Ice Age swings, so inside
+// the Ice Age the cooling is scaled from sea level: about 6 °C colder than today when the sea was 125 m down.
+function globalTemp(t) {
+  if (t > TEMP_MA.length - 1) return null;
+  if (t < 2.58) return TEMP_TODAY + 6.1 * WorldMap.seaLevel(t) / 125;
+  const i = Math.floor(t), k = t - i;
+  return (TEMP_MA[i] * (1 - k) + TEMP_MA[Math.min(TEMP_MA.length - 1, i + 1)] * k) / 10;
+}
+const tempColor = T => { const st = [[9, [58, 110, 200]], [14.5, [150, 200, 235]], [19, [240, 226, 150]], [24, [240, 160, 70]], [33, [200, 40, 30]]];
+  let j = 0; while (j < st.length - 2 && T > st[j + 1][0]) j++; const [a, ca] = st[j], [b, cb] = st[j + 1], k = clamp((T - a) / (b - a), 0, 1);
+  return 'rgb(' + ca.map((v, n) => Math.round(v + (cb[n] - v) * k)).join(',') + ')'; };
+function renderClimateStrip() {
+  const stops = []; for (let t = TEMP_MA.length - 1; t >= 0; t -= 2) stops.push(tempColor(TEMP_MA[t] / 10) + ' ' + (storyPos(t) / 10).toFixed(2) + '%');
+  stops.push(tempColor(TEMP_TODAY) + ' 100%');
+  const x0 = storyPos(TEMP_MA.length - 1) / 10;
+  $('ovTemp').style.cssText = 'left:' + x0 + '%;background:linear-gradient(90deg,' + stops.map(s => { const [c, p] = s.split(/ (?=[\d.]+%$)/); return c + ' ' + ((parseFloat(p) - x0) / (100 - x0) * 100).toFixed(2) + '%'; }).join(',') + ')';
+}
+
 // ── popup, hash, map wiring ─────────────────────────────────────────
 let factTimer = 0;
 function showFact(emoji, html) {
@@ -832,6 +920,7 @@ function init() {
     else if (h.pin) updatePinCard();
     else if (h.place && h.place.key.startsWith('cul:')) selectCulture(h.place.key.slice(4), true);
     else if (h.place && h.place.key.startsWith('drw:')) selectDrowned(h.place.key.slice(4), true);
+    else if (h.place && h.place.key.startsWith('find:')) selectFind(h.place.key.slice(5), true);
     else if (h.place) { selectPlace(h.place.key, h.place.at, h.place.icon || '📍', '<b>' + esc(h.place.name) + '</b> — ' + esc(h.place.note || '')); if (S.sel !== h.place.key) closeFact(); }
   };
   const tip = $('mapTip');
@@ -843,7 +932,7 @@ function init() {
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
-  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:time'].map(t => srcHTML(t, t === 'm:plates' ? 'Plate model' : t === 'm:sealevel' ? 'Sea level' : 'Time scale')).join(''));
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:time': 'Time scale' }[t])).join(''));
   $('mapNote').onclick = () => $('mapAbout').classList.toggle('show'); $('mapAboutX').onclick = () => $('mapAbout').classList.remove('show');
   $('eventsRibbon').onclick = () => switchTab('insights');
   $('fpClose').onclick = closeFact;
@@ -853,8 +942,8 @@ function init() {
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }
   });
   window.addEventListener('hashchange', readHash);
-  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz();
-  renderTimeline();
+  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds();
+  renderTimeline(); renderClimateStrip();
   if (!readHash()) {
     setTime(150);
     setTimeout(() => showFact('🦕', '<b>Welcome, time explorers!</b> Drag the timeline to watch the continents drift. Zoom into any stretch of it for more detail. Tap an animal to see where its fossils were found — carried back to where that spot was at the time.'), 900);

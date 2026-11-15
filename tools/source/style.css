@@ -310,6 +310,21 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .cul-item.sel{background:rgba(240,192,64,.16);outline:1px solid var(--accent)}
 .profile.culture{border-color:#58a6c8}
 .profile.drowned{border-color:#3fb3c4}
+.profile.find{border-color:#d9a441}
+.find-links .linkbtn{margin:2px 0}
+.finds .chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:none}
+.fstrip{margin:8px 0 2px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:6px 10px 2px}
+.fs-in{position:relative}
+.fs-in i{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.09)}
+.fd{position:absolute;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;border:1.5px solid rgba(10,14,26,.9);padding:0;cursor:pointer;background:#888}
+.fd::after{content:'';position:absolute;inset:-8px}
+.fd.off{opacity:.16}
+.fd.sel{outline:2px solid #fff;outline-offset:1px;z-index:2}
+.fd:hover{transform:scale(1.35);z-index:3}
+.th-dino{background:#5fc27e}.th-sea{background:#4aa8e0}.th-life{background:#c58be8}.th-human{background:#f0a35a}.th-idea{background:#f0d24a}
+.fs-axis{position:relative;height:16px;margin-top:2px}
+.finds .hf-legend i{border-radius:50%}
+.find-item{opacity:1}
 .drw-now{margin:6px 0 2px;font-size:.74rem;font-weight:700;color:#7fd3e0}
 .list-h small{display:block;margin:2px 0 0}
 
@@ -423,3 +438,9 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
   #pinCard .pc-h{font-size:.72rem}
   #pinPanel{right:50px;width:calc(100% - 64px)}
 }
+
+/* climate: temperature line on the map title, and a warm/cold stripe under the overview bar */
+#cartouche .ct-temp{font-size:.6rem;color:#6a3a10;letter-spacing:.3px;margin-top:1px;white-space:nowrap}
+#cartouche .ct-temp:empty{display:none}
+#ovTemp{position:absolute;right:0;bottom:0;height:4px;pointer-events:none;border-top:1px solid rgba(10,14,26,.7)}
+@media (max-width:767px){#cartouche .ct-temp{font-size:.52rem}}

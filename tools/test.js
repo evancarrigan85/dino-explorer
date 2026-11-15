@@ -124,6 +124,29 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('sources: an opened card lists its paper with a DOI link', await p.evaluate(() => { const el = document.querySelector('#lifeList .creature-card.active .sources'); return !!el && /Daeschler/.test(el.innerText) && !!el.querySelector('a[href^="https://doi.org/10.1038/"]'); }));
   await p.fill('#q', ''); await p.waitForTimeout(200);
   ok('sources: map notes cite the plate model and sea-level research', await p.evaluate(() => /Merdith/.test(document.getElementById('mapAbout').innerText) && /Lambeck/.test(document.getElementById('mapAbout').innerText)));
+  // finds: the history of discovery
+  await p.click('#tab-finds'); await p.waitForTimeout(300);
+  ok('finds: 50+ finds listed, ten or more from before 1800', await p.evaluate(() => document.querySelectorAll('#pane-finds .find-item').length >= 50 && FINDS.filter(f => f.year < 1800).length >= 10));
+  await p.click('#pane-finds .find-item[data-find="buckland"]'); await p.waitForTimeout(2600);
+  ok('finds: choosing one moves time to the fossil’s age and opens its story', await p.evaluate(() => Math.abs(S.t - 166) < 0.5 && S.sel === 'find:buckland' && /great lizard/i.test(document.querySelector('#pane-finds .profile').innerText) && /WHAT THEY GOT WRONG/i.test(document.querySelector('#pane-finds .profile').innerText)));
+  ok('finds: the story cites its paper', await p.evaluate(() => !!document.querySelector('#pane-finds .profile .sources a[href="https://doi.org/10.1144/transgslb.1.2.390"]')));
+  ok('finds: its pin is placed on the moving map', await p.evaluate(() => { const pl = placeCache['fbuckland']; return !!pl && !!WorldMap.locate(pl.at, S.t); }));
+  await p.click('#pane-finds [data-meet="megalosaurus"]'); await p.waitForTimeout(1200);
+  ok('finds: “Meet” opens the animal’s card, which links back to the find', await p.evaluate(() => S.tab === 'life' && S.sel === 'megalosaurus' && !!document.querySelector('#lifeList .creature-card.active [data-find="buckland"]')));
+  await p.click('#lifeList .creature-card.active [data-find="plot"]'); await p.waitForTimeout(1500);
+  ok('finds: the card’s discovery button returns to the Finds tab', await p.evaluate(() => S.tab === 'finds' && S.sel === 'find:plot'));
+  await p.evaluate(() => selectFind('whitesands')); await p.waitForTimeout(3200);
+  ok('finds: a young find zooms the timeline in to reach its moment', await p.evaluate(() => Math.abs(S.t - 0.022) < 0.002 && S.win[0] < 1));
+  await p.evaluate(() => selectFind('leonardo')); await p.waitForTimeout(2600);
+  ok('finds: a find with no single fossil is pinned on today’s map', await p.evaluate(() => S.t === 0 && !!placeCache['fleonardo']));
+  ok('finds: every find with a linked animal or human points at a real card', await p.evaluate(() => FINDS.every(f => (!f.animal || ALL.some(c => c.name === f.animal)) && (!f.hom || !!BY_KEY[f.hom]))));
+  await p.evaluate(() => { setWindow(T_MAX, 0, true); switchTab('life'); }); await p.waitForTimeout(200);
+  // climate and relief
+  ok('climate: hot at the end of the Permian, cold in the Ice Age, unknown before 540 Ma', await p.evaluate(() => globalTemp(252) > 28 && globalTemp(0.02) < 9.5 && Math.abs(globalTemp(0) - 14.5) < 0.01 && globalTemp(600) === null));
+  await p.evaluate(() => setTime(150)); await p.waitForTimeout(200);
+  ok('climate: the map title carries the temperature', await p.evaluate(() => /about 20 °C/.test(document.getElementById('ctTemp').textContent)));
+  ok('climate: map notes cite the temperature research', await p.evaluate(() => /Scotese/.test(document.getElementById('mapAbout').innerText) && /Tierney/.test(document.getElementById('mapAbout').innerText)));
+  ok('relief: the mountain layer is present and is not a preprint-sized stub', await p.evaluate(() => typeof RELIEF_PACKED === 'string' && RELIEF_PACKED.length > 5000));
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));

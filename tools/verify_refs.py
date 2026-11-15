@@ -9,12 +9,15 @@ official title and journal, to tools/source/refs.json. Anything that does
 not match is printed and left off the site — never guessed.
 
 Usage: python3 -I tools/verify_refs.py [--only key1,key2]
+       python3 -I tools/verify_refs.py --audit     # re-fetch every stored DOI; fail if any is a preprint or abstract
 """
 import sys, json, time, re, unicodedata, difflib, urllib.request, urllib.parse, urllib.error, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC, OUT = os.path.join(HERE, 'source', 'refs_wanted.txt'), os.path.join(HERE, 'source', 'refs.json')
 UA = 'dino-explorer-reference-check/1.0'
+
+PEER = {'journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'}   # what counts as published
 
 def norm(s):
     s = unicodedata.normalize('NFKD', s or '').encode('ascii', 'ignore').decode().lower()
@@ -58,7 +61,17 @@ for line in open(SRC, encoding='utf8'):
         continue
     parts = [x.strip() for x in line.split('|')]
     key, au, yr, title, targets = parts[:5]
+    if any(x['key'] == key for x in wanted): sys.exit(f'duplicate key in refs_wanted.txt: {key} — merge the targets onto one line')
     wanted.append({'key': key, 'author': au, 'year': int(yr), 'title': title, 'doi': parts[5] if len(parts) > 5 else '', 'targets': [t.strip() for t in targets.split(',') if t.strip()]})
+if '--audit' in sys.argv:
+    done = json.load(open(OUT, encoding='utf8')); bad = 0
+    for k, r in done.items():
+        got = by_doi(r['doi']); ty = got[0].get('type') if got else 'NOT FOUND'
+        r['type'] = ty
+        if ty not in PEER: bad += 1; print(f'  NOT PUBLISHED {k}: {ty} {r["doi"]}')
+        time.sleep(0.35)
+    json.dump(done, open(OUT, 'w', encoding='utf8'), ensure_ascii=False, indent=0)
+    print(f'{len(done)} checked, {bad} are not published papers', file=sys.stderr); sys.exit(1 if bad else 0)
 only = set(sys.argv[sys.argv.index('--only') + 1].split(',')) if '--only' in sys.argv else None
 done = json.load(open(OUT, encoding='utf8')) if os.path.exists(OUT) else {}
 ok = fail = 0
@@ -72,12 +85,16 @@ for w in wanted:
     cands = by_doi(w['doi']) if w['doi'] else search(f"{w['author']} {w['year']} {w['title']}") + search(w['title'], 15, w['year'])
     for it in cands:
         t = (it.get('title') or [''])[0]
+        t = re.sub(r'^[IVXLCDM]+\.\s+', '', t)   # old journals number their articles: "VIII. Notice on the Iguanodon…"
         sim = difflib.SequenceMatcher(None, norm(t), norm(w['title'])).ratio()
         nt, nw = norm(t), norm(w['title'])
         if len(nt) >= 25 and (nw.startswith(nt) or nt.startswith(nw)): sim = max(sim, 0.9)   # registry titles are sometimes cut at a colon
         y = year_of(it)
         fam = [norm(a.get('family', '')) for a in it.get('author', [])]
         au_ok = bool(fam) and (norm(w['author']).split()[-1] in ' '.join(fam[:2]) or (fam[0] and fam[0] in norm(w['author'])))
+        if it.get('type') not in PEER:      # a preprint or a conference abstract can carry the same title as the paper
+            if not best: why = f'only a {it.get("type")} matched: {it.get("DOI")}'
+            continue
         if sim >= 0.85 and y and abs(y - w['year']) <= 1 and au_ok:
             if not best or sim > best[0]:
                 best = (sim, it)
@@ -86,9 +103,9 @@ for w in wanted:
     if best:
         it = best[1]; ok += 1
         auth = [a.get('family', '') for a in it.get('author', []) if a.get('family')]
-        done[w['key']] = {'doi': it['DOI'].lower(), 'title': re.sub(r'<[^>]+>', '', (it.get('title') or [''])[0]).strip(),
+        done[w['key']] = {'doi': it['DOI'].lower(), 'title': re.sub(r'^[IVXLCDM]+\.\s+', '', re.sub(r'<[^>]+>', '', (it.get('title') or [''])[0]).strip()),
                           'journal': (it.get('container-title') or [''])[0], 'year': year_of(it),
-                          'authors': auth[:3] + (['et al.'] if len(auth) > 3 else []), 'targets': w['targets'], 'title_expected': w['title']}
+                          'authors': auth[:3] + (['et al.'] if len(auth) > 3 else []), 'type': it.get('type'), 'targets': w['targets'], 'title_expected': w['title']}
         print(f"  ok   {w['key']}: {it['DOI']}")
     else:
         fail += 1
