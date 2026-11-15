@@ -13,7 +13,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 | | |
 |---|---|
-| Animals | 636 + 24 members of the human family; 168 dinosaurs; 44 proto-mammals (synapsids) |
+| Animals | 636 + 24 members of the human family; 168 dinosaurs; 46 proto-mammals (synapsids) |
 | Family trees | The road to mammals (synapsids → mammals) and the dinosaur family tree, under Life → 🌳 Family trees |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
@@ -27,7 +27,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Area | Covered | Missing |
 |---|---|---|
 | Human species | 24 / 24 | — |
-| Animals | about 175 / 636 (recount with the “All sources” panel) | dinosaurs 43/159, mammals 35/143, invertebrates 28/83, fish 9/47, synapsids 3/22, amphibians 3/19, reptiles 8/29, marine reptiles 4/20, pterosaurs 0/12, crocs 1/14, birds 12/26, plants 2/14, microbes 0/3 |
+| Animals | 174 / 636 | dinosaurs 43/159, mammals 35/143, invertebrates 28/83, fish 9/47, synapsids 3/22, amphibians 3/19, reptiles 8/29, marine reptiles 4/20, pterosaurs 0/12, crocs 1/14, birds 12/26, plants 2/14, microbes 0/3 |
 | Finds | 38 / 52 | xenophanes, cyclops, dragonbones, shenkuo, steno, maastricht, megatherium, cuvier, owen, hadrosaurus, bernissart, tyrrell, trex, tendaguru |
 | Cultures | 22 / 33 | jomon, jericho, catalhoyuk, skara-brae, uruk, indus, egypt, thule, cahokia, great-zimbabwe, cities-today |
 | Drowned sites | 8 / 14 | cosquer, tybrind, pavlopetri, heracleion, baiae, port-royal |
@@ -247,7 +247,7 @@ longest matching lineage path, so a new tree is mostly data.
   placental branches, with the extinct groups placed (and marked uncertain where they are).
 - **Check every "＋ new feature" line against a source** (Release 1 standard). They were written from
   general knowledge and reviewed for plausibility, not yet each tied to a paper. The same goes for
-  the 44 animals added with the trees: 28 of them cite the paper that named or described them; the
+  the 44 animals added with the trees: 25 of them cite the paper that named or described them; the
   sizes, dates and one-line facts of the rest need the Release 1 treatment.
 - **A time-scaled drawing.** The outline view works on a phone; on a wide screen a real branching
   diagram with time left to right would show *when* each split happened. Split dates must come from
