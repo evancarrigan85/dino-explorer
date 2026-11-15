@@ -119,7 +119,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('drowned: later it is under water, shown with a wave pin', await p.evaluate(() => /under water/.test(document.querySelector('#pane-humans .profile').innerText) && placeCache['ddoggerland'].icon === '🌊'));
   await p.click('#tab-life'); await p.waitForTimeout(150);
   // peer-reviewed sources
-  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 240 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
+  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 300 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
   await p.click('#tab-life'); await p.fill('#q', 'tiktaalik'); await p.waitForTimeout(300); await p.click('#lifeList [data-key="tiktaalik"]'); await p.waitForTimeout(2000);
   ok('sources: an opened card lists its paper with a DOI link', await p.evaluate(() => { const el = document.querySelector('#lifeList .creature-card.active .sources'); return !!el && /Daeschler/.test(el.innerText) && !!el.querySelector('a[href^="https://doi.org/10.1038/"]'); }));
   await p.fill('#q', ''); await p.waitForTimeout(200);
@@ -141,6 +141,24 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('finds: a find with no single fossil is pinned on today’s map', await p.evaluate(() => S.t === 0 && !!placeCache['fleonardo']));
   ok('finds: every find with a linked animal or human points at a real card', await p.evaluate(() => FINDS.every(f => (!f.animal || ALL.some(c => c.name === f.animal)) && (!f.hom || !!BY_KEY[f.hom]))));
   await p.evaluate(() => { setWindow(T_MAX, 0, true); switchTab('life'); }); await p.waitForTimeout(200);
+  // family trees
+  await p.click('#treeBtn'); await p.waitForTimeout(250);
+  ok('trees: the road to mammals opens, trunk and side branches drawn', await p.evaluate(() => S.view === 'tree' && document.querySelectorAll('#lifeList .tn.trunk').length >= 6 && document.querySelectorAll('#lifeList .tn:not(.trunk)').length >= 12 && /Synapsida/.test(document.querySelector('#lifeList .tn').innerText)));
+  ok('trees: every proto-mammal, mammal, dinosaur and bird hangs on a branch', await p.evaluate(() => { const a = buildTree(TREES[0]), b = buildTree(TREES[1]); const on = (B, c) => B.nodes.some(n => n.own.includes(c));
+    return ALL.filter(c => c.g === 'synapsid' || c.g === 'mammal').every(c => on(a, c)) && ALL.filter(c => c.g === 'dino' || c.g === 'bird').every(c => on(b, c)); }));
+  ok('trees: animals hang on the right branches', await p.evaluate(() => { const at = (B, name) => B.nodes.find(n => n.own.some(c => c.name === name)); const up = n => { const o = []; for (let q = n; q; q = q.parent) o.push(q.n); return o; };
+    const a = buildTree(TREES[0]), b = buildTree(TREES[1]);
+    return at(a, 'Dimetrodon').n === 'Sail-backed hunters' && up(at(a, 'Thrinaxodon')).includes('Therapsids') && !up(at(a, 'Edaphosaurus')).includes('Therapsids') && up(a.nodes.find(n => n.n === 'Mammals')).join('>').includes('Mammal forerunners>Cynodonts>Therapsids')
+      && at(b, 'Tyrannosaurus rex').n === 'Tyrannosaurs' && up(b.nodes.find(n => n.n === 'Birds')).join('>') === 'Birds>Winged dinosaurs>Hand-folders>Feathered theropods>Stiff-tails>Theropods>Dinosaurs>The dinosaur line'
+      && up(at(b, 'Triceratops')).includes('Bird-hipped dinosaurs') && !up(at(b, 'Triceratops')).includes('Theropods') && up(at(b, 'Argentinosaurus')).includes('Big-noses'); }));
+  await p.evaluate(() => { const n = buildTree(TREES[0]).nodes.find(n => n.n === 'Gorgonopsians'); document.querySelector('#lifeList [data-node="' + n.id + '"]').click(); }); await p.waitForTimeout(200);
+  ok('trees: opening a branch lists its animals', await p.evaluate(() => [...document.querySelectorAll('#lifeList .tn.open .tn-mem .chip')].some(e => /Inostrancevia/.test(e.textContent))));
+  await p.click('#lifeList .tn.open .tn-mem [data-key="rubidgea"]'); await p.waitForTimeout(2400);
+  ok('trees: choosing an animal travels to its time and shows its card with a source', await p.evaluate(() => S.sel === 'rubidgea' && S.t <= 257 && S.t >= 253 && !!document.querySelector('#lifeList .tn.open .creature-card.active .sources a[href^="https://doi.org/"]')));
+  await p.click('#lifeList [data-tree="dino"]'); await p.waitForTimeout(250);
+  ok('trees: the dinosaur tree says where experts disagree and cites the studies', await p.evaluate(() => /2017 study/.test(document.querySelector('#lifeList .tn-debate').innerText) && /Baron/.test(document.querySelector('#lifeList .tree > .sources').innerText) && /Langer/.test(document.querySelector('#lifeList .tree > .sources').innerText)));
+  ok('trees: new families and the road to mammals are filled in', await p.evaluate(() => ['Lisowicia', 'Kayentatherium', 'Brasilodon', 'Hadrocodium', 'Mononykus', 'Gigantoraptor', 'Raranimus'].every(n => ALL.some(c => c.name === n)) && ALL.filter(c => c.g === 'synapsid').length >= 44));
+  await p.evaluate(() => { setView('list'); S.sel = null; WorldMap.select(null); renderLife(); }); await p.waitForTimeout(150);
   // climate and relief
   ok('climate: hot at the end of the Permian, cold in the Ice Age, unknown before 540 Ma', await p.evaluate(() => globalTemp(252) > 28 && globalTemp(0.02) < 9.5 && Math.abs(globalTemp(0) - 14.5) < 0.01 && globalTemp(600) === null));
   await p.evaluate(() => setTime(150)); await p.waitForTimeout(200);

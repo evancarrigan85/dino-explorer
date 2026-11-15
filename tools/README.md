@@ -22,6 +22,8 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_time.js` | Epochs, ages and timeline events |
 | `data_cultures.js`, `data_drowned.js`, `data_foodweb.js` | Ways of life, drowned sites, food webs |
 | `data_finds.js` | The Finds tab: the history of fossil discovery |
+| `data_roots.js` | Proto-mammals, early mammals and dinosaurs added with the family trees |
+| `data_trees.js` | The family trees: branches, the feature each one added, and which lineage paths hang on it |
 | `data_climate.js` | Global temperature, one value per million years (Scotese et al. 2021) |
 | `refs_wanted.txt` → `refs.json` | References we want to cite → what `verify_refs.py` confirmed in Crossref |
 | `engine.js` / `app.js` / `style.css` / `body.html` | Map renderer, page logic, styles, markup |

@@ -1,6 +1,6 @@
 # Plan
 
-Written 15 Nov 2026, at the end of the session that shipped the Finds tab. It is meant to be picked up
+Written 15 Nov 2026, at the end of the session that shipped the Finds tab and the family trees. It is meant to be picked up
 cold: each release below says what to build, in what order, from which data, and how to know it is
 done. Read `CLAUDE.md` first — its rules apply to every release here.
 
@@ -13,20 +13,21 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 | | |
 |---|---|
-| Animals | 592 + 24 members of the human family; 159 dinosaurs |
+| Animals | 636 + 24 members of the human family; 168 dinosaurs; 44 proto-mammals (synapsids) |
+| Family trees | The road to mammals (synapsids → mammals) and the dinosaur family tree, under Life → 🌳 Family trees |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 269, every one a journal article confirmed in Crossref |
-| Checks | 71 passing |
-| Page | about 1.03 MB, one file |
+| References | 302, every one a journal article confirmed in Crossref |
+| Checks | 78 passing |
+| Page | about 1.08 MB, one file |
 
 **Source coverage** (entries that cite at least one verified paper):
 
 | Area | Covered | Missing |
 |---|---|---|
 | Human species | 24 / 24 | — |
-| Animals | 148 / 592 | dinosaurs 43/159, mammals 35/143, invertebrates 28/83, fish 9/47, synapsids 3/22, amphibians 3/19, reptiles 8/29, marine reptiles 4/20, pterosaurs 0/12, crocs 1/14, birds 12/26, plants 2/14, microbes 0/3 |
+| Animals | about 175 / 636 (recount with the “All sources” panel) | dinosaurs 43/159, mammals 35/143, invertebrates 28/83, fish 9/47, synapsids 3/22, amphibians 3/19, reptiles 8/29, marine reptiles 4/20, pterosaurs 0/12, crocs 1/14, birds 12/26, plants 2/14, microbes 0/3 |
 | Finds | 38 / 52 | xenophanes, cyclops, dragonbones, shenkuo, steno, maastricht, megatherium, cuvier, owen, hadrosaurus, bernissart, tyrrell, trex, tendaguru |
 | Cultures | 22 / 33 | jomon, jericho, catalhoyuk, skara-brae, uruk, indus, egypt, thule, cahokia, great-zimbabwe, cities-today |
 | Drowned sites | 8 / 14 | cosquer, tybrind, pavlopetri, heracleion, baiae, port-royal |
@@ -230,6 +231,29 @@ as one packed sheet used by the cards and the map markers, with emoji as the fal
   Carmel; the Leakeys at Koobi Fora; Patagotitan 2014; Yutyrannus 2012; the Dakota "mummy".
 - **Who found it — on the cards.** A one-line "Found by" on animal cards that have a find.
 
+## Release 7b — Family trees, second pass
+
+The tree view (`data_trees.js`, `treeHTML()` in `app.js`) hangs every animal on the branch with the
+longest matching lineage path, so a new tree is mostly data.
+
+- **More trees**, each with two or three verified sources and a "where the experts disagree" note:
+  fish to four legs (lobe-fins → Tiktaalik → early tetrapods → amphibians and amniotes); the ruling
+  reptiles (crocodile line, pterosaurs, dinosaurs — one tree that shows pterosaurs are *not*
+  dinosaurs); sea reptiles (ichthyosaurs, plesiosaurs, mosasaurs — three separate returns to the
+  sea); whales from hoofed mammals; elephants; horses; arthropods. The human family already has its
+  chart in the Humans tab; link the two both ways.
+- **Split the mammals properly.** The Mammals branch currently lists its 28 groups as a flat fan of
+  twigs. Give it real structure: egg-layers, pouched mammals, placentals and the four great
+  placental branches, with the extinct groups placed (and marked uncertain where they are).
+- **Check every "＋ new feature" line against a source** (Release 1 standard). They were written from
+  general knowledge and reviewed for plausibility, not yet each tied to a paper. The same goes for
+  the 44 animals added with the trees: 28 of them cite the paper that named or described them; the
+  sizes, dates and one-line facts of the rest need the Release 1 treatment.
+- **A time-scaled drawing.** The outline view works on a phone; on a wide screen a real branching
+  diagram with time left to right would show *when* each split happened. Split dates must come from
+  a published dated tree, not be estimated here.
+- **Link from the cards**: a "🌳 See it on the family tree" button on every animal that has one.
+
 ## Release 8 — Real fossil occurrences (needs one host approved)
 
 Show every recorded fossil of a selected animal or group as dots, from the Paleobiology Database
@@ -255,6 +279,11 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **15 Nov 2026 — Family trees and the road to mammals.** Two trees (synapsids → mammals; dinosaurs →
+  birds) with the feature each branch added and where experts disagree; 44 new animals (28 mammal
+  ancestors and early mammals, plus dinosaurs from families that had none or few — alvarezsaurs,
+  more oviraptorosaurs, therizinosaurs, troodontids, megaraptors); sail-backs split into their two
+  real families; 33 new verified references. 78 checks.
 - **15 Nov 2026 — Finds, mountains, temperature, stricter references.** 52 finds; relief for the
   last 5 Ma; temperature readout and stripe; checker rejects preprints and abstracts, refuses
   duplicate keys, has `--audit`; two references that pointed at preprint versions corrected. 71 checks.

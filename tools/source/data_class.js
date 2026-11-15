@@ -34,7 +34,7 @@ const LINEAGE = {
   'Acanthostega': 'Amphibians & early tetrapods › First four-legged animals', 'Eryops': 'Amphibians & early tetrapods › Temnospondyls', 'Edops': 'Amphibians & early tetrapods › Temnospondyls', 'Prionosuchus': 'Amphibians & early tetrapods › Temnospondyls',
   'Westlothiana': 'Amphibians & early tetrapods › Reptile-like tetrapods',
   // ── proto-mammals ──
-  'Dimetrodon': 'Proto-mammals (synapsids) › Sail-backs', 'Edaphosaurus': 'Proto-mammals (synapsids) › Sail-backs',
+  'Dimetrodon': 'Proto-mammals (synapsids) › Sail-backed hunters (sphenacodonts)', 'Edaphosaurus': 'Proto-mammals (synapsids) › Sail-backed plant-eaters (edaphosaurs)',
   'Moschops': 'Proto-mammals (synapsids) › Dinocephalians', 'Estemmenosuchus': 'Proto-mammals (synapsids) › Dinocephalians', 'Gorgonopsid': 'Proto-mammals (synapsids) › Gorgonopsians',
   'Lystrosaurus': 'Proto-mammals (synapsids) › Dicynodonts', 'Cynodont': 'Proto-mammals (synapsids) › Cynodonts',
   // ── reptiles ──
@@ -77,7 +77,7 @@ const LINEAGE = {
   'Gastornis (Giant Bird)': 'Birds › Giant flightless birds', 'Phorusrhacos (Terror Bird)': 'Birds › Terror birds', 'Giant Moa (Dinornis robustus)': 'Birds › Giant flightless birds',
   'Dodo (Raphus cucullatus)': 'Birds › Pigeons', 'Passenger Pigeon (Ectopistes migratorius)': 'Birds › Pigeons',
   // ── mammals ──
-  'Early Mammal (Morganucodon)': 'Mammals › Early mammals', 'Repenomamus': 'Mammals › Early mammals',
+  'Early Mammal (Morganucodon)': 'Mammals › Mammal forerunners › Morganucodonts', 'Repenomamus': 'Mammals › Early mammals',
   'Pakicetus': 'Mammals › Whales', 'Ambulocetus (Walking Whale)': 'Mammals › Whales', 'Basilosaurus': 'Mammals › Whales', 'Livyatan': 'Mammals › Whales', 'Blue Whale': 'Mammals › Whales',
   'Andrewsarchus': 'Mammals › Even-toed hoofed mammals', 'Sivatherium': 'Mammals › Even-toed hoofed mammals', 'Megaloceros (Irish Elk)': 'Mammals › Even-toed hoofed mammals',
   'Eohippus (Dawn Horse)': 'Mammals › Odd-toed hoofed mammals › Horses', 'Hipparion': 'Mammals › Odd-toed hoofed mammals › Horses',

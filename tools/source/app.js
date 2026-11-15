@@ -481,6 +481,7 @@ function renderLife() {
   const bks = Object.keys(bc).sort();
   $('dtypeChips').innerHTML = bks.length > 1 ? `<button class="chip${S.branch === 'all' ? ' on' : ''}" data-branch="all">All ${esc(TYPES[S.type][1].toLowerCase())}</button>` + bks.map(b => `<button class="chip${S.branch === b ? ' on' : ''}" data-branch="${esc(b)}">${esc(b)}<small>${bc[b]}</small></button>`).join('') : '';
   if (S.view === 'chart') { $('lifeList').innerHTML = chartHTML(); $('lifeCount').textContent = ''; return; }
+  if (S.view === 'tree') { $('lifeList').innerHTML = treeHTML(); $('lifeCount').textContent = ''; return; }
   if (S.branch !== 'all') items = items.filter(c => c.path[1] === S.branch);
   const gi = c => TYPE_ORDER.indexOf(c.g);
   const cmp = { old: (a, b) => b.t[0] - a.t[0] || a.name.localeCompare(b.name), young: (a, b) => a.t[1] - b.t[1] || a.t[0] - b.t[0],
@@ -524,7 +525,8 @@ function bindLife() {
   $('dtypeChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; S.branch = b.dataset.branch; updateMarkers(); renderLife(); });
   $('sortSel').addEventListener('change', e => { S.sort = e.target.value; renderLife(); });
   $('weirdBtn').addEventListener('click', () => { S.weird = !S.weird; $('weirdBtn').classList.toggle('on', S.weird); $('weirdBtn').setAttribute('aria-pressed', String(S.weird)); updateMarkers(); renderLife(); });
-  $('chartBtn').addEventListener('click', () => { S.view = S.view === 'chart' ? 'list' : 'chart'; $('chartBtn').classList.toggle('on', S.view === 'chart'); $('chartBtn').setAttribute('aria-pressed', String(S.view === 'chart')); renderLife(); });
+  $('treeBtn').addEventListener('click', () => setView(S.view === 'tree' ? 'list' : 'tree'));
+  $('chartBtn').addEventListener('click', () => { S.view = S.view === 'chart' ? 'list' : 'chart'; $('treeBtn').classList.remove('on'); $('treeBtn').setAttribute('aria-pressed', 'false'); $('chartBtn').classList.toggle('on', S.view === 'chart'); $('chartBtn').setAttribute('aria-pressed', String(S.view === 'chart')); renderLife(); });
   $('lifeList').addEventListener('click', e => {
     const kt = e.target.closest('[data-chart-type]'); if (kt) { S.type = S.type === kt.dataset.chartType ? 'all' : kt.dataset.chartType; S.branch = 'all'; updateMarkers(); renderLife(); e.stopPropagation(); return; }
     const kb = e.target.closest('[data-chart-branch]'); if (kb) { S.type = kb.dataset.chartOf; S.branch = kb.dataset.chartBranch; S.view = 'list'; S.scope = 'all'; S.sort = 'old'; $('sortSel').value = 'old'; $('chartBtn').classList.remove('on'); document.querySelectorAll('#scopeSeg button').forEach(x => x.classList.toggle('on', x.dataset.scope === 'all')); updateMarkers(); renderLife(); e.stopPropagation(); }
@@ -649,6 +651,80 @@ function bindHumans() {
     const m = e.target.closest('.ms-item'); if (m) { goTo(+m.dataset.t); return; }
     const r = e.target.closest('.hf-row'); if (r) select(r.dataset.key);
   });
+}
+
+// --- Family trees: who branched from whom ---
+// Hang every animal on the branch with the longest matching lineage path, once per tree.
+const TREE_BUILT = {};
+function buildTree(T) {
+  if (TREE_BUILT[T.id]) return TREE_BUILT[T.id];
+  const nodes = []; let seq = 0;
+  const prep = (n, parent, depth) => {
+    n.id = T.id + seq++; n.parent = parent; n.depth = depth; n.own = []; nodes.push(n);
+    if (n.auto) {     // one folded-away twig per group under this path
+      const claimed = nodes.concat(allPaths(T.root)).flatMap(x => x.paths || []);
+      const groups = [...new Set(ALL.filter(c => c.path[0] === n.paths[0] && c.path[1]).map(c => c.path[0] + ' › ' + c.path[1]))].filter(p => !claimed.includes(p));
+      n.kids = groups.map(p => ({ n: p.split(' › ')[1], paths: [p], twig: true }));
+    }
+    (n.kids || []).forEach(k => prep(k, n, k.trunk ? depth : depth + 1));
+  };
+  const allPaths = n => [n].concat((n.kids || []).flatMap(allPaths));
+  prep(T.root, null, 0);
+  for (const c of ALL) {
+    const ps = c.path.join(' › '); let best = null, len = -1;
+    for (const n of nodes) for (const p of n.paths || []) if ((ps === p || ps.startsWith(p + ' › ')) && p.length > len) { best = n; len = p.length; }
+    if (best) best.own.push(c);
+  }
+  const total = n => { n.all = n.own.concat((n.kids || []).flatMap(total)); n.t0 = Math.max(0, ...n.all.map(c => c.t[0])); n.t1 = n.all.length ? Math.min(...n.all.map(c => c.t[1])) : 0; return n.all; };
+  total(T.root);
+  for (const n of nodes) if (n.auto) n.kids.sort((a, b) => b.t0 - a.t0);
+  return TREE_BUILT[T.id] = { nodes, max: T.root.t0, byId: Object.fromEntries(nodes.map(n => [n.id, n])) };
+}
+function treeHTML() {
+  const T = TREES.find(t => t.id === S.tree) || TREES[0], B = buildTree(T), open = S.treeOpen || (S.treeOpen = {});
+  const x = t => (100 * (1 - t / B.max)).toFixed(2), pad = slack(S.t);
+  const sel = S.sel && BY_KEY[S.sel];
+  if (sel) for (const n of B.nodes) if (n.own.includes(sel)) { open[n.id] = true; for (let p = n.parent; p; p = p.parent) if (p.auto) open[p.id] = true; }   // show where the chosen animal hangs
+  const row = n => {
+    if (n.twig && !open[n.parent.id]) return '';
+    const live = n.all.length && S.t <= n.t0 + pad && S.t >= n.t1 - pad, isOpen = !!open[n.id], kids = n.kids || [];
+    const members = isOpen ? n.own.slice().sort((a, b) => b.t[0] - a.t[0]) : [];
+    return `<div class="tn${n.trunk || !n.parent ? ' trunk' : ''}${n.twig ? ' twig' : ''}${live ? ' live' : ''}${isOpen ? ' open' : ''}" style="--d:${n.depth + (n.twig ? 1 : 0)}">
+      <button class="tn-head" data-node="${n.id}" aria-expanded="${isOpen}">
+        <span class="tn-name">${n.trunk ? '<i class="tn-arrow">↓</i>' : ''}${esc(n.n)}${n.sci ? ` <em>${esc(n.sci)}</em>` : ''}</span><span class="tn-n">${n.all.length}</span>
+        <span class="tn-bar">${n.all.length ? `<i style="left:${x(n.t0)}%;width:${Math.max(1.2, x(n.t1) - x(n.t0)).toFixed(2)}%"></i>` : ''}${S.t <= B.max ? `<b style="left:${x(S.t)}%"></b>` : ''}</span>
+      </button>
+      ${n.step ? `<div class="tn-step"><b>＋</b> ${esc(n.step)}</div>` : ''}
+      ${isOpen ? `<div class="tn-body">${n.note ? `<p>${esc(n.note)}</p>` : ''}${n.debate ? `<p class="tn-deb">❓ ${esc(n.debate)}</p>` : ''}
+        ${n.all.length ? `<p class="tn-when">${esc(fmtLong(n.t0).replace(' ago', ''))} → ${esc(fmtLong(n.t1))} · from the ${n.all.length} in this app</p>` : ''}
+        ${members.length ? `<div class="tn-mem">${members.map(c => `<button class="chip${c.key === S.sel ? ' on' : ''}${alive(c, S.t, pad) ? ' now' : ''}" data-key="${c.key}">${c.emoji} ${esc(c.name)}</button>`).join('')}</div>` : ''}
+        ${n.auto ? `<p class="tn-when">${kids.length} groups branch from here — listed below.</p>` : !members.length && kids.length ? `<p class="tn-when">Its members are on the branches below.</p>` : ''}
+        ${sel && n.own.includes(sel) ? cardHTML(sel, true) : ''}</div>` : ''}
+    </div>${kids.filter(k => !k.trunk).map(row).join('')}${kids.filter(k => k.trunk).map(row).join('')}`;
+  };
+  const ticks = []; for (let t = Math.ceil(B.max / 50) * 50; t >= 0; t -= 50) if (t <= B.max) ticks.push(t);
+  return `<div class="tree">
+    <div class="chips" id="treeChips">${TREES.map(t => `<button class="chip${t === T ? ' on' : ''}" data-tree="${t.id}">${t.icon} ${esc(t.title)}</button>`).join('')}<button class="chip" data-tree="humans">🧍 The human family →</button></div>
+    <div class="hf-intro">${esc(T.intro)}</div>
+    <div class="tn-key"><span><i class="k-trunk"></i>the main trunk</span><span><b>＋</b> a new feature, inherited by everything below</span><span><i class="k-bar"></i>when its members lived (${ticks.map(t => t || 'today').join(' · ')} million years ago)</span><span>number = animals in this app · tap a branch to open it</span></div>
+    ${row(T.root)}
+    <div class="ins-sec tn-debate"><h4>❓ Where the experts disagree</h4>${esc(T.debate)}</div>
+    ${srcHTML('t:' + T.id, 'Sources for this tree')}</div>`;
+}
+function setView(v) {
+  S.view = v;
+  $('treeBtn').classList.toggle('on', v === 'tree'); $('treeBtn').setAttribute('aria-pressed', String(v === 'tree'));
+  $('chartBtn').classList.toggle('on', v === 'chart'); $('chartBtn').setAttribute('aria-pressed', String(v === 'chart'));
+  renderLife(); $('panelContent').scrollTop = 0;
+}
+function bindTree() {
+  $('lifeList').addEventListener('click', e => {
+    if (S.view !== 'tree') return;
+    const tc = e.target.closest('[data-tree]');
+    if (tc) { e.stopPropagation(); if (tc.dataset.tree === 'humans') { switchTab('humans'); return; } S.tree = tc.dataset.tree; S.treeOpen = {}; renderLife(); return; }
+    const nh = e.target.closest('[data-node]');
+    if (nh) { e.stopPropagation(); const o = S.treeOpen || (S.treeOpen = {}); o[nh.dataset.node] = !o[nh.dataset.node]; if (!o[nh.dataset.node] && S.sel && BY_KEY[S.sel]) { const n = buildTree(TREES.find(t => t.id === S.tree) || TREES[0]).byId[nh.dataset.node]; if (n && n.own.includes(BY_KEY[S.sel])) { S.sel = null; WorldMap.select(null); } } renderLife(); }
+  }, true);
 }
 
 // --- Finds: how people found out ---
@@ -942,7 +1018,7 @@ function init() {
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }
   });
   window.addEventListener('hashchange', readHash);
-  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds();
+  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds(); bindTree();
   renderTimeline(); renderClimateStrip();
   if (!readHash()) {
     setTime(150);

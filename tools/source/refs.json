@@ -4487,5 +4487,541 @@
 "m:climate"
 ],
 "title_expected": "Glacial cooling and climate sensitivity revisited"
+},
+"angielczyk2009": {
+"doi": "10.1007/s12052-009-0117-4",
+"title": "Dimetrodon Is Not a Dinosaur: Using Tree Thinking to Understand the Ancient Relatives of Mammals and their Evolution",
+"journal": "Evolution: Education and Outreach",
+"year": 2009,
+"authors": [
+"Angielczyk"
+],
+"type": "journal-article",
+"targets": [
+"t:synapsid",
+"a:Dimetrodon"
+],
+"title_expected": "Dimetrodon Is Not a Dinosaur: Using Tree Thinking to Understand the Ancient Relatives of Mammals and their Evolution"
+},
+"kemp2006": {
+"doi": "10.1111/j.1420-9101.2005.01076.x",
+"title": "The origin and early radiation of the therapsid mammal-like reptiles: a palaeobiological hypothesis",
+"journal": "Journal of Evolutionary Biology",
+"year": 2006,
+"authors": [
+"Kemp"
+],
+"type": "journal-article",
+"targets": [
+"t:synapsid"
+],
+"title_expected": "The origin and early radiation of the therapsid mammal-like reptiles: a palaeobiological hypothesis"
+},
+"luo2007": {
+"doi": "10.1038/nature06277",
+"title": "Transformation and diversification in early mammal evolution",
+"journal": "Nature",
+"year": 2007,
+"authors": [
+"Luo"
+],
+"type": "journal-article",
+"targets": [
+"t:synapsid"
+],
+"title_expected": "Transformation and diversification in early mammal evolution"
+},
+"ford2020": {
+"doi": "10.1038/s41559-019-1047-3",
+"title": "The phylogeny of early amniotes and the affinities of Parareptilia and Varanopidae",
+"journal": "Nature Ecology &amp; Evolution",
+"year": 2019,
+"authors": [
+"Ford",
+"Benson"
+],
+"type": "journal-article",
+"targets": [
+"t:synapsid",
+"a:Varanops",
+"a:Heleosaurus"
+],
+"title_expected": "The phylogeny of early amniotes and the affinities of Parareptilia and Varanopidae"
+},
+"baron2017": {
+"doi": "10.1038/nature21700",
+"title": "A new hypothesis of dinosaur relationships and early dinosaur evolution",
+"journal": "Nature",
+"year": 2017,
+"authors": [
+"Baron",
+"Norman",
+"Barrett"
+],
+"type": "journal-article",
+"targets": [
+"t:dino"
+],
+"title_expected": "A new hypothesis of dinosaur relationships and early dinosaur evolution"
+},
+"langer2017": {
+"doi": "10.1038/nature24011",
+"title": "Untangling the dinosaur family tree",
+"journal": "Nature",
+"year": 2017,
+"authors": [
+"Langer",
+"Ezcurra",
+"Rauhut",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"t:dino"
+],
+"title_expected": "Untangling the dinosaur family tree"
+},
+"brusatte2010": {
+"doi": "10.1016/j.earscirev.2010.04.001",
+"title": "The origin and early radiation of dinosaurs",
+"journal": "Earth-Science Reviews",
+"year": 2010,
+"authors": [
+"Brusatte",
+"Nesbitt",
+"Irmis",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"t:dino"
+],
+"title_expected": "The origin and early radiation of dinosaurs"
+},
+"brusatte2014": {
+"doi": "10.1016/j.cub.2014.08.034",
+"title": "Gradual Assembly of Avian Body Plan Culminated in Rapid Rates of Evolution across the Dinosaur-Bird Transition",
+"journal": "Current Biology",
+"year": 2014,
+"authors": [
+"Brusatte",
+"Lloyd",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"t:dino"
+],
+"title_expected": "Gradual assembly of avian body plan culminated in rapid rates of evolution across the dinosaur-bird transition"
+},
+"xu2014": {
+"doi": "10.1126/science.1253293",
+"title": "An integrative approach to understanding bird origins",
+"journal": "Science",
+"year": 2014,
+"authors": [
+"Xu",
+"Zhou",
+"Dudley",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"t:dino"
+],
+"title_expected": "An integrative approach to understanding bird origins"
+},
+"sulej2019": {
+"doi": "10.1126/science.aal4853",
+"title": "An elephant-sized Late Triassic synapsid with erect limbs",
+"journal": "Science",
+"year": 2019,
+"authors": [
+"Sulej",
+"Niedźwiedzki"
+],
+"type": "journal-article",
+"targets": [
+"a:Lisowicia"
+],
+"title_expected": "An elephant-sized Late Triassic synapsid with erect limbs"
+},
+"hoffman2018": {
+"doi": "10.1038/s41586-018-0441-3",
+"title": "Jurassic stem-mammal perinates and the origin of mammalian reproduction and growth",
+"journal": "Nature",
+"year": 2018,
+"authors": [
+"Hoffman",
+"Rowe"
+],
+"type": "journal-article",
+"targets": [
+"a:Kayentatherium"
+],
+"title_expected": "Jurassic stem-mammal perinates and the origin of mammalian reproduction and growth"
+},
+"cabreira2022": {
+"doi": "10.1111/joa.13756",
+"title": "Diphyodont tooth replacement of Brasilodon—A Late Triassic eucynodont that challenges the time of origin of mammals",
+"journal": "Journal of Anatomy",
+"year": 2022,
+"authors": [
+"Cabreira",
+"Schultz",
+"da Silva",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Brasilodon"
+],
+"title_expected": "Diphyodont tooth replacement of Brasilodon—A Late Triassic eucynodont that challenges the time of origin of mammals"
+},
+"jasinoski2017": {
+"doi": "10.7717/peerj.2875",
+"title": "Aggregations and parental care in the Early Triassic basal cynodonts\n                    Galesaurus planiceps\n                    and\n                    Thrinaxodon liorhinus",
+"journal": "PeerJ",
+"year": 2017,
+"authors": [
+"Jasinoski",
+"Abdala"
+],
+"type": "journal-article",
+"targets": [
+"a:Galesaurus",
+"a:Thrinaxodon"
+],
+"title_expected": "Aggregations and parental care in the Early Triassic basal cynodonts Galesaurus planiceps and Thrinaxodon liorhinus"
+},
+"groenewald2001": {
+"doi": "10.2307/3515526",
+"title": "Vertebrate Burrow Complexes from the Early Triassic Cynognathus Zone (Driekoppen Formation, Beaufort Group) of the Karoo Basin, South Africa",
+"journal": "PALAIOS",
+"year": 2001,
+"authors": [
+"Groenewald",
+"Welman",
+"MacEachern"
+],
+"type": "journal-article",
+"targets": [
+"a:Trirachodon"
+],
+"title_expected": "Vertebrate burrow complexes from the Early Triassic Cynognathus Zone (Driekoppen Formation, Beaufort Group) of the Karoo Basin, South Africa"
+},
+"liu2009": {
+"doi": "10.4202/app.2008.0071",
+"title": "New Basal Synapsid Supports Laurasian Origin for Therapsids",
+"journal": "Acta Palaeontologica Polonica",
+"year": 2009,
+"authors": [
+"Liu",
+"Rubidge",
+"Li"
+],
+"type": "journal-article",
+"targets": [
+"a:Raranimus"
+],
+"title_expected": "New basal synapsid supports Laurasian origin for therapsids"
+},
+"luo2001": {
+"doi": "10.1126/science.1058476",
+"title": "A New Mammaliaform from the Early Jurassic and Evolution of Mammalian Characteristics",
+"journal": "Science",
+"year": 2001,
+"authors": [
+"Luo",
+"Crompton",
+"Sun"
+],
+"type": "journal-article",
+"targets": [
+"a:Hadrocodium"
+],
+"title_expected": "A new mammaliaform from the Early Jurassic and evolution of mammalian characteristics"
+},
+"luo2015": {
+"doi": "10.1126/science.1260880",
+"title": "Evolutionary development in basal mammaliaforms as revealed by a docodontan",
+"journal": "Science",
+"year": 2015,
+"authors": [
+"Luo",
+"Meng",
+"Ji",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Docofossor"
+],
+"title_expected": "Evolutionary development in basal mammaliaforms as revealed by a docodontan"
+},
+"meng2017": {
+"doi": "10.1038/nature23476",
+"title": "New gliding mammaliaforms from the Jurassic",
+"journal": "Nature",
+"year": 2017,
+"authors": [
+"Meng",
+"Grossnickle",
+"Liu",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Maiopatagium"
+],
+"title_expected": "New gliding mammaliaforms from the Jurassic"
+},
+"meng2006": {
+"doi": "10.1038/nature05234",
+"title": "A Mesozoic gliding mammal from northeastern China",
+"journal": "Nature",
+"year": 2006,
+"authors": [
+"Meng",
+"Hu",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Volaticotherium"
+],
+"title_expected": "A Mesozoic gliding mammal from northeastern China"
+},
+"luo2005": {
+"doi": "10.1126/science.1108875",
+"title": "A Late Jurassic Digging Mammal and Early Mammalian Diversification",
+"journal": "Science",
+"year": 2005,
+"authors": [
+"Luo",
+"Wible"
+],
+"type": "journal-article",
+"targets": [
+"a:Fruitafossor"
+],
+"title_expected": "A Late Jurassic digging mammal and early mammalian diversification"
+},
+"ji2002": {
+"doi": "10.1038/416816a",
+"title": "The earliest known eutherian mammal",
+"journal": "Nature",
+"year": 2002,
+"authors": [
+"Ji",
+"Luo",
+"Yuan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Eomaia"
+],
+"title_expected": "The earliest known eutherian mammal"
+},
+"krause2020": {
+"doi": "10.1038/s41586-020-2234-8",
+"title": "Skeleton of a Cretaceous mammal from Madagascar reflects long-term insularity",
+"journal": "Nature",
+"year": 2020,
+"authors": [
+"Krause",
+"Hoffmann",
+"Hu",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Adalatherium"
+],
+"title_expected": "Skeleton of a Cretaceous mammal from Madagascar reflects long-term insularity"
+},
+"krause2014": {
+"doi": "10.1038/nature13922",
+"title": "First cranial remains of a gondwanatherian mammal reveal remarkable mosaicism",
+"journal": "Nature",
+"year": 2014,
+"authors": [
+"Krause",
+"Hoffmann",
+"Wible",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Vintana"
+],
+"title_expected": "First cranial remains of a gondwanatherian mammal reveal remarkable mosaicism"
+},
+"archer1985": {
+"doi": "10.1038/318363a0",
+"title": "First Mesozoic mammal from Australia—an early Cretaceous monotreme",
+"journal": "Nature",
+"year": 1985,
+"authors": [
+"Archer",
+"Flannery",
+"Ritchie",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Steropodon"
+],
+"title_expected": "First Mesozoic mammal from Australia—an early Cretaceous monotreme"
+},
+"choiniere2021": {
+"doi": "10.1126/science.abe7941",
+"title": "Evolution of vision and hearing modalities in theropod dinosaurs",
+"journal": "Science",
+"year": 2021,
+"authors": [
+"Choiniere",
+"Neenan",
+"Schmitz",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Shuvuuia"
+],
+"title_expected": "Evolution of vision and hearing modalities in theropod dinosaurs"
+},
+"xu2007": {
+"doi": "10.1038/nature05849",
+"title": "A gigantic bird-like dinosaur from the Late Cretaceous of China",
+"journal": "Nature",
+"year": 2007,
+"authors": [
+"Xu",
+"Tan",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Gigantoraptor"
+],
+"title_expected": "A gigantic bird-like dinosaur from the Late Cretaceous of China"
+},
+"kirkland2005": {
+"doi": "10.1038/nature03468",
+"title": "A primitive therizinosauroid dinosaur from the Early Cretaceous of Utah",
+"journal": "Nature",
+"year": 2005,
+"authors": [
+"Kirkland",
+"Zanno",
+"Sampson",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Falcarius"
+],
+"title_expected": "A primitive therizinosauroid dinosaur from the Early Cretaceous of Utah"
+},
+"novas2009": {
+"doi": "10.1098/rspb.2008.1554",
+"title": "A bizarre Cretaceous theropod dinosaur from Patagonia and the evolution of Gondwanan dromaeosaurids",
+"journal": "Proceedings of the Royal Society B: Biological Sciences",
+"year": 2009,
+"authors": [
+"Novas",
+"Pol",
+"Canale",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Austroraptor"
+],
+"title_expected": "A bizarre Cretaceous theropod dinosaur from Patagonia and the evolution of Gondwanan dromaeosaurids"
+},
+"xu2002": {
+"doi": "10.1038/415780a",
+"title": "A basal troodontid from the Early Cretaceous of China",
+"journal": "Nature",
+"year": 2002,
+"authors": [
+"Xu",
+"Norell",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Sinovenator"
+],
+"title_expected": "A basal troodontid from the Early Cretaceous of China"
+},
+"novas1998": {
+"doi": "10.1080/02724634.1998.10011030",
+"title": "Megaraptor namunhuaiquii, gen. et sp. nov., a large-clawed, Late Cretaceous theropod from Patagonia",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 1998,
+"authors": [
+"Novas"
+],
+"type": "journal-article",
+"targets": [
+"a:Megaraptor"
+],
+"title_expected": "Megaraptor namunhuaiquii, gen. et sp. nov., a large-clawed, Late Cretaceous theropod from Patagonia"
+},
+"kammerer2016": {
+"doi": "10.7717/peerj.1608",
+"title": "Systematics of the Rubidgeinae (Therapsida: Gorgonopsia)",
+"journal": "PeerJ",
+"year": 2016,
+"authors": [
+"Kammerer"
+],
+"type": "journal-article",
+"targets": [
+"a:Rubidgea"
+],
+"title_expected": "Systematics of the Rubidgeinae (Therapsida: Gorgonopsia)"
+},
+"perle1993": {
+"doi": "10.1038/362623a0",
+"title": "Flightless bird from the Cretaceous of Mongolia",
+"journal": "Nature",
+"year": 1993,
+"authors": [
+"Altangerel",
+"Norell",
+"Chiappe",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Mononykus"
+],
+"title_expected": "Flightless bird from the Cretaceous of Mongolia"
+},
+"ji1998": {
+"doi": "10.1038/31635",
+"title": "Two feathered dinosaurs from northeastern China",
+"journal": "Nature",
+"year": 1998,
+"authors": [
+"Qiang",
+"Currie",
+"Norell",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Caudipteryx"
+],
+"title_expected": "Two feathered dinosaurs from northeastern China"
 }
 }

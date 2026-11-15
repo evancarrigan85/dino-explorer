@@ -1,5 +1,5 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate  x:<find id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate  x:<find id>  t:<family tree id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -272,3 +272,38 @@ krause2010 | Krause | 2010 | The complete mitochondrial DNA genome of an unknown
 # ── climate ──
 scotese2021 | Scotese | 2021 | Phanerozoic paleotemperatures: The earth's changing climate during the last 540 million years | m:climate | 10.1016/j.earscirev.2021.103503
 tierney2020 | Tierney | 2020 | Glacial cooling and climate sensitivity revisited | m:climate | 10.1038/s41586-020-2617-x
+# ── family trees, the road to mammals, missing dinosaur families ──
+angielczyk2009 | Angielczyk | 2009 | Dimetrodon Is Not a Dinosaur: Using Tree Thinking to Understand the Ancient Relatives of Mammals and their Evolution | t:synapsid, a:Dimetrodon
+kemp2006 | Kemp | 2006 | The origin and early radiation of the therapsid mammal-like reptiles: a palaeobiological hypothesis | t:synapsid
+luo2007 | Luo | 2007 | Transformation and diversification in early mammal evolution | t:synapsid
+ford2020 | Ford | 2020 | The phylogeny of early amniotes and the affinities of Parareptilia and Varanopidae | t:synapsid, a:Varanops, a:Heleosaurus
+baron2017 | Baron | 2017 | A new hypothesis of dinosaur relationships and early dinosaur evolution | t:dino
+langer2017 | Langer | 2017 | Untangling the dinosaur family tree | t:dino
+brusatte2010 | Brusatte | 2010 | The origin and early radiation of dinosaurs | t:dino
+brusatte2014 | Brusatte | 2014 | Gradual assembly of avian body plan culminated in rapid rates of evolution across the dinosaur-bird transition | t:dino
+xu2014 | Xu | 2014 | An integrative approach to understanding bird origins | t:dino
+sulej2019 | Sulej | 2019 | An elephant-sized Late Triassic synapsid with erect limbs | a:Lisowicia
+hoffman2018 | Hoffman | 2018 | Jurassic stem-mammal perinates and the origin of mammalian reproduction and growth | a:Kayentatherium
+cabreira2022 | Cabreira | 2022 | Diphyodont tooth replacement of Brasilodon—A Late Triassic eucynodont that challenges the time of origin of mammals | a:Brasilodon
+jasinoski2017 | Jasinoski | 2017 | Aggregations and parental care in the Early Triassic basal cynodonts Galesaurus planiceps and Thrinaxodon liorhinus | a:Galesaurus, a:Thrinaxodon
+groenewald2001 | Groenewald | 2001 | Vertebrate burrow complexes from the Early Triassic Cynognathus Zone (Driekoppen Formation, Beaufort Group) of the Karoo Basin, South Africa | a:Trirachodon
+liu2009 | Liu | 2009 | New basal synapsid supports Laurasian origin for therapsids | a:Raranimus
+luo2001 | Luo | 2001 | A new mammaliaform from the Early Jurassic and evolution of mammalian characteristics | a:Hadrocodium
+luo2015 | Luo | 2015 | Evolutionary development in basal mammaliaforms as revealed by a docodontan | a:Docofossor
+meng2017 | Meng | 2017 | New gliding mammaliaforms from the Jurassic | a:Maiopatagium
+meng2006 | Meng | 2006 | A Mesozoic gliding mammal from northeastern China | a:Volaticotherium
+luo2005 | Luo | 2005 | A Late Jurassic digging mammal and early mammalian diversification | a:Fruitafossor
+ji2002 | Ji | 2002 | The earliest known eutherian mammal | a:Eomaia
+krause2020 | Krause | 2020 | Skeleton of a Cretaceous mammal from Madagascar reflects long-term insularity | a:Adalatherium
+krause2014 | Krause | 2014 | First cranial remains of a gondwanatherian mammal reveal remarkable mosaicism | a:Vintana
+archer1985 | Archer | 1985 | First Mesozoic mammal from Australia—an early Cretaceous monotreme | a:Steropodon
+# the registry files these two under the authors' given names (Perle Altangerel; Ji Qiang), so the surname column follows the registry
+perle1993 | Altangerel | 1993 | Flightless bird from the Cretaceous of Mongolia | a:Mononykus | 10.1038/362623a0
+choiniere2021 | Choiniere | 2021 | Evolution of vision and hearing modalities in theropod dinosaurs | a:Shuvuuia
+ji1998 | Qiang | 1998 | Two feathered dinosaurs from northeastern China | a:Caudipteryx | 10.1038/31635
+xu2007 | Xu | 2007 | A gigantic bird-like dinosaur from the Late Cretaceous of China | a:Gigantoraptor
+kirkland2005 | Kirkland | 2005 | A primitive therizinosauroid dinosaur from the Early Cretaceous of Utah | a:Falcarius
+novas2009 | Novas | 2009 | A bizarre Cretaceous theropod dinosaur from Patagonia and the evolution of Gondwanan dromaeosaurids | a:Austroraptor
+xu2002 | Xu | 2002 | A basal troodontid from the Early Cretaceous of China | a:Sinovenator
+novas1998 | Novas | 1998 | Megaraptor namunhuaiquii, gen. et sp. nov., a large-clawed, Late Cretaceous theropod from Patagonia | a:Megaraptor
+kammerer2016 | Kammerer | 2016 | Systematics of the Rubidgeinae (Therapsida: Gorgonopsia) | a:Rubidgea

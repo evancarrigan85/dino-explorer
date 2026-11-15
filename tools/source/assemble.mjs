@@ -14,6 +14,7 @@ const C = require('./data_class.js');
 let MORE = {}; try { MORE = require('./data_more.js').MORE; } catch (e) {}
 const { CENOZOIC, WEIRD_NAMES } = require('./data_cenozoic.js');
 const { EARLY } = require('./data_early.js');
+const { ROOTS } = require('./data_roots.js');
 const slug = s => String(s).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const problems = [];
 
@@ -44,7 +45,7 @@ for (const p0 of old.PERIODS) {
     byId[m.move || p0.id].creatures.push(tidy(c));
   }
 }
-for (const set of [NEW, MORE, CENOZOIC, EARLY]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
+for (const set of [NEW, MORE, CENOZOIC, EARLY, ROOTS]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
   const c = Object.assign({}, c0); c.g = C.G_FIX[c.name] || c.g; c.c = c.c || C.LINEAGE[c.name];
   if (!byId[pid]) { problems.push('bad period ' + pid); continue; }
   byId[pid].creatures.push(tidy(c));
@@ -103,6 +104,18 @@ data += dsrc.slice(dsrc.indexOf('// ===='), dsrc.indexOf("if (typeof module")).t
 const RAW = JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8'));
 const { CULTURES } = require('./data_cultures.js'), { DROWNED } = require('./data_drowned.js');
 const { FINDS, FIND_ERAS, FIND_THEMES } = require('./data_finds.js');
+const { TREES } = require('./data_trees.js');
+{ const paths = allC.map(c => c.c), ids = new Set();
+  const walk = (n, tree) => {
+    if (!n.n) problems.push('tree ' + tree + ': a branch has no name');
+    for (const p of n.paths || []) if (!paths.some(q => q === p || q.startsWith(p + ' › '))) problems.push('tree ' + tree + ': no animal on the path "' + p + '" (branch ' + n.n + ')');
+    const trunks = (n.kids || []).filter(k => k.trunk).length; if (trunks > 1) problems.push('tree ' + tree + ': ' + n.n + ' has two trunks');
+    (n.kids || []).forEach(k => walk(k, tree));
+  };
+  for (const t of TREES) { if (ids.has(t.id)) problems.push('tree ' + t.id + ': duplicate id'); ids.add(t.id); walk(t.root, t.id); }
+  const tsrc = fs.readFileSync(SRC + 'data_trees.js', 'utf8');
+  data += tsrc.slice(tsrc.indexOf('// ===='), tsrc.indexOf("if (typeof module")).trim() + '\n';
+}
 { const seen = new Set();
   for (const f of FINDS) {
     if (seen.has(f.id)) problems.push('find ' + f.id + ': duplicate id'); seen.add(f.id);
@@ -117,7 +130,7 @@ const { FINDS, FIND_ERAS, FIND_THEMES } = require('./data_finds.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');

@@ -74,10 +74,12 @@ builds, passes the checks and has been looked at.
   pin. It knows nothing about animals.
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
   Life, Humans, Insights, Finds, Quiz, Geology. Map pins for a tab are built in `updatePlaces()`.
+  The Life tab has three views: the list, the range chart and the family trees (`data_trees.js`).
 - Sources: `refs_wanted.txt` (what we want to cite, and which entries each paper supports) →
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
-  `p:` period id, `f:` food web, `x:` find id, `m:` map layer (`plates|sealevel|climate|time`).
+  `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `m:` map layer
+  (`plates|sealevel|climate|time`).
 
 ## Network
 
