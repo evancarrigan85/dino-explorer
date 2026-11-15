@@ -361,6 +361,14 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .qz-next{margin-left:auto;background:var(--accent);color:#1a1205;border:none;border-radius:9px;padding:9px 16px;font-weight:800;font-size:.84rem;cursor:pointer}
 .qz-end{text-align:center;padding:24px 14px}.qz-stars{font-size:2.2rem}.qz-big{font-size:2rem;font-weight:900;color:var(--accent);margin:6px 0}
 .qz-best{color:var(--muted);font-size:.74rem;margin:8px 0 14px}.qz-end .qz-next{margin:0 auto}
+.label-sec.sources ul{margin:3px 0 0 16px;font-size:.7rem;color:#aebbd2;line-height:1.45}
+.label-sec.sources li{margin-bottom:4px}
+.sources a,.all-src a{color:#8fc7ff;text-decoration:none;word-break:break-all}.sources a:hover,.all-src a:hover{text-decoration:underline}
+#mapAbout .label-sec.sources{border-top:1px solid rgba(96,58,16,.3);color:#3a2408}#mapAbout .label-sec.sources h5{color:#7a2a10}#mapAbout .label-sec.sources ul{color:#4a3418}
+#mapAbout .sources a{color:#1d5aa0}
+.all-src ul{margin:6px 0 0 16px;font-size:.68rem;color:#aebbd2;line-height:1.45}.all-src li{margin-bottom:4px}
+.src-note{font-size:.7rem;color:#9fb0c8;margin-top:6px;line-height:1.45}
+#mapAbout{max-height:calc(100% - 50px);overflow-y:auto}
 .src{margin-top:14px;font-size:.64rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--border);padding-top:8px}
 
 /* --- Geology tab --- */

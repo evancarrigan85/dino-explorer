@@ -99,6 +99,22 @@ const fsrc = fs.readFileSync(SRC + 'data_foodweb.js', 'utf8');
 data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 const dsrc = fs.readFileSync(SRC + 'data_drowned.js', 'utf8');
 data += dsrc.slice(dsrc.indexOf('// ===='), dsrc.indexOf("if (typeof module")).trim() + '\n';
+// ── peer-reviewed sources (verified against Crossref by tools/verify_refs.py) ──
+const RAW = JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8'));
+const { CULTURES } = require('./data_cultures.js'), { DROWNED } = require('./data_drowned.js');
+const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], m: id => ['plates', 'sealevel', 'time'].includes(id) };
+const REFS = {}, SRCMAP = {};
+for (const [k, r] of Object.entries(RAW)) {
+  REFS[k] = { a: r.authors.length ? r.authors.join(', ').replace(', et al.', ' et al.') : '', y: r.year, t: r.title, j: r.journal, d: r.doi };
+  for (const t of r.targets) {
+    const [kind, ...rest] = t.split(':'), id = rest.join(':');
+    if (!okTarget[kind] || !okTarget[kind](id)) { problems.push('source ' + k + ': unknown target ' + t); continue; }
+    (SRCMAP[t] = SRCMAP[t] || []).push(k);
+  }
+}
+for (const t in SRCMAP) SRCMAP[t].sort((x, y) => REFS[x].y - REFS[y].y);
+data += `// ── peer-reviewed sources: every entry verified against the Crossref DOI registry (tools/verify_refs.py) ──\nconst REFS = ${J(REFS)};\nconst SRCMAP = ${J(SRCMAP)};\n`;
 const csrc = fs.readFileSync(SRC + 'data_cultures.js', 'utf8');
 data += csrc.slice(0, csrc.indexOf("if (typeof module")).trim() + '\n';
 data += `const HOMININ_LINEAGE = ${J(C.HOMININ_LINEAGE)};\n\n`;

@@ -388,11 +388,28 @@ function sizeHTML(c) {
     <text x="${Math.max(10, kidH * 0.3) + 22 + bar}" y="${H - 3}" font-size="10" fill="#d9c27a">${L >= 1 ? (+L.toFixed(1)) + ' m' : Math.round(L * 100) + ' cm'}</text>
     <line x1="0" x2="${W + 70}" y1="${H - 1}" y2="${H - 1}" stroke="#3a4560"/></svg><span>📏 ${esc(words)} — the biggest measurement given.</span></div>`;
 }
+// ── peer-reviewed sources ──
+const cite = k => { const r = REFS[k]; return `<li>${esc(r.a)} (${r.y}). ${esc(r.t)}. <i>${esc(r.j)}</i>. <a href="https://doi.org/${esc(r.d)}" target="_blank" rel="noopener">doi.org/${esc(r.d)}</a></li>`; };
+function srcHTML(target, title) {
+  const ks = SRCMAP[target]; if (!ks || !ks.length) return '';
+  return `<div class="label-sec sources"><h5>📚 ${title || 'Peer-reviewed sources'}</h5><ul>${ks.map(cite).join('')}</ul></div>`;
+}
+function allSourcesHTML() {
+  const n = Object.keys(REFS).length, has = t => !!SRCMAP[t];
+  const rate = (list, f) => { const k = list.filter(f).length; return `${k} of ${list.length}`; };
+  const cov = [['animal entries', rate(ALL.filter(c => !c.hom), c => has('a:' + c.name))], ['human species', rate(HOMININS, h => has('h:' + h.id))], ['cultures', rate(CULTURES, c => has('c:' + c.id))],
+    ['drowned sites', rate(DROWNED, d => has('d:' + d.id))], ['periods', rate(PERIODS, p => has('p:' + p.id))], ['food webs', rate(Object.keys(FOODWEBS), id => has('f:' + id))]];
+  const keys = Object.keys(REFS).sort((x, y) => REFS[x].a.localeCompare(REFS[y].a) || REFS[x].y - REFS[y].y);
+  return `<details class="fw-how all-src"><summary>📚 All ${n} peer-reviewed sources on this site</summary>
+    <div class="src-note">Every reference is checked against the Crossref DOI registry — title, year and first author must match a registered paper before it can appear here. Coverage so far: ${cov.map(c => `${c[1]} ${c[0]}`).join(' · ')}. Entries without a listed source draw on standard references and museum summaries, and are being sourced one by one.</div>
+    <ul>${keys.map(cite).join('')}</ul></details>`;
+}
 function cardHTML(c, open) {
   const h = c.hom, L = [];
   const sec = (title, body) => body ? `<div class="label-sec"><h5>${title}</h5>${body}</div>` : '';
   if (open) {
     L.push(sizeHTML(c));
+    L.push(srcHTML(c.hom ? 'h:' + c.key : 'a:' + c.name));
     L.push(sec('🔎 How do we know?', esc(c.know || '')));
     L.push(sec('❓ Still debated', esc(c.debate || '')));
     if (h) L.push(`<div class="label-sec"><button class="linkbtn" data-open-hom="${c.key}">Full profile in the Humans tab →</button></div>`);
@@ -410,7 +427,7 @@ function cardHTML(c, open) {
     </div></div>
     ${c.habitat ? `<div class="creature-habitat">🏠 ${esc(c.habitat)}</div>` : ''}
     <div class="creature-fact">${esc(c.fact)}</div>
-    <div class="creature-chips"><span class="diet-chip diet-${c.diet}">${DIET[c.diet] || esc(c.diet)}</span><span class="habitat-badge">${TYPES[c.g][0]} ${TYPES[c.g][1]}</span>${c.weird ? '<span class="habitat-badge">🤪 Weird & wonderful</span>' : ''}${!open && (c.know || c.debate) ? '<span class="habitat-badge">🔎 How do we know?</span>' : ''}</div>
+    <div class="creature-chips"><span class="diet-chip diet-${c.diet}">${DIET[c.diet] || esc(c.diet)}</span><span class="habitat-badge">${TYPES[c.g][0]} ${TYPES[c.g][1]}</span>${c.weird ? '<span class="habitat-badge">🤪 Weird & wonderful</span>' : ''}${!open && SRCMAP[(c.hom ? 'h:' + c.key : 'a:' + c.name)] ? `<span class="habitat-badge" title="Peer-reviewed sources">📚 ${SRCMAP[(c.hom ? 'h:' + c.key : 'a:' + c.name)].length}</span>` : ''}${!open && (c.know || c.debate) ? '<span class="habitat-badge">🔎 How do we know?</span>' : ''}</div>
     <div class="lineage">🧬 <b>${esc(c.path[0])}</b>${c.path.slice(1).map(s => ' › ' + esc(s)).join('')}</div>
     ${L.join('')}</div>`;
 }
@@ -533,7 +550,7 @@ function profileHTML(h) {
     <div class="creature-fact">${esc(h.fact)}</div>
     ${sec('🔎 How do we know?', esc(h.know))}${sec('🏕 How they lived', esc(h.survive))}${sec('🌳 Where they fit in the family', esc(h.tree))}${sec('📜 Discovery', esc(h.discovery))}
     ${sec('🦴 Key fossils', li(h.fossils.map(f => '<b>' + esc(f[0]) + '</b> — ' + esc(f[1]))))}${sec('❓ Still unanswered', li(h.questions.map(esc)))}
-    <div class="found">📍 <b>Found at:</b> ${h.sites.map(s => esc(s[2])).join(' · ')}</div></div>`;
+    <div class="found">📍 <b>Found at:</b> ${h.sites.map(s => esc(s[2])).join(' · ')}</div>${srcHTML('h:' + h.id)}</div>`;
 }
 function renderHumans() {
   const hs = HOMININS.slice().sort((a, b) => b.t[0] - a.t[0]), pad = slack(S.t), sel = S.sel && BY_KEY[S.sel] && BY_KEY[S.sel].hom;
@@ -574,7 +591,7 @@ function cultureHTML(c) {
     <dl class="facts"><dt>When</dt><dd>${esc(c.when)}</dd><dt>Where</dt><dd>${esc(c.where)}</dd><dt>Who</dt><dd>${esc(c.who)}</dd></dl>
     ${sec('🏠 Homes and settlements', c.home)}${sec('🍖 Food', c.food)}${sec('🛠 Tools and inventions', c.tools)}${sec('🎨 Art and beliefs', c.beliefs)}
     ${sec('🔎 How do we know?', c.know)}${sec('❓ Still debated', c.debate)}
-    <div class="found">📍 <b>On the map:</b> ${c.sites.map(s => esc(s[2])).join(' · ')}</div></div>`;
+    <div class="found">📍 <b>On the map:</b> ${c.sites.map(s => esc(s[2])).join(' · ')}</div>${srcHTML('c:' + c.id)}</div>`;
 }
 function drownedHTML(d) {
   const sec = (t, b) => b ? `<div class="label-sec"><h5>${t}</h5>${esc(b)}</div>` : '';
@@ -583,7 +600,7 @@ function drownedHTML(d) {
     <dl class="facts"><dt>Where</dt><dd>${esc(d.where)}</dd><dt>People</dt><dd>${esc(fmtLong(d.lived[0]).replace(' ago', ''))} → ${esc(fmtLong(d.lived[1]))}</dd><dt>Drowned</dt><dd>${esc(fmtLong(d.drowned))}</dd><dt>Today</dt><dd>${esc(d.depth)}</dd><dt>Why</dt><dd>${CAUSE[d.cause]}</dd></dl>
     <div class="drw-now">${now}</div>
     <div class="creature-fact">${esc(d.story)}</div>${sec('🔎 How do we know?', d.know)}${sec('❓ Still debated', d.debate)}
-    <div class="found">📍 <b>On the map:</b> ${esc(d.site[2])}</div></div>`;
+    <div class="found">📍 <b>On the map:</b> ${esc(d.site[2])}</div>${srcHTML('d:' + d.id)}</div>`;
 }
 function selectDrowned(id, fromMap) {
   const d = DRW[id]; if (!d) return;
@@ -637,9 +654,11 @@ function renderInsights() {
     <div class="ins-sec"><h4>🔎 How do we know?</h4>${esc(I.know)}</div>
     <div class="ins-sec"><h4>🌍 Why it matters today</h4>${esc(I.today)}</div>
     ${I.ext ? `<div class="ext"><h4>☠️ ${esc(I.ext.name)}</h4><dl><dt>When</dt><dd>${esc(I.ext.when)}</dd><dt>Lost</dt><dd>${esc(I.ext.toll)}</dd><dt>Cause</dt><dd>${esc(I.ext.cause)}</dd></dl></div>` : ''}
-    ${foodWebHTML(p)}
+    ${srcHTML('p:' + p.id, 'Sources for this period')}
+    ${foodWebHTML(p)}${srcHTML('f:' + p.id, 'Sources for this food web')}
     ${p.funFact ? `<div class="ins-sec"><h4>💡 Did you know?</h4>${esc(p.funFact)}</div>` : ''}
     ${sites.length ? `<div class="ins-sec"><h4>📍 Famous fossil sites — shown on the map</h4>${sites.map(s => `<div class="site${S.sel === 'site:' + slug(s[0]) ? ' sel' : ''}" data-key="site:${slug(s[0])}"><span class="d">◆</span><div><b>${esc(s[0])}</b>${esc(s[4])}</div></div>`).join('')}</div>` : ''}
+    ${allSourcesHTML()}
     <div class="src">Dates follow the International Chronostratigraphic Chart (2024 edition), rounded — older books give slightly different numbers. Temperature, CO₂ and sea-level figures are published estimates with real uncertainty; where specialists disagree, the text says so. Continents: plate model of Merdith et al. (2021), <i>Earth-Science Reviews</i> 214. Coastlines: Natural Earth.</div></div>`;
 }
 // ── food web: one real ecosystem per period, drawn as tiers ──
@@ -824,6 +843,7 @@ function init() {
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:time'].map(t => srcHTML(t, t === 'm:plates' ? 'Plate model' : t === 'm:sealevel' ? 'Sea level' : 'Time scale')).join(''));
   $('mapNote').onclick = () => $('mapAbout').classList.toggle('show'); $('mapAboutX').onclick = () => $('mapAbout').classList.remove('show');
   $('eventsRibbon').onclick = () => switchTab('insights');
   $('fpClose').onclick = closeFact;
