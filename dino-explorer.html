@@ -288,6 +288,11 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .ms-item .when{color:var(--accent);font-weight:700;font-size:.66rem;text-align:right;padding-top:1px;font-variant-numeric:tabular-nums}
 .ms-item b{color:#e6ebf5}.ms-item span{color:#9fb0c8;display:block;font-size:.7rem;line-height:1.35}
 .ms-item.future{opacity:.42}
+.cul-item{opacity:.75}
+.cul-item.now{opacity:1;background:rgba(240,192,64,.07)}
+.cul-item.sel{background:rgba(240,192,64,.16);outline:1px solid var(--accent)}
+.profile.culture{border-color:#58a6c8}
+.list-h small{display:block;margin:2px 0 0}
 
 /* --- Insights tab --- */
 .ins{padding:10px 12px 16px}
@@ -1513,6 +1518,282 @@ const MILESTONES = [
   [0.022,"🧊","People in Ice Age America", "Footprints at White Sands, New Mexico."],
   [0.0115,"🌾","Farming begins", "Wheat, barley and lentils in the Fertile Crescent — and independently on other continents soon after."],
 ];
+// ============================================================
+// WAYS OF LIFE — how people lived: homes, settlements, cultures
+// ============================================================
+//   t      [from, to] in million years ago (0.01 = 10,000 years ago)
+//   who    which humans      home / food / tools / beliefs   the museum panels
+//   know   how we know       debate  what is argued over
+//   sites  [lat, lon, label] — pinned on the map when the Humans tab is open
+const CULTURES = [
+  {id:'oldowan', icon:'🪨', name:'The first stone toolmakers', t:[2.6,1.7], when:'About 2.6–1.7 million years ago', where:'East Africa',
+   who:'Early Homo — and possibly Paranthropus',
+   home:'No built homes are known. Small groups probably slept in trees and gathered at the same spots by lakes and rivers again and again.',
+   food:'Plants, roots and fruit, plus meat and bone marrow, often scavenged from big cats\' kills.',
+   tools:'Sharp flakes knocked off river cobbles with a hammerstone — simple, but sharp enough to butcher an antelope.',
+   beliefs:'Nothing that survives.',
+   know:'Animal bones with cut marks and hammer scars lie beside the tools. At Nyayanga, Kenya, flakes were used on hippo carcasses 2.9 million years ago.',
+   debate:'Who made them? At Nyayanga the only hominin teeth found were Paranthropus, not Homo.',
+   sites:[[11.1,40.4,'Gona, Ethiopia'],[-2.99,35.35,'Olduvai Gorge, Tanzania'],[-0.5,34.4,'Nyayanga, Kenya']]},
+  {id:'acheulean', icon:'🪓', name:'Handaxe makers', t:[1.76,0.13], when:'About 1.76 million–130,000 years ago', where:'Africa, Europe, western and southern Asia',
+   who:'Homo erectus, later Homo heidelbergensis and others',
+   home:'Camps on lake shores and in river valleys, moved with the seasons.',
+   food:'Hunting and scavenging large animals, plus plants. At Boxgrove, England, people butchered a rhinoceros and horses 500,000 years ago.',
+   tools:'The teardrop-shaped handaxe, shaped on both sides to a plan held in the mind — the most long-lived tool design in history, made for over 1.5 million years.',
+   beliefs:'Some handaxes are larger, more symmetrical or more beautiful than any job needed. Showing off skill may already have mattered.',
+   know:'Millions of handaxes are known. Experiments show that making one takes hundreds of hours of practice — skills passed on by teaching.',
+   sites:[[4.05,35.75,'Kokiselei, Kenya — the oldest'],[50.86,-0.71,'Boxgrove, England'],[30.0,32.5,'Nile Valley']]},
+  {id:'fire', icon:'🔥', name:'Taming fire', t:[1.0,0.2], when:'Controlled by about 1 million years ago; everyday by 400,000', where:'Africa, then Eurasia',
+   who:'Homo erectus and its descendants',
+   home:'Caves and rock shelters with a hearth at the centre — the first “home” in the sense of a place where people gather.',
+   food:'Cooked food. Cooking makes meat and roots far easier to chew and digest, freeing energy that may have helped feed bigger brains.',
+   tools:'Fire itself: warmth, light, protection from predators, and a way to harden spear tips.',
+   beliefs:'Firelight lengthened the day. Some think talk and story-telling grew around the hearth.',
+   know:'Deep inside Wonderwerk Cave, South Africa — far from any lightning strike — there is ash and burnt bone a million years old. By 400,000 years ago, hearths used again and again appear at sites like Qesem Cave, Israel.',
+   debate:'How much earlier did fire-use start, and when could people light a fire rather than just carry one? Both are open questions.',
+   sites:[[-27.85,23.55,'Wonderwerk Cave, South Africa'],[32.1,34.98,'Qesem Cave, Israel']]},
+  {id:'kalambo', icon:'🪵', name:'The oldest wooden building', t:[0.48,0.47], when:'About 476,000 years ago', where:'Zambia',
+   who:'Unknown — older than our own species; perhaps Homo heidelbergensis',
+   home:'Two logs joined crosswise by a notch cut into one of them — part of a platform or walkway beside a river.',
+   food:'Riverside hunting and gathering.',
+   tools:'Wooden tools — a digging stick, a wedge, a club — that almost never survive.',
+   beliefs:'Unknown.',
+   know:'Waterlogged ground at Kalambo Falls kept the wood from rotting. A dating method that measures when sand grains last saw sunlight gave the age in 2023 — older than our species.',
+   sites:[[-8.6,31.24,'Kalambo Falls, Zambia']]},
+  {id:'neanderthal-life', icon:'🏕', name:'Neanderthal life', t:[0.3,0.04], when:'About 300,000–40,000 years ago', where:'Europe and western Asia',
+   who:'Neanderthals',
+   home:'Rock shelters and cave mouths, organised around several hearths, with areas for sleeping, butchering and tool-making.',
+   food:'Expert big-game hunters — mammoth, bison, horse, reindeer — who also ate shellfish, birds, nuts and cooked plants.',
+   tools:'Stone points made by a clever, planned method (the Levallois technique), wooden spears, and glue cooked from birch bark to fix points to handles.',
+   beliefs:'They buried some of their dead, wore eagle talons and feathers, and used red and black pigments.',
+   know:'176,000 years ago, Neanderthals broke off about 400 stalagmites deep inside Bruniquel Cave, France, and built them into two great rings — 300 m from daylight, in total darkness. Only firelight could have made that possible.',
+   debate:'Did they make cave art? Red marks in Spanish caves have been dated older than modern humans\' arrival, but the dates are disputed.',
+   sites:[[44.06,1.67,'Bruniquel Cave, France — rings of stalagmites'],[41.53,1.68,'Abric Romaní, Spain — hearths'],[36.83,44.22,'Shanidar Cave, Iraq']]},
+  {id:'border-cave', icon:'🛏', name:'Grass beds and poison arrows', t:[0.2,0.04], when:'About 200,000–40,000 years ago', where:'Southern Africa',
+   who:'Homo sapiens',
+   home:'Cave shelters, where people slept on bedding of grass laid over ash — which kept insects away.',
+   food:'Hunting with bows and arrows; gathering roots and plants dug up with weighted digging sticks.',
+   tools:'By 44,000 years ago: a poison applicator, bone arrow points, beeswax, and digging-stick weights — the same kit the San people of the Kalahari used in recent times.',
+   beliefs:'Ostrich-eggshell beads and engraved bones.',
+   know:'Border Cave holds layer upon layer of burnt grass bedding going back 200,000 years — the oldest beds known (2020).',
+   sites:[[-27.02,31.99,'Border Cave, South Africa']]},
+  {id:'blombos', icon:'🎨', name:'The first artists of the coast', t:[0.164,0.07], when:'About 164,000–70,000 years ago', where:'South African coast',
+   who:'Homo sapiens',
+   home:'Caves above the shoreline, used again and again over thousands of years.',
+   food:'Shellfish, fish, seals, tortoises and land animals. Pinnacle Point holds the oldest known shellfish meals, 164,000 years ago.',
+   tools:'Finely shaped stone points, bone awls — and a paint workshop with abalone shells used as mixing pots.',
+   beliefs:'Shell beads strung on cords, a block of ochre engraved with a cross-hatched pattern, and a crayon drawing on a stone flake: symbols, 73,000 years ago.',
+   know:'The beads have tiny wear marks from rubbing against string and against each other — they were worn.',
+   sites:[[-34.41,21.22,'Blombos Cave, South Africa'],[-34.2,22.09,'Pinnacle Point, South Africa']]},
+  {id:'first-australians', icon:'🪃', name:'The First Australians', t:[0.065,0], when:'At least 65,000 years ago to today', where:'Australia',
+   who:'Homo sapiens — the ancestors of today\'s Aboriginal and Torres Strait Islander peoples',
+   home:'Rock shelters and open camps; much later, in western Victoria, permanent stone houses beside eel farms.',
+   food:'Seeds ground into flour, fish, shellfish, kangaroos and emus. The Gunditjmara built channels and weirs to trap and farm eels at Budj Bim at least 6,600 years ago.',
+   tools:'Ground-edge stone axes and seed-grinding stones at Madjedbebe — among the oldest in the world.',
+   beliefs:'Ochre, burials and rock art. At Lake Mungo, about 42,000 years ago, a man was buried covered in red ochre — the oldest known ritual burial of its kind.',
+   know:'Aboriginal Australian cultures are the oldest continuous cultures on Earth. Some oral traditions appear to describe coastlines drowned by rising seas over 7,000 years ago.',
+   sites:[[-12.5,132.9,'Madjedbebe, Northern Territory'],[-33.7,143.1,'Lake Mungo, New South Wales'],[-38.07,141.93,'Budj Bim, Victoria — eel traps']]},
+  {id:'sulawesi', icon:'🖼', name:'The oldest painted story', t:[0.051,0.04], when:'At least 51,200 years ago', where:'Sulawesi, Indonesia',
+   who:'Homo sapiens',
+   home:'Limestone caves and rock shelters in a tropical forest.',
+   food:'Hunting the local wild pigs and gathering forest foods.',
+   tools:'Stone tools; red pigment blown or brushed onto cave walls.',
+   beliefs:'A painting of three human-like figures interacting with a wild pig — the oldest known picture that tells a story.',
+   know:'Thin mineral crusts grew over the paint. Measuring uranium in the crust gives a minimum age for the painting beneath (2024).',
+   sites:[[-4.98,119.67,'Leang Karampuang, Sulawesi']]},
+  {id:'sungir', icon:'📿', name:'Ice Age hunters of the north', t:[0.035,0.033], when:'About 34,000 years ago', where:'Russia',
+   who:'Homo sapiens',
+   home:'Camps on the cold, open steppe; tents of hide over wooden or bone frames.',
+   food:'Horses, reindeer, mammoth, arctic fox.',
+   tools:'Spears of straightened mammoth tusk — over 2 m long.',
+   beliefs:'Two children were buried head to head with more than 10,000 ivory beads sewn onto their clothes, carved animals and those ivory spears.',
+   know:'Making one bead takes about 45 minutes. The children\'s beads alone represent thousands of hours of work — a sign of how much these people valued them, or their families.',
+   sites:[[56.17,40.5,'Sungir, Russia']]},
+  {id:'mammoth-huts', icon:'🛖', name:'Houses of mammoth bone', t:[0.025,0.014], when:'About 25,000–14,000 years ago', where:'Ukraine and Russia',
+   who:'Homo sapiens',
+   home:'Round huts built from stacked mammoth skulls, jaws and tusks, probably covered with hides — in a land with almost no trees.',
+   food:'Mammoth, reindeer, horse, and hunted fur animals; plants when they could get them.',
+   tools:'Bone needles with eyes for sewing fitted clothes, stone blades, and burning bone as fuel.',
+   beliefs:'Carved ivory, decorated bones and ochre.',
+   know:'At Kostenki, Russia, a ring 12.5 m across was built from the bones of at least 60 mammoths about 25,000 years ago. Whether it was a house, a store or a gathering place is still argued.',
+   sites:[[49.63,31.52,'Mezhyrich, Ukraine'],[51.4,39.0,'Kostenki, Russia']]},
+  {id:'cave-painters', icon:'🦬', name:'The cave painters of Europe', t:[0.036,0.012], when:'About 36,000–12,000 years ago', where:'France and Spain',
+   who:'Homo sapiens',
+   home:'Not in the painted caves — those were special places. People lived in tents and rock shelters near them, moving with the herds.',
+   food:'Reindeer, horse, bison, ibex, salmon.',
+   tools:'Spear-throwers that doubled a spear\'s range, harpoons, eyed needles, oil lamps of carved stone.',
+   beliefs:'Hundreds of painted and engraved animals deep in caves, often where the rock\'s shape suggested the animal. Hand stencils — some of them of children.',
+   know:'Charcoal from the paintings can be radiocarbon dated. Chauvet\'s lions and rhinos are about 36,000 years old; Lascaux\'s horses and bulls about 17,000.',
+   sites:[[44.39,4.42,'Chauvet Cave, France'],[45.05,1.17,'Lascaux, France'],[43.38,-4.12,'Altamira, Spain']]},
+  {id:'ohalo', icon:'🌾', name:'Brush huts by a lake', t:[0.0235,0.0225], when:'About 23,000 years ago', where:'Sea of Galilee, Israel',
+   who:'Homo sapiens',
+   home:'Six oval huts of branches, leaves and grass, with grass bedding on the floors.',
+   food:'Over 140 kinds of plants, including wild wheat and barley ground on a stone slab, plus fish, gazelle and birds.',
+   tools:'Grinding stones, sickle blades with a gloss from cutting cereals, and twisted plant-fibre cord.',
+   beliefs:'A grave of a man inside the camp.',
+   know:'The camp burned and was flooded by the lake, sealing it. Weeds that grow only in tilled fields are mixed in with the cereals — perhaps the first small trial at cultivation, 11,000 years before farming.',
+   sites:[[32.72,35.57,'Ohalo II, Israel']]},
+  {id:'xianrendong', icon:'🏺', name:'The first pottery', t:[0.02,0.019], when:'About 20,000 years ago', where:'Southern China',
+   who:'Homo sapiens',
+   home:'Caves, used through the coldest part of the last ice age.',
+   food:'Hunting, fishing and gathering — pots may have been used to cook shellfish or render fat.',
+   tools:'Clay pots fired in open fires — invented by hunter-gatherers, 10,000 years before farmers.',
+   beliefs:'Unknown.',
+   know:'Radiocarbon dates on the bone and charcoal in the same layers as the pottery fragments (2012).',
+   sites:[[28.73,117.17,'Xianrendong Cave, China']]},
+  {id:'jomon', icon:'🏺', name:'Jōmon villages', t:[0.0165,0.0023], when:'About 16,500–2,300 years ago', where:'Japan',
+   who:'Homo sapiens',
+   home:'Pit houses — floors dug into the ground, roofed with thatch or bark — grouped into villages, some with hundreds of people.',
+   food:'Nuts (chestnut, walnut, acorn), fish, shellfish, deer and boar. Plenty of food let hunter-gatherers settle down.',
+   tools:'Some of the oldest pottery in the world, decorated by pressing cords into the wet clay, and lacquered wooden bowls.',
+   beliefs:'Clay figures (dogū) with goggle-like eyes, and stone circles.',
+   know:'At Sannai-Maruyama, a village of about 5,900–4,200 years ago, archaeologists found over 700 houses, a large hall and post holes for a giant six-pillar wooden tower.',
+   sites:[[40.81,140.7,'Sannai-Maruyama, Japan'],[41.0,140.6,'Ōdai Yamamoto, Japan — early pottery']]},
+  {id:'monte-verde', icon:'⛺', name:'The first Americans', t:[0.0146,0.0127], when:'About 14,500–12,700 years ago', where:'South and North America',
+   who:'Homo sapiens',
+   home:'At Monte Verde, Chile: a row of tents framed with wood and covered in mastodon hide, beside a stream.',
+   food:'Mastodon, seaweed carried from the coast, wild potatoes, nuts and berries. Later, on the Great Plains, Clovis hunters took mammoths and bison.',
+   tools:'At Clovis sites, beautifully made “fluted” spear points, found from Mexico to Canada.',
+   beliefs:'A child\'s footprint pressed into clay at Monte Verde.',
+   know:'Waterlogged peat preserved wood, rope and food at Monte Verde. Its dates helped overturn the idea that Clovis people were the first Americans. Footprints at White Sands, New Mexico, suggest people arrived even earlier.',
+   sites:[[-41.5,-73.2,'Monte Verde, Chile'],[34.28,-103.33,'Blackwater Draw (Clovis), New Mexico']]},
+  {id:'natufians', icon:'🍞', name:'Villages before farming', t:[0.015,0.0115], when:'About 15,000–11,500 years ago', where:'The Levant (Israel, Jordan, Syria)',
+   who:'Homo sapiens',
+   home:'The first permanent villages: round, half-sunken stone houses, lived in all year round.',
+   food:'Harvesting wild wheat and barley with sickles, hunting gazelle. They baked the oldest known bread, 14,400 years ago — before anyone farmed.',
+   tools:'Sickles, stone mortars and pestles, bone fish hooks.',
+   beliefs:'Burials under house floors; one woman was buried with a puppy — among the oldest evidence of dogs as companions.',
+   know:'Charred crumbs from a fireplace at Shubayqa, Jordan, were identified under the electron microscope as flatbread made from wild cereals and tubers (2018).',
+   sites:[[33.1,35.6,'Ain Mallaha, Israel'],[32.3,37.2,'Shubayqa, Jordan — the oldest bread']]},
+  {id:'gobekli', icon:'🗿', name:'Göbekli Tepe', t:[0.0116,0.0098], when:'About 11,600–9,800 years ago', where:'Turkey',
+   who:'Homo sapiens — hunter-gatherers',
+   home:'Nearby houses were built too, but the site is famous for its great round enclosures of carved stone pillars up to 5.5 m tall.',
+   food:'Wild game — gazelle, aurochs, wild boar — and wild cereals ground in huge quantities, possibly for feasts.',
+   tools:'Stone tools only — no metal — to carve and raise pillars weighing up to 10 tonnes.',
+   beliefs:'Pillars carved as stylised people with arms and hands, covered in foxes, snakes, vultures and scorpions.',
+   know:'It was built before farming, pottery or the wheel. It turned the old idea around: maybe gathering to build monuments helped push people toward farming, rather than the other way round.',
+   sites:[[37.22,38.92,'Göbekli Tepe, Turkey']]},
+  {id:'jericho', icon:'🧱', name:'The first farming towns', t:[0.0115,0.0085], when:'About 11,500–8,500 years ago', where:'The Fertile Crescent',
+   who:'Homo sapiens',
+   home:'Houses of mud brick in a walled town. At Jericho, a stone tower 8.5 m tall was built about 10,000 years ago, with an internal staircase.',
+   food:'The first farming: wheat, barley, lentils and peas, then sheep, goats, cattle and pigs.',
+   tools:'Sickles, grinding stones, polished stone axes; plastered floors.',
+   beliefs:'Skulls of ancestors covered in plaster, with shells for eyes, kept in the houses.',
+   know:'Seeds from the oldest layers are wild; seeds from later layers have the plump grains and tough stems of crops — domestication happening layer by layer.',
+   sites:[[31.87,35.44,'Jericho, West Bank']]},
+  {id:'catalhoyuk', icon:'🏘', name:'Çatalhöyük', t:[0.0091,0.00795], when:'About 9,100–7,950 years ago', where:'Turkey',
+   who:'Homo sapiens — farmers',
+   home:'A town of thousands with no streets: mud-brick houses packed wall to wall. People walked across the rooftops and climbed down ladders into their homes.',
+   food:'Wheat, barley, peas, sheep and goats; hunting wild cattle.',
+   tools:'Obsidian blades and mirrors, pottery, woven baskets and textiles.',
+   beliefs:'Walls painted with hunting scenes and bulls\' horns set into the walls. The dead were buried under the floors of the house.',
+   know:'Houses were rebuilt on top of older ones over 1,000 years, leaving a mound 21 m high — each layer a slice of time.',
+   sites:[[37.67,32.83,'Çatalhöyük, Turkey']]},
+  {id:'hemudu', icon:'🍚', name:'Rice farmers of the Yangtze', t:[0.007,0.0053], when:'About 7,000–5,300 years ago', where:'Eastern China',
+   who:'Homo sapiens — farmers',
+   home:'Long wooden houses raised on stilts above wet ground, built with carpentry joints still used today.',
+   food:'Rice grown in paddy fields, fish, water chestnuts, pigs.',
+   tools:'Bone spades, wooden oars, lacquered wooden bowls.',
+   beliefs:'Ivory carvings of birds and the sun.',
+   know:'Waterlogged soil preserved wooden beams and huge amounts of rice husks. Earlier sites in the area show rice being domesticated from about 9,000–10,000 years ago.',
+   sites:[[30.02,121.35,'Hemudu, Zhejiang, China']]},
+  {id:'green-sahara', icon:'🐄', name:'Herders of the Green Sahara', t:[0.0105,0.0055], when:'About 10,500–5,500 years ago', where:'The Sahara — then grassland and lakes',
+   who:'Homo sapiens',
+   home:'Lakeside camps, and later movable herders\' camps.',
+   food:'Fish, hippos and crocodiles from the lakes; later, herds of cattle, sheep and goats.',
+   tools:'Bone harpoons, pottery, grinding stones.',
+   beliefs:'Rock paintings of cattle, swimmers, dancers and giraffes in places that are now bare desert. At Gobero, Niger, a woman and two children were buried holding hands.',
+   know:'Pollen and lake mud show the Sahara was green until about 5,500 years ago, when a slow shift in Earth\'s orbit weakened the monsoon rains.',
+   sites:[[25.5,9.0,'Tassili n\'Ajjer, Algeria — rock art'],[16.9,9.3,'Gobero, Niger']]},
+  {id:'skara-brae', icon:'🛋', name:'Skara Brae', t:[0.0051,0.0045], when:'About 5,100–4,500 years ago', where:'Orkney, Scotland',
+   who:'Homo sapiens — farmers',
+   home:'Stone houses linked by covered passages, with stone furniture: dressers, box beds and tanks for keeping shellfish.',
+   food:'Cattle, sheep, barley, fish and shellfish.',
+   tools:'Grooved-ware pottery, bone and stone tools, carved stone balls.',
+   beliefs:'Nearby stone circles — the Ring of Brodgar and the Stones of Stenness.',
+   know:'Sand buried the village. A great storm in 1850 tore off the turf and revealed it, furniture still in place.',
+   sites:[[59.05,-3.34,'Skara Brae, Orkney']]},
+  {id:'uruk', icon:'🏛', name:'The first cities and writing', t:[0.006,0.004], when:'About 6,000–4,000 years ago', where:'Mesopotamia (Iraq)',
+   who:'Homo sapiens — the Sumerians',
+   home:'A city of perhaps 40,000 people: mud-brick houses, workshops, and huge temples on raised platforms.',
+   food:'Barley and wheat grown with irrigation canals, sheep, goats, dates, beer.',
+   tools:'The potter\'s wheel, the wheeled cart, bronze — and writing, invented about 5,200 years ago to keep track of grain and goods.',
+   beliefs:'Temples to many gods; one of the oldest written stories, the Epic of Gilgamesh, is set in Uruk.',
+   know:'Thousands of clay tablets survive. The earliest are lists and accounts — writing began as bookkeeping.',
+   sites:[[31.32,45.64,'Uruk, Iraq']]},
+  {id:'caral', icon:'🔺', name:'Caral — a city of the Americas', t:[0.005,0.0038], when:'About 5,000–3,800 years ago', where:'Peru',
+   who:'Homo sapiens',
+   home:'A planned city with six large stone pyramids, sunken circular plazas and houses — as old as the pyramids of Egypt.',
+   food:'Fish and anchovies traded from the coast for cotton and crops (squash, beans) grown inland.',
+   tools:'Cotton fishing nets, flutes made of condor and pelican bones; no pottery and no evidence of war.',
+   beliefs:'Ceremonial plazas and offerings.',
+   know:'Radiocarbon dates on plant-fibre bags used to carry stones into the pyramids (2001) proved the city was far older than anyone expected.',
+   sites:[[-10.89,-77.52,'Caral, Peru']]},
+  {id:'indus', icon:'🚿', name:'Cities of the Indus', t:[0.0046,0.0039], when:'About 4,600–3,900 years ago', where:'Pakistan and northwest India',
+   who:'Homo sapiens',
+   home:'Brick cities laid out on a grid, with covered drains along every street, and bathrooms and toilets in many houses.',
+   food:'Wheat, barley, cotton, cattle; trade reached Mesopotamia.',
+   tools:'Standard weights and measures, carved stone seals, beads.',
+   beliefs:'A Great Bath at Mohenjo-daro, perhaps for ritual washing.',
+   know:'Thousands of seals carry a script that has never been deciphered — we can see what they built, but not read what they wrote.',
+   sites:[[27.33,68.14,'Mohenjo-daro, Pakistan'],[30.63,72.86,'Harappa, Pakistan']]},
+  {id:'egypt', icon:'🔺', name:'The pyramid builders', t:[0.0047,0.0044], when:'About 4,600–4,400 years ago', where:'Egypt',
+   who:'Homo sapiens',
+   home:'Workers lived in a town beside the pyramids, with bakeries, breweries and barracks.',
+   food:'Bread, beer and a lot of beef — bones show cattle were brought in to feed the workforce.',
+   tools:'Copper chisels, stone hammers, ramps, sledges and the River Nile for moving stone.',
+   beliefs:'The pyramids were tombs for kings, built to carry them into the afterlife.',
+   know:'Workers\' graves near the pyramids — and a papyrus logbook kept by an official who shipped limestone to Giza — show they were paid, organised crews, not slaves.',
+   sites:[[29.98,31.13,'Giza, Egypt']]},
+  {id:'polynesian', icon:'🛶', name:'Ocean voyagers of the Pacific', t:[0.0033,0.0006], when:'About 3,300–700 years ago', where:'The Pacific Ocean',
+   who:'Homo sapiens — the Lapita people and their Polynesian descendants',
+   home:'Coastal villages; later, thatched houses on raised stone platforms.',
+   food:'Fish, taro, breadfruit, yams, coconuts; they carried pigs, chickens and dogs on their canoes.',
+   tools:'Double-hulled sailing canoes, and navigation by stars, swells, birds and clouds — no instruments at all.',
+   beliefs:'Ancestor carvings; on Rapa Nui, the great stone moai.',
+   know:'Lapita pottery, with its distinctive stamped patterns, tracks the first wave of settlers island by island. DNA from people, rats and chickens traces the routes. New Zealand, the last large land reached, was settled about 750 years ago.',
+   sites:[[-17.8,168.4,'Teouma, Vanuatu'],[-27.1,-109.35,'Rapa Nui (Easter Island)'],[-41.5,174.05,'Wairau Bar, New Zealand']]},
+  {id:'thule', icon:'🛷', name:'The Thule and Inuit', t:[0.001,0], when:'About 1,000 years ago to today', where:'The Arctic, from Alaska to Greenland',
+   who:'Homo sapiens — ancestors of today\'s Inuit',
+   home:'Winter houses of stone, turf and whale bone; snow houses (igloos) on hunting trips; skin tents in summer.',
+   food:'Bowhead whales, seals, walrus, caribou, fish.',
+   tools:'Dog sleds, kayaks and big skin boats, toggling harpoons, snow goggles.',
+   beliefs:'Carvings of animals and spirits.',
+   know:'Their distinctive harpoon heads and houses appear first in Alaska and then, within a few centuries, all the way to Greenland — one of the fastest migrations known.',
+   sites:[[71.29,-156.79,'Utqiaġvik, Alaska'],[76.53,-68.7,'Thule, Greenland']]},
+  {id:'angkor', icon:'🛕', name:'Angkor', t:[0.00122,0.0006], when:'About 1,200–600 years ago', where:'Cambodia',
+   who:'Homo sapiens — the Khmer',
+   home:'A sprawling city of wooden houses on stilts around stone temples, spread over 1,000 km² — the largest city in the world before the industrial age.',
+   food:'Rice grown with a vast network of canals and reservoirs, and fish from the great lake.',
+   tools:'Water engineering on a huge scale; sandstone temples carved in fine detail.',
+   beliefs:'Hindu and later Buddhist temples, including Angkor Wat.',
+   know:'Laser scanning from aircraft (lidar) in 2012 and 2015 saw through the forest and revealed a whole city of streets and house mounds around the temples.',
+   sites:[[13.41,103.87,'Angkor, Cambodia']]},
+  {id:'cahokia', icon:'⛰', name:'Cahokia', t:[0.00098,0.00068], when:'About 1,000–700 years ago', where:'Mississippi Valley, USA',
+   who:'Homo sapiens — the Mississippian culture',
+   home:'A city of perhaps 10,000–20,000 people with pole-and-thatch houses, plazas and over 100 earthen mounds.',
+   food:'Maize, squash and beans; fish and deer.',
+   tools:'Shell-tempered pottery, copper ornaments, stone discs for the game of chunkey.',
+   beliefs:'Monks Mound, 30 m tall, held a great building on top. Circles of wooden posts marked the sunrise on special days.',
+   know:'Excavation of the mounds, and studies of lake mud showing farming, deforestation and floods, chart the city\'s rise and decline.',
+   sites:[[38.66,-90.06,'Cahokia, Illinois']]},
+  {id:'great-zimbabwe', icon:'🏰', name:'Great Zimbabwe', t:[0.00093,0.00057], when:'About 900–550 years ago', where:'Zimbabwe',
+   who:'Homo sapiens — ancestors of the Shona',
+   home:'Huge curving walls of granite blocks fitted without mortar, some 11 m high, around round houses of daga (packed earth).',
+   food:'Cattle herding and farming sorghum and millet.',
+   tools:'Gold and ivory traded to the coast in exchange for Chinese porcelain, Persian pottery and glass beads.',
+   beliefs:'Carved soapstone birds on tall pillars — today the national emblem of Zimbabwe.',
+   know:'Colonial-era writers claimed outsiders must have built it. Archaeology proved — as local people always said — that it was built by Africans, the ancestors of the Shona.',
+   sites:[[-20.27,30.93,'Great Zimbabwe']]},
+  {id:'cities-today', icon:'🏙', name:'A world of cities', t:[0.0002,0], when:'The last 200 years', where:'Everywhere',
+   who:'All of us',
+   home:'Since 2007 more people have lived in towns and cities than in the countryside — for the first time in human history.',
+   food:'Farming feeds over 8 billion people; most never grow their own food.',
+   tools:'Engines, electricity, computers — and fossil fuels, burning in a few centuries carbon buried over millions of years.',
+   beliefs:'Thousands of languages and cultures, connected as never before.',
+   know:'Censuses, satellite images of night-time lights, and the CO₂ record in the air and in ice cores.',
+   sites:[[35.68,139.69,'Tokyo'],[6.52,3.38,'Lagos'],[-23.55,-46.63,'São Paulo']]},
+];
 const HOMININ_LINEAGE = {"early":"Human family › Earliest hominins","austral":"Human family › Australopiths","paran":"Human family › Robust australopiths (Paranthropus)","homo":"Human family › Humans (Homo)"};
 
 // ── geology cards ── (at: where to pin the card on the map, today's lat/lon; null = not pinned)
@@ -2713,7 +2994,11 @@ function setTime(t, o = {}) {
     updateMarkers(now);
     schedulePanel(o.fast ? 140 : 0);
   }
-  if (S.tab === 'humans') updateHumansCursor();
+  if (S.tab === 'humans') {
+    updateHumansCursor();
+    const ck = CULTURES.filter(c => culActive(c)).map(c => c.id).join('|');
+    if (ck !== lastCulKey) { lastCulKey = ck; updatePlaces(); document.querySelectorAll('.cul-item').forEach(el => el.classList.toggle('now', ck.split('|').includes(el.dataset.cul))); }
+  }
   clearTimeout(hashTimer); hashTimer = setTimeout(writeHash, 350);
 }
 function updateClock(fromSlider) {
@@ -2753,10 +3038,16 @@ function updateMarkers(now) {
   WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c) })) });
 }
 const placeCache = {};
+// cultures shown at the current moment: active now, with a little give so short-lived ones can be found
+const CUL = Object.fromEntries(CULTURES.map(c => [c.id, c]));
+const culActive = (c, t = S.t) => t <= c.t[0] * 1.06 + Math.max(0.0002, slack(t)) && t >= c.t[1] * 0.94 - Math.max(0.0002, slack(t));
+const fmtYearsAgo = t => t <= 1e-9 ? 'today' : t >= 1 ? t + ' million years ago' : years(Math.round(t * 1e6 / 100) * 100) + ' years ago';
+let lastCulKey = '';
 function updatePlaces() {
   const p = S.period; let places = [];
   const mid = (p.start + p.end) / 2;
   if (S.tab === 'insights') places = SITES.filter(s => s[3].includes(p.id)).map(s => placeCache['s' + s[0] + p.id] || (placeCache['s' + s[0] + p.id] = { key: 'site:' + slug(s[0]), name: s[0], note: s[4], at: WorldMap.attach(s[1], s[2], mid) }));
+  else if (S.tab === 'humans') places = CULTURES.filter(c => culActive(c)).flatMap(c => c.sites.map((s, i) => placeCache['c' + c.id + i] || (placeCache['c' + c.id + i] = { key: 'cul:' + c.id, name: s[2].split(/,| —/)[0], note: c.name, icon: c.icon, at: WorldMap.attach(s[0], s[1], (c.t[0] + c.t[1]) / 2) })));
   else if (S.tab === 'geo') places = GEO_FEATURES.filter(f => f.at && f.periods.includes(p.id)).map(f => placeCache['g' + f.id + p.id] || (placeCache['g' + f.id + p.id] = { key: 'geo:' + f.id, name: f.name, note: f.shortDesc, icon: f.icon, at: WorldMap.attach(f.at[0], f.at[1], mid) }));
   WorldMap.setLayers({ places });
 }
@@ -2951,7 +3242,7 @@ function switchTab(tab) {
   S.tab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
-  if (S.sel && !BY_KEY[S.sel]) { S.sel = null; WorldMap.select(null); }
+  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && S.sel.startsWith('cul:'))) { S.sel = null; WorldMap.select(null); }
   updatePlaces(); renderPanel();
   $('panelContent').scrollTop = 0;
 }
@@ -3106,7 +3397,8 @@ function renderHumans() {
       <div class="hf-cursor" id="hfCursor"></div></div></div>
     <div class="hf-legend">${Object.keys(GROUPS).map(g => `<span><i class="g-${g}"></i>${GROUPS[g]}</span>`).join('')}</div>
     <div class="hf-note" id="hfNote"></div>
-    ${sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
+    ${S.sel && S.sel.startsWith('cul:') && CUL[S.sel.slice(4)] ? cultureHTML(CUL[S.sel.slice(4)]) : sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
+    <div class="ms"><div class="list-h" style="padding-left:2px">Ways of life <small>homes, settlements and cultures — tap one, or a pin on the map</small></div>${CULTURES.map(c => `<div class="ms-item cul-item${culActive(c) ? ' now' : ''}${S.sel === 'cul:' + c.id ? ' sel' : ''}" data-cul="${c.id}"><span class="when">${c.t[0] >= 1 ? c.t[0] + ' MYA' : years(Math.round(c.t[0] * 1e6 / 100) * 100) + ' yrs'}</span><span>${c.icon}</span><div><b>${esc(c.name)}</b><span>${esc(c.where)}</span></div></div>`).join('')}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Turning points</div>${ms}</div></div>`;
   updateHumansCursor();
 }
@@ -3119,9 +3411,35 @@ function updateHumansCursor() {
   $('hfNote').innerHTML = on ? (nowList.length ? `<b style="color:#e6ebf5">${fmtAgo(S.t)}:</b> ${nowList.length} kind${nowList.length > 1 ? 's' : ''} of human relative alive — ${nowList.map(n => esc(shortName(n))).join(', ')}.` : `<b style="color:#e6ebf5">${fmtAgo(S.t)}:</b> no fossils of the human family are known from this moment.`)
     : `You are at ${fmtAgo(S.t)} — long before the human family. <button class="linkbtn" data-goto="7" style="margin-left:6px">Go to 7 million years ago</button>`;
 }
+function cultureHTML(c) {
+  const sec = (t, b) => b ? `<div class="label-sec"><h5>${t}</h5>${esc(b)}</div>` : '';
+  return `<div class="profile culture" data-key="cul:${c.id}"><h3 style="font-style:normal">${c.icon} ${esc(c.name)}</h3>
+    <dl class="facts"><dt>When</dt><dd>${esc(c.when)}</dd><dt>Where</dt><dd>${esc(c.where)}</dd><dt>Who</dt><dd>${esc(c.who)}</dd></dl>
+    ${sec('🏠 Homes and settlements', c.home)}${sec('🍖 Food', c.food)}${sec('🛠 Tools and inventions', c.tools)}${sec('🎨 Art and beliefs', c.beliefs)}
+    ${sec('🔎 How do we know?', c.know)}${sec('❓ Still debated', c.debate)}
+    <div class="found">📍 <b>On the map:</b> ${c.sites.map(s => esc(s[2])).join(' · ')}</div></div>`;
+}
+function selectCulture(id, fromMap) {
+  const c = CUL[id]; if (!c) return;
+  const key = 'cul:' + id;
+  S.sel = key; WorldMap.select(key);
+  const look = () => { const pl = placeCache['c' + id + '0']; if (pl) WorldMap.lookAt(pl.at); };
+  if (S.tab !== 'humans') switchTab('humans');
+  if (!culActive(c)) {
+    const mid = tidy((c.t[0] + c.t[1]) / 2);
+    // zoom the timeline so a short-lived culture is wide enough to see
+    const sp = Math.max(0.02, (c.t[0] - c.t[1]) * 4, mid * 0.5);
+    if (isFull() || span() > sp * 3 || mid > S.win[0] || mid < S.win[1]) { const a = Math.min(T_MAX, mid + sp / 2); setWindow(a, Math.max(0, a - sp), true); }
+    goTo(mid, () => { updatePlaces(); look(); renderHumans(); });
+  } else { updatePlaces(); look(); }
+  renderHumans();
+  if (fromMap && window.innerWidth < 768) showFact(c.icon, '<b>' + esc(c.name) + '</b> — ' + esc(c.home));
+  setTimeout(() => { const el = document.querySelector('#pane-humans .profile'); if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 80);
+}
 function bindHumans() {
   $('pane-humans').addEventListener('click', e => {
     const g = e.target.closest('[data-goto]'); if (g) { if (!isFull() && S.win[0] < 7) setWindow(10, 0, true); goTo(+g.dataset.goto); return; }
+    const cu = e.target.closest('.cul-item'); if (cu) { selectCulture(cu.dataset.cul); return; }
     const m = e.target.closest('.ms-item'); if (m) { goTo(+m.dataset.t); return; }
     const r = e.target.closest('.hf-row'); if (r) select(r.dataset.key);
   });
@@ -3206,6 +3524,7 @@ function init() {
   WorldMap.onPick = h => {
     if (!h) { $('mapAbout').classList.remove('show'); return; }
     if (h.marker) select(h.marker.key, { fromMap: true, keep: true });
+    else if (h.place && h.place.key.startsWith('cul:')) selectCulture(h.place.key.slice(4), true);
     else if (h.place) { selectPlace(h.place.key, h.place.at, h.place.icon || '📍', '<b>' + esc(h.place.name) + '</b> — ' + esc(h.place.note || '')); if (S.sel !== h.place.key) closeFact(); }
   };
   const tip = $('mapTip');

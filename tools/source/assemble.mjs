@@ -92,6 +92,8 @@ for (const p of periods) {
 data += '];\n\n';
 const hsrc = fs.readFileSync(SRC + 'data_hominins.js', 'utf8');
 data += hsrc.slice(0, hsrc.indexOf("if (typeof module")).trim() + '\n';
+const csrc = fs.readFileSync(SRC + 'data_cultures.js', 'utf8');
+data += csrc.slice(0, csrc.indexOf("if (typeof module")).trim() + '\n';
 data += `const HOMININ_LINEAGE = ${J(C.HOMININ_LINEAGE)};\n\n`;
 data += `// ── geology cards ── (at: where to pin the card on the map, today's lat/lon; null = not pinned)\nconst GEO_FEATURES = [\n${geo.map(g => '  ' + J(g)).join(',\n')}\n];\n\n`;
 const psrc = fs.readFileSync(SRC + 'data_periods.js', 'utf8');

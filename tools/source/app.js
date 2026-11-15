@@ -105,7 +105,11 @@ function setTime(t, o = {}) {
     updateMarkers(now);
     schedulePanel(o.fast ? 140 : 0);
   }
-  if (S.tab === 'humans') updateHumansCursor();
+  if (S.tab === 'humans') {
+    updateHumansCursor();
+    const ck = CULTURES.filter(c => culActive(c)).map(c => c.id).join('|');
+    if (ck !== lastCulKey) { lastCulKey = ck; updatePlaces(); document.querySelectorAll('.cul-item').forEach(el => el.classList.toggle('now', ck.split('|').includes(el.dataset.cul))); }
+  }
   clearTimeout(hashTimer); hashTimer = setTimeout(writeHash, 350);
 }
 function updateClock(fromSlider) {
@@ -145,10 +149,16 @@ function updateMarkers(now) {
   WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c) })) });
 }
 const placeCache = {};
+// cultures shown at the current moment: active now, with a little give so short-lived ones can be found
+const CUL = Object.fromEntries(CULTURES.map(c => [c.id, c]));
+const culActive = (c, t = S.t) => t <= c.t[0] * 1.06 + Math.max(0.0002, slack(t)) && t >= c.t[1] * 0.94 - Math.max(0.0002, slack(t));
+const fmtYearsAgo = t => t <= 1e-9 ? 'today' : t >= 1 ? t + ' million years ago' : years(Math.round(t * 1e6 / 100) * 100) + ' years ago';
+let lastCulKey = '';
 function updatePlaces() {
   const p = S.period; let places = [];
   const mid = (p.start + p.end) / 2;
   if (S.tab === 'insights') places = SITES.filter(s => s[3].includes(p.id)).map(s => placeCache['s' + s[0] + p.id] || (placeCache['s' + s[0] + p.id] = { key: 'site:' + slug(s[0]), name: s[0], note: s[4], at: WorldMap.attach(s[1], s[2], mid) }));
+  else if (S.tab === 'humans') places = CULTURES.filter(c => culActive(c)).flatMap(c => c.sites.map((s, i) => placeCache['c' + c.id + i] || (placeCache['c' + c.id + i] = { key: 'cul:' + c.id, name: s[2].split(/,| —/)[0], note: c.name, icon: c.icon, at: WorldMap.attach(s[0], s[1], (c.t[0] + c.t[1]) / 2) })));
   else if (S.tab === 'geo') places = GEO_FEATURES.filter(f => f.at && f.periods.includes(p.id)).map(f => placeCache['g' + f.id + p.id] || (placeCache['g' + f.id + p.id] = { key: 'geo:' + f.id, name: f.name, note: f.shortDesc, icon: f.icon, at: WorldMap.attach(f.at[0], f.at[1], mid) }));
   WorldMap.setLayers({ places });
 }
@@ -343,7 +353,7 @@ function switchTab(tab) {
   S.tab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
-  if (S.sel && !BY_KEY[S.sel]) { S.sel = null; WorldMap.select(null); }
+  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && S.sel.startsWith('cul:'))) { S.sel = null; WorldMap.select(null); }
   updatePlaces(); renderPanel();
   $('panelContent').scrollTop = 0;
 }
@@ -498,7 +508,8 @@ function renderHumans() {
       <div class="hf-cursor" id="hfCursor"></div></div></div>
     <div class="hf-legend">${Object.keys(GROUPS).map(g => `<span><i class="g-${g}"></i>${GROUPS[g]}</span>`).join('')}</div>
     <div class="hf-note" id="hfNote"></div>
-    ${sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
+    ${S.sel && S.sel.startsWith('cul:') && CUL[S.sel.slice(4)] ? cultureHTML(CUL[S.sel.slice(4)]) : sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
+    <div class="ms"><div class="list-h" style="padding-left:2px">Ways of life <small>homes, settlements and cultures — tap one, or a pin on the map</small></div>${CULTURES.map(c => `<div class="ms-item cul-item${culActive(c) ? ' now' : ''}${S.sel === 'cul:' + c.id ? ' sel' : ''}" data-cul="${c.id}"><span class="when">${c.t[0] >= 1 ? c.t[0] + ' MYA' : years(Math.round(c.t[0] * 1e6 / 100) * 100) + ' yrs'}</span><span>${c.icon}</span><div><b>${esc(c.name)}</b><span>${esc(c.where)}</span></div></div>`).join('')}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Turning points</div>${ms}</div></div>`;
   updateHumansCursor();
 }
@@ -511,9 +522,35 @@ function updateHumansCursor() {
   $('hfNote').innerHTML = on ? (nowList.length ? `<b style="color:#e6ebf5">${fmtAgo(S.t)}:</b> ${nowList.length} kind${nowList.length > 1 ? 's' : ''} of human relative alive — ${nowList.map(n => esc(shortName(n))).join(', ')}.` : `<b style="color:#e6ebf5">${fmtAgo(S.t)}:</b> no fossils of the human family are known from this moment.`)
     : `You are at ${fmtAgo(S.t)} — long before the human family. <button class="linkbtn" data-goto="7" style="margin-left:6px">Go to 7 million years ago</button>`;
 }
+function cultureHTML(c) {
+  const sec = (t, b) => b ? `<div class="label-sec"><h5>${t}</h5>${esc(b)}</div>` : '';
+  return `<div class="profile culture" data-key="cul:${c.id}"><h3 style="font-style:normal">${c.icon} ${esc(c.name)}</h3>
+    <dl class="facts"><dt>When</dt><dd>${esc(c.when)}</dd><dt>Where</dt><dd>${esc(c.where)}</dd><dt>Who</dt><dd>${esc(c.who)}</dd></dl>
+    ${sec('🏠 Homes and settlements', c.home)}${sec('🍖 Food', c.food)}${sec('🛠 Tools and inventions', c.tools)}${sec('🎨 Art and beliefs', c.beliefs)}
+    ${sec('🔎 How do we know?', c.know)}${sec('❓ Still debated', c.debate)}
+    <div class="found">📍 <b>On the map:</b> ${c.sites.map(s => esc(s[2])).join(' · ')}</div></div>`;
+}
+function selectCulture(id, fromMap) {
+  const c = CUL[id]; if (!c) return;
+  const key = 'cul:' + id;
+  S.sel = key; WorldMap.select(key);
+  const look = () => { const pl = placeCache['c' + id + '0']; if (pl) WorldMap.lookAt(pl.at); };
+  if (S.tab !== 'humans') switchTab('humans');
+  if (!culActive(c)) {
+    const mid = tidy((c.t[0] + c.t[1]) / 2);
+    // zoom the timeline so a short-lived culture is wide enough to see
+    const sp = Math.max(0.02, (c.t[0] - c.t[1]) * 4, mid * 0.5);
+    if (isFull() || span() > sp * 3 || mid > S.win[0] || mid < S.win[1]) { const a = Math.min(T_MAX, mid + sp / 2); setWindow(a, Math.max(0, a - sp), true); }
+    goTo(mid, () => { updatePlaces(); look(); renderHumans(); });
+  } else { updatePlaces(); look(); }
+  renderHumans();
+  if (fromMap && window.innerWidth < 768) showFact(c.icon, '<b>' + esc(c.name) + '</b> — ' + esc(c.home));
+  setTimeout(() => { const el = document.querySelector('#pane-humans .profile'); if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 80);
+}
 function bindHumans() {
   $('pane-humans').addEventListener('click', e => {
     const g = e.target.closest('[data-goto]'); if (g) { if (!isFull() && S.win[0] < 7) setWindow(10, 0, true); goTo(+g.dataset.goto); return; }
+    const cu = e.target.closest('.cul-item'); if (cu) { selectCulture(cu.dataset.cul); return; }
     const m = e.target.closest('.ms-item'); if (m) { goTo(+m.dataset.t); return; }
     const r = e.target.closest('.hf-row'); if (r) select(r.dataset.key);
   });
@@ -598,6 +635,7 @@ function init() {
   WorldMap.onPick = h => {
     if (!h) { $('mapAbout').classList.remove('show'); return; }
     if (h.marker) select(h.marker.key, { fromMap: true, keep: true });
+    else if (h.place && h.place.key.startsWith('cul:')) selectCulture(h.place.key.slice(4), true);
     else if (h.place) { selectPlace(h.place.key, h.place.at, h.place.icon || '📍', '<b>' + esc(h.place.name) + '</b> — ' + esc(h.place.note || '')); if (S.sel !== h.place.key) closeFact(); }
   };
   const tip = $('mapTip');

@@ -64,6 +64,12 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#weirdBtn'); await p.waitForTimeout(150);
   ok('before the dinosaurs: 180+ animals', await p.evaluate(() => ALL.filter(c => c.t[1] >= 233).length >= 180), String(await p.evaluate(() => ALL.filter(c => c.t[1] >= 233).length)));
   ok('Age of Mammals has 150+ animals', await p.evaluate(() => ALL.filter(c => c.t[0] <= 66).length >= 150));
+  // ways of life
+  await p.click('#tab-humans'); await p.waitForTimeout(200);
+  await p.click('#pane-humans .cul-item[data-cul="catalhoyuk"]'); await p.waitForTimeout(2600);
+  ok('culture travels in time and opens its profile', await p.evaluate(() => S.sel === 'cul:catalhoyuk' && S.t < 0.0095 && S.t > 0.0077 && /Homes and settlements/i.test(document.querySelector('#pane-humans .profile').innerText)), JSON.stringify(await p.evaluate(() => [S.sel, S.t])));
+  ok('culture pins on the map', await p.evaluate(() => CULTURES.filter(c => culActive(c)).some(c => c.id === 'catalhoyuk')));
+  await p.click('#tab-life'); await p.waitForTimeout(150);
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));
