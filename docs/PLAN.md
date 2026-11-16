@@ -13,18 +13,18 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 | | |
 |---|---|
-| Animals | 673 + 24 members of the human family; 183 dinosaurs; 46 proto-mammals (synapsids) |
+| Animals | 689 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
 | Family trees | The road to mammals (synapsids → mammals) and the dinosaur family tree, under Life → 🌳 Family trees |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 356, every one a published work confirmed in Crossref |
+| References | 362, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 138 passing |
-| Page | about 1.38 MB, one file |
+| Checks | 144 passing |
+| Page | about 1.42 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -88,11 +88,13 @@ textured from a published climate-zone map. What is still to do, most valuable f
 3. **Animals that arrive and leave** — shipped 16 Nov: a short rise on arrival, a fading medallion on
    departure (skipped when the change is wholesale, e.g. a tab switch).
 4. **Fewer, calmer pins** — partly shipped 16 Nov: a "+N" badge where animals did not fit (tap to zoom
-   in), and place names hidden on a crowded map until you zoom. Still to do: let the history layers
-   default to two at a time on a phone.
-5. **A front door** (Release 7d) with "Your story" as the first thing offered.
-6. **Rivers and lakes** for the last 5 million years from Natural Earth; **night lights** for the
-   last century.
+   in), and place names hidden on a crowded map until you zoom; on a phone the history section starts
+   with two of its four layers on.
+5. **A front door** — shipped 16 Nov: six ways in (Your story first), on every fresh visit and from
+   the globe in the header; a shared link skips it. Next: remember a returning reader's choice.
+6. **Rivers and lakes** — shipped 16 Nov, for the last 12,000 years only (before that the ice sheets
+   and other river courses make today's map wrong). Next: Ice Age lakes (Agassiz, Bonneville,
+   Mega-Chad) from a published source, and **night lights** for the last century.
 7. **Sound**, off by default. Ask Evan first.
 
 ## Release 0b — Animal coverage (Evan, 16 Nov: "lots of areas not having anything")
@@ -444,6 +446,10 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — A front door, rivers and lakes, 16 more animals.** Fresh visits open on six ways in;
+  rivers and lakes appear after the Ice Age (Natural Earth, `tools/build_rivers.py`); Europe's
+  Cretaceous islands, the Jurassic of Africa and South America, Silurian China, Miocene Australia and
+  Ice Age India and Africa get animals. 144 checks.
 - **16 Nov 2026 — The land read from its rocks; named eruptions; animals that come and go.** Deep-time
   land now carries colour and grain from 8,521 dated climate rocks (coal, salt, bauxite, glacial
   rubble). Every great eruption and impact is labelled on the map and explains itself on a tap —

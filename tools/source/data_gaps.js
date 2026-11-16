@@ -23,6 +23,7 @@ ordovician: [
 ],
 
 silurian: [
+  R('fish', FI + 'Armoured fishes (placoderms)', 'Qilinyu', '🐟', 'pred', 'About 20 cm', 'Shallow sea', '~423 MYA', [424, 422], 'An armoured fish with bony plates along its jaw edges in the same places as the jaw bones of your own face — a clue to where our jaws came from.', [[25.5, 103.8, 'Qujing, Yunnan, China']]),
   R('fish', FI + 'Lobe-finned fishes', 'Megamastax', '🐟', 'pred', 'About 1 m', 'Shallow sea', '~423 MYA', [424, 422], '“Big mouth”: the largest backboned animal known from its time, with sharp teeth for grabbing and blunt ones for crushing armoured prey.', [[25.5, 103.8, 'Qujing, Yunnan, China']],
     { know: 'A fish this big needs a lot of oxygen, so its discovery in 2014 was taken as a sign that the air already held plenty of it.' }),
 ],
@@ -33,6 +34,7 @@ devonian: [
 ],
 
 permian: [
+  R('synapsid', SY + 'Dinocephalians', 'Sinophoneus', '🦁', 'carn', 'Skull about 30 cm', 'Floodplains', '~265 MYA', [267, 263], 'A big-headed hunter from western China, a cousin of Anteosaurus in Africa and Titanophoneus in Russia — the same kinds of animals across Pangaea.', [[39.4, 97.9, 'Dashankou, Gansu, China']]),
   R('synapsid', SY + 'Dicynodonts', 'Endothiodon', '🐗', 'herb', 'About 1.5 m', 'Floodplains', '~260–254 MYA', [260, 254], 'A beaked plant-eater found in South Africa, India and Brazil. One animal on three continents is evidence that they were joined — as the map shows.', [P.karoo, [18.6, 79.6, 'Pranhita–Godavari valley, India'], [-25.5, -51.0, 'Paraná Basin, Brazil'], [-10.5, 35.0, 'Ruhuhu Basin, Tanzania']]),
 ],
 
@@ -43,6 +45,11 @@ triassic: [
 ],
 
 jurassic: [
+  R('dino', SA + 'Early sauropods', 'Vulcanodon', '🦕', 'herb', 'About 6.5 m', 'River plains', '~200–190 MYA', [200, 188], 'One of the first true sauropods: already on four pillar legs, but small. It was found between two lava flows by Lake Kariba, which help date it.', [[-16.6, 28.6, 'Lake Kariba, Zimbabwe']]),
+  R('dino', SA + 'Early sauropods', 'Patagosaurus', '🦕', 'herb', 'About 15 m', 'Floodplains', '~170 MYA', [172, 166], 'A long-neck of Middle Jurassic Patagonia, known from many skeletons of young and old — so we can watch it grow up.', [P.chubut]),
+  W('dino', SA + 'Dicraeosaurs', 'Brachytrachelopan', '🦕', 'herb', 'About 10 m', 'Floodplains', '~150 MYA', [152, 148], 'A sauropod with a short neck — shorter than its back. It probably grazed close to the ground, like a giant cow.', [[-43.5, -69.5, 'Cañadón Calcáreo, Chubut, Argentina']]),
+  R('dino', SA + 'Dicraeosaurs', 'Dicraeosaurus', '🦕', 'herb', 'About 12–14 m', 'Coastal plains', '~155–150 MYA', [155, 150], 'A short-necked sauropod with tall, forked spines along its neck and back, found at Tendaguru beside Giraffatitan — two giants feeding at different heights.', [[-9.73, 39.23, 'Tendaguru, Tanzania']]),
+  R('dino', TH + 'Ceratosaurs & abelisaurs', 'Elaphrosaurus', '🦖', 'carn', 'About 6 m', 'Coastal plains', '~155–150 MYA', [155, 150], '“Light lizard”: a long, slender theropod from Tendaguru, known from almost everything except its skull. Its tiny arms and long legs suggest a fast runner.', [[-9.73, 39.23, 'Tendaguru, Tanzania']]),
   R('dino', SA + 'Early sauropods', 'Barapasaurus', '🦕', 'herb', 'About 14 m', 'Riverside forest', '~185 MYA', [190, 175], '“Big-legged lizard”: one of the earliest giant long-necks, known from six animals that seem to have died together in a flood.', [[18.9, 79.7, 'Kota beds, Telangana, India']]),
   R('dino', SA + 'Early sauropods', 'Rhoetosaurus', '🦕', 'herb', 'About 15 m', 'Coal swamps', '~162 MYA', [167, 160], 'Australia’s first well-known long-neck, found by a stockman in 1924. Its foot bones show it walked on a padded heel, like an elephant.', [[-26.6, 148.8, 'Roma, Queensland, Australia']]),
   R('dino', TH + 'Ceratosaurs & abelisaurs', 'Eoabelisaurus', '🦖', 'carn', 'About 6.5 m', 'Lake shores', '~178 MYA', [180, 174], 'The earliest known member of the short-faced abelisaurs. Its arms were already shrinking — a hundred million years before Carnotaurus ended up with arms smaller than a T. rex’s.', [P.chubut]),
@@ -55,6 +62,13 @@ jurassic: [
 ],
 
 cretaceous: [
+  R('dino', D + 'Armoured dinosaurs › Nodosaurs', 'Polacanthus', '🛡️', 'herb', 'About 5 m', 'Floodplains', '~130–125 MYA', [130, 125], 'An armoured dinosaur from the Isle of Wight with spikes along its sides and a solid shield of bone fused over its hips.', [[50.65, -1.3, 'Isle of Wight, England']],
+    { debate: 'Whether it belongs with the nodosaurs, the club-tails, or a small group of its own is still argued.' }),
+  R('dino', D + 'Ornithopods › Iguanodonts', 'Mantellisaurus', '🦕', 'herb', 'About 7 m', 'Floodplains', '~126–124 MYA', [126, 124], 'A lighter cousin of Iguanodon, named after Gideon Mantell. Skeletons of both were found in the Bernissart coal mine.', [[50.65, -1.3, 'Isle of Wight, England'], [50.48, 3.65, 'Bernissart, Belgium']]),
+  R('dino', D + 'Armoured dinosaurs › Nodosaurs', 'Europelta', '🛡️', 'herb', 'About 5 m', 'Coastal swamps', '~113 MYA', [114, 112], 'The oldest known nodosaur in Europe, found in a coal mine in Spain with two nearly complete skeletons.', [[40.85, -0.85, 'Ariño, Teruel, Spain']]),
+  R('dino', D + 'Armoured dinosaurs › Nodosaurs', 'Struthiosaurus', '🛡️', 'herb', 'About 2–3 m', 'Island forest', '~80–66 MYA', [80, 66], 'The smallest armoured dinosaur known — about the size of a large dog. Like other animals on Europe’s islands, it had shrunk.', [[47.8, 16.1, 'Muthmannsdorf, Austria'], [P.hateg[0], P.hateg[1], 'Hațeg, Romania']]),
+  R('dino', SA + 'Titanosaurs', 'Ampelosaurus', '🦕', 'herb', 'About 15 m', 'River plains', '~72–66 MYA', [72, 66], 'A titanosaur with bony plates and spikes set in its skin, found among the vineyards of southern France — its name means “vineyard lizard”.', [[42.95, 2.25, 'Campagne-sur-Aude, France']]),
+  R('dino', D + 'Ornithopods › Iguanodonts', 'Zalmoxes', '🦕', 'herb', 'About 2.5 m', 'Island forest', '~70–66 MYA', [70, 66], 'A small plant-eater of the island of Hațeg, which lay in a sea where Romania is now. Its mainland relatives were bigger.', [P.hateg]),
   R('dino', SA + 'Titanosaurs', 'Isisaurus', '🦕', 'herb', 'About 18 m', 'River plains', '~70–66 MYA', [70, 66], 'An odd titanosaur with long front legs and a short, upright neck, a little like a giant hyena in outline. It lived in India while the Deccan volcanoes were erupting.', [P.lameta]),
   W('reptile', RE + 'Snakes', 'Sanajeh', '🐍', 'pred', 'About 3.5 m', 'Dinosaur nesting grounds', '~67 MYA', [68, 66], 'A snake caught in the act: its skeleton was found coiled around a crushed dinosaur egg, next to a hatchling sauropod half a metre long.', [[23.1, 73.4, 'Dholi Dungri, Gujarat, India']]),
   W('dino', TH + 'Raptors (dromaeosaurs)', 'Balaur', '🦖', 'pred', 'About 2 m', 'Island forest', '~70 MYA', [72, 66], 'A stocky island animal with two big sickle claws on each foot instead of one.', [P.hateg],
@@ -80,12 +94,16 @@ paleogene: [
 ],
 
 neogene: [
+  R('mammal', MM + 'Marsupials', 'Wakaleo', '🐆', 'carn', 'About the size of a dog', 'Rainforest', '~23–8 MYA', [23, 8], 'A marsupial lion of Australia’s Miocene forests, with slicing teeth and strong climbing arms — an earlier, smaller relative of Thylacoleo.', [[-19.0, 138.7, 'Riversleigh, Queensland, Australia'], [-22.9, 134.9, 'Alcoota, Northern Territory, Australia']]),
   R('mammal', MM + 'Primates › Apes', 'Lufengpithecus', '🦧', 'herb', 'About 50 kg', 'Swamp forest', '~9–6 MYA', [9, 6], 'An ape of southern China known from hundreds of teeth and several skulls, living while the first members of the human family were appearing in Africa.', [[25.1, 102.1, 'Lufeng, Yunnan, China']]),
   R('mammal', MM + 'Carnivores › Cats', 'Dinofelis', '🐆', 'carn', 'About 120 kg', 'Woodland', '~5–1.2 MYA', [5, 1.2], 'A jaguar-sized cat with teeth halfway between a lion’s and a sabre-tooth’s. Its bones lie in the same South African caves as our early relatives — who may well have been its prey.', [[-26.0, 27.73, 'Sterkfontein, South Africa'], [2.9, 36.05, 'Lothagam, Kenya']]),
   R('mammal', MM + 'Elephants & kin', 'Stegodon', '🐘', 'herb', 'Up to about 4 m at the shoulder', 'Forest', '~11 million–12,000 years ago', [11.6, 0.012], 'An elephant cousin whose long tusks grew so close together that its trunk had to hang to one side. Dwarf kinds lived on Indonesian islands, where the “hobbits” of Flores hunted them.', [[30.3, 77.5, 'Siwalik Hills, India'], [35.5, 104.6, 'Gansu, China'], [-7.4, 111.0, 'Java, Indonesia'], [-8.53, 120.46, 'Flores, Indonesia']]),
 ],
 
 quaternary: [
+  R('mammal', MM + 'Primates › Monkeys', 'Giant Gelada (Theropithecus oswaldi)', '🐒', 'herb', 'Males up to about 60 kg', 'Grassland', '~2–0.4 MYA', [2.0, 0.4], 'A grass-eating monkey as big as a large dog. At Olorgesailie in Kenya, stone tools lie among the bones of dozens of them — early humans ate them.', [[-1.58, 36.45, 'Olorgesailie, Kenya'], [4.0, 36.3, 'Koobi Fora, Kenya']]),
+  R('mammal', MM + 'Elephants & kin', 'Palaeoloxodon namadicus', '🐘', 'herb', 'Perhaps 5 m tall at the shoulder', 'River plains', '~800,000–20,000 years ago', [0.8, 0.02], 'A straight-tusked elephant of India’s Narmada valley that may have been the largest land mammal ever — larger even than Paraceratherium.', [[22.8, 77.7, 'Narmada valley, Madhya Pradesh, India']],
+    { debate: 'The record size is worked out from a few incomplete bones, so it is a careful estimate, not a measurement.' }),
   R('mammal', MM + 'Carnivores › Bears', 'Pygmy Giant Panda (Ailuropoda microta)', '🐼', 'herb', 'About 1 m long', 'Bamboo forest', '~2.4–2 MYA', [2.5, 2.0], 'The earliest known giant panda, half the size of today’s. Its teeth show it was already a bamboo specialist two million years ago.', [[24.6, 109.2, 'Liucheng, Guangxi, China']]),
   R('mammal', MM + 'Even-toed hoofed mammals', 'Pelorovis', '🐃', 'herb', 'About 3 m long; 1,200 kg', 'Savanna', '~2.5–0.8 MYA', [2.5, 0.8], 'A giant relative of the African buffalo, with curving horns each about a metre long. Early humans at Olduvai butchered them.', [P.olduvai]),
   R('mammal', MM + 'Carnivores › Hyenas', 'Giant Hyena (Pachycrocuta)', '🐺', 'carn', 'About 110 kg or more', 'Open country and caves', '~3–0.4 MYA', [3, 0.4], 'The largest hyena that ever lived, built to drag off carcasses and crack the biggest bones. At Zhoukoudian it shared — and fought over — the caves with Peking Man.', [P.zhoukoudian, [37.7, -2.4, 'Venta Micena, Spain']]),

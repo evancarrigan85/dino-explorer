@@ -222,6 +222,7 @@ const shelf = fs.readFileSync(SRC + 'shelf-data.js', 'utf8').trim();
 const relief = fs.readFileSync(SRC + 'relief-data.js', 'utf8').trim();
 const landcover = fs.readFileSync(SRC + 'landcover-data.js', 'utf8').trim();
 const rocks = fs.readFileSync(SRC + 'rocks-data.js', 'utf8').trim();
+const rivers = fs.readFileSync(SRC + 'rivers-data.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }
 const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
 let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
@@ -276,6 +277,10 @@ ${landcover}
 <!-- ─── GENERATED: climate read from dated rocks, for the deep-time land. Rebuild with tools/build_rocks.py — do not edit ─── -->
 <script>
 ${rocks}
+</script>
+<!-- ─── GENERATED: today's great rivers and lakes. Rebuild with tools/build_rivers.py — do not edit ─── -->
+<script>
+${rivers}
 </script>
 <!-- ─── END GENERATED: shelves ─── -->
 

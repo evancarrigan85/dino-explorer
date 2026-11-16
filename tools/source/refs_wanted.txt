@@ -367,3 +367,9 @@ beard1994 | Beard | 1994 | A diverse new primate fauna from middle Eocene fissur
 jin2007 | Jin | 2007 | The first skull of the earliest giant panda | a:Pygmy Giant Panda (Ailuropoda microta)
 rubel2017 | Rubel | 2017 | The climate of the European Alps: Shift of very high resolution Köppen-Geiger climate zones 1800–2100 | m:landcover | 10.1127/metz/2016/0816
 boucot2013 | Boucot | 2013 | Phanerozoic Paleoclimate | m:rocks | 10.2110/sepmcsp.11
+zhu2016q | Zhu | 2016 | A Silurian maxillate placoderm illuminates jaw evolution | a:Qilinyu
+rauhut2005 | Rauhut | 2005 | Discovery of a short-necked sauropod dinosaur from the Late Jurassic period of Patagonia | a:Brachytrachelopan
+rauhut2016 | Rauhut | 2016 | The theropod dinosaur Elaphrosaurus bambergi Janensch, 1920, from the Late Jurassic of Tendaguru, Tanzania | a:Elaphrosaurus
+kirkland2013 | Kirkland | 2013 | The Basal Nodosaurid Ankylosaur Europelta carbonensis n. gen., n. sp. from the Lower Cretaceous (Lower Albian) Escucha Formation of Northeastern Spain | a:Europelta
+weishampel2003 | Weishampel | 2003 | Osteology and phylogeny of Zalmoxes (n. g.), an unusual Euornithopod dinosaur from the latest Cretaceous of Romania | a:Zalmoxes
+larramendi2016 | Larramendi | 2016 | Proboscideans: Shoulder Height, Body Mass and Shape | a:Palaeoloxodon namadicus

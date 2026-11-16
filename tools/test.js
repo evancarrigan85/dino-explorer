@@ -7,9 +7,11 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   const b = await chromium.launch();
   const errs = [];
   const open = async (vp, hash = '', opts = {}) => {
-    const ctx = await b.newContext(Object.assign({ viewport: vp }, opts)); const p = await ctx.newPage();
+    const { keepDoor, ...ctxOpts } = opts; const ctx = await b.newContext(Object.assign({ viewport: vp }, ctxOpts)); const p = await ctx.newPage();
     p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-    await p.goto(URL + hash); await p.waitForTimeout(900); return p;
+    await p.goto(URL + hash); await p.waitForTimeout(900);
+    if (!opts.keepDoor) await p.evaluate(() => typeof closeDoor === 'function' && closeDoor());   // the front door would sit over everything
+    return p;
   };
   let p = await open({ width: 1400, height: 900 });
   ok('loads at 150 MYA', await p.evaluate(() => S.t === 150 && S.period.id === 'jurassic'));
@@ -241,6 +243,19 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     return coal.length > 30 && ice.length > 3 && mean(coal) < 25 && mean(ice) < -35; }));
   // animals arrive and leave
   ok('markers: the map notices arrivals and departures, and a crowded spot shows how many more are there', await p.evaluate(() => { const src = WorldMap.setLayers.toString(); return /born\[m\.key\]/.test(src) && /ghosts\.push/.test(src); }));
+  // the front door, rivers, and the second batch of animals
+  { const d = await open({ width: 1400, height: 900 }, '', { keepDoor: true });
+    ok('door: a fresh visit opens on the ways in, with Your story first', await d.evaluate(() => document.getElementById('door').classList.contains('show') && document.querySelectorAll('#door [data-door]').length === 7 && document.querySelector('#door .door-b').dataset.door === 'you'));
+    await d.click('#door [data-door="you"]'); await d.waitForTimeout(2600);
+    ok('door: “Your story” closes it and starts the journey', await d.evaluate(() => !document.getElementById('door').classList.contains('show') && S.jr && S.jr.id === 'you'));
+    await d.evaluate(() => endJourney()); await d.click('header .logo'); await d.waitForTimeout(300);
+    ok('door: the globe in the header opens it again; Escape closes it', await d.evaluate(() => document.getElementById('door').classList.contains('show')) && (await d.keyboard.press('Escape'), await d.evaluate(() => !document.getElementById('door').classList.contains('show'))));
+    await d.close();
+    const h = await open({ width: 1400, height: 900 }, '#150mya', { keepDoor: true });
+    ok('door: a shared link to a moment goes straight there, without the door', await h.evaluate(() => !document.getElementById('door').classList.contains('show') && S.t === 150));
+    await h.close(); }
+  ok('rivers: present, and drawn only after the Ice Age', await p.evaluate(() => typeof RIVERS_PACKED === 'string' && RIVERS_PACKED.length > 8000 && /after the last Ice Age/.test(document.getElementById('mapAbout').innerText)));
+  ok('coverage: Europe’s Cretaceous islands and Africa’s and South America’s Jurassic have their animals', await p.evaluate(() => ['Struthiosaurus', 'Zalmoxes', 'Ampelosaurus', 'Dicraeosaurus', 'Brachytrachelopan', 'Vulcanodon', 'Palaeoloxodon namadicus'].every(n => ALL.some(c => c.name === n))));
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

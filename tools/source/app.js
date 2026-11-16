@@ -1373,6 +1373,42 @@ function bindJourneys() {
   place(); window.addEventListener('resize', place);
 }
 
+// ── the front door: a few ways in, instead of landing in the Jurassic with a list ──
+const DOOR = [
+  ['you', '🧬', 'Your story', 'From a speck in a frozen sea to you — your own ancestors, stop by stop.'],
+  ['drift', '🌍', 'Watch the continents move', 'One supercontinent comes together and breaks into the world you know.'],
+  ['ext', '☠️', 'The great dyings', 'Five times most of life was wiped out. Watch each one happen.'],
+  ['animal', '🦖', 'Find an animal', 'Seven hundred of them, from the first animals to the dodo.'],
+  ['town', '📍', 'Where was my town?', 'See where your home was when the dinosaurs lived.'],
+  ['history', '🏛️', 'Empires, beliefs and trade', 'The last 5,500 years of people on the map.'],
+];
+function openDoor() {
+  closeFact();
+  $('door').innerHTML = `<div class="door-card" role="dialog" aria-modal="true" aria-label="Before Us — choose a way in">
+    <div class="door-h"><span class="door-globe">🌍</span><div><h2>Before Us</h2><p>720 million years of Earth, life and people — on a map that moves.</p></div></div>
+    <div class="door-grid">${DOOR.map(([id, ic, t, d], i) => `<button class="door-b${i ? '' : ' first'}" data-door="${id}"><span class="door-i">${ic}</span><b>${esc(t)}</b><span>${esc(d)}</span></button>`).join('')}</div>
+    <button class="door-skip" data-door="explore">Just let me explore →</button>
+    <p class="door-note">Every fact comes with its evidence, and where scientists disagree, the page says so.</p></div>`;
+  $('door').classList.add('show'); document.body.classList.add('door-open');
+  setTimeout(() => { const b = document.querySelector('#door .door-b'); if (b) b.focus({ preventScroll: true }); }, 50);
+}
+function closeDoor() { $('door').classList.remove('show'); document.body.classList.remove('door-open'); }
+function bindDoor() {
+  $('door').addEventListener('click', e => {
+    if (e.target === $('door')) { closeDoor(); return; }
+    const b = e.target.closest('[data-door]'); if (!b) return;
+    const id = b.dataset.door; closeDoor();
+    if (id === 'you' || id === 'drift') startJourney(id);
+    else if (id === 'ext') { switchTab('ext'); if (window.innerWidth < 768) setTimeout(() => $('rightPanel').scrollIntoView({ block: 'start', behavior: 'smooth' }), 60); }
+    else if (id === 'animal') { switchTab('life'); setTimeout(() => { $('q').focus(); $('q').scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60); }
+    else if (id === 'town') { $('pinPanel').classList.add('show'); setTimeout(() => $('pinSearch').focus(), 60); }
+    else if (id === 'history') { travel(tOfYear(117), () => { updatePlaces(); renderHumans(); }); switchTab('humans'); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('door').classList.contains('show')) closeDoor(); });
+  document.querySelector('header .logo').addEventListener('click', openDoor);
+  document.querySelector('header h1').addEventListener('click', openDoor);
+}
+
 // ── popup, hash, map wiring ─────────────────────────────────────────
 let factTimer = 0;
 function showFact(emoji, html, ms) {
@@ -1450,11 +1486,12 @@ function init() {
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }
   });
   window.addEventListener('hashchange', readHash);
-  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds(); bindTree(); bindJourneys(); bindExt();
+  if (window.innerWidth < 768) S.histOff = { rt: true, wk: true };   // on a phone, two history layers at a time to start with
+  bindDoor(); bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds(); bindTree(); bindJourneys(); bindExt();
   renderTimeline(); renderClimateStrip();
   if (!readHash()) {
     setTime(150);
-    setTimeout(() => showFact('🦕', '<b>Welcome, time explorers!</b> Drag the timeline to watch the continents drift. Zoom into any stretch of it for more detail. Tap an animal to see where its fossils were found — carried back to where that spot was at the time.<br><button class="linkbtn" data-journey="you" style="margin-top:6px">🧬 Start with your own story</button>', 16000), 900);
+    openDoor();
   }
   renderPanel();
 }

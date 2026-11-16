@@ -6316,5 +6316,108 @@
 ],
 "first": "",
 "title_expected": "Phanerozoic Paleoclimate"
+},
+"zhu2016q": {
+"doi": "10.1126/science.aah3764",
+"title": "A Silurian maxillate placoderm illuminates jaw evolution",
+"journal": "Science",
+"year": 2016,
+"authors": [
+"Zhu",
+"Ahlberg",
+"Pan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Qilinyu"
+],
+"first": "",
+"title_expected": "A Silurian maxillate placoderm illuminates jaw evolution"
+},
+"rauhut2005": {
+"doi": "10.1038/nature03623",
+"title": "Discovery of a short-necked sauropod dinosaur from the Late Jurassic period of Patagonia",
+"journal": "Nature",
+"year": 2005,
+"authors": [
+"Rauhut",
+"Remes",
+"Fechner",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Brachytrachelopan"
+],
+"first": "",
+"title_expected": "Discovery of a short-necked sauropod dinosaur from the Late Jurassic period of Patagonia"
+},
+"rauhut2016": {
+"doi": "10.1111/zoj.12425",
+"title": "The theropod dinosaur Elaphrosaurus bambergi Janensch, 1920, from the Late Jurassic of Tendaguru, Tanzania",
+"journal": "Zoological Journal of the Linnean Society",
+"year": 2016,
+"authors": [
+"Rauhut",
+"Carrano"
+],
+"type": "journal-article",
+"targets": [
+"a:Elaphrosaurus"
+],
+"first": "",
+"title_expected": "The theropod dinosaur Elaphrosaurus bambergi Janensch, 1920, from the Late Jurassic of Tendaguru, Tanzania"
+},
+"kirkland2013": {
+"doi": "10.1371/journal.pone.0080405",
+"title": "The Basal Nodosaurid Ankylosaur Europelta carbonensis n. gen., n. sp. from the Lower Cretaceous (Lower Albian) Escucha Formation of Northeastern Spain",
+"journal": "PLoS ONE",
+"year": 2013,
+"authors": [
+"Kirkland",
+"Alcalá",
+"Loewen",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Europelta"
+],
+"first": "",
+"title_expected": "The Basal Nodosaurid Ankylosaur Europelta carbonensis n. gen., n. sp. from the Lower Cretaceous (Lower Albian) Escucha Formation of Northeastern Spain"
+},
+"weishampel2003": {
+"doi": "10.1017/s1477201903001032",
+"title": "Osteology and phylogeny of Zalmoxes (n. g.), an unusual Euornithopod dinosaur from the latest Cretaceous of Romania",
+"journal": "Journal of Systematic Palaeontology",
+"year": 2003,
+"authors": [
+"Weishampel",
+"Jianu",
+"Csiki",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Zalmoxes"
+],
+"first": "",
+"title_expected": "Osteology and phylogeny of Zalmoxes (n. g.), an unusual Euornithopod dinosaur from the latest Cretaceous of Romania"
+},
+"larramendi2016": {
+"doi": "10.4202/app.00136.2014",
+"title": "Proboscideans: Shoulder Height, Body Mass and Shape",
+"journal": "Acta Palaeontologica Polonica",
+"year": 2015,
+"authors": [
+"Larramendi"
+],
+"type": "journal-article",
+"targets": [
+"a:Palaeoloxodon namadicus"
+],
+"first": "",
+"title_expected": "Proboscideans: Shoulder Height, Body Mass and Shape"
 }
 }

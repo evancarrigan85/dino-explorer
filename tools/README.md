@@ -42,6 +42,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `RELIEF_PACKED` (today's high ground) | `build_relief.py` |
 | `LANDCOVER_PACKED` (today's landscapes, from measured climate) | `build_landcover.py` |
 | `ROCKS` (deep-time climate from dated rocks) | `build_rocks.py` |
+| `RIVERS_PACKED` (today's great rivers and lakes) | `build_rivers.py` |
 
 ## Rebuilding the plate data
 

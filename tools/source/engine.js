@@ -410,6 +410,22 @@ const WorldMap = (() => {
   const COVER = { 1: ['#3d7a45', 'trees', '#1f5229'], 2: ['#b7b560', 'grass', '#7f8a35'], 3: ['#cfbd80', 'grass', '#a08a4a'], 4: ['#e8d29a', 'sand', '#b9975a'], 5: ['#7fae68', 'trees', '#4c7f43'],
     6: ['#b0ac62', 'grass', '#7d7a3a'], 7: ['#5c8a68', 'trees', '#35604a'], 8: ['#b5b39a', 'sand', '#8a8872'], 9: ['#f3f8fb', null, null] };
   let coverP = {}, coverTiles = {};
+  // Today's great rivers and lakes (build_rivers.py) — drawn only after the Ice Age, when the ice had gone.
+  const RIVERS = (() => {
+    if (typeof RIVERS_PACKED === 'undefined') return null;
+    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', lut = new Int8Array(128);
+    for (let i = 0; i < 64; i++) lut[A.charCodeAt(i)] = i;
+    const d = RIVERS_PACKED; let pos = 0;
+    const u = () => { let r = 0, sh = 0, c; do { c = lut[d.charCodeAt(pos++)]; r += (c & 31) * Math.pow(2, sh); sh += 5; } while (c & 32); return r; };
+    const z = () => { const v = u(); return v % 2 ? -(v + 1) / 2 : v / 2; };
+    const pts = () => { const n = u(), o = []; let x = 0, y = 0; for (let i = 0; i < n; i++) { x += z(); y += z(); o.push([x / 10, y / 10]); } return o; };
+    const byRank = [[], [], []], nl = u();
+    for (let i = 0; i < nl; i++) { const r = u(); byRank[r <= 2 ? 0 : r <= 4 ? 1 : 2].push(pts()); }
+    const lakes = [], nk = u();
+    for (let i = 0; i < nk; i++) { const ring = pts(); ring.push(ring[0]); const g = { type: 'Polygon', coordinates: [ring] }; if (d3.geoArea(g) > 2 * Math.PI) ring.reverse(); lakes.push(ring); }
+    return { lines: byRank.map(ls => ({ type: 'MultiLineString', coordinates: ls })), lakes: { type: 'MultiPolygon', coordinates: lakes.map(r => [r]) } };
+  })();
+  let riverP = null;
   // Deep time: climate read from the rocks (build_rocks.py). Each dated rock site paints a soft patch of the
   // land around it — coal green, salt and desert crust sandy, bauxite and kaolin deep green, glacial rubble white —
   // carried on its plate. Land with no patch has no rock evidence in the dataset, and stays plain.
@@ -634,7 +650,7 @@ const WorldMap = (() => {
     // Ice Age: the continental shelves come out of the sea as the water drops
     const sl = seaLevel(t);
     const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
-    if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; coverP = {}; }
+    if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; coverP = {}; riverP = null; }
     if (sl < -1 && SHELF_LV.length) {
       const lv = i => shelfP[i] || (shelfP[i] = geoP(SHELF_LV[i].geo));
       // the deepest level already reached is drawn in full; the next one fades in
@@ -715,6 +731,16 @@ const WorldMap = (() => {
         L.globalAlpha = 0.66 * cf; L.fillStyle = tint; L.fill(pth);
         if (grain) { L.globalAlpha = 0.5 * cf; L.fillStyle = coverTile(grain, ink); L.fill(pth); }
       }
+      L.globalAlpha = 1;
+    }
+    // the great rivers and lakes, after the Ice Age
+    const rvf = t <= 0.0095 ? 1 : t >= 0.0125 ? 0 : (0.0125 - t) / 0.003;
+    if (rvf > 0 && RIVERS) {
+      if (!riverP) riverP = { lines: RIVERS.lines.map(g => geoP(g)), lakes: geoP(RIVERS.lakes) };
+      L.globalAlpha = 0.95 * rvf; L.fillStyle = pal.o2; L.fill(riverP.lakes);
+      L.lineCap = L.lineJoin = 'round'; L.strokeStyle = '#5f8fae';
+      const zw = Math.min(2.2, 0.75 + zoom * 0.25);
+      [[1.5, 0.85], [1.0, 0.7], [0.65, zoom > 1.6 ? 0.6 : 0]].forEach(([w, a], i) => { if (!a) return; L.globalAlpha = a * rvf; L.lineWidth = w * zw; L.stroke(riverP.lines[i]); });
       L.globalAlpha = 1;
     }
     // today's mountains, tinted darker the higher they stand — only while the ranges were where they are now
