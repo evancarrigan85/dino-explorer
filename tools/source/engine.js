@@ -404,6 +404,26 @@ const WorldMap = (() => {
   const SHELF_LV = typeof SHELF_PACKED === 'undefined' ? [] : unpackLevels(SHELF_PACKED);
   // Today's high ground (metres above the sea). Mountains are young, so it is only drawn for the Ice Age and after.
   const RELIEF_LV = typeof RELIEF_PACKED === 'undefined' ? [] : unpackLevels(RELIEF_PACKED);
+  // Today's landscapes from measured climate (build_landcover.py). Only drawn for recorded history: further
+  // back the deserts and forests were elsewhere, and nothing here knows where.
+  const COVER_LV = typeof LANDCOVER_PACKED === 'undefined' ? [] : unpackLevels(LANDCOVER_PACKED);
+  const COVER = { 1: ['#3d7a45', 'trees', '#1f5229'], 2: ['#b7b560', 'grass', '#7f8a35'], 3: ['#cfbd80', 'grass', '#a08a4a'], 4: ['#e8d29a', 'sand', '#b9975a'], 5: ['#7fae68', 'trees', '#4c7f43'],
+    6: ['#b0ac62', 'grass', '#7d7a3a'], 7: ['#5c8a68', 'trees', '#35604a'], 8: ['#b5b39a', 'sand', '#8a8872'], 9: ['#f3f8fb', null, null] };
+  let coverP = {}, coverTiles = {};
+  // small repeating marks that give each landscape its grain: clumps for forest, ticks for grass, grains for sand
+  function coverTile(kind, ink) {
+    const key = kind + ink; if (coverTiles[key]) return coverTiles[key];
+    const n = Math.round(26 * dpr), cv = document.createElement('canvas'); cv.width = cv.height = n;
+    const x = cv.getContext('2d'); x.scale(n / 26, n / 26); x.fillStyle = x.strokeStyle = ink; x.lineCap = 'round';
+    const spots = [[4, 5], [15, 3], [22, 10], [9, 14], [18, 19], [3, 21], [12, 23], [24, 23]];        // fixed, so the grain never flickers
+    for (const [a, b] of spots) {
+      if (kind === 'trees') { x.beginPath(); x.arc(a, b, 1.7, Math.PI, 0); x.arc(a + 2.2, b, 1.3, Math.PI, 0); x.fill(); }
+      else if (kind === 'grass') { x.lineWidth = 0.7; x.beginPath(); x.moveTo(a, b); x.lineTo(a + 0.8, b - 2.2); x.moveTo(a + 1.6, b); x.lineTo(a + 2, b - 1.7); x.stroke(); }
+      else { x.beginPath(); x.arc(a, b, 0.55, 0, 7); x.fill(); }
+    }
+    const pat = lctx.createPattern(cv, 'repeat'); pat.setTransform && pat.setTransform(new DOMMatrix([1 / dpr, 0, 0, 1 / dpr, 0, 0]));
+    return coverTiles[key] = pat;
+  }
   let shelfKey = '', shelfP = {}, reliefP = {}, seabed = null;
   // ── motion: wakes behind drifting land, light on the water, eruptions and impacts ──
   // All of it runs off the clock, never chance, and all of it stops when the reader asks for less motion.
@@ -413,7 +433,7 @@ const WorldMap = (() => {
   const wake = () => { if (motion) { liveUntil = performance.now() + 14000; schedule(); } };
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
-  let fxHook = null, scn = null, scx = null;
+  let fxHook = null, scn = null, scx = null, glide = 0;
   const fxHelp = {
     get W() { return W; }, get H() { return H; }, get zoom() { return zoom; },
     pt: at => project(locate(at, time)),
@@ -588,7 +608,7 @@ const WorldMap = (() => {
     // Ice Age: the continental shelves come out of the sea as the water drops
     const sl = seaLevel(t);
     const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
-    if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; }
+    if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; coverP = {}; }
     if (sl < -1 && SHELF_LV.length) {
       const lv = i => shelfP[i] || (shelfP[i] = geoP(SHELF_LV[i].geo));
       // the deepest level already reached is drawn in full; the next one fades in
@@ -643,6 +663,17 @@ const WorldMap = (() => {
         L.fillStyle = beltColor(la + 3);
         L.fill(capPath(false, 90 - la)); L.fill(capPath(true, 90 - la));
       }
+    }
+    // today's landscapes, for recorded history only: a wash of colour and a grain for each
+    const cf = t <= 0.0058 ? 1 : t >= 0.009 ? 0 : (0.009 - t) / 0.0032;
+    if (cf > 0 && COVER_LV.length) {
+      for (const lv of COVER_LV) {
+        const [tint, grain, ink] = COVER[lv.m] || []; if (!tint) continue;
+        const pth = coverP[lv.m] || (coverP[lv.m] = geoP(lv.geo));
+        L.globalAlpha = 0.66 * cf; L.fillStyle = tint; L.fill(pth);
+        if (grain) { L.globalAlpha = 0.5 * cf; L.fillStyle = coverTile(grain, ink); L.fill(pth); }
+      }
+      L.globalAlpha = 1;
     }
     // today's mountains, tinted darker the higher they stand — only while the ranges were where they are now
     const rf = t <= 2.6 ? 1 : t >= 5 ? 0 : (5 - t) / 2.4;
@@ -976,13 +1007,14 @@ const WorldMap = (() => {
     W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     for (const cv of [canvas, fx, land, sheet]) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     for (const cv of q) { cv.width = Math.ceil(canvas.width / QS); cv.height = Math.ceil(canvas.height / QS); }
-    seabed = null; makePaper(); makePatterns(); setupProjection();
+    seabed = null; coverTiles = {}; makePaper(); makePatterns(); setupProjection();
   }
 
   // ── pointer, wheel and touch ───────────────────────────────────────
   function bind() {
     const pts = new Map(); let moved = 0, downAt = 0, pinch = 0;
     const pos = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    canvas.addEventListener('pointerdown', () => { glide++; });   // touching the map cancels any glide in progress
     canvas.addEventListener('pointerdown', wake); canvas.addEventListener('pointermove', e => { if (performance.now() > liveUntil - 9000) wake(); });
     canvas.addEventListener('pointerdown', e => {
       pts.set(e.pointerId, pos(e)); moved = 0; downAt = performance.now();
@@ -1083,8 +1115,21 @@ const WorldMap = (() => {
     /* Bring a place into view: turn the globe to it, or re-centre a zoomed flat map. */
     lookAt(at) {
       const ll = locate(at, time); if (!ll) return;
-      if (mode === 'globe') { rotL = -ll[0]; rotP = -Math.max(-70, Math.min(70, ll[1])); applyView(); }
-      else if (zoom > 1) { const p = proj(ll); if (p) { panX += W / 2 - p[0]; panY += H / 2 - p[1]; applyView(); } }
+      // glide there rather than jump; the globe turns the short way round
+      let to = null;
+      if (mode === 'globe') { let dl = ((-ll[0] - rotL + 540) % 360) - 180; to = { rotL: rotL + dl, rotP: -Math.max(-70, Math.min(70, ll[1])) }; }
+      else if (zoom > 1) { const p = proj(ll); if (p) to = { panX: panX + W / 2 - p[0], panY: panY + H / 2 - p[1] }; }
+      if (!to) return;
+      const from = { rotL, rotP, panX, panY }, far = mode === 'globe' ? Math.hypot(to.rotL - rotL, to.rotP - rotP) / 90 : Math.hypot(to.panX - panX, to.panY - panY) / Math.max(W, H);
+      if (!motion || far < 0.02) { if (mode === 'globe') { rotL = to.rotL; rotP = to.rotP; } else { panX = to.panX; panY = to.panY; } applyView(); return; }
+      const t0 = performance.now(), dur = 380 + 420 * Math.min(1, far), id = ++glide;
+      const step = now => {
+        if (id !== glide) return;                       // a newer move, or the reader's own drag, takes over
+        const k = Math.min(1, (now - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        for (const key in to) { const v = from[key] + (to[key] - from[key]) * e; if (key === 'rotL') rotL = v; else if (key === 'rotP') rotP = v; else if (key === 'panX') panX = v; else panY = v; }
+        applyView(); if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     },
     setLayers(l) { Object.assign(layers, l); dirty = true; schedule(); },
     select(key) { if (key !== selected) { selected = key; dirty = true; schedule(); } },

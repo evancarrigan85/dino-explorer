@@ -187,13 +187,19 @@ function updatePlaces() {
   WorldMap.setLayers({ places, regions: S.tab === 'humans' ? HIST_REGIONS.filter(r => histOn('emp') || r.key === S.sel) : [], routes: S.tab === 'humans' ? histRoutes() : [] });
 }
 
+// Turn the map to a place — unless the reader has just tapped the map itself. They are already looking
+// at what they tapped, so moving the view under their finger (or changing the time) would only be jarring.
+let noLook = 0;
+const lookAt = at => { if (performance.now() < noLook) return; WorldMap.lookAt(at); };
+const fromMapNow = () => performance.now() < noLook;
+
 // ── selecting things ────────────────────────────────────────────────
 function select(key, o = {}) {
   if (key === S.sel && !o.keep) key = null;
   S.sel = key; WorldMap.select(key);
   const c = key && BY_KEY[key];
   if (c) {
-    const look = () => { const s = sitesOf(c)[0]; if (s) WorldMap.lookAt(s.at); };
+    const look = () => { const s = sitesOf(c)[0]; if (s) lookAt(s.at); };
     if (!alive(c, S.t)) {
       let a = c.t[0], b = c.t[1];
       if (c.home) { a = Math.min(a, c.home.start); b = Math.max(b, c.home.end); if (a < b) { a = c.t[0]; b = c.t[1]; } }
@@ -210,7 +216,7 @@ function select(key, o = {}) {
 }
 function selectPlace(key, at, icon, html) {
   S.sel = S.sel === key ? null : key; WorldMap.select(S.sel);
-  if (S.sel) { WorldMap.lookAt(at); if (html) showFact(icon, html); }
+  if (S.sel) { lookAt(at); if (html) showFact(icon, html); }
   document.querySelectorAll('.site,.geo-card').forEach(el => el.classList.toggle('sel', el.dataset.key === S.sel));
 }
 
@@ -633,8 +639,8 @@ function selectDrowned(id, fromMap) {
   S.sel = 'drw:' + id; WorldMap.select(S.sel);
   if (S.tab !== 'humans') switchTab('humans');
   const target = tidy((d.lived[0] + d.lived[1]) / 2);
-  const look = () => { const pl = placeCache['d' + id]; if (pl) WorldMap.lookAt(pl.at); };
-  if (Math.abs(S.t - target) > Math.max(0.0005, target * 0.15)) {
+  const look = () => { const pl = placeCache['d' + id]; if (pl) lookAt(pl.at); };
+  if (!fromMap && Math.abs(S.t - target) > Math.max(0.0005, target * 0.15)) {
     const sp = Math.max(0.02, d.lived[0] * 1.6);
     if (isFull() || span() > sp * 3 || target > S.win[0] || target < S.win[1]) setWindow(Math.min(T_MAX, sp), 0, true);
     goTo(target, () => { updatePlaces(); look(); renderHumans(); });
@@ -647,7 +653,7 @@ function selectCulture(id, fromMap) {
   const c = CUL[id]; if (!c) return;
   const key = 'cul:' + id;
   S.sel = key; WorldMap.select(key);
-  const look = () => { const pl = placeCache['c' + id + '0']; if (pl) WorldMap.lookAt(pl.at); };
+  const look = () => { const pl = placeCache['c' + id + '0']; if (pl) lookAt(pl.at); };
   if (S.tab !== 'humans') switchTab('humans');
   if (!culActive(c)) {
     const mid = tidy((c.t[0] + c.t[1]) / 2);
@@ -787,9 +793,9 @@ function selectFind(id, fromMap) {
   S.sel = 'find:' + id; WorldMap.select(S.sel);
   updateMarkers();
   if (S.tab !== 'finds') switchTab('finds');
-  const look = () => { updatePlaces(); const pl = placeCache['f' + id]; if (pl) WorldMap.lookAt(pl.at); };
+  const look = () => { updatePlaces(); const pl = placeCache['f' + id]; if (pl) lookAt(pl.at); };
   if (f.at) {
-    travel(f.age == null ? 0 : f.age, () => { look(); renderFinds(); }) || look();
+    if (fromMap) look(); else travel(f.age == null ? 0 : f.age, () => { look(); renderFinds(); }) || look();
   } else updatePlaces();
   renderFinds();
   if (fromMap && window.innerWidth < 768) showFact(f.icon, '<b>' + esc(f.title) + '</b> (' + esc(f.when) + ') — ' + esc(f.story));
@@ -1075,7 +1081,7 @@ function selectHist(kind, id, fromMap) {
   const x = kind === 'rt' ? TRD[id] : WRK[id]; if (!x) return;
   S.sel = kind + ':' + id; WorldMap.select(S.sel);
   if (S.tab !== 'humans') switchTab('humans');
-  const look = () => { updatePlaces(); const pl = placeCache[(kind === 'rt' ? 'r' : 'w') + id]; if (pl) WorldMap.lookAt(pl.at); renderHumans(); };
+  const look = () => { updatePlaces(); const pl = placeCache[(kind === 'rt' ? 'r' : 'w') + id]; if (pl) lookAt(pl.at); renderHumans(); };
   const on = kind === 'rt' ? trdNow(x) : wrkNow(x), target = kind === 'rt' ? x.from + Math.min(400, (Math.min(x.to, NOW_YEAR) - x.from) * 0.5) : Math.min(x.done, NOW_YEAR - 1);
   if (!(inHistory() && on && fromMap)) travel(tOfYear(target), look) || look(); else look();
   renderHumans();
@@ -1100,7 +1106,7 @@ function selectEmpire(id, fromMap) {
   const e = EMP[id]; if (!e) return;
   S.sel = 'emp:' + id; WorldMap.select(S.sel);
   if (S.tab !== 'humans') switchTab('humans');
-  const look = () => { updatePlaces(); const pl = placeCache['e' + id]; if (pl) WorldMap.lookAt(pl.at); renderHumans(); };
+  const look = () => { updatePlaces(); const pl = placeCache['e' + id]; if (pl) lookAt(pl.at); renderHumans(); };
   if (!(fromMap && empNow(e))) travel(tOfYear(e.peak), look) || look(); else look();
   renderHumans();
   if (fromMap && window.innerWidth < 768) showFact(e.icon, '<b>' + esc(e.name) + '</b> — ' + esc(e.story));
@@ -1110,7 +1116,7 @@ function selectBelief(id, fromMap) {
   const b = BEL[id]; if (!b) return;
   S.sel = 'bel:' + id; WorldMap.select(S.sel);
   if (S.tab !== 'humans') switchTab('humans');
-  const look = () => { updatePlaces(); const pl = placeCache['b' + id]; if (pl) WorldMap.lookAt(pl.at); renderHumans(); };
+  const look = () => { updatePlaces(); const pl = placeCache['b' + id]; if (pl) lookAt(pl.at); renderHumans(); };
   // go to its beginning unless we are already somewhere in its lifetime
   const start = Math.max(b.year, -5400) + (b.spread.length ? Math.min(400, (b.spread[b.spread.length - 1][0] - b.year) * 0.5) : 0);
   if (!(inHistory() && belNow(b) && yearAt(S.t) >= b.year)) travel(tOfYear(start), look) || look(); else look();
@@ -1221,7 +1227,7 @@ function setPin(lat, lon, name, quiet) {
   S.pin = { lat, lon, name: name || (Math.abs(lat).toFixed(1) + '°' + (lat >= 0 ? 'N' : 'S') + ' ' + Math.abs(lon).toFixed(1) + '°' + (lon >= 0 ? 'E' : 'W')), at };
   WorldMap.setLayers({ pin: { at, name: S.pin.name, trail } });
   updatePinCard(); writeHash();
-  if (!quiet) { $('pinPanel').classList.remove('show'); WorldMap.lookAt(at); }
+  if (!quiet) { $('pinPanel').classList.remove('show'); lookAt(at); }
 }
 function updatePinCard() {
   const P = S.pin, card = $('pinCard'); if (!P) { card.classList.remove('show'); return; }
@@ -1406,6 +1412,7 @@ function init() {
     sparks: SPARKS.map(([lat, lon, from, to, kind, r, name]) => ({ at: WorldMap.attach(lat, lon, (from + to) / 2), from, to, kind, r, name })),
   });
   WorldMap.onPick = (h, x, y) => {
+    if (h) noLook = performance.now() + 2500;
     if (!h) {
       $('mapAbout').classList.remove('show');
       if ($('pinPanel').classList.contains('show')) { const q = WorldMap.pickPresent(x, y); if (q) setPin(+q.lat.toFixed(2), +q.lon.toFixed(2), null); else $('pinHint').textContent = 'That spot was open ocean then — tap land, or type a city.'; }
@@ -1430,7 +1437,7 @@ function init() {
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
-  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
   $('mapNote').onclick = () => $('mapAbout').classList.toggle('show'); $('mapAboutX').onclick = () => $('mapAbout').classList.remove('show');
   $('eventsRibbon').onclick = () => switchTab('insights');
   $('fpClose').onclick = closeFact;

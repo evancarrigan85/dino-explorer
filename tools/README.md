@@ -22,6 +22,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_time.js` | Epochs, ages and timeline events |
 | `data_cultures.js`, `data_drowned.js`, `data_foodweb.js` | Ways of life, drowned sites, food webs |
 | `data_finds.js` | The Finds tab: the history of fossil discovery |
+| `data_gaps.js` | Animals added to fill regions and periods the map had nothing in |
 | `data_roots.js` | Proto-mammals, early mammals and dinosaurs added with the family trees |
 | `data_you.js` | The reader's own line through time, eruptions and impacts on the map, the drift journey |
 | `data_history.js` | Empires, kingdoms and beliefs of the last 5,500 years (Humans tab) |
@@ -39,6 +40,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `PLATE_DATA` (moving continents) | `build_plates.py` → `encode_plates.mjs` |
 | `SHELF_PACKED` (Ice Age shorelines) | `build_shelf.py` |
 | `RELIEF_PACKED` (today's high ground) | `build_relief.py` |
+| `LANDCOVER_PACKED` (today's landscapes, from measured climate) | `build_landcover.py` |
 
 ## Rebuilding the plate data
 

@@ -13,18 +13,18 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 | | |
 |---|---|
-| Animals | 636 + 24 members of the human family; 168 dinosaurs; 46 proto-mammals (synapsids) |
+| Animals | 673 + 24 members of the human family; 183 dinosaurs; 46 proto-mammals (synapsids) |
 | Family trees | The road to mammals (synapsids → mammals) and the dinosaur family tree, under Life → 🌳 Family trees |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 337, every one a published work confirmed in Crossref (336 journal articles, one book) |
+| References | 355, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 126 passing |
-| Page | about 1.23 MB, one file |
+| Checks | 132 passing |
+| Page | about 1.28 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -65,6 +65,48 @@ What is missing, most important first:
    cannot be fixed cheaply; it is stated in "How this map is made" as part of Release 4.
 
 ---
+
+## Release 0 — Make it feel real (Evan, 16 Nov: "richer, more impactful, more natural")
+
+What shipped that day: a tap on the map no longer moves the map or the time (it used to jump to the
+animal's first fossil site); view changes glide; and for recorded history the land is coloured and
+textured from a published climate-zone map. What is still to do, most valuable first:
+
+1. **Landscape in deep time, from the rocks.** The land texture is research-based only for the last
+   6,000 years. For everything older it is still the latitude sketch. Three sources, in order of how
+   soon they can be used:
+   - *Climate-indicator rocks* (coal = wet, salt = dry, glacial rubble = ice, bauxite = hot and wet):
+     8,698 dated points are already on disk in the GPlates web-service clone (Release 3). Paint the
+     land near each from its rock type, attached to the plates, and leave the rest plain. **Ask Evan**
+     about the dataset's terms first.
+   - *Ancient shorelines and mountains* (Release 2) — needs `www.earthbyte.org` or `zenodo.org`.
+   - *Ice Age vegetation* (the mammoth steppe, shrunken rainforests): find a published, downloadable
+     reconstruction of the world 21,000 years ago before promising this.
+2. **Custom sprites** (Release 6) — the single biggest change to how it looks. Blocked on the
+   PixelLab token.
+3. **Animals that arrive and leave.** A short rise when an animal first appears as time moves and a
+   fade when it dies out, as the extinction scenes already do.
+4. **Fewer, calmer pins.** Cluster markers that overlap; show labels only for what is selected or
+   hovered; let the history layers default to two at a time on a phone.
+5. **A front door** (Release 7d) with "Your story" as the first thing offered.
+6. **Rivers and lakes** for the last 5 million years from Natural Earth; **night lights** for the
+   last century.
+7. **Sound**, off by default. Ask Evan first.
+
+## Release 0b — Animal coverage (Evan, 16 Nov: "lots of areas not having anything")
+
+A count of animals by period and region found whole continents empty. 37 animals were added to fill
+the worst gaps (India, Australia, Antarctica and Siberia in the dinosaur age; Africa and East Asia in
+the Ice Age). Still thin, and next in line — re-run the count before choosing:
+
+- **Carboniferous** outside North America and Europe (almost nothing: it was the ice-covered south).
+- **Ordovician, Silurian and Devonian** in Asia, South America and Africa.
+- **Permian** in China, India and Australia; **Triassic** in India, Australia and Siberia.
+- **Cretaceous** Europe (11) against North America (63); **Jurassic** South America and Africa.
+- **Paleogene and Neogene** in Australia, Africa and East Asia; **Quaternary** Africa and India.
+- North America is over-represented everywhere, because most famous fossils are from there. Say so
+  on the page rather than hide it: empty map is partly empty science.
+Each new animal goes in `tools/source/data_gaps.js` with the paper that described it.
 
 ## Release 1 — Finish the sources (no blockers; start here)
 
@@ -400,6 +442,11 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — A calmer, truer map; 37 animals for the empty regions.** Tapping the map no longer
+  moves it or changes the time; moves glide. For recorded history the land is drawn from a published
+  climate-zone map (rainforest, savanna, steppe, desert, temperate, Mediterranean, boreal, tundra,
+  ice), each with its own grain (`tools/build_landcover.py`). 37 animals chosen by a count of empty
+  regions, 17 with the paper that described them. 132 checks.
 - **16 Nov 2026 — Shifting borders, trade routes, great works; the new name.** Seven empires change
   shape by date; 11 trade routes drawn on the map for the years they ran (Incense Route, Silk Roads,
   monsoon sea routes, trans-Sahara, Viking river roads, Inca Road, Cape Route, Manila galleons, the

@@ -119,7 +119,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('drowned: later it is under water, shown with a wave pin', await p.evaluate(() => /under water/.test(document.querySelector('#pane-humans .profile').innerText) && placeCache['ddoggerland'].icon === '🌊'));
   await p.click('#tab-life'); await p.waitForTimeout(150);
   // peer-reviewed sources
-  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 335 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
+  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 350 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
   await p.click('#tab-life'); await p.fill('#q', 'tiktaalik'); await p.waitForTimeout(300); await p.click('#lifeList [data-key="tiktaalik"]'); await p.waitForTimeout(2000);
   ok('sources: an opened card lists its paper with a DOI link', await p.evaluate(() => { const el = document.querySelector('#lifeList .creature-card.active .sources'); return !!el && /Daeschler/.test(el.innerText) && !!el.querySelector('a[href^="https://doi.org/10.1038/"]'); }));
   await p.fill('#q', ''); await p.waitForTimeout(200);
@@ -209,6 +209,23 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('works: something lost is gone from the map afterwards', await p.evaluate(() => wrkNow(WRK.alexandria, -100) && !wrkNow(WRK.alexandria, 400) && !wrkNow(WRK.giza, -3000) && wrkNow(WRK.giza, 2000)));
   ok('history sources: routes and works with a paper cite it', await p.evaluate(() => ['silkroad', 'monsoon', 'atlantic'].every(id => (SRCMAP['r:' + id] || []).length) && ['stonehenge', 'giza', 'pantheon', 'machupicchu', 'lhc', 'smallpox'].every(id => (SRCMAP['w:' + id] || []).length)));
   await p.evaluate(() => { S.sel = null; WorldMap.select(null); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(200);
+  // a tap on the map must not move the map or the time
+  for (const mode of ['flat', 'globe']) {
+    await p.evaluate(m => { switchTab('life'); setWindow(T_MAX, 0, true); setTime(150); S.sel = null; WorldMap.select(null); WorldMap.setMode(m); WorldMap.resetView(); if (m === 'flat') { const bb = document.getElementById('mapCanvas').getBoundingClientRect(); WorldMap.zoomAt(bb.width * 0.4, bb.height * 0.3, 3); } }, mode);
+    await p.waitForTimeout(900);
+    const pick = await p.evaluate(() => { const bb = document.getElementById('mapCanvas').getBoundingClientRect(); for (let y = 20; y < bb.height; y += 6) for (let x = 20; x < bb.width; x += 6) { const h = WorldMap.hit(x, y); if (h && h.marker && BY_KEY[h.marker.key].sites.length > 1) return { x: bb.left + x, y: bb.top + y, key: h.marker.key }; } return null; });
+    const probe = () => p.evaluate(() => { const bb = document.getElementById('mapCanvas').getBoundingClientRect(); return [[.3, .4], [.5, .5], [.45, .3], [.6, .6]].map(([fx, fy]) => { const q = WorldMap.pickPresent(bb.width * fx, bb.height * fy); return q ? q.lat.toFixed(1) + ',' + q.lon.toFixed(1) : 'sea'; }).join('|'); });
+    const before = await probe(); if (pick) await p.mouse.click(pick.x, pick.y); await p.waitForTimeout(1500);
+    ok('map tap (' + mode + '): choosing a marker on the map leaves the view and the time where they were', !!pick && before === await probe() && await p.evaluate(k => S.sel === k && S.t === 150, pick && pick.key), JSON.stringify(pick));
+    await p.evaluate(() => { noLook = 0; select('giraffatitan', { keep: true }); }); await p.waitForTimeout(1500);
+    ok('map (' + mode + '): choosing from the list still turns the map to the animal', before !== await probe());
+  }
+  await p.evaluate(() => { WorldMap.setMode('flat'); WorldMap.resetView(); S.sel = null; WorldMap.select(null); }); await p.waitForTimeout(300);
+  // landscapes from measured climate, and the animals that fill the empty regions
+  ok('landscape: the land-cover layer is present and credited to its source', await p.evaluate(() => typeof LANDCOVER_PACKED === 'string' && LANDCOVER_PACKED.length > 8000 && /Rubel/.test(document.getElementById('mapAbout').innerText) && /Landscapes\./.test(document.getElementById('mapAbout').innerText)));
+  ok('coverage: regions that were empty now have animals', await p.evaluate(() => { const inP = (id, test) => { const q = PERIODS.find(x => x.id === id); return ALL.filter(a => !a.hom && a.t[0] > q.end && a.t[1] < q.start && (a.sites || []).some(test)).length; };
+    const india = s => s[0] < 35 && s[0] > 5 && s[1] >= 68 && s[1] < 92, aus = s => s[1] >= 110 && s[1] < 156 && s[0] < -10, ant = s => s[0] < -60, sib = s => s[0] >= 50 && s[1] >= 60;
+    return inP('jurassic', india) >= 1 && inP('jurassic', aus) >= 1 && inP('jurassic', sib) >= 1 && inP('cretaceous', india) >= 3 && inP('cretaceous', sib) >= 1 && inP('paleogene', ant) >= 1 && inP('paleogene', india) >= 6 && inP('triassic', aus) >= 1 && ALL.length >= 690; }));
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

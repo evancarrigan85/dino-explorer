@@ -5982,5 +5982,321 @@
 ],
 "first": "",
 "title_expected": "Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC"
+},
+"choo2014": {
+"doi": "10.1038/srep05242",
+"title": "The largest Silurian vertebrate and its palaeoecological implications",
+"journal": "Scientific Reports",
+"year": 2014,
+"authors": [
+"Choo",
+"Zhu",
+"Zhao",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Megamastax"
+],
+"first": "",
+"title_expected": "The largest Silurian vertebrate and its palaeoecological implications"
+},
+"gess2018": {
+"doi": "10.1126/science.aaq1645",
+"title": "A tetrapod fauna from within the Devonian Antarctic Circle",
+"journal": "Science",
+"year": 2018,
+"authors": [
+"Gess",
+"Ahlberg"
+],
+"type": "journal-article",
+"targets": [
+"a:Tutusius"
+],
+"first": "",
+"title_expected": "A tetrapod fauna from within the Devonian Antarctic Circle"
+},
+"pol2012": {
+"doi": "10.1098/rspb.2012.0660",
+"title": "A Middle Jurassic abelisaurid from Patagonia and the early diversification of theropod dinosaurs",
+"journal": "Proceedings of the Royal Society B: Biological Sciences",
+"year": 2012,
+"authors": [
+"Pol",
+"Rauhut"
+],
+"type": "journal-article",
+"targets": [
+"a:Eoabelisaurus"
+],
+"first": "",
+"title_expected": "A Middle Jurassic abelisaurid from Patagonia and the early diversification of theropod dinosaurs"
+},
+"remes2009": {
+"doi": "10.1371/journal.pone.0006924",
+"title": "A New Basal Sauropod Dinosaur from the Middle Jurassic of Niger and the Early Evolution of Sauropoda",
+"journal": "PLoS ONE",
+"year": 2009,
+"authors": [
+"Remes",
+"Ortega",
+"Fierro",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Spinophorosaurus"
+],
+"first": "",
+"title_expected": "A New Basal Sauropod Dinosaur from the Middle Jurassic of Niger and the Early Evolution of Sauropoda"
+},
+"sereno1994": {
+"doi": "10.1126/science.266.5183.267",
+"title": "Early Cretaceous Dinosaurs from the Sahara",
+"journal": "Science",
+"year": 1994,
+"authors": [
+"Sereno",
+"Wilson",
+"Larsson",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Afrovenator"
+],
+"first": "",
+"title_expected": "Early Cretaceous Dinosaurs from the Sahara"
+},
+"wilson2010": {
+"doi": "10.1371/journal.pbio.1000322",
+"title": "Predation upon Hatchling Dinosaurs by a New Snake from the Late Cretaceous of India",
+"journal": "PLoS Biology",
+"year": 2010,
+"authors": [
+"Wilson",
+"Mohabey",
+"Peters",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Sanajeh"
+],
+"first": "",
+"title_expected": "Predation upon Hatchling Dinosaurs by a New Snake from the Late Cretaceous of India"
+},
+"csiki2010": {
+"doi": "10.1073/pnas.1006970107",
+"title": "An aberrant island-dwelling theropod dinosaur from the Late Cretaceous of Romania",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2010,
+"authors": [
+"Csiki",
+"Vremir",
+"Brusatte",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Balaur"
+],
+"first": "",
+"title_expected": "An aberrant island-dwelling theropod dinosaur from the Late Cretaceous of Romania"
+},
+"stein2010": {
+"doi": "10.1073/pnas.1000781107",
+"title": "Small body size and extreme cortical bone remodeling indicate phyletic dwarfism in Magyarosaurus dacus (Sauropoda: Titanosauria)",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2010,
+"authors": [
+"Stein",
+"Csiki",
+"Rogers",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Magyarosaurus"
+],
+"first": "",
+"title_expected": "Small body size and extreme cortical bone remodeling indicate phyletic dwarfism in Magyarosaurus dacus (Sauropoda: Titanosauria)"
+},
+"perezmoreno1994": {
+"doi": "10.1038/370363a0",
+"title": "A unique multitoothed ornithomimosaur dinosaur from the Lower Cretaceous of Spain",
+"journal": "Nature",
+"year": 1994,
+"authors": [
+"Pérez-Moreno",
+"Luis Sanz",
+"Buscalioni",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Pelecanimimus"
+],
+"first": "",
+"title_expected": "A unique multitoothed ornithomimosaur dinosaur from the Lower Cretaceous of Spain"
+},
+"hocknull2009": {
+"doi": "10.1371/journal.pone.0006190",
+"title": "New Mid-Cretaceous (Latest Albian) Dinosaurs from Winton, Queensland, Australia",
+"journal": "PLoS ONE",
+"year": 2009,
+"authors": [
+"Hocknull",
+"White",
+"Tischler",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Diamantinasaurus",
+"a:Australovenator"
+],
+"first": "",
+"title_expected": "New Mid-Cretaceous (Latest Albian) Dinosaurs from Winton, Queensland, Australia"
+},
+"barker2017": {
+"doi": "10.1038/s41598-017-03671-3",
+"title": "Complex neuroanatomy in the rostrum of the Isle of Wight theropod Neovenator salerii",
+"journal": "Scientific Reports",
+"year": 2017,
+"authors": [
+"Barker",
+"Naish",
+"Newham",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Neovenator"
+],
+"first": "",
+"title_expected": "Complex neuroanatomy in the rostrum of the Isle of Wight theropod Neovenator salerii"
+},
+"bond2015": {
+"doi": "10.1038/nature14120",
+"title": "Eocene primates of South America and the African origins of New World monkeys",
+"journal": "Nature",
+"year": 2015,
+"authors": [
+"Bond",
+"Tejedor",
+"Campbell",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Perupithecus"
+],
+"first": "",
+"title_expected": "Eocene primates of South America and the African origins of New World monkeys"
+},
+"gheerbrant2009": {
+"doi": "10.1073/pnas.0900251106",
+"title": "Paleocene emergence of elephant relatives and the rapid radiation of African ungulates",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2009,
+"authors": [
+"Gheerbrant"
+],
+"type": "journal-article",
+"targets": [
+"a:Eritherium"
+],
+"first": "",
+"title_expected": "Paleocene emergence of elephant relatives and the rapid radiation of African ungulates"
+},
+"rose2014": {
+"doi": "10.1038/ncomms6570",
+"title": "Early Eocene fossils suggest that the mammalian order Perissodactyla originated in India",
+"journal": "Nature Communications",
+"year": 2014,
+"authors": [
+"Rose",
+"Holbrook",
+"Rana",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Cambaytherium"
+],
+"first": "",
+"title_expected": "Early Eocene fossils suggest that the mammalian order Perissodactyla originated in India"
+},
+"datta2024": {
+"doi": "10.1038/s41598-024-58377-0",
+"title": "Largest known madtsoiid snake from warm Eocene period of India suggests intercontinental Gondwana dispersal",
+"journal": "Scientific Reports",
+"year": 2024,
+"authors": [
+"Datta",
+"Bajpai"
+],
+"type": "journal-article",
+"targets": [
+"a:Vasuki"
+],
+"first": "",
+"title_expected": "Largest known madtsoiid snake from warm Eocene period of India suggests intercontinental Gondwana dispersal"
+},
+"beard1994": {
+"doi": "10.1038/368604a0",
+"title": "A diverse new primate fauna from middle Eocene fissure-fillings in southeastern China",
+"journal": "Nature",
+"year": 1994,
+"authors": [
+"Beard",
+"Qi",
+"Dawson",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Eosimias"
+],
+"first": "",
+"title_expected": "A diverse new primate fauna from middle Eocene fissure-fillings in southeastern China"
+},
+"jin2007": {
+"doi": "10.1073/pnas.0704198104",
+"title": "The first skull of the earliest giant panda",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2007,
+"authors": [
+"Jin",
+"Ciochon",
+"Dong",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Pygmy Giant Panda (Ailuropoda microta)"
+],
+"first": "",
+"title_expected": "The first skull of the earliest giant panda"
+},
+"rubel2017": {
+"doi": "10.1127/metz/2016/0816",
+"title": "The climate of the European Alps: Shift of very high resolution Köppen-Geiger climate zones 1800–2100",
+"journal": "Meteorologische Zeitschrift",
+"year": 2017,
+"authors": [
+"Rubel",
+"Brugger",
+"Haslinger",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:landcover"
+],
+"first": "",
+"title_expected": "The climate of the European Alps: Shift of very high resolution Köppen-Geiger climate zones 1800–2100"
 }
 }

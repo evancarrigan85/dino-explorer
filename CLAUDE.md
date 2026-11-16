@@ -74,6 +74,8 @@ builds, passes the checks and has been looked at.
   corrections in `data_fix.js`, merges every `data_*.js` file, validates, and writes one HTML file
   with everything inlined: styles, markup, d3-geo, plate data, shelf data, relief data, the map
   engine, the app and the quiz.
+- **A tap on the map never moves the map or the time.** Selections made from the map set `noLook`,
+  and `lookAt()` in `app.js` honours it; only choices made from a list turn the map, and they glide.
 - `engine.js` is `WorldMap`: a canvas map that carries today's coastlines back in time on their
   tectonic plates (Merdith et al. 2021), with Ice Age shorelines, ice, relief, labels, markers and a
   pin. It knows nothing about animals.
@@ -97,7 +99,8 @@ builds, passes the checks and has been looked at.
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `k:` empire id, `b:` belief id,
-  `r:` trade route id, `w:` great work id, `m:` map layer (`plates|sealevel|climate|history|time`).
+  `r:` trade route id, `w:` great work id, `m:` map layer
+  (`plates|sealevel|climate|landcover|history|time`).
 
 ## Network
 

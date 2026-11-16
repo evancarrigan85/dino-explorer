@@ -15,6 +15,7 @@ let MORE = {}; try { MORE = require('./data_more.js').MORE; } catch (e) {}
 const { CENOZOIC, WEIRD_NAMES } = require('./data_cenozoic.js');
 const { EARLY } = require('./data_early.js');
 const { ROOTS } = require('./data_roots.js');
+const { GAPS } = require('./data_gaps.js');
 const slug = s => String(s).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const problems = [];
 
@@ -45,7 +46,7 @@ for (const p0 of old.PERIODS) {
     byId[m.move || p0.id].creatures.push(tidy(c));
   }
 }
-for (const set of [NEW, MORE, CENOZOIC, EARLY, ROOTS]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
+for (const set of [NEW, MORE, CENOZOIC, EARLY, ROOTS, GAPS]) for (const [pid, list] of Object.entries(set)) for (const c0 of list) {
   const c = Object.assign({}, c0); c.g = C.G_FIX[c.name] || c.g; c.c = c.c || C.LINEAGE[c.name];
   if (!byId[pid]) { problems.push('bad period ' + pid); continue; }
   byId[pid].creatures.push(tidy(c));
@@ -189,7 +190,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
@@ -219,6 +220,7 @@ const d3 = fs.readFileSync(SRC + 'd3-geo-bundle.min.js', 'utf8').trim();
 const plates = fs.readFileSync(SRC + 'plates-data.js', 'utf8').trim();
 const shelf = fs.readFileSync(SRC + 'shelf-data.js', 'utf8').trim();
 const relief = fs.readFileSync(SRC + 'relief-data.js', 'utf8').trim();
+const landcover = fs.readFileSync(SRC + 'landcover-data.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }
 const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
 let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
@@ -265,6 +267,10 @@ ${shelf}
 <!-- ─── GENERATED: today's high ground, for the Ice Age map. Rebuild with tools/build_relief.py — do not edit ─── -->
 <script>
 ${relief}
+</script>
+<!-- ─── GENERATED: today's landscapes from measured climate. Rebuild with tools/build_landcover.py — do not edit ─── -->
+<script>
+${landcover}
 </script>
 <!-- ─── END GENERATED: shelves ─── -->
 
