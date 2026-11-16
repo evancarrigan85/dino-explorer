@@ -38,6 +38,8 @@
   </div>
   <div class="tl-bottom">
     <button id="playBtn" title="Play through time">▶ Play</button>
+    <button id="journeyBtn" title="Guided journeys through time" aria-haspopup="true" aria-expanded="false">🧭 Journeys</button>
+    <div id="journeyMenu" role="menu"></div>
     <div id="timelineHint">Drag to travel through time · scroll or pinch on the timeline to zoom in · drag the white window above to move</div>
     <div class="period-nav">
       <button class="nav-btn" id="prevBtn" title="Previous period (←)" aria-label="Previous period">◀</button>
@@ -97,8 +99,10 @@
         <div class="pin-hint" id="pinHint">…or tap any land on the map.</div>
       </div>
       <div id="pinCard"></div>
+      <div id="journey" role="region" aria-label="Journey" aria-live="polite"></div>
       <div id="mapTip"></div>
     </div>
+    <button id="youBar" title="What your own ancestors were at this moment"></button>
     <div class="events-ribbon hidden" id="eventsRibbon" title="Open the Insights tab">
       <span class="event-icon" id="eventIcon">💥</span>
       <span id="eventText"></span>

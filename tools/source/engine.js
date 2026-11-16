@@ -216,7 +216,7 @@ const WorldMap = (() => {
   let centerLon = 0;                          // flat view central meridian
   let proj = null, baseScale = 1, baseT = [0, 0];
   let dirty = true, raf = 0;
-  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], pin: null };
+  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], pin: null };
   let selected = null, hits = [], rings = [];
   let pal = null;
   const QS = 4;                               // soft effects are built at 1/4 size
@@ -405,6 +405,12 @@ const WorldMap = (() => {
   // Today's high ground (metres above the sea). Mountains are young, so it is only drawn for the Ice Age and after.
   const RELIEF_LV = typeof RELIEF_PACKED === 'undefined' ? [] : unpackLevels(RELIEF_PACKED);
   let shelfKey = '', shelfP = {}, reliefP = {}, seabed = null;
+  // ── motion: wakes behind drifting land, light on the water, eruptions and impacts ──
+  // All of it runs off the clock, never chance, and all of it stops when the reader asks for less motion.
+  let motion = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  let trail = null, tctx = null, trailKey = '', trailT = null, trailLife = 0;   // where the land was a moment ago
+  let liveUntil = 0, swell = null, sphereP = null, sphereKey = '';
+  const wake = () => { if (motion) { liveUntil = performance.now() + 14000; schedule(); } };
 
   // ── drawing ────────────────────────────────────────────────────────
   const sink = {
@@ -576,6 +582,26 @@ const WorldMap = (() => {
       c.globalAlpha = 1;
     }
 
+    // ── the wake: a pale ghost of where the land was a moment ago, fading like a long exposure ──
+    if (motion) {
+      if (!trail) { trail = document.createElement('canvas'); tctx = trail.getContext('2d'); }
+      if (trail.width !== land.width || trail.height !== land.height) { trail.width = land.width; trail.height = land.height; trailKey = ''; }
+      const tk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2)].join('|');
+      tctx.setTransform(1, 0, 0, 1, 0, 0);
+      if (tk !== trailKey) { trailKey = tk; trailT = null; trailLife = 0; tctx.clearRect(0, 0, trail.width, trail.height); }
+      const moved = trailT !== null && trailT !== t;
+      if (moved || trailLife > 0) {
+        tctx.globalCompositeOperation = 'destination-out'; tctx.globalAlpha = 1; tctx.fillStyle = `rgba(0,0,0,${moved ? 0.085 : 0.13})`; tctx.fillRect(0, 0, trail.width, trail.height);
+        if (moved) {
+          tctx.globalCompositeOperation = 'source-over'; tctx.globalAlpha = 0.42; tctx.drawImage(land, 0, 0);       // `land` still holds the previous frame
+          tctx.globalCompositeOperation = 'source-in'; tctx.globalAlpha = 1; tctx.fillStyle = '#b9a06a'; tctx.fillRect(0, 0, trail.width, trail.height);
+          trailLife = 34;
+        } else if (--trailLife <= 0) tctx.clearRect(0, 0, trail.width, trail.height);
+        tctx.globalCompositeOperation = 'source-over';
+      }
+      trailT = t;
+    }
+
     // ── land, built on its own layer so overlapping blocks merge ──
     const lp = landPath(t);
     const L = lctx;
@@ -635,6 +661,7 @@ const WorldMap = (() => {
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.imageSmoothingEnabled = true;
     c.drawImage(q[3], 0, 0, land.width, land.height);
+    if (motion && trail && trailLife > 0) { c.save(); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clip(sphere); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 0.7; c.drawImage(trail, 0, 0); c.restore(); }
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     // Plate pieces overlap along their seams, so stroking every piece and
     // then laying the merged land on top leaves ink only on true coasts.
@@ -833,11 +860,60 @@ const WorldMap = (() => {
   }
   // the pulsing rings of the current selection live on their own small layer,
   // so they can animate without redrawing the whole map
+  // A tile of soft, wavy strokes; two copies sliding past each other read as light moving on water.
+  function makeSwell() {
+    const n = 220, cv = document.createElement('canvas'); cv.width = cv.height = n;
+    const x = cv.getContext('2d'); x.lineCap = 'round'; x.strokeStyle = 'rgba(255,255,255,0.9)';
+    for (let i = 0; i < 9; i++) {                      // fixed strokes: the pattern is the same on every visit
+      const y0 = (i + 0.5) * n / 9, amp = 5 + (i * 7 % 5), ph = i * 1.9, len = (0.35 + (i * 3 % 4) * 0.12) * n, x0 = (i * 83) % n;
+      x.lineWidth = 1.1 + (i % 3) * 0.5;
+      for (const off of [0, -n]) {                     // drawn twice so the tile wraps
+        x.beginPath();
+        for (let k = 0; k <= 40; k++) { const u = k / 40, px = x0 + off + u * len, py = y0 + Math.sin(u * Math.PI * 2 + ph) * amp * Math.sin(u * Math.PI); k ? x.lineTo(px, py) : x.moveTo(px, py); }
+        x.stroke();
+      }
+    }
+    return cv;
+  }
+  const sparksNow = () => motion ? layers.sparks.filter(sp => time <= sp.from && time >= sp.to) : [];
   function drawFx() {
-    fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.clearRect(0, 0, fx.width, fx.height);
-    if (!rings.length) return;
+    const now = performance.now();
+    fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'source-over'; fctx.clearRect(0, 0, fx.width, fx.height);
+    // light on the water: only while someone is exploring, eased in and out, never over land
+    const live = motion ? Math.max(0, Math.min(1, (liveUntil - now) / 2500)) : 0;
+    if (live > 0 && proj) {
+      if (!swell) swell = makeSwell();
+      const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, W, H].join('|');
+      if (vk !== sphereKey || !sphereP) { sphereKey = vk; sphereP = geoP({ type: 'Sphere' }); }
+      fctx.save(); fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.clip(sphereP);
+      const sec = now / 1000, pat = fctx.createPattern(swell, 'repeat');
+      for (const [sx, sy, sc, a] of [[7, 2.2, 1.3, 0.15], [-4.5, 3.1, 0.85, 0.1]]) {
+        pat.setTransform(new DOMMatrix([sc, 0, 0, sc, (sec * sx) % (220 * sc), (sec * sy) % (220 * sc)]));
+        fctx.globalAlpha = a * live; fctx.fillStyle = pat; fctx.fillRect(0, 0, W, H);
+      }
+      fctx.restore();
+      fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'destination-out'; fctx.drawImage(land, 0, 0); fctx.globalCompositeOperation = 'source-over';
+    }
     fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const k = (performance.now() % 1700) / 1700;
+    // eruptions glow and breathe; impacts send out rings
+    for (const sp of sparksNow()) {
+      const p = project(locate(sp.at, time)); if (!p) continue;
+      const zs = Math.min(1.8, 0.75 + zoom * 0.25), R = (sp.r || 26) * zs, sec = now / 1000;
+      if (sp.kind === 'impact') {
+        const g = fctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], R * 0.7);
+        g.addColorStop(0, 'rgba(255,250,225,0.95)'); g.addColorStop(0.35, 'rgba(255,190,90,0.55)'); g.addColorStop(1, 'rgba(255,120,40,0)');
+        fctx.fillStyle = g; fctx.beginPath(); fctx.arc(p[0], p[1], R * 0.7, 0, 7); fctx.fill();
+        for (let i = 0; i < 3; i++) { const k = ((sec / 2.6) + i / 3) % 1; fctx.beginPath(); fctx.arc(p[0], p[1], 4 + k * R * 2.6, 0, 7); fctx.strokeStyle = `rgba(255,236,190,${0.75 * (1 - k)})`; fctx.lineWidth = 2.2 * (1 - k) + 0.6; fctx.stroke(); }
+      } else {
+        const breathe = 0.82 + 0.12 * Math.sin(sec * 1.7) + 0.06 * Math.sin(sec * 4.3 + 1.3);
+        const g = fctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], R * breathe);
+        g.addColorStop(0, 'rgba(255,214,120,0.9)'); g.addColorStop(0.3, 'rgba(240,96,30,0.6)'); g.addColorStop(0.7, 'rgba(150,30,14,0.28)'); g.addColorStop(1, 'rgba(90,20,10,0)');
+        fctx.fillStyle = g; fctx.beginPath(); fctx.arc(p[0], p[1], R * breathe, 0, 7); fctx.fill();
+        const k = (sec / 4) % 1; fctx.beginPath(); fctx.arc(p[0], p[1], R * (0.6 + k * 1.3), 0, 7); fctx.strokeStyle = `rgba(70,50,44,${0.3 * (1 - k)})`; fctx.lineWidth = 5 * (1 - k) + 1; fctx.stroke();   // ash spreading
+      }
+    }
+    if (!rings.length) return;
+    const k = (now % 1700) / 1700;
     for (const [x, y, r] of rings) {
       fctx.beginPath(); fctx.arc(x, y, r + 3 + k * 16, 0, 7);
       fctx.strokeStyle = `rgba(200,62,20,${0.8 * (1 - k)})`; fctx.lineWidth = 2; fctx.stroke();
@@ -849,7 +925,9 @@ const WorldMap = (() => {
   function tick() {
     raf = 0;
     if (dirty) draw(); else drawFx();
-    if (rings.length && !document.hidden) schedule();
+    if (document.hidden) return;
+    if (trailLife > 0 && !dirty) dirty = true;                       // keep fading the wake after the land stops
+    if (rings.length || trailLife > 0 || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
   }
   function resize() {
     const r = canvas.getBoundingClientRect();
@@ -864,6 +942,7 @@ const WorldMap = (() => {
   function bind() {
     const pts = new Map(); let moved = 0, downAt = 0, pinch = 0;
     const pos = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    canvas.addEventListener('pointerdown', wake); canvas.addEventListener('pointermove', e => { if (performance.now() > liveUntil - 9000) wake(); });
     canvas.addEventListener('pointerdown', e => {
       pts.set(e.pointerId, pos(e)); moved = 0; downAt = performance.now();
       if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = Math.hypot(a[0] - b[0], a[1] - b[1]); }
@@ -937,7 +1016,10 @@ const WorldMap = (() => {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) schedule(); });
     },
     get time() { return time; },
-    setTime(t) { t = Math.max(0, Math.min(MAXT, t)); if (t !== time) { time = t; dirty = true; schedule(); } },
+    setTime(t) { t = Math.max(0, Math.min(MAXT, t)); if (t !== time) { time = t; dirty = true; wake(); schedule(); } },
+    /* Decorative motion on or off (tests and screenshots turn it off; so does the reader's reduced-motion setting). */
+    setMotion(on) { motion = !!on; api.motion = motion; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
+    motion,
     get mode() { return mode; },
     setMode(m) { mode = m; zoom = 1; panX = panY = 0; setupProjection(); },
     get zoom() { return zoom; },

@@ -105,6 +105,18 @@ const RAW = JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8'));
 const { CULTURES } = require('./data_cultures.js'), { DROWNED } = require('./data_drowned.js');
 const { FINDS, FIND_ERAS, FIND_THEMES } = require('./data_finds.js');
 const { TREES } = require('./data_trees.js');
+const { YOU_LINE } = require('./data_you.js');
+{ YOU_LINE.forEach((y, i) => {
+    if (i && YOU_LINE[i - 1].to !== y.from) problems.push('you: gap or overlap before ' + y.from);
+    if (!(y.at <= y.from && y.at >= y.to)) problems.push('you: "at" outside its range at ' + y.from);
+    if (y.like && !allNames.has(y.like)) problems.push('you: no animal card named ' + y.like);
+    if (y.hom && !HOMININS.some(h => h.id === y.hom)) problems.push('you: no hominin ' + y.hom);
+    const c = y.like && allC.find(x => x.name === y.like); if (c && (y.at > c.t[0] + 12 || y.at < c.t[1] - 12)) problems.push('you: ' + y.like + ' did not live near ' + y.at);
+  });
+  if (YOU_LINE[0].from !== 720 || YOU_LINE[YOU_LINE.length - 1].to !== 0) problems.push('you: the line must run from 720 to 0');
+  const ysrc = fs.readFileSync(SRC + 'data_you.js', 'utf8');
+  data += ysrc.slice(ysrc.indexOf('// ===='), ysrc.indexOf("if (typeof module")).trim() + '\n';
+}
 { const paths = allC.map(c => c.c), ids = new Set();
   const walk = (n, tree) => {
     if (!n.n) problems.push('tree ' + tree + ': a branch has no name');
@@ -130,11 +142,13 @@ const { TREES } = require('./data_trees.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
-  REFS[k] = { a: r.authors.length ? r.authors.join(', ').replace(', et al.', ' et al.') : '', y: r.year, t: r.title, j: r.journal, d: r.doi };
+  // names as people should read them: the surname we were told to show, and no SHOUTING
+  const names = r.authors.map((n, i) => i === 0 && r.first ? r.first : n === n.toUpperCase() && n !== 'et al.' ? n.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (x, s, c) => s + c.toUpperCase()) : n);
+  REFS[k] = { a: names.length ? names.join(', ').replace(', et al.', ' et al.') : '', y: r.year, t: r.title, j: r.journal, d: r.doi };
   for (const t of r.targets) {
     const [kind, ...rest] = t.split(':'), id = rest.join(':');
     if (!okTarget[kind] || !okTarget[kind](id)) { problems.push('source ' + k + ': unknown target ' + t); continue; }

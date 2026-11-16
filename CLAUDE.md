@@ -32,8 +32,11 @@ and where something is a guess, a sketch or still argued over, the page says so.
    fields for this. A map layer that is a sketch is labelled a sketch in "How this map is made"
    (`body.html`, `#mapAbout`). Do not draw something the data cannot support — e.g. today's mountains
    are only drawn for the last 5 million years, on purpose.
-5. **Everything on screen is a function of the data and the timeline position.** `Math.random` is used
-   only by the quiz and "Surprise me".
+5. **Everything on screen is a function of the data, the timeline position and the clock — never
+   chance.** `Math.random` is used only by the quiz and "Surprise me". Decorative motion on the map
+   (wakes behind drifting land, light on the water, eruptions and impacts) runs off the clock, stops
+   for readers who ask for reduced motion, and is switched off with `WorldMap.setMotion(false)`.
+   Motion may decorate; it may not claim anything the data does not hold.
 6. **Text is for a curious 10-year-old and an adult reading over their shoulder.** Plain words, short
    sentences, no jargon without a gloss. Use `’` not `'` inside single-quoted JS strings.
 7. **Never put a secret in a file or in chat.** API keys go through the environment's network secrets.
@@ -75,10 +78,12 @@ builds, passes the checks and has been looked at.
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
   Life, Humans, Insights, Finds, Quiz, Geology. Map pins for a tab are built in `updatePlaces()`.
   The Life tab has three views: the list, the range chart and the family trees (`data_trees.js`).
+  `data_you.js` holds the reader's own line (`YOU_LINE`, shown in the bar under the map), the eruptions
+  and impacts drawn on the map (`SPARKS`), and feeds the guided journeys (`JOURNEYS` in `app.js`).
 - Sources: `refs_wanted.txt` (what we want to cite, and which entries each paper supports) →
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
-  `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `m:` map layer
+  `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `m:` map layer
   (`plates|sealevel|climate|time`).
 
 ## Network

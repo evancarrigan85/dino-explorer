@@ -106,6 +106,7 @@ function setTime(t, o = {}) {
     schedulePanel(o.fast ? 140 : 0);
   }
   if (S.pin) updatePinCard();
+  updateYou();
   if (S.tab === 'humans') {
     updateHumansCursor();
     const ck = CULTURES.filter(c => culActive(c)).map(c => c.id).join('|') + '#' + DROWNED.filter(d => drwShown(d)).map(d => d.id + (drwWet(d) ? 'w' : 'd')).join('|');
@@ -765,14 +766,7 @@ function selectFind(id, fromMap) {
   if (S.tab !== 'finds') switchTab('finds');
   const look = () => { updatePlaces(); const pl = placeCache['f' + id]; if (pl) WorldMap.lookAt(pl.at); };
   if (f.at) {
-    const target = f.age == null ? 0 : f.age;
-    if (Math.abs(S.t - target) > Math.max(0.0005, target * 0.02)) {
-      // a young fossil needs the timeline zoomed in before its moment is wide enough to stand on
-      const sp = Math.max(0.03, target * 4);
-      if (!isFull() && (target > S.win[0] || target < S.win[1] || span() > sp * 40)) setWindow(T_MAX, 0, true);
-      if (isFull() && target < 5) setWindow(Math.min(T_MAX, sp), 0, true);
-      goTo(target, () => { look(); renderFinds(); });
-    } else look();
+    travel(f.age == null ? 0 : f.age, () => { look(); renderFinds(); }) || look();
   } else updatePlaces();
   renderFinds();
   if (fromMap && window.innerWidth < 768) showFact(f.icon, '<b>' + esc(f.title) + '</b> (' + esc(f.when) + ') — ' + esc(f.story));
@@ -949,13 +943,99 @@ function renderClimateStrip() {
   $('ovTemp').style.cssText = 'left:' + x0 + '%;background:linear-gradient(90deg,' + stops.map(s => { const [c, p] = s.split(/ (?=[\d.]+%$)/); return c + ' ' + ((parseFloat(p) - x0) / (100 - x0) * 100).toFixed(2) + '%'; }).join(',') + ')';
 }
 
+// Go to a moment, zooming the timeline in or out so that moment is wide enough to stand on.
+// Returns false (and does nothing) when we are already there.
+function travel(target, done) {
+  if (Math.abs(S.t - target) <= Math.max(0.0005, target * 0.02)) return false;
+  const sp = Math.max(0.03, target * 4);
+  if (!isFull() && (target > S.win[0] || target < S.win[1] || span() > sp * 40)) setWindow(T_MAX, 0, true);
+  if (isFull() && target < 5) setWindow(Math.min(T_MAX, sp), 0, true);
+  goTo(target, done); return true;
+}
+
+// ── you: the reader's own line through deep time ────────────────────
+const youAt = t => YOU_LINE.find(y => t <= y.from && t >= y.to) || YOU_LINE[0];
+const youLike = y => y.hom ? BY_KEY[y.hom] : y.like ? ALL.find(c => c.name === y.like) : null;
+const YOU_NOTE = 'We show a close cousin from the fossil record. The real ancestor has almost certainly never been found — and could not be told apart if it were.';
+let lastYou = null;
+function updateYou() {
+  const y = youAt(S.t); if (y === lastYou) return; lastYou = y;
+  const c = youLike(y);
+  $('youBar').innerHTML = `<span class="yb-k">🧬 Your ancestor at this moment</span><span class="yb-v"><b>${esc(y.what)}</b>${c ? ` — like ${esc(shortName(c.name))} ${c.emoji || ''}` : ''}</span><span class="yb-go">›</span>`;
+}
+function openYou() {
+  const y = youAt(S.t), c = youLike(y);
+  showFact('🧬', `<b>Your ancestor, ${esc(fmtLong(S.t))}:</b> ${esc(y.text)}<br><small>${c ? esc(YOU_NOTE) + ' ' : ''}<button class="linkbtn" data-journey="you">▶ Follow your whole story</button></small>`, 20000);
+  if (c) { if (c.hom) { switchTab('humans'); select(c.key, { keep: true }); } else { if (S.tab !== 'life') switchTab('life'); if (S.view !== 'list') setView('list'); select(c.key, { keep: true }); } }
+}
+
+// ── journeys: guided trips through time ─────────────────────────────
+const EXT_T = { ordovician: 444, devonian: 372, permian: 251.9, triassic: 201.4, cretaceous: 66.02, quaternary: 0.02, holocene: 0 };
+const JOURNEYS = [
+  { id: 'you', icon: '🧬', title: 'Your story', blurb: 'From a speck in a frozen sea to you: your own ancestors, stop by stop.',
+    stops: () => YOU_LINE.map(y => { const c = youLike(y); return { t: y.at, head: y.what.charAt(0).toUpperCase() + y.what.slice(1), text: y.text, key: c && c.key, hom: !!y.hom, note: c ? 'Shown: ' + shortName(c.name) + ', a close cousin of your real ancestor.' : '' }; }) },
+  { id: 'drift', icon: '🌍', title: 'The drifting continents', blurb: 'Watch one supercontinent form and break into the world you know.', stops: () => DRIFT_STOPS },
+  { id: 'extinctions', icon: '☠️', title: 'The great dyings', blurb: 'Five times most of life was wiped out — and what came through.',
+    stops: () => PERIODS.filter(p => p.insight && p.insight.ext && p.id in EXT_T).map(p => ({ t: EXT_T[p.id], head: p.insight.ext.name, text: 'Lost: ' + p.insight.ext.toll + '. ' + p.insight.ext.cause, tab: 'insights' })) },
+  { id: 'finds', icon: '⛏️', title: 'How we found out', blurb: 'Ten discoveries that changed what people thought the past was.',
+    stops: () => ['plot', 'anning', 'buckland', 'archaeopteryx', 'gobi', 'wegener', 'lucy', 'asteroid', 'sinosauropteryx', 'tiktaalik'].map(id => FIND[id]).filter(Boolean).map(f => ({ find: f.id, head: f.title + ' · ' + f.when, text: f.story })) },
+];
+let jTimer = 0;
+function journeyStops() { const j = S.jr && JOURNEYS.find(x => x.id === S.jr.id); return j ? (j._s || (j._s = j.stops())) : []; }
+function startJourney(id) {
+  if (!JOURNEYS.some(j => j.id === id)) return;
+  closeFact(); $('journeyMenu').classList.remove('show'); $('journeyBtn').setAttribute('aria-expanded', 'false');
+  S.jr = { id, i: 0, auto: false }; showStop();
+}
+function endJourney() { clearTimeout(jTimer); S.jr = null; document.body.classList.remove('journeying'); $('journey').classList.remove('show'); $('journey').innerHTML = ''; }
+function stepJourney(d) { const n = journeyStops().length; if (!S.jr) return; const i = S.jr.i + d; if (i < 0 || i >= n) { if (i >= n) S.jr.auto = false; renderStop(); return; } S.jr.i = i; showStop(); }
+function renderStop() {
+  const j = JOURNEYS.find(x => x.id === S.jr.id), st = journeyStops(), s = st[S.jr.i], last = S.jr.i === st.length - 1;
+  $('journey').innerHTML = `<div class="jr-top"><span class="jr-t">${j.icon} ${esc(j.title)}</span><span class="jr-n">${S.jr.i + 1} / ${st.length}</span><button class="jr-x" data-jr="end" aria-label="End journey">✕</button></div>
+    <div class="jr-bar"><i style="width:${((S.jr.i + 1) / st.length * 100).toFixed(1)}%"></i></div>
+    <div class="jr-head">${esc(s.head)}${s.t != null ? ` <small>${esc(fmtLong(s.t))}</small>` : ''}</div>
+    <div class="jr-text">${esc(s.text)}</div>${s.note ? `<div class="jr-note">${esc(s.note)}</div>` : ''}
+    <div class="jr-ctl"><button class="linkbtn" data-jr="prev"${S.jr.i ? '' : ' disabled'}>◀ Back</button><button class="linkbtn" data-jr="auto" aria-pressed="${S.jr.auto}">${S.jr.auto ? '⏸ Pause' : '▶ Play it for me'}</button><button class="linkbtn jr-next" data-jr="${last ? 'end' : 'next'}">${last ? 'Finish ✓' : 'Next ▶'}</button></div>`;
+  $('journey').classList.add('show'); document.body.classList.add('journeying');
+}
+function showStop() {
+  clearTimeout(jTimer);
+  const s = journeyStops()[S.jr.i]; renderStop();
+  const arrived = () => {
+    if (!S.jr) return;
+    if (s.key && BY_KEY[s.key] && alive(BY_KEY[s.key], S.t, slack(S.t))) { if (s.hom) { switchTab('humans'); select(s.key, { keep: true }); } else { if (S.tab !== 'life') switchTab('life'); if (S.view !== 'list') setView('list'); select(s.key, { keep: true }); } }
+    else if (s.tab && S.tab !== s.tab) switchTab(s.tab);
+    if (S.jr.auto) jTimer = setTimeout(() => stepJourney(1), 9000 + s.text.length * 28);
+  };
+  if (s.find) { selectFind(s.find); setTimeout(arrived, 2200); }
+  else { if (S.sel) { S.sel = null; WorldMap.select(null); } travel(s.t, arrived) || arrived(); }
+}
+function bindJourneys() {
+  $('journeyMenu').innerHTML = JOURNEYS.map(j => `<button role="menuitem" data-journey="${j.id}"><b>${j.icon} ${esc(j.title)}</b><span>${esc(j.blurb)}</span></button>`).join('');
+  $('journeyBtn').onclick = e => { e.stopPropagation(); const on = $('journeyMenu').classList.toggle('show'); $('journeyBtn').setAttribute('aria-expanded', String(on)); };
+  document.addEventListener('click', e => {
+    const j = e.target.closest('[data-journey]'); if (j) { startJourney(j.dataset.journey); return; }
+    if (!e.target.closest('#journeyMenu')) { $('journeyMenu').classList.remove('show'); $('journeyBtn').setAttribute('aria-expanded', 'false'); }
+  });
+  $('journey').addEventListener('click', e => {
+    const b = e.target.closest('[data-jr]'); if (!b || !S.jr) return;
+    const a = b.dataset.jr;
+    if (a === 'end') endJourney(); else if (a === 'next') { S.jr.auto = false; stepJourney(1); } else if (a === 'prev') { S.jr.auto = false; stepJourney(-1); }
+    else if (a === 'auto') { S.jr.auto = !S.jr.auto; clearTimeout(jTimer); renderStop(); if (S.jr.auto) jTimer = setTimeout(() => stepJourney(1), 6000); }
+  });
+  $('youBar').onclick = openYou;
+  // on a phone the map is too small to carry the caption, so it sits just under the map instead
+  const place = () => { const small = window.innerWidth < 768, j = $('journey'); if (small && j.parentNode.id === 'mapArea') $('mapArea').after(j); else if (!small && j.parentNode.id !== 'mapArea') $('mapArea').appendChild(j); j.classList.toggle('below', small); };
+  place(); window.addEventListener('resize', place);
+}
+
 // ── popup, hash, map wiring ─────────────────────────────────────────
 let factTimer = 0;
-function showFact(emoji, html) {
+function showFact(emoji, html, ms) {
   clearTimeout(factTimer);
   $('fpEmoji').textContent = emoji; $('fpText').innerHTML = html;
   $('factPopup').classList.add('show');
-  factTimer = setTimeout(closeFact, 9000);
+  factTimer = setTimeout(closeFact, ms || 9000);
 }
 function closeFact() { $('factPopup').classList.remove('show'); clearTimeout(factTimer); }
 
@@ -985,6 +1065,7 @@ function init() {
     oceans: OCEANS.map(([text, a, b, from, to, min, k]) => ({ text, from, to, min, k, a: WorldMap.attach(a[0], a[1], from), b: WorldMap.attach(b[0], b[1], from) })),
     superocean: SUPEROCEAN,
     notes: ICE_AGE_NOTES.map(([name, lat, lon, what]) => ({ text: name + ' · ' + what, lat, lon, from: 2.58, to: 0.0117 })),
+    sparks: SPARKS.map(([lat, lon, from, to, kind, r, name]) => ({ at: WorldMap.attach(lat, lon, (from + to) / 2), from, to, kind, r, name })),
   });
   WorldMap.onPick = (h, x, y) => {
     if (!h) {
@@ -1018,11 +1099,11 @@ function init() {
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }
   });
   window.addEventListener('hashchange', readHash);
-  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds(); bindTree();
+  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds(); bindTree(); bindJourneys();
   renderTimeline(); renderClimateStrip();
   if (!readHash()) {
     setTime(150);
-    setTimeout(() => showFact('🦕', '<b>Welcome, time explorers!</b> Drag the timeline to watch the continents drift. Zoom into any stretch of it for more detail. Tap an animal to see where its fossils were found — carried back to where that spot was at the time.'), 900);
+    setTimeout(() => showFact('🦕', '<b>Welcome, time explorers!</b> Drag the timeline to watch the continents drift. Zoom into any stretch of it for more detail. Tap an animal to see where its fossils were found — carried back to where that spot was at the time.<br><button class="linkbtn" data-journey="you" style="margin-top:6px">🧬 Start with your own story</button>', 16000), 900);
   }
   renderPanel();
 }

@@ -24,6 +24,18 @@ def norm(s):
     s = re.sub(r'<[^>]+>', ' ', s)
     return re.sub(r'[^a-z0-9]+', ' ', s).strip()
 
+SMALL = {'a', 'an', 'and', 'as', 'at', 'by', 'for', 'from', 'in', 'of', 'on', 'or', 'the', 'to', 'with', 'von'}
+def clean_title(t):
+    """Registry titles as people should read them: markup out (leaving a space where an italic
+    name was glued to its neighbours), whitespace collapsed, old article numbers and shouting removed."""
+    t = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', t or '')).strip()
+    t = re.sub(r'\s+([,.;:?!])', r'\1', t)
+    t = re.sub(r'^[IVXLCDM]+\.\s+', '', t)
+    if t.isupper():
+        w = t.lower().split(' ')
+        t = ' '.join(x if (i and x in SMALL) else x[:1].upper() + x[1:] for i, x in enumerate(w))
+    return t
+
 def year_of(it):
     for k in ('published-print', 'published-online', 'issued', 'published'):
         p = it.get(k, {}).get('date-parts')
@@ -62,12 +74,13 @@ for line in open(SRC, encoding='utf8'):
     parts = [x.strip() for x in line.split('|')]
     key, au, yr, title, targets = parts[:5]
     if any(x['key'] == key for x in wanted): sys.exit(f'duplicate key in refs_wanted.txt: {key} — merge the targets onto one line')
-    wanted.append({'key': key, 'author': au, 'year': int(yr), 'title': title, 'doi': parts[5] if len(parts) > 5 else '', 'targets': [t.strip() for t in targets.split(',') if t.strip()]})
+    wanted.append({'key': key, 'author': au, 'year': int(yr), 'title': title, 'doi': parts[5] if len(parts) > 5 else '', 'targets': [t.strip() for t in targets.split(',') if t.strip()], 'first': parts[6] if len(parts) > 6 else ''})
 if '--audit' in sys.argv:
     done = json.load(open(OUT, encoding='utf8')); bad = 0
     for k, r in done.items():
         got = by_doi(r['doi']); ty = got[0].get('type') if got else 'NOT FOUND'
         r['type'] = ty
+        if got: r['title'] = clean_title((got[0].get('title') or [''])[0]) or r['title']
         if ty not in PEER: bad += 1; print(f'  NOT PUBLISHED {k}: {ty} {r["doi"]}')
         time.sleep(0.35)
     json.dump(done, open(OUT, 'w', encoding='utf8'), ensure_ascii=False, indent=0)
@@ -79,7 +92,7 @@ for w in wanted:
     if only and w['key'] not in only:
         continue
     if not only and w['key'] in done and done[w['key']].get('title_expected') == w['title']:
-        done[w['key']]['targets'] = w['targets']; ok += 1; continue
+        done[w['key']]['targets'] = w['targets']; done[w['key']]['first'] = w['first']; ok += 1; continue
     best, why = None, 'no results'
     # first a plain search; if that misses, the title alone within the right years
     cands = by_doi(w['doi']) if w['doi'] else search(f"{w['author']} {w['year']} {w['title']}") + search(w['title'], 15, w['year'])
@@ -103,9 +116,9 @@ for w in wanted:
     if best:
         it = best[1]; ok += 1
         auth = [a.get('family', '') for a in it.get('author', []) if a.get('family')]
-        done[w['key']] = {'doi': it['DOI'].lower(), 'title': re.sub(r'^[IVXLCDM]+\.\s+', '', re.sub(r'<[^>]+>', '', (it.get('title') or [''])[0]).strip()),
+        done[w['key']] = {'doi': it['DOI'].lower(), 'title': clean_title((it.get('title') or [''])[0]),
                           'journal': (it.get('container-title') or [''])[0], 'year': year_of(it),
-                          'authors': auth[:3] + (['et al.'] if len(auth) > 3 else []), 'type': it.get('type'), 'targets': w['targets'], 'title_expected': w['title']}
+                          'authors': auth[:3] + (['et al.'] if len(auth) > 3 else []), 'type': it.get('type'), 'targets': w['targets'], 'first': w['first'], 'title_expected': w['title']}
         print(f"  ok   {w['key']}: {it['DOI']}")
     else:
         fail += 1

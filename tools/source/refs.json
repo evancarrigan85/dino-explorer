@@ -12,9 +12,11 @@
 ],
 "type": "journal-article",
 "targets": [
-"m:plates"
+"m:plates",
+"j:drift"
 ],
-"title_expected": "Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic"
+"title_expected": "Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic",
+"first": ""
 },
 "lambeck2014": {
 "doi": "10.1073/pnas.1411762111",
@@ -33,7 +35,8 @@
 "d:beringia"
 ],
 "title_expected": "Sea level and global ice volumes from the Last Glacial Maximum to the Holocene",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "spratt2016": {
 "doi": "10.5194/cp-12-1079-2016",
@@ -48,7 +51,8 @@
 "targets": [
 "m:sealevel"
 ],
-"title_expected": "A Late Pleistocene sea level stack"
+"title_expected": "A Late Pleistocene sea level stack",
+"first": ""
 },
 "cohen2013": {
 "doi": "10.18814/epiiugs/2013/v36i3/002",
@@ -65,7 +69,8 @@
 "m:time"
 ],
 "title_expected": "The ICS International Chronostratigraphic Chart",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "hoffman1998": {
 "doi": "10.1126/science.281.5381.1342",
@@ -82,7 +87,8 @@
 "p:cryogenian"
 ],
 "title_expected": "A Neoproterozoic Snowball Earth",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "love2009": {
 "doi": "10.1038/nature07673",
@@ -100,7 +106,8 @@
 "p:cryogenian"
 ],
 "title_expected": "Fossil steroids record the appearance of Demospongiae during the Cryogenian period",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "brain2012": {
 "doi": "10.4102/sajs.v108i1/2.658",
@@ -117,7 +124,8 @@
 "a:Otavia"
 ],
 "title_expected": "The first animals: ca. 760-million-year-old sponge-like fossils from Namibia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "knoll2004": {
 "doi": "10.1126/science.1098803",
@@ -134,11 +142,12 @@
 "p:ediacaran"
 ],
 "title_expected": "A new period for the geologic time scale",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "bobrovskiy2018": {
 "doi": "10.1126/science.aat7228",
-"title": "Ancient steroids establish the Ediacaran fossilDickinsoniaas one of the earliest animals",
+"title": "Ancient steroids establish the Ediacaran fossil Dickinsonia as one of the earliest animals",
 "journal": "Science",
 "year": 2018,
 "authors": [
@@ -153,7 +162,8 @@
 "f:ediacaran"
 ],
 "title_expected": "Ancient steroids establish the Ediacaran fossil Dickinsonia as one of the earliest animals",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "fedonkin1997": {
 "doi": "10.1038/42242",
@@ -169,7 +179,8 @@
 "f:ediacaran"
 ],
 "title_expected": "The Late Precambrian fossil Kimberella is a mollusc-like bilaterian organism",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "evans2020": {
 "doi": "10.1073/pnas.2001045117",
@@ -186,7 +197,8 @@
 "a:Ikaria"
 ],
 "title_expected": "Discovery of the oldest bilaterian from the Ediacaran of South Australia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "droser2008": {
 "doi": "10.1126/science.1152595",
@@ -201,11 +213,12 @@
 "a:Funisia"
 ],
 "title_expected": "Synchronous aggregate growth in an abundant new Ediacaran tubular organism",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "liu2014": {
 "doi": "10.1098/rspb.2014.1202",
-"title": "Haootia quadriformis\n                    n. gen., n. sp., interpreted as a muscular cnidarian impression from the Late Ediacaran period (approx. 560 Ma)",
+"title": "Haootia quadriformis n. gen., n. sp., interpreted as a muscular cnidarian impression from the Late Ediacaran period (approx. 560 Ma)",
 "journal": "Proceedings of the Royal Society B: Biological Sciences",
 "year": 2014,
 "authors": [
@@ -218,7 +231,8 @@
 "a:Haootia"
 ],
 "title_expected": "Haootia quadriformis n. gen., n. sp., interpreted as a muscular cnidarian impression from the Late Ediacaran period",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "mitchell2015": {
 "doi": "10.1038/nature14646",
@@ -235,7 +249,8 @@
 "a:Fractofusus"
 ],
 "title_expected": "Reconstructing the reproductive mode of an Ediacaran macro-organism",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "bengtson1992": {
 "doi": "10.1126/science.257.5068.367",
@@ -251,11 +266,12 @@
 "f:ediacaran"
 ],
 "title_expected": "Predatorial borings in late Precambrian mineralized exoskeletons",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "rahman2015": {
 "doi": "10.1126/sciadv.1500800",
-"title": "Suspension feeding in the enigmatic Ediacaran organism\n            Tribrachidium\n            demonstrates complexity of Neoproterozoic ecosystems",
+"title": "Suspension feeding in the enigmatic Ediacaran organism Tribrachidium demonstrates complexity of Neoproterozoic ecosystems",
 "journal": "Science Advances",
 "year": 2015,
 "authors": [
@@ -268,7 +284,8 @@
 "a:Tribrachidium"
 ],
 "title_expected": "Suspension feeding in the enigmatic Ediacaran organism Tribrachidium demonstrates complexity of Neoproterozoic ecosystems",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "vannier2012": {
 "doi": "10.1371/journal.pone.0052200",
@@ -283,7 +300,8 @@
 "f:cambrian"
 ],
 "title_expected": "Gut contents as direct indicators for trophic relationships in the Cambrian marine ecosystem",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "smith2015h": {
 "doi": "10.1038/nature14573",
@@ -299,7 +317,8 @@
 "x:burgess"
 ],
 "title_expected": "Hallucigenia's head and the pharyngeal armature of early ecdysozoans",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "morris2014": {
 "doi": "10.1038/nature13414",
@@ -314,7 +333,8 @@
 "a:Metaspriggina"
 ],
 "title_expected": "A primitive fish from the Cambrian of North America",
-"type": "journal-article"
+"type": "journal-article",
+"first": "Conway Morris"
 },
 "zeng2020": {
 "doi": "10.1038/s41586-020-2883-7",
@@ -331,7 +351,8 @@
 "a:Kylinxia"
 ],
 "title_expected": "An early Cambrian euarthropod with radiodont-like raptorial appendages",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "caron2016": {
 "doi": "10.1016/j.cub.2015.11.006",
@@ -346,7 +367,8 @@
 "a:Waptia"
 ],
 "title_expected": "Waptia and the diversification of brood care in early arthropods",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ma2012": {
 "doi": "10.1038/nature11495",
@@ -363,7 +385,8 @@
 "a:Fuxianhuia"
 ],
 "title_expected": "Complex brain and optic lobes in an early Cambrian arthropod",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "moysiuk2019": {
 "doi": "10.1098/rspb.2019.1079",
@@ -378,7 +401,8 @@
 "a:Cambroraster"
 ],
 "title_expected": "A new hurdiid radiodont from the Burgess Shale evinces the exploitation of Cambrian infaunal food sources",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "han2017": {
 "doi": "10.1038/nature21072",
@@ -395,7 +419,8 @@
 "a:Saccorhytus"
 ],
 "title_expected": "Meiofaunal deuterostomes from the basal Cambrian of Shaanxi (China)",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "liu2022": {
 "doi": "10.1038/s41586-022-05107-z",
@@ -412,7 +437,8 @@
 "a:Saccorhytus"
 ],
 "title_expected": "Saccorhytus is an early ecdysozoan and not the earliest deuterostome",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "vanroy2015": {
 "doi": "10.1038/nature14256",
@@ -428,11 +454,12 @@
 "a:Aegirocassis"
 ],
 "title_expected": "Anomalocaridid trunk limb homology revealed by a giant filter-feeder with paired flaps",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "rudkin2003": {
 "doi": "10.1666/0022-3360(2003)077<0099:twbtir>2.0.co;2",
-"title": "THE WORLD'S BIGGEST TRILOBITE—ISOTELUS REX NEW SPECIES FROM THE UPPER ORDOVICIAN OF NORTHERN MANITOBA, CANADA",
+"title": "The World's Biggest Trilobite—isotelus Rex New Species from the Upper Ordovician of Northern Manitoba, Canada",
 "journal": "Journal of Paleontology",
 "year": 2003,
 "authors": [
@@ -445,11 +472,12 @@
 "a:Isotelus"
 ],
 "title_expected": "The world's biggest trilobite: Isotelus rex new species from the Upper Ordovician of northern Manitoba, Canada",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "rudkin2008": {
 "doi": "10.1111/j.1475-4983.2007.00746.x",
-"title": "THE OLDEST HORSESHOE CRAB: A NEW XIPHOSURID FROM LATE ORDOVICIAN KONSERVAT‐LAGERSTÄTTEN DEPOSITS, MANITOBA, CANADA",
+"title": "The Oldest Horseshoe Crab: a New Xiphosurid from Late Ordovician Konservat‐lagerstätten Deposits, Manitoba, Canada",
 "journal": "Palaeontology",
 "year": 2008,
 "authors": [
@@ -461,7 +489,8 @@
 "a:Lunataspis"
 ],
 "title_expected": "The oldest horseshoe crab: a new xiphosurid from Late Ordovician Konservat-Lagerstätten deposits, Manitoba, Canada",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lamsdell2015": {
 "doi": "10.1186/s12862-015-0443-9",
@@ -478,7 +507,8 @@
 "a:Pentecopterus"
 ],
 "title_expected": "The oldest described eurypterid: a giant Middle Ordovician (Darriwilian) megalograptid from the Winneshiek Lagerstätte of Iowa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "harper2014": {
 "doi": "10.1016/j.gr.2012.12.021",
@@ -494,7 +524,8 @@
 "p:ordovician"
 ],
 "title_expected": "End Ordovician extinctions: A coincidence of causes",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wellman2003": {
 "doi": "10.1038/nature01884",
@@ -511,7 +542,8 @@
 "a:Earliest land plants (spores)"
 ],
 "title_expected": "Fragments of the earliest land plants",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "glasspool2004": {
 "doi": "10.1130/g20363.1",
@@ -527,7 +559,8 @@
 "p:silurian"
 ],
 "title_expected": "Charcoal in the Silurian as evidence for the earliest wildfire",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "zhu2009": {
 "doi": "10.1038/nature07855",
@@ -544,7 +577,8 @@
 "a:Guiyu"
 ],
 "title_expected": "The oldest articulated osteichthyan reveals mosaic gnathostome characters",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "zhu2013": {
 "doi": "10.1038/nature12617",
@@ -561,7 +595,8 @@
 "a:Entelognathus"
 ],
 "title_expected": "A Silurian placoderm with osteichthyan-like marginal jaw bones",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "briggs2016": {
 "doi": "10.1073/pnas.1600489113",
@@ -578,7 +613,8 @@
 "a:Aquilonifer"
 ],
 "title_expected": "Tiny individuals attached to a new Silurian arthropod suggest a unique mode of brood care",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wells1963": {
 "doi": "10.1038/197948a0",
@@ -592,7 +628,8 @@
 "p:devonian"
 ],
 "title_expected": "Coral growth and geochronometry",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "algeo1998": {
 "doi": "10.1098/rstb.1998.0195",
@@ -607,7 +644,8 @@
 "p:devonian"
 ],
 "title_expected": "Terrestrial-marine teleconnections in the Devonian: links between the evolution of land plants, weathering processes, and marine anoxic events",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "daeschler2006": {
 "doi": "10.1038/nature04639",
@@ -621,10 +659,12 @@
 ],
 "targets": [
 "a:Tiktaalik",
-"x:tiktaalik"
+"x:tiktaalik",
+"j:you"
 ],
 "title_expected": "A Devonian tetrapod-like fish and the evolution of the tetrapod body plan",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "long2008": {
 "doi": "10.1038/nature06966",
@@ -641,7 +681,8 @@
 "a:Materpiscis"
 ],
 "title_expected": "Live birth in the Devonian period",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "niedzwiedzki2010": {
 "doi": "10.1038/nature08623",
@@ -658,7 +699,8 @@
 "a:Zachełmie trackmaker"
 ],
 "title_expected": "Tetrapod trackways from the early Middle Devonian period of Poland",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "braddy2008": {
 "doi": "10.1098/rsbl.2007.0491",
@@ -674,7 +716,8 @@
 "a:Jaekelopterus"
 ],
 "title_expected": "Giant claw reveals the largest ever arthropod",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "stein2007": {
 "doi": "10.1038/nature05705",
@@ -691,7 +734,8 @@
 "a:Wattieza"
 ],
 "title_expected": "Giant cladoxylopsid trees resolve the enigma of the Earth's earliest forest stumps at Gilboa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "clack2002": {
 "doi": "10.1038/nature00824",
@@ -705,7 +749,8 @@
 "a:Pederpes"
 ],
 "title_expected": "An early tetrapod from 'Romer's Gap'",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "mccoy2016": {
 "doi": "10.1038/nature16992",
@@ -722,7 +767,8 @@
 "a:Tullimonstrum (Tully monster)"
 ],
 "title_expected": "The 'Tully monster' is a vertebrate",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "mikami2023": {
 "doi": "10.1111/pala.12646",
@@ -739,11 +785,12 @@
 "a:Tullimonstrum (Tully monster)"
 ],
 "title_expected": "Three-dimensional anatomy of the Tully monster casts doubt on its presumed vertebrate affinities",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "selden2005": {
 "doi": "10.1098/rsbl.2004.0272",
-"title": "The true identity of the supposed giant fossil spider\n                    Megarachne",
+"title": "The true identity of the supposed giant fossil spider Megarachne",
 "journal": "Biology Letters",
 "year": 2005,
 "authors": [
@@ -755,11 +802,12 @@
 "a:Megarachne"
 ],
 "title_expected": "The true identity of the supposed giant fossil spider Megarachne",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lheritier2024": {
 "doi": "10.1126/sciadv.adp6362",
-"title": "Head anatomy and phylogenomics show the Carboniferous giant\n                    Arthropleura\n                    belonged to a millipede-centipede group",
+"title": "Head anatomy and phylogenomics show the Carboniferous giant Arthropleura belonged to a millipede-centipede group",
 "journal": "Science Advances",
 "year": 2024,
 "authors": [
@@ -772,11 +820,12 @@
 "a:Arthropleura"
 ],
 "title_expected": "Head anatomy and phylogenomics show the Carboniferous giant Arthropleura belonged to a millipede-centipede group",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "tapanila2013": {
 "doi": "10.1098/rsbl.2013.0057",
-"title": "Jaws for a spiral-tooth whorl: CT images reveal novel adaptation and phylogeny in fossil\n                    Helicoprion",
+"title": "Jaws for a spiral-tooth whorl: CT images reveal novel adaptation and phylogeny in fossil Helicoprion",
 "journal": "Biology Letters",
 "year": 2013,
 "authors": [
@@ -789,7 +838,8 @@
 "a:Helicoprion"
 ],
 "title_expected": "Jaws for a spiral-tooth whorl: CT images reveal novel adaptation and phylogeny in fossil Helicoprion",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "botha2007": {
 "doi": "10.1098/rspb.2007.0803",
@@ -804,7 +854,8 @@
 "a:Heleosaurus"
 ],
 "title_expected": "A mixed-age classed 'pelycosaur' aggregation from South Africa: earliest evidence of parental care in amniotes?",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lyson2016": {
 "doi": "10.1016/j.cub.2016.05.020",
@@ -821,7 +872,8 @@
 "a:Eunotosaurus"
 ],
 "title_expected": "Fossorial origin of the turtle shell",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "nyakatura2019": {
 "doi": "10.1038/s41586-018-0851-2",
@@ -838,11 +890,12 @@
 "a:Orobates"
 ],
 "title_expected": "Reverse-engineering the locomotion of a stem amniote",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "frobisch2009": {
 "doi": "10.1098/rspb.2009.0911",
-"title": "The Late Permian herbivore\n            Suminia\n            and the early evolution of arboreality in terrestrial vertebrate ecosystems",
+"title": "The Late Permian herbivore Suminia and the early evolution of arboreality in terrestrial vertebrate ecosystems",
 "journal": "Proceedings of the Royal Society B: Biological Sciences",
 "year": 2009,
 "authors": [
@@ -853,7 +906,8 @@
 "a:Suminia"
 ],
 "title_expected": "The Late Permian herbivore Suminia and the early evolution of arboreality in terrestrial vertebrate ecosystems",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "burgess2014": {
 "doi": "10.1073/pnas.1317692111",
@@ -869,7 +923,8 @@
 "p:permian"
 ],
 "title_expected": "High-precision timeline for Earth's most severe extinction",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "sun2012": {
 "doi": "10.1126/science.1224126",
@@ -886,7 +941,8 @@
 "p:triassic"
 ],
 "title_expected": "Lethally hot temperatures during the Early Triassic greenhouse",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "dalcorso2020": {
 "doi": "10.1126/sciadv.aba0099",
@@ -903,7 +959,8 @@
 "p:triassic"
 ],
 "title_expected": "Extinction and dawn of the modern world in the Carnian (Late Triassic)",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "blackburn2013": {
 "doi": "10.1126/science.1234204",
@@ -920,7 +977,8 @@
 "p:triassic"
 ],
 "title_expected": "Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "motani2014": {
 "doi": "10.1371/journal.pone.0088640",
@@ -937,7 +995,8 @@
 "a:Chaohusaurus"
 ],
 "title_expected": "Terrestrial origin of viviparity in Mesozoic marine reptiles indicated by Early Triassic embryonic fossils",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "fernandez2013": {
 "doi": "10.1371/journal.pone.0064978",
@@ -954,7 +1013,8 @@
 "a:Thrinaxodon"
 ],
 "title_expected": "Synchrotron reveals Early Triassic odd couple: injured amphibian and aestivating therapsid share burrow",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "sander2021": {
 "doi": "10.1126/science.abf5787",
@@ -971,7 +1031,8 @@
 "a:Cymbospondylus"
 ],
 "title_expected": "Early giant reveals faster evolution of large body size in ichthyosaurs than in cetaceans",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "nesbitt2013": {
 "doi": "10.1098/rsbl.2012.0949",
@@ -988,7 +1049,8 @@
 "a:Nyasasaurus"
 ],
 "title_expected": "The oldest dinosaur? A Middle Triassic dinosauriform from Tanzania",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "nesbitt2010": {
 "doi": "10.1038/nature08718",
@@ -1005,7 +1067,8 @@
 "a:Asilisaurus"
 ],
 "title_expected": "Ecologically distinct dinosaurian sister group shows early diversification of Ornithodira",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "nesbitt2017": {
 "doi": "10.1038/nature22037",
@@ -1022,11 +1085,12 @@
 "a:Teleocrater"
 ],
 "title_expected": "The earliest bird-line archosaurs and the assembly of the dinosaur body plan",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "nesbitt2006": {
 "doi": "10.1098/rsbl.2006.0524",
-"title": "Prey choice and cannibalistic behaviour in the theropod\n            Coelophysis",
+"title": "Prey choice and cannibalistic behaviour in the theropod Coelophysis",
 "journal": "Biology Letters",
 "year": 2006,
 "authors": [
@@ -1040,7 +1104,8 @@
 "f:triassic"
 ],
 "title_expected": "Prey choice and cannibalistic behaviour in the theropod Coelophysis",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "nesbitt2006b": {
 "doi": "10.1098/rspb.2005.3426",
@@ -1055,7 +1120,8 @@
 "a:Effigia"
 ],
 "title_expected": "Extreme convergence in the body plans of an early suchian (Archosauria) and ornithomimid dinosaurs (Theropoda)",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "qvarnstrom2021": {
 "doi": "10.1016/j.cub.2021.05.015",
@@ -1072,7 +1138,8 @@
 "a:Silesaurus"
 ],
 "title_expected": "Exceptionally preserved beetles in a Triassic coprolite of putative dinosauriform origin",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "apaldetti2018": {
 "doi": "10.1038/s41559-018-0599-y",
@@ -1089,7 +1156,8 @@
 "a:Ingentia"
 ],
 "title_expected": "An early trend towards gigantism in Triassic sauropodomorph dinosaurs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "reisz2005": {
 "doi": "10.1126/science.1114942",
@@ -1106,7 +1174,8 @@
 "a:Massospondylus"
 ],
 "title_expected": "Embryos of an Early Jurassic prosauropod dinosaur and their evolutionary significance",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "pol2021": {
 "doi": "10.1038/s41598-021-99176-1",
@@ -1123,7 +1192,8 @@
 "a:Mussaurus"
 ],
 "title_expected": "Earliest evidence of herd-living and age segregation amongst dinosaurs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lee2017": {
 "doi": "10.1038/ncomms14220",
@@ -1140,11 +1210,12 @@
 "a:Lufengosaurus"
 ],
 "title_expected": "Evidence of preserved collagen in an Early Jurassic sauropodomorph dinosaur revealed by synchrotron FTIR microspectroscopy",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "marsh2020": {
 "doi": "10.1017/jpa.2020.14",
-"title": "A comprehensive anatomical and phylogenetic evaluation of\n                    Dilophosaurus wetherilli\n                    (Dinosauria, Theropoda) with descriptions of new specimens from the Kayenta Formation of northern Arizona",
+"title": "A comprehensive anatomical and phylogenetic evaluation of Dilophosaurus wetherilli (Dinosauria, Theropoda) with descriptions of new specimens from the Kayenta Formation of northern Arizona",
 "journal": "Journal of Paleontology",
 "year": 2020,
 "authors": [
@@ -1155,7 +1226,8 @@
 "a:Dilophosaurus"
 ],
 "title_expected": "A comprehensive anatomical and phylogenetic evaluation of Dilophosaurus wetherilli (Dinosauria, Theropoda) with descriptions of new specimens from the Kayenta Formation of northern Arizona",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "godefroit2014": {
 "doi": "10.1126/science.1253351",
@@ -1172,7 +1244,8 @@
 "a:Kulindadromeus"
 ],
 "title_expected": "A Jurassic ornithischian dinosaur from Siberia with both feathers and scales",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "xu2015": {
 "doi": "10.1038/nature14423",
@@ -1189,7 +1262,8 @@
 "a:Yi qi"
 ],
 "title_expected": "A bizarre Jurassic maniraptoran theropod with preserved evidence of membranous wings",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "xu2006": {
 "doi": "10.1038/nature04511",
@@ -1206,7 +1280,8 @@
 "a:Guanlong"
 ],
 "title_expected": "A basal tyrannosauroid dinosaur from the Late Jurassic of China",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "li2010": {
 "doi": "10.1126/science.1186290",
@@ -1223,7 +1298,8 @@
 "a:Anchiornis"
 ],
 "title_expected": "Plumage color patterns of an extinct dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wang2017": {
 "doi": "10.1016/j.cub.2016.10.043",
@@ -1240,7 +1316,8 @@
 "a:Limusaurus"
 ],
 "title_expected": "Extreme ontogenetic changes in a ceratosaurian theropod",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "sander2006": {
 "doi": "10.1038/nature04633",
@@ -1257,7 +1334,8 @@
 "a:Europasaurus"
 ],
 "title_expected": "Bone histology indicates insular dwarfism in a new Late Jurassic sauropod dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": "Sander"
 },
 "tschopp2015": {
 "doi": "10.7717/peerj.857",
@@ -1275,7 +1353,8 @@
 "x:bonewars"
 ],
 "title_expected": "A specimen-level phylogenetic analysis and taxonomic revision of Diplodocidae (Dinosauria, Sauropoda)",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lambert2010": {
 "doi": "10.1038/nature09067",
@@ -1293,7 +1372,8 @@
 "f:neogene"
 ],
 "title_expected": "The giant bite of a new raptorial sperm whale from the Miocene epoch of Peru",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "erickson2004": {
 "doi": "10.1038/nature02699",
@@ -1310,11 +1390,12 @@
 "a:Tyrannosaurus rex"
 ],
 "title_expected": "Gigantism and comparative life-history parameters of tyrannosaurid dinosaurs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "depalma2013": {
 "doi": "10.1073/pnas.1216534110",
-"title": "Physical evidence of predatory behavior in\n                    Tyrannosaurus rex",
+"title": "Physical evidence of predatory behavior in Tyrannosaurus rex",
 "journal": "Proceedings of the National Academy of Sciences",
 "year": 2013,
 "authors": [
@@ -1329,7 +1410,8 @@
 "f:cretaceous"
 ],
 "title_expected": "Physical evidence of predatory behavior in Tyrannosaurus rex",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ibrahim2020": {
 "doi": "10.1038/s41586-020-2190-3",
@@ -1347,7 +1429,8 @@
 "x:spinosaurus"
 ],
 "title_expected": "Tail-propelled aquatic locomotion in a theropod dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "xu2012": {
 "doi": "10.1038/nature10906",
@@ -1364,7 +1447,8 @@
 "a:Yutyrannus"
 ],
 "title_expected": "A gigantic feathered dinosaur from the Lower Cretaceous of China",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "brown2017": {
 "doi": "10.1016/j.cub.2017.06.071",
@@ -1382,7 +1466,8 @@
 "x:borealopelta"
 ],
 "title_expected": "An exceptionally preserved three-dimensional armored dinosaur reveals insights into coloration and Cretaceous predator-prey dynamics",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "smithwick2017": {
 "doi": "10.1016/j.cub.2017.09.032",
@@ -1399,7 +1484,8 @@
 "a:Sinosauropteryx"
 ],
 "title_expected": "Countershading and stripes in the theropod dinosaur Sinosauropteryx reveal heterogeneous habitats in the Early Cretaceous Jehol Biota",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "vinther2016": {
 "doi": "10.1016/j.cub.2016.06.065",
@@ -1416,11 +1502,12 @@
 "a:Psittacosaurus"
 ],
 "title_expected": "3D camouflage in an ornithischian dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "li2012": {
 "doi": "10.1126/science.1213780",
-"title": "Reconstruction of\n            Microraptor\n            and the Evolution of Iridescent Plumage",
+"title": "Reconstruction of Microraptor and the Evolution of Iridescent Plumage",
 "journal": "Science",
 "year": 2012,
 "authors": [
@@ -1433,7 +1520,8 @@
 "a:Microraptor"
 ],
 "title_expected": "Reconstruction of Microraptor and the evolution of iridescent plumage",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "hu2005": {
 "doi": "10.1038/nature03102",
@@ -1450,7 +1538,8 @@
 "a:Repenomamus"
 ],
 "title_expected": "Large Mesozoic mammals fed on young dinosaurs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ortega2010": {
 "doi": "10.1038/nature09181",
@@ -1466,7 +1555,8 @@
 "a:Concavenator"
 ],
 "title_expected": "A bizarre, humped Carcharodontosauria (Theropoda) from the Lower Cretaceous of Spain",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lee2014": {
 "doi": "10.1038/nature13874",
@@ -1483,7 +1573,8 @@
 "a:Deinocheirus"
 ],
 "title_expected": "Resolving the long-standing enigmas of a giant ornithomimosaur Deinocheirus mirificus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "sereno2007": {
 "doi": "10.1371/journal.pone.0001230",
@@ -1500,7 +1591,8 @@
 "a:Nigersaurus"
 ],
 "title_expected": "Structural extremes in a Cretaceous dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lacovara2014": {
 "doi": "10.1038/srep06196",
@@ -1517,7 +1609,8 @@
 "a:Dreadnoughtus"
 ],
 "title_expected": "A gigantic, exceptionally complete titanosaurian sauropod dinosaur from southern Patagonia, Argentina",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "carballido2017": {
 "doi": "10.1098/rspb.2017.1219",
@@ -1534,7 +1627,8 @@
 "a:Patagotitan"
 ],
 "title_expected": "A new giant titanosaur sheds light on body mass evolution among sauropod dinosaurs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "therrien2023": {
 "doi": "10.1126/sciadv.adi0505",
@@ -1551,7 +1645,8 @@
 "a:Gorgosaurus"
 ],
 "title_expected": "Exceptionally preserved stomach contents of a young tyrannosaurid reveal an ontogenetic dietary shift in an iconic extinct predator",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "sampson2010": {
 "doi": "10.1371/journal.pone.0012292",
@@ -1568,7 +1663,8 @@
 "a:Kosmoceratops"
 ],
 "title_expected": "New horned dinosaurs from Utah provide evidence for intracontinental dinosaur endemism",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "cau2017": {
 "doi": "10.1038/nature24679",
@@ -1585,7 +1681,8 @@
 "a:Halszkaraptor"
 ],
 "title_expected": "Synchrotron scanning reveals amphibious ecomorphology in a new clade of bird-like dinosaurs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "carr2017": {
 "doi": "10.1038/srep44942",
@@ -1602,7 +1699,8 @@
 "a:Daspletosaurus"
 ],
 "title_expected": "A new tyrannosaur with evidence for anagenesis and crocodile-like facial sensory system",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "horner1979": {
 "doi": "10.1038/282296a0",
@@ -1618,7 +1716,8 @@
 "x:maiasaura"
 ],
 "title_expected": "Nest of juveniles provides evidence of family structure among dinosaurs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "norell1995": {
 "doi": "10.1038/378774a0",
@@ -1637,7 +1736,8 @@
 "x:gobi"
 ],
 "title_expected": "A nesting dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "norell1994": {
 "doi": "10.1126/science.266.5186.779",
@@ -1655,7 +1755,8 @@
 "x:gobi"
 ],
 "title_expected": "A theropod dinosaur embryo and the affinities of the Flaming Cliffs dinosaur eggs",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "peterson2013": {
 "doi": "10.1371/journal.pone.0036227",
@@ -1670,7 +1771,8 @@
 "a:Pachycephalosaurus"
 ],
 "title_expected": "Cranial pathologies in a specimen of Pachycephalosaurus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "rogers2003": {
 "doi": "10.1038/nature01532",
@@ -1686,7 +1788,8 @@
 "a:Majungasaurus"
 ],
 "title_expected": "Cannibalism in the Madagascan dinosaur Majungatholus atopus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "fisher2000": {
 "doi": "10.1126/science.288.5465.503",
@@ -1703,7 +1806,8 @@
 "a:Thescelosaurus"
 ],
 "title_expected": "Cardiovascular evidence for an intermediate or higher metabolic rate in an ornithischian dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "cleland2011": {
 "doi": "10.1007/s00114-010-0760-1",
@@ -1719,7 +1823,8 @@
 "a:Thescelosaurus"
 ],
 "title_expected": "Histological, chemical, and morphological reexamination of the 'heart' of a small Late Cretaceous Thescelosaurus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "field2018": {
 "doi": "10.1038/s41586-018-0053-y",
@@ -1736,7 +1841,8 @@
 "a:Ichthyornis"
 ],
 "title_expected": "Complete Ichthyornis skull illuminates mosaic assembly of the avian head",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "clarke2016": {
 "doi": "10.1038/nature19852",
@@ -1753,7 +1859,8 @@
 "a:Vegavis"
 ],
 "title_expected": "Fossil evidence of the avian vocal organ from the Mesozoic",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wilson2016": {
 "doi": "10.1038/ncomms13734",
@@ -1770,7 +1877,8 @@
 "a:Didelphodon"
 ],
 "title_expected": "A large carnivorous mammal from the Late Cretaceous and the North American origin of marsupials",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "field2020": {
 "doi": "10.1038/s41586-020-2096-0",
@@ -1787,7 +1895,8 @@
 "a:Asteriornis"
 ],
 "title_expected": "Late Cretaceous neornithine from Europe illuminates the origins of crown birds",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "alvarez1980": {
 "doi": "10.1126/science.208.4448.1095",
@@ -1802,10 +1911,12 @@
 ],
 "targets": [
 "p:cretaceous",
-"x:asteroid"
+"x:asteroid",
+"j:extinctions"
 ],
 "title_expected": "Extraterrestrial cause for the Cretaceous-Tertiary extinction",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "hildebrand1991": {
 "doi": "10.1130/0091-7613(1991)019<0867:ccapct>2.3.co;2",
@@ -1823,7 +1934,8 @@
 "x:asteroid"
 ],
 "title_expected": "Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "head2009": {
 "doi": "10.1038/nature07671",
@@ -1840,7 +1952,8 @@
 "a:Titanoboa"
 ],
 "title_expected": "Giant boid snake from the Palaeocene neotropics reveals hotter past equatorial temperatures",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "westerhold2020": {
 "doi": "10.1126/science.aba6853",
@@ -1858,7 +1971,8 @@
 "p:neogene"
 ],
 "title_expected": "An astronomically dated record of Earth's climate and its predictability over the last 66 million years",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "deconto2003": {
 "doi": "10.1038/nature01290",
@@ -1873,11 +1987,12 @@
 "p:paleogene"
 ],
 "title_expected": "Rapid Cenozoic glaciation of Antarctica induced by declining atmospheric CO2",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "chester2015": {
 "doi": "10.1073/pnas.1421707112",
-"title": "Oldest known euarchontan tarsals and affinities of Paleocene\n                    Purgatorius\n                    to Primates",
+"title": "Oldest known euarchontan tarsals and affinities of Paleocene Purgatorius to Primates",
 "journal": "Proceedings of the National Academy of Sciences",
 "year": 2015,
 "authors": [
@@ -1890,7 +2005,8 @@
 "a:Purgatorius"
 ],
 "title_expected": "Oldest known euarchontan tarsals and affinities of Paleocene Purgatorius to Primates",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "franzen2009": {
 "doi": "10.1371/journal.pone.0005723",
@@ -1908,7 +2024,8 @@
 "f:paleogene"
 ],
 "title_expected": "Complete primate skeleton from the Middle Eocene of Messel in Germany: morphology and paleobiology",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "simmons2008": {
 "doi": "10.1038/nature06549",
@@ -1925,7 +2042,8 @@
 "a:Onychonycteris"
 ],
 "title_expected": "Primitive Early Eocene bat from Wyoming and the evolution of flight and echolocation",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ksepka2023": {
 "doi": "10.1017/jpa.2022.88",
@@ -1942,7 +2060,8 @@
 "a:Kumimanu"
 ],
 "title_expected": "Largest-known fossil penguin provides insight into the early evolution of sphenisciform body size and flipper anatomy",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "thewissen2001": {
 "doi": "10.1038/35095005",
@@ -1959,7 +2078,8 @@
 "a:Pakicetus"
 ],
 "title_expected": "Skeletons of terrestrial cetaceans and the relationship of whales to artiodactyls",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "thewissen2007": {
 "doi": "10.1038/nature06343",
@@ -1976,7 +2096,8 @@
 "a:Indohyus"
 ],
 "title_expected": "Whales originated from aquatic artiodactyls in the Eocene epoch of India",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "gingerich2009": {
 "doi": "10.1371/journal.pone.0004366",
@@ -1993,7 +2114,8 @@
 "a:Maiacetus"
 ],
 "title_expected": "New protocetid whale from the Middle Eocene of Pakistan: birth on land, precocial development, and sexual dimorphism",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lambert2019": {
 "doi": "10.1016/j.cub.2019.02.050",
@@ -2010,7 +2132,8 @@
 "a:Peregocetus"
 ],
 "title_expected": "An amphibious whale from the Middle Eocene of Peru reveals early South Pacific dispersal of quadrupedal cetaceans",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "voss2019": {
 "doi": "10.1371/journal.pone.0209021",
@@ -2028,7 +2151,8 @@
 "a:Dorudon"
 ],
 "title_expected": "Stomach contents of the archaeocete Basilosaurus isis: Apex predator in oceans of the late Eocene",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "domning2001": {
 "doi": "10.1038/35098072",
@@ -2042,7 +2166,8 @@
 "a:Pezosiren"
 ],
 "title_expected": "The earliest known fully quadrupedal sirenian",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "franzen2015": {
 "doi": "10.1371/journal.pone.0137985",
@@ -2059,7 +2184,8 @@
 "f:paleogene"
 ],
 "title_expected": "Description of a well preserved fetus of the European Eocene equoid Eurohippus messelensis",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ni2013": {
 "doi": "10.1038/nature12200",
@@ -2076,7 +2202,8 @@
 "a:Archicebus"
 ],
 "title_expected": "The oldest known primate skeleton and early haplorhine evolution",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "clarke2010": {
 "doi": "10.1126/science.1193604",
@@ -2093,7 +2220,8 @@
 "a:Inkayacu"
 ],
 "title_expected": "Fossil evidence for evolution of the shape and color of penguin feathers",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "archibald2011": {
 "doi": "10.1098/rspb.2011.0729",
@@ -2110,7 +2238,8 @@
 "a:Titanomyrma"
 ],
 "title_expected": "Intercontinental dispersal of giant thermophilic ants across the Arctic during early Eocene hyperthermals",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "bohme2019": {
 "doi": "10.1038/s41586-019-1731-0",
@@ -2127,11 +2256,12 @@
 "a:Danuvius"
 ],
 "title_expected": "A new Miocene ape and locomotion in the ancestor of great apes and humans",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "danowitz2015": {
 "doi": "10.1098/rsos.150393",
-"title": "Fossil evidence and stages of elongation of theGiraffa camelopardalisneck",
+"title": "Fossil evidence and stages of elongation of the Giraffa camelopardalis neck",
 "journal": "Royal Society Open Science",
 "year": 2015,
 "authors": [
@@ -2144,7 +2274,8 @@
 "a:Samotherium"
 ],
 "title_expected": "Fossil evidence and stages of elongation of the Giraffa camelopardalis neck",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "cadena2020": {
 "doi": "10.1126/sciadv.aay4593",
@@ -2161,7 +2292,8 @@
 "a:Stupendemys"
 ],
 "title_expected": "The anatomy, paleobiology, and evolutionary relationships of the largest extinct side-necked turtle",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ksepka2014": {
 "doi": "10.1073/pnas.1320297111",
@@ -2175,11 +2307,12 @@
 "a:Pelagornis"
 ],
 "title_expected": "Flight performance of the largest volant bird",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "chatterjee2007": {
 "doi": "10.1073/pnas.0702040104",
-"title": "The aerodynamics of\n                    Argentavis\n                    , the world's largest flying bird from the Miocene of Argentina",
+"title": "The aerodynamics of Argentavis, the world's largest flying bird from the Miocene of Argentina",
 "journal": "Proceedings of the National Academy of Sciences",
 "year": 2007,
 "authors": [
@@ -2191,7 +2324,8 @@
 "a:Argentavis"
 ],
 "title_expected": "The aerodynamics of Argentavis, the world's largest flying bird from the Miocene of Argentina",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "rybczynski2009": {
 "doi": "10.1038/nature07985",
@@ -2207,11 +2341,12 @@
 "a:Puijila"
 ],
 "title_expected": "A semi-aquatic Arctic mammalian carnivore from the Miocene epoch and origin of Pinnipedia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "cooper2022": {
 "doi": "10.1126/sciadv.abm9424",
-"title": "The extinct shark\n            Otodus megalodon\n            was a transoceanic superpredator: Inferences from 3D modeling",
+"title": "The extinct shark Otodus megalodon was a transoceanic superpredator: Inferences from 3D modeling",
 "journal": "Science Advances",
 "year": 2022,
 "authors": [
@@ -2224,7 +2359,8 @@
 "a:Megalodon"
 ],
 "title_expected": "The extinct shark Otodus megalodon was a transoceanic superpredator: Inferences from 3D modeling",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "amson2015": {
 "doi": "10.1098/rspb.2014.0192",
@@ -2242,7 +2378,8 @@
 "f:neogene"
 ],
 "title_expected": "Gradual adaptation of bone structure to aquatic lifestyle in extinct sloths from Peru",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "rinderknecht2008": {
 "doi": "10.1098/rspb.2007.1645",
@@ -2257,11 +2394,12 @@
 "a:Josephoartigasia"
 ],
 "title_expected": "The largest fossil rodent",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "borths2019": {
 "doi": "10.1080/02724634.2019.1570222",
-"title": "Simbakubwa kutokaafrika\n                    , gen. et sp. nov. (Hyainailourinae, Hyaenodonta, ‘Creodonta,’ Mammalia), a gigantic carnivore from the earliest Miocene of Kenya",
+"title": "Simbakubwa kutokaafrika, gen. et sp. nov. (Hyainailourinae, Hyaenodonta, ‘Creodonta,’ Mammalia), a gigantic carnivore from the earliest Miocene of Kenya",
 "journal": "Journal of Vertebrate Paleontology",
 "year": 2019,
 "authors": [
@@ -2272,7 +2410,8 @@
 "a:Simbakubwa"
 ],
 "title_expected": "Simbakubwa kutokaakali, gen. et sp. nov. (Hyainailourinae, Hyaenodonta, 'Creodonta,' Mammalia), a gigantic carnivore from the earliest Miocene of Kenya",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "kohler2009": {
 "doi": "10.1073/pnas.0813385106",
@@ -2287,7 +2426,8 @@
 "a:Myotragus (“mouse goat”)"
 ],
 "title_expected": "Physiological and life history strategies of a fossil large mammal in a resource-limited environment",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "welker2015": {
 "doi": "10.1038/nature14249",
@@ -2305,7 +2445,8 @@
 "a:Macrauchenia"
 ],
 "title_expected": "Ancient proteins resolve the evolutionary history of Darwin's South American ungulates",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lopatin2024": {
 "doi": "10.1038/s41598-024-79546-1",
@@ -2322,7 +2463,8 @@
 "a:Homotherium"
 ],
 "title_expected": "Mummy of a juvenile sabre-toothed cat Homotherium latidens from the Upper Pleistocene of Siberia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "plint2019": {
 "doi": "10.1038/s41598-019-43710-9",
@@ -2338,7 +2480,8 @@
 "a:Giant Beaver"
 ],
 "title_expected": "Giant beaver palaeoecology inferred from stable isotopes",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "vartanyan1993": {
 "doi": "10.1038/362337a0",
@@ -2354,7 +2497,8 @@
 "a:Woolly Mammoth"
 ],
 "title_expected": "Holocene dwarf mammoths from Wrangel Island in the Siberian Arctic",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "vandervalk2021": {
 "doi": "10.1038/s41586-021-03224-9",
@@ -2372,7 +2516,8 @@
 "a:Columbian Mammoth"
 ],
 "title_expected": "Million-year-old DNA sheds light on the genomic history of mammoths",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "desantis2019": {
 "doi": "10.1016/j.cub.2019.06.059",
@@ -2391,7 +2536,8 @@
 "f:quaternary"
 ],
 "title_expected": "Causes and consequences of Pleistocene megafaunal extinctions as revealed from Rancho La Brea mammals",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "perri2021": {
 "doi": "10.1038/s41586-020-03082-x",
@@ -2408,7 +2554,8 @@
 "a:Dire Wolf (Aenocyon dirus)"
 ],
 "title_expected": "Dire wolves were the last of an ancient New World canid lineage",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wroe2005": {
 "doi": "10.1098/rspb.2004.2986",
@@ -2424,11 +2571,12 @@
 "a:Thylacoleo (Marsupial Lion)"
 ],
 "title_expected": "Bite club: comparative bite force in big biting mammals and the prediction of predatory behaviour in fossil taxa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "fry2009": {
 "doi": "10.1073/pnas.0810883106",
-"title": "A central role for venom in predation by\n                    Varanus komodoensis\n                    (Komodo Dragon) and the extinct giant\n                    Varanus\n                    (\n                    Megalania\n                    )\n                    priscus",
+"title": "A central role for venom in predation by Varanus komodoensis (Komodo Dragon) and the extinct giant Varanus ( Megalania ) priscus",
 "journal": "Proceedings of the National Academy of Sciences",
 "year": 2009,
 "authors": [
@@ -2442,11 +2590,12 @@
 "a:Komodo Dragon"
 ],
 "title_expected": "A central role for venom in predation by Varanus komodoensis (Komodo Dragon) and the extinct giant Varanus (Megalania) priscus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "miller2016": {
 "doi": "10.1038/ncomms10496",
-"title": "Human predation contributed to the extinction of the Australian megafaunal bird Genyornis newtoni ∼47 ka",
+"title": "Human predation contributed to the extinction of the Australian megafaunal bird Genyornis newtoni ∼47 ka",
 "journal": "Nature Communications",
 "year": 2016,
 "authors": [
@@ -2459,7 +2608,8 @@
 "a:Genyornis"
 ],
 "title_expected": "Human predation contributed to the extinction of the Australian megafaunal bird Genyornis newtoni ~47 ka",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "kosintsev2019": {
 "doi": "10.1038/s41559-018-0722-0",
@@ -2476,7 +2626,8 @@
 "a:Elasmotherium (Siberian Unicorn)"
 ],
 "title_expected": "Evolution and extinction of the giant rhinoceros Elasmotherium sibiricum sheds light on late Quaternary megafaunal extinctions",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "barnosky2004": {
 "doi": "10.1126/science.1101476",
@@ -2493,11 +2644,12 @@
 "p:quaternary"
 ],
 "title_expected": "Assessing the causes of Late Pleistocene extinctions on the continents",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "luthi2008": {
 "doi": "10.1038/nature06949",
-"title": "High-resolution carbon dioxide concentration record 650,000–800,000 years before present",
+"title": "High-resolution carbon dioxide concentration record 650,000–800,000 years before present",
 "journal": "Nature",
 "year": 2008,
 "authors": [
@@ -2510,7 +2662,8 @@
 "p:quaternary"
 ],
 "title_expected": "High-resolution carbon dioxide concentration record 650,000–800,000 years before present",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ceballos2015": {
 "doi": "10.1126/sciadv.1400253",
@@ -2525,10 +2678,12 @@
 ],
 "targets": [
 "p:holocene",
-"f:holocene"
+"f:holocene",
+"j:extinctions"
 ],
 "title_expected": "Accelerated modern human-induced species losses: Entering the sixth mass extinction",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "shapiro2002": {
 "doi": "10.1126/science.295.5560.1683",
@@ -2545,7 +2700,8 @@
 "a:Dodo (Raphus cucullatus)"
 ],
 "title_expected": "Flight of the dodo",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "higuchi1984": {
 "doi": "10.1038/312282a0",
@@ -2562,7 +2718,8 @@
 "a:Quagga"
 ],
 "title_expected": "DNA sequences from the quagga, an extinct member of the horse family",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "turvey2007": {
 "doi": "10.1098/rsbl.2007.0292",
@@ -2579,7 +2736,8 @@
 "a:Baiji (Yangtze River Dolphin)"
 ],
 "title_expected": "First human-caused extinction of a cetacean species?",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "hansford2018": {
 "doi": "10.1098/rsos.181295",
@@ -2594,7 +2752,8 @@
 "a:Elephant Bird"
 ],
 "title_expected": "Unexpected diversity within the extinct elephant birds (Aves: Aepyornithidae) and a new identity for the world's largest bird",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "smith1939": {
 "doi": "10.1038/143455a0",
@@ -2608,7 +2767,8 @@
 "a:Coelacanth"
 ],
 "title_expected": "A living fish of Mesozoic type",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "senut2001": {
 "doi": "10.1016/s1251-8050(01)01529-4",
@@ -2625,7 +2785,8 @@
 "h:orrorin"
 ],
 "title_expected": "First hominid from the Miocene (Lukeino Formation, Kenya)",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "haileselassie2001": {
 "doi": "10.1038/35084063",
@@ -2639,11 +2800,12 @@
 "h:kadabba"
 ],
 "title_expected": "Late Miocene hominids from the Middle Awash, Ethiopia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "white2009": {
 "doi": "10.1126/science.1175802",
-"title": "Ardipithecus ramidus\n                    and the Paleobiology of Early Hominids",
+"title": "Ardipithecus ramidus and the Paleobiology of Early Hominids",
 "journal": "Science",
 "year": 2009,
 "authors": [
@@ -2656,7 +2818,8 @@
 "h:ramidus"
 ],
 "title_expected": "Ardipithecus ramidus and the paleobiology of early hominids",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "haileselassie2019": {
 "doi": "10.1038/s41586-019-1513-8",
@@ -2673,7 +2836,8 @@
 "h:anamensis"
 ],
 "title_expected": "A 3.8-million-year-old hominin cranium from Woranso-Mille, Ethiopia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "johanson1976": {
 "doi": "10.1038/260293a0",
@@ -2689,7 +2853,8 @@
 "x:lucy"
 ],
 "title_expected": "Plio–Pleistocene hominid discoveries in Hadar, Ethiopia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "leakey1979": {
 "doi": "10.1038/278317a0",
@@ -2705,7 +2870,8 @@
 "x:laetoli"
 ],
 "title_expected": "Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "alemseged2006": {
 "doi": "10.1038/nature05047",
@@ -2722,7 +2888,8 @@
 "h:afarensis"
 ],
 "title_expected": "A juvenile early hominin skeleton from Dikika, Ethiopia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "leakey2001": {
 "doi": "10.1038/35068500",
@@ -2739,7 +2906,8 @@
 "h:kenyanthropus"
 ],
 "title_expected": "New hominin genus from eastern Africa shows diverse middle Pliocene lineages",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "harmand2015": {
 "doi": "10.1038/nature14464",
@@ -2757,7 +2925,8 @@
 "c:oldowan"
 ],
 "title_expected": "3.3-million-year-old stone tools from Lomekwi 3, West Turkana, Kenya",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "dart1925": {
 "doi": "10.1038/115195a0",
@@ -2772,7 +2941,8 @@
 "x:taung"
 ],
 "title_expected": "Australopithecus africanus: The man-ape of South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "berger2006": {
 "doi": "10.1002/ajpa.20415",
@@ -2787,11 +2957,12 @@
 "x:taung"
 ],
 "title_expected": "Brief communication: Predatory bird damage to the Taung type-skull of Australopithecus africanus Dart 1925",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "asfaw1999": {
 "doi": "10.1126/science.284.5414.629",
-"title": "Australopithecus garhi\n                    : A New Species of Early Hominid from Ethiopia",
+"title": "Australopithecus garhi: A New Species of Early Hominid from Ethiopia",
 "journal": "Science",
 "year": 1999,
 "authors": [
@@ -2804,7 +2975,8 @@
 "h:garhi"
 ],
 "title_expected": "Australopithecus garhi: a new species of early hominid from Ethiopia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "deheinzelin1999": {
 "doi": "10.1126/science.284.5414.625",
@@ -2821,7 +2993,8 @@
 "h:garhi"
 ],
 "title_expected": "Environment and behavior of 2.5-million-year-old Bouri hominids",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "walker1986": {
 "doi": "10.1038/322517a0",
@@ -2838,7 +3011,8 @@
 "h:aethiopicus"
 ],
 "title_expected": "2.5-Myr Australopithecus boisei from west of Lake Turkana, Kenya",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "leakey1959": {
 "doi": "10.1038/184491a0",
@@ -2853,11 +3027,12 @@
 "x:zinj"
 ],
 "title_expected": "A new fossil skull from Olduvai",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "cerling2011": {
 "doi": "10.1073/pnas.1104627108",
-"title": "Diet of\n                    Paranthropus boisei\n                    in the early Pleistocene of East Africa",
+"title": "Diet of Paranthropus boisei in the early Pleistocene of East Africa",
 "journal": "Proceedings of the National Academy of Sciences",
 "year": 2011,
 "authors": [
@@ -2870,11 +3045,12 @@
 "h:boisei"
 ],
 "title_expected": "Diet of Paranthropus boisei in the early Pleistocene of East Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "madupe2025": {
 "doi": "10.1126/science.adt9539",
-"title": "Enamel proteins reveal biological sex and genetic variability in southern African\n                    Paranthropus",
+"title": "Enamel proteins reveal biological sex and genetic variability in southern African Paranthropus",
 "journal": "Science",
 "year": 2025,
 "authors": [
@@ -2887,11 +3063,12 @@
 "h:robustus"
 ],
 "title_expected": "Enamel proteins reveal biological sex and genetic variability in southern African Paranthropus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "berger2010": {
 "doi": "10.1126/science.1184944",
-"title": "Australopithecus sediba\n                    : A New Species of\n                    Homo\n                    -Like Australopith from South Africa",
+"title": "Australopithecus sediba: A New Species of Homo -Like Australopith from South Africa",
 "journal": "Science",
 "year": 2010,
 "authors": [
@@ -2904,7 +3081,8 @@
 "h:sediba"
 ],
 "title_expected": "Australopithecus sediba: a new species of Homo-like australopith from South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "henry2012": {
 "doi": "10.1038/nature11185",
@@ -2921,7 +3099,8 @@
 "h:sediba"
 ],
 "title_expected": "The diet of Australopithecus sediba",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "leakey1964": {
 "doi": "10.1038/202007a0",
@@ -2937,11 +3116,12 @@
 "h:habilis"
 ],
 "title_expected": "A new species of the genus Homo from Olduvai Gorge",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "villmoare2015": {
 "doi": "10.1126/science.aaa1343",
-"title": "Early\n            Homo\n            at 2.8 Ma from Ledi-Geraru, Afar, Ethiopia",
+"title": "Early Homo at 2.8 Ma from Ledi-Geraru, Afar, Ethiopia",
 "journal": "Science",
 "year": 2015,
 "authors": [
@@ -2954,7 +3134,8 @@
 "h:habilis"
 ],
 "title_expected": "Early Homo at 2.8 Ma from Ledi-Geraru, Afar, Ethiopia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "leakey2012": {
 "doi": "10.1038/nature11322",
@@ -2971,7 +3152,8 @@
 "h:rudolfensis"
 ],
 "title_expected": "New fossils from Koobi Fora in northern Kenya confirm taxonomic diversity in early Homo",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "brown1985": {
 "doi": "10.1038/316788a0",
@@ -2989,11 +3171,12 @@
 "x:turkana"
 ],
 "title_expected": "Early Homo erectus skeleton from west Lake Turkana, Kenya",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lordkipanidze2013": {
 "doi": "10.1126/science.1238484",
-"title": "A Complete Skull from Dmanisi, Georgia, and the Evolutionary Biology of Early\n            Homo",
+"title": "A Complete Skull from Dmanisi, Georgia, and the Evolutionary Biology of Early Homo",
 "journal": "Science",
 "year": 2013,
 "authors": [
@@ -3006,7 +3189,8 @@
 "h:erectus"
 ],
 "title_expected": "A complete skull from Dmanisi, Georgia, and the evolutionary biology of early Homo",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "berna2012": {
 "doi": "10.1073/pnas.1117620109",
@@ -3024,7 +3208,8 @@
 "c:fire"
 ],
 "title_expected": "Microstratigraphic evidence of in situ fire in the Acheulean strata of Wonderwerk Cave, Northern Cape province, South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "bermudez1997": {
 "doi": "10.1126/science.276.5317.1392",
@@ -3041,7 +3226,8 @@
 "h:antecessor"
 ],
 "title_expected": "A hominid from the Lower Pleistocene of Atapuerca, Spain: possible ancestor to Neandertals and modern humans",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "welker2020": {
 "doi": "10.1038/s41586-020-2153-8",
@@ -3058,7 +3244,8 @@
 "h:antecessor"
 ],
 "title_expected": "The dental proteome of Homo antecessor",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "meyer2016": {
 "doi": "10.1038/nature17405",
@@ -3075,7 +3262,8 @@
 "h:heidelbergensis"
 ],
 "title_expected": "Nuclear DNA sequences from the Middle Pleistocene Sima de los Huesos hominins",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "thieme1997": {
 "doi": "10.1038/385807a0",
@@ -3089,11 +3277,12 @@
 "h:heidelbergensis"
 ],
 "title_expected": "Lower Palaeolithic hunting spears from Germany",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "dirks2017": {
 "doi": "10.7554/elife.24231",
-"title": "The age of Homo naledi and associated sediments in the Rising Star Cave, South Africa",
+"title": "The age of Homo naledi and associated sediments in the Rising Star Cave, South Africa",
 "journal": "eLife",
 "year": 2017,
 "authors": [
@@ -3106,7 +3295,8 @@
 "h:naledi"
 ],
 "title_expected": "The age of Homo naledi and associated sediments in the Rising Star Cave, South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "jaubert2016": {
 "doi": "10.1038/nature18291",
@@ -3124,7 +3314,8 @@
 "c:neanderthal-life"
 ],
 "title_expected": "Early Neanderthal constructions deep in Bruniquel Cave in southwestern France",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "reich2010": {
 "doi": "10.1038/nature09710",
@@ -3142,7 +3333,8 @@
 "x:denisova"
 ],
 "title_expected": "Genetic history of an archaic hominin group from Denisova Cave in Siberia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "slon2018": {
 "doi": "10.1038/s41586-018-0455-x",
@@ -3159,7 +3351,8 @@
 "h:denisovan"
 ],
 "title_expected": "The genome of the offspring of a Neanderthal mother and a Denisovan father",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "chen2019": {
 "doi": "10.1530/ey.16.14.6",
@@ -3176,7 +3369,8 @@
 "h:denisovan"
 ],
 "title_expected": "A late Middle Pleistocene Denisovan mandible from the Tibetan Plateau",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "huertasanchez2014": {
 "doi": "10.1038/nature13408",
@@ -3193,7 +3387,8 @@
 "h:denisovan"
 ],
 "title_expected": "Altitude adaptation in Tibetans caused by introgression of Denisovan-like DNA",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "brown2004": {
 "doi": "10.1038/nature02999",
@@ -3211,7 +3406,8 @@
 "x:flores"
 ],
 "title_expected": "A new small-bodied hominin from the Late Pleistocene of Flores, Indonesia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "sutikna2016": {
 "doi": "10.1038/nature17179",
@@ -3229,7 +3425,8 @@
 "x:flores"
 ],
 "title_expected": "Revised stratigraphy and chronology for Homo floresiensis at Liang Bua in Indonesia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "vandenbergh2016": {
 "doi": "10.1038/nature17999",
@@ -3246,7 +3443,8 @@
 "h:floresiensis"
 ],
 "title_expected": "Homo floresiensis-like fossils from the early Middle Pleistocene of Flores",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "detroit2019": {
 "doi": "10.1038/s41586-019-1067-9",
@@ -3263,7 +3461,8 @@
 "h:luzonensis"
 ],
 "title_expected": "A new species of Homo from the Late Pleistocene of the Philippines",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "hublin2017": {
 "doi": "10.1038/nature22336",
@@ -3281,7 +3480,8 @@
 "x:irhoud"
 ],
 "title_expected": "New fossils from Jebel Irhoud, Morocco and the pan-African origin of Homo sapiens",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "bennett2021": {
 "doi": "10.1126/science.abg7586",
@@ -3300,7 +3500,8 @@
 "x:whitesands"
 ],
 "title_expected": "Evidence of humans in North America during the Last Glacial Maximum",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "clarkson2017": {
 "doi": "10.1038/nature22968",
@@ -3318,11 +3519,12 @@
 "c:first-australians"
 ],
 "title_expected": "Human occupation of northern Australia by 65,000 years ago",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "plummer2023": {
 "doi": "10.1126/science.abo7452",
-"title": "Expanded geographic distribution and dietary strategies of the earliest Oldowan hominins and\n                    Paranthropus",
+"title": "Expanded geographic distribution and dietary strategies of the earliest Oldowan hominins and Paranthropus",
 "journal": "Science",
 "year": 2023,
 "authors": [
@@ -3335,7 +3537,8 @@
 "c:oldowan"
 ],
 "title_expected": "Expanded geographic distribution and dietary strategies of the earliest Oldowan hominins and Paranthropus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "lepre2011": {
 "doi": "10.1038/nature10372",
@@ -3352,7 +3555,8 @@
 "c:acheulean"
 ],
 "title_expected": "An earlier origin for the Acheulian",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "barham2023": {
 "doi": "10.1038/s41586-023-06557-9",
@@ -3369,7 +3573,8 @@
 "c:kalambo"
 ],
 "title_expected": "Evidence for the earliest structural use of wood at least 476,000 years ago",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wadley2020": {
 "doi": "10.1126/science.abc7239",
@@ -3386,7 +3591,8 @@
 "c:border-cave"
 ],
 "title_expected": "Fire and grass-bedding construction 200 thousand years ago at Border Cave, South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "derrico2012": {
 "doi": "10.1073/pnas.1204213109",
@@ -3403,7 +3609,8 @@
 "c:border-cave"
 ],
 "title_expected": "Early evidence of San material culture represented by organic artifacts from Border Cave, South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "henshilwood2011": {
 "doi": "10.1126/science.1211535",
@@ -3420,7 +3627,8 @@
 "c:blombos"
 ],
 "title_expected": "A 100,000-year-old ochre-processing workshop at Blombos Cave, South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "henshilwood2018": {
 "doi": "10.1038/s41586-018-0514-3",
@@ -3437,7 +3645,8 @@
 "c:blombos"
 ],
 "title_expected": "An abstract drawing from the 73,000-year-old levels at Blombos Cave, South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "marean2007": {
 "doi": "10.1038/nature06204",
@@ -3454,7 +3663,8 @@
 "c:blombos"
 ],
 "title_expected": "Early human use of marine resources and pigment in South Africa during the Middle Pleistocene",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "bowler2003": {
 "doi": "10.1038/nature01383",
@@ -3471,7 +3681,8 @@
 "c:first-australians"
 ],
 "title_expected": "New ages for human occupation and climatic change at Lake Mungo, Australia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "oktaviana2024": {
 "doi": "10.1038/s41586-024-07541-7",
@@ -3488,7 +3699,8 @@
 "c:sulawesi"
 ],
 "title_expected": "Narrative cave art in Indonesia by 51,200 years ago",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "trinkaus2018": {
 "doi": "10.15184/aqy.2017.223",
@@ -3503,7 +3715,8 @@
 "c:sungir"
 ],
 "title_expected": "Diversity and differential disposal of the dead at Sunghir",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "pryor2020": {
 "doi": "10.15184/aqy.2020.7",
@@ -3520,7 +3733,8 @@
 "c:mammoth-huts"
 ],
 "title_expected": "The chronology and function of a new circular mammoth-bone structure at Kostenki 11",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "quiles2016": {
 "doi": "10.1073/pnas.1523158113",
@@ -3537,7 +3751,8 @@
 "c:cave-painters"
 ],
 "title_expected": "A high-precision chronological model for the decorated Upper Paleolithic cave of Chauvet-Pont d'Arc, Ardèche, France",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "nadel2004": {
 "doi": "10.1073/pnas.0308557101",
@@ -3554,7 +3769,8 @@
 "c:ohalo"
 ],
 "title_expected": "Stone Age hut in Israel yields world's oldest evidence of bedding",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "snir2015": {
 "doi": "10.1371/journal.pone.0131422",
@@ -3571,7 +3787,8 @@
 "c:ohalo"
 ],
 "title_expected": "The origin of cultivation and proto-weeds, long before Neolithic farming",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wu2012": {
 "doi": "10.1126/science.1218643",
@@ -3588,7 +3805,8 @@
 "c:xianrendong"
 ],
 "title_expected": "Early pottery at 20,000 years ago in Xianrendong Cave, China",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "dillehay2008": {
 "doi": "10.1126/science.1156533",
@@ -3605,7 +3823,8 @@
 "c:monte-verde"
 ],
 "title_expected": "Monte Verde: seaweed, food, medicine, and the peopling of South America",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "arranz2018": {
 "doi": "10.1073/pnas.1801071115",
@@ -3622,7 +3841,8 @@
 "c:natufians"
 ],
 "title_expected": "Archaeobotanical evidence reveals the origins of bread 14,400 years ago in northeastern Jordan",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "davis1978": {
 "doi": "10.1038/276608a0",
@@ -3637,7 +3857,8 @@
 "c:natufians"
 ],
 "title_expected": "Evidence for domestication of the dog 12,000 years ago in the Natufian of Israel",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "dietrich2012": {
 "doi": "10.1017/s0003598x00047840",
@@ -3654,7 +3875,8 @@
 "c:gobekli"
 ],
 "title_expected": "The role of cult and feasting in the emergence of Neolithic communities. New evidence from Göbekli Tepe, south-eastern Turkey",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "fuller2009": {
 "doi": "10.1126/science.1166605",
@@ -3671,7 +3893,8 @@
 "c:hemudu"
 ],
 "title_expected": "The domestication process and domestication rate in rice: spikelet bases from the Lower Yangtze",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "sereno2008": {
 "doi": "10.1371/journal.pone.0002995",
@@ -3688,7 +3911,8 @@
 "c:green-sahara"
 ],
 "title_expected": "Lakeside cemeteries in the Sahara: 5000 years of Holocene population and environmental change",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "shady2001": {
 "doi": "10.1126/science.1059519",
@@ -3704,7 +3928,8 @@
 "c:caral"
 ],
 "title_expected": "Dating Caral, a preceramic site in the Supe Valley on the central coast of Peru",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wilmshurst2011": {
 "doi": "10.1073/pnas.1015876108",
@@ -3721,7 +3946,8 @@
 "c:polynesian"
 ],
 "title_expected": "High-precision radiocarbon dating shows recent and rapid initial human colonization of East Polynesia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "evans2013": {
 "doi": "10.1073/pnas.1306539110",
@@ -3738,7 +3964,8 @@
 "c:angkor"
 ],
 "title_expected": "Uncovering archaeological landscapes at Angkor using lidar",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "halligan2016": {
 "doi": "10.1126/sciadv.1600375",
@@ -3755,7 +3982,8 @@
 "d:page-ladson"
 ],
 "title_expected": "Pre-Clovis occupation 14,550 years ago at the Page-Ladson site, Florida, and the peopling of the Americas",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "fedje2000": {
 "doi": "10.1130/0091-7613(2000)28<99:dfaaot>2.0.co;2",
@@ -3770,7 +3998,8 @@
 "d:haida-gwaii"
 ],
 "title_expected": "Drowned forests and archaeology on the continental shelf of British Columbia, Canada",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "oshea2014": {
 "doi": "10.1073/pnas.1404404111",
@@ -3787,7 +4016,8 @@
 "d:alpena"
 ],
 "title_expected": "A 9,000-year-old caribou hunting structure beneath Lake Huron",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "hershkovitz2008": {
 "doi": "10.1371/journal.pone.0003426",
@@ -3804,7 +4034,8 @@
 "d:atlit-yam"
 ],
 "title_expected": "Detection and molecular characterization of 9000-year-old Mycobacterium tuberculosis from a Neolithic settlement in the Eastern Mediterranean",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "benjamin2020": {
 "doi": "10.1371/journal.pone.0233912",
@@ -3821,7 +4052,8 @@
 "d:murujuga"
 ],
 "title_expected": "Aboriginal artefacts on the continental shelf reveal ancient drowned cultural landscapes in northwest Australia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "smith2015b": {
 "doi": "10.1126/science.1261278",
@@ -3838,7 +4070,8 @@
 "d:bouldnor"
 ],
 "title_expected": "Sedimentary DNA from a submerged site reveals wheat in the British Isles 8000 years ago",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "weninger2008": {
 "doi": "10.4312/dp.35.1",
@@ -3855,7 +4088,8 @@
 "d:doggerland"
 ],
 "title_expected": "The catastrophic final flooding of Doggerland by the Storegga Slide tsunami",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "tamm2007": {
 "doi": "10.1371/journal.pone.0000829",
@@ -3872,7 +4106,8 @@
 "d:beringia"
 ],
 "title_expected": "Beringian standstill and spread of Native American founders",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "brunet2002": {
 "doi": "10.1038/nature00879",
@@ -3889,7 +4124,8 @@
 "h:sahelanthropus"
 ],
 "title_expected": "A new hominid from the Upper Miocene of Chad, Central Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "berger2015": {
 "doi": "10.7554/elife.09560",
@@ -3907,7 +4143,8 @@
 "x:naledi"
 ],
 "title_expected": "Homo naledi, a new species of the genus Homo from the Dinaledi Chamber, South Africa",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "xu2004": {
 "doi": "10.1038/nature02898",
@@ -3922,7 +4159,8 @@
 "a:Mei long"
 ],
 "title_expected": "A new troodontid dinosaur from China with avian-like sleeping posture",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "schulte2010": {
 "doi": "10.1126/science.1177265",
@@ -3939,7 +4177,8 @@
 "p:cretaceous"
 ],
 "title_expected": "The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "angst2014": {
 "doi": "10.1007/s00114-014-1158-2",
@@ -3957,7 +4196,8 @@
 "f:paleogene"
 ],
 "title_expected": "Isotopic and anatomical evidence of an herbivorous diet in the Early Tertiary giant bird Gastornis",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "green2010": {
 "doi": "10.1126/science.1188021",
@@ -3974,7 +4214,8 @@
 "h:neanderthal"
 ],
 "title_expected": "A draft sequence of the Neandertal genome",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "demenocal2000": {
 "doi": "10.1016/s0277-3791(99)00081-5",
@@ -3991,7 +4232,8 @@
 "c:green-sahara"
 ],
 "title_expected": "Abrupt onset and termination of the African Humid Period: rapid climate responses to gradual insolation forcing",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "engelman2023": {
 "doi": "10.3390/d15030318",
@@ -4005,7 +4247,8 @@
 "a:Dunkleosteus"
 ],
 "title_expected": "A Devonian Fish Tale: A New Method of Body Length Estimation Suggests Much Smaller Sizes for Dunkleosteus terrelli (Placodermi: Arthrodira)",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "li2016": {
 "doi": "10.1126/sciadv.1501659",
@@ -4022,7 +4265,8 @@
 "a:Atopodentatus"
 ],
 "title_expected": "The earliest herbivorous marine reptile and its remarkable jaw apparatus",
-"type": "journal-article"
+"type": "journal-article",
+"first": "Li"
 },
 "arbour2017": {
 "doi": "10.1098/rsos.161086",
@@ -4037,7 +4281,8 @@
 "a:Zuul"
 ],
 "title_expected": "A new ankylosaurine dinosaur from the Judith River Formation of Montana, USA, based on an exceptional skeleton with soft tissue preservation",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "mayor1993": {
 "doi": "10.1080/0015587x.1993.9715853",
@@ -4052,11 +4297,12 @@
 "x:griffin"
 ],
 "title_expected": "Griffins and Arimaspeans",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "witton2024": {
 "doi": "10.1177/03080188241255543",
-"title": "Did the horned dinosaur\n                    Protoceratops\n                    inspire the griffin?",
+"title": "Did the horned dinosaur Protoceratops inspire the griffin?",
 "journal": "Interdisciplinary Science Reviews",
 "year": 2024,
 "authors": [
@@ -4067,7 +4313,8 @@
 "x:griffin"
 ],
 "title_expected": "Did the horned dinosaur Protoceratops inspire the griffin?",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "mayor2007": {
 "doi": "10.1144/gsl.sp.2007.273.01.19",
@@ -4081,11 +4328,12 @@
 "x:firstamericans"
 ],
 "title_expected": "Place names describing fossils in oral traditions",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "baucon2010": {
 "doi": "10.2110/palo.2009.p09-049r",
-"title": "LEONARDO DA VINCI, THE FOUNDING FATHER OF ICHNOLOGY",
+"title": "Leonardo Da Vinci, the Founding Father of Ichnology",
 "journal": "PALAIOS",
 "year": 2010,
 "authors": [
@@ -4095,7 +4343,8 @@
 "x:leonardo"
 ],
 "title_expected": "Leonardo da Vinci, the founding father of ichnology",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "delair2002": {
 "doi": "10.1016/s0016-7878(02)80022-0",
@@ -4110,7 +4359,8 @@
 "x:plot"
 ],
 "title_expected": "The earliest discoveries of dinosaurs: the records re-examined",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "torrens1995": {
 "doi": "10.1017/s0007087400033161",
@@ -4124,7 +4374,8 @@
 "x:anning"
 ],
 "title_expected": "Mary Anning (1799–1847) of Lyme; 'the greatest fossilist the world ever knew'",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "buckland1824": {
 "doi": "10.1144/transgslb.1.2.390",
@@ -4139,7 +4390,8 @@
 "a:Megalosaurus"
 ],
 "title_expected": "Notice on the Megalosaurus or great Fossil Lizard of Stonesfield",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "owen1863": {
 "doi": "10.1098/rstl.1863.0003",
@@ -4154,7 +4406,8 @@
 "a:Archaeopteryx"
 ],
 "title_expected": "On the Archeopteryx of von Meyer, with a description of the fossil remains of a long-tailed species, from the lithographic stone of Solenhofen",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "schmitz2002": {
 "doi": "10.1073/pnas.192464099",
@@ -4171,7 +4424,8 @@
 "x:neanderthal"
 ],
 "title_expected": "The Neandertal type site revisited: interdisciplinary investigations of skeletal remains from the Neander Valley, Germany",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "davidson2002": {
 "doi": "10.1635/0097-3157(2002)152[0215:hpovbm]2.0.co;2",
@@ -4186,7 +4440,8 @@
 "a:Elasmosaurus"
 ],
 "title_expected": "Bonehead mistakes: the background in scientific literature and illustrations for Edward Drinker Cope's first restoration of Elasmosaurus platyurus",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "shen2009": {
 "doi": "10.1038/nature07741",
@@ -4204,7 +4459,8 @@
 "h:erectus"
 ],
 "title_expected": "Age of Zhoukoudian Homo erectus determined with 26Al/10Be burial dating",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "zhang2024": {
 "doi": "10.1038/s41586-023-06900-0",
@@ -4222,11 +4478,12 @@
 "a:Gigantopithecus"
 ],
 "title_expected": "The demise of the giant ape Gigantopithecus blacki",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ford1958": {
 "doi": "10.1144/pygs.31.3.211",
-"title": "PRE-CAMBRIAN FOSSILS FROM CHARNWOOD FOREST",
+"title": "Pre-cambrian Fossils from Charnwood Forest",
 "journal": "Proceedings of the Yorkshire Geological Society",
 "year": 1958,
 "authors": [
@@ -4237,7 +4494,8 @@
 "a:Charnia"
 ],
 "title_expected": "Pre-Cambrian fossils from Charnwood Forest",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "wegener1912": {
 "doi": "10.1007/bf02202896",
@@ -4251,7 +4509,8 @@
 "x:wegener"
 ],
 "title_expected": "Die Entstehung der Kontinente",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "vine1963": {
 "doi": "10.1038/199947a0",
@@ -4266,7 +4525,8 @@
 "x:seafloor"
 ],
 "title_expected": "Magnetic anomalies over oceanic ridges",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ostrom1973": {
 "doi": "10.1038/242136a0",
@@ -4281,7 +4541,8 @@
 "a:Deinonychus"
 ],
 "title_expected": "The ancestry of birds",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "brochu2003": {
 "doi": "10.2307/3889334",
@@ -4296,7 +4557,8 @@
 "a:Tyrannosaurus rex"
 ],
 "title_expected": "Osteology of Tyrannosaurus rex: insights from a nearly complete skeleton and high-resolution computed tomographic analysis of the skull",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "chen1998": {
 "doi": "10.1038/34356",
@@ -4313,7 +4575,8 @@
 "a:Sinosauropteryx"
 ],
 "title_expected": "An exceptionally well-preserved theropod dinosaur from the Yixian Formation of China",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "zhang2010": {
 "doi": "10.1038/nature08740",
@@ -4331,11 +4594,12 @@
 "a:Sinosauropteryx"
 ],
 "title_expected": "Fossilized melanosomes and the colour of Cretaceous dinosaurs and birds",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "schweitzer2005": {
 "doi": "10.1126/science.1108397",
-"title": "Soft-Tissue Vessels and Cellular Preservation in\n            Tyrannosaurus rex",
+"title": "Soft-Tissue Vessels and Cellular Preservation in Tyrannosaurus rex",
 "journal": "Science",
 "year": 2005,
 "authors": [
@@ -4349,7 +4613,8 @@
 "a:Tyrannosaurus rex"
 ],
 "title_expected": "Soft-tissue vessels and cellular preservation in Tyrannosaurus rex",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "xing2016": {
 "doi": "10.1016/j.cub.2016.10.008",
@@ -4366,7 +4631,8 @@
 "x:amber"
 ],
 "title_expected": "A feathered dinosaur tail with primitive plumage trapped in mid-Cretaceous amber",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "ibrahim2014": {
 "doi": "10.1126/science.1258750",
@@ -4384,7 +4650,8 @@
 "a:Spinosaurus"
 ],
 "title_expected": "Semiaquatic adaptations in a giant predatory dinosaur",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "richter2017": {
 "doi": "10.1038/nature22335",
@@ -4402,7 +4669,8 @@
 "h:sapiens"
 ],
 "title_expected": "The age of the hominin fossils from Jebel Irhoud, Morocco, and the origins of the Middle Stone Age",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "pigati2023": {
 "doi": "10.1126/science.adh5007",
@@ -4419,7 +4687,8 @@
 "x:whitesands"
 ],
 "title_expected": "Independent age estimates resolve the controversy of ancient human footprints at White Sands",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "krause2010": {
 "doi": "10.1038/nature08976",
@@ -4437,7 +4706,8 @@
 "h:denisovan"
 ],
 "title_expected": "The complete mitochondrial DNA genome of an unknown hominin from southern Siberia",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "mantell1825": {
 "doi": "10.1098/rstl.1825.0010",
@@ -4452,7 +4722,8 @@
 "a:Iguanodon"
 ],
 "title_expected": "Notice on the Iguanodon, a newly discovered fossil reptile, from the sandstone of Tilgate forest, in Sussex",
-"type": "journal-article"
+"type": "journal-article",
+"first": ""
 },
 "scotese2021": {
 "doi": "10.1016/j.earscirev.2021.103503",
@@ -4469,7 +4740,8 @@
 "targets": [
 "m:climate"
 ],
-"title_expected": "Phanerozoic paleotemperatures: The earth's changing climate during the last 540 million years"
+"title_expected": "Phanerozoic paleotemperatures: The earth's changing climate during the last 540 million years",
+"first": ""
 },
 "tierney2020": {
 "doi": "10.1038/s41586-020-2617-x",
@@ -4486,7 +4758,8 @@
 "targets": [
 "m:climate"
 ],
-"title_expected": "Glacial cooling and climate sensitivity revisited"
+"title_expected": "Glacial cooling and climate sensitivity revisited",
+"first": ""
 },
 "angielczyk2009": {
 "doi": "10.1007/s12052-009-0117-4",
@@ -4499,9 +4772,11 @@
 "type": "journal-article",
 "targets": [
 "t:synapsid",
-"a:Dimetrodon"
+"a:Dimetrodon",
+"j:you"
 ],
-"title_expected": "Dimetrodon Is Not a Dinosaur: Using Tree Thinking to Understand the Ancient Relatives of Mammals and their Evolution"
+"title_expected": "Dimetrodon Is Not a Dinosaur: Using Tree Thinking to Understand the Ancient Relatives of Mammals and their Evolution",
+"first": ""
 },
 "kemp2006": {
 "doi": "10.1111/j.1420-9101.2005.01076.x",
@@ -4515,7 +4790,8 @@
 "targets": [
 "t:synapsid"
 ],
-"title_expected": "The origin and early radiation of the therapsid mammal-like reptiles: a palaeobiological hypothesis"
+"title_expected": "The origin and early radiation of the therapsid mammal-like reptiles: a palaeobiological hypothesis",
+"first": ""
 },
 "luo2007": {
 "doi": "10.1038/nature06277",
@@ -4527,9 +4803,11 @@
 ],
 "type": "journal-article",
 "targets": [
-"t:synapsid"
+"t:synapsid",
+"j:you"
 ],
-"title_expected": "Transformation and diversification in early mammal evolution"
+"title_expected": "Transformation and diversification in early mammal evolution",
+"first": ""
 },
 "ford2020": {
 "doi": "10.1038/s41559-019-1047-3",
@@ -4546,7 +4824,8 @@
 "a:Varanops",
 "a:Heleosaurus"
 ],
-"title_expected": "The phylogeny of early amniotes and the affinities of Parareptilia and Varanopidae"
+"title_expected": "The phylogeny of early amniotes and the affinities of Parareptilia and Varanopidae",
+"first": ""
 },
 "baron2017": {
 "doi": "10.1038/nature21700",
@@ -4562,7 +4841,8 @@
 "targets": [
 "t:dino"
 ],
-"title_expected": "A new hypothesis of dinosaur relationships and early dinosaur evolution"
+"title_expected": "A new hypothesis of dinosaur relationships and early dinosaur evolution",
+"first": ""
 },
 "langer2017": {
 "doi": "10.1038/nature24011",
@@ -4579,7 +4859,8 @@
 "targets": [
 "t:dino"
 ],
-"title_expected": "Untangling the dinosaur family tree"
+"title_expected": "Untangling the dinosaur family tree",
+"first": ""
 },
 "brusatte2010": {
 "doi": "10.1016/j.earscirev.2010.04.001",
@@ -4596,7 +4877,8 @@
 "targets": [
 "t:dino"
 ],
-"title_expected": "The origin and early radiation of dinosaurs"
+"title_expected": "The origin and early radiation of dinosaurs",
+"first": ""
 },
 "brusatte2014": {
 "doi": "10.1016/j.cub.2014.08.034",
@@ -4613,7 +4895,8 @@
 "targets": [
 "t:dino"
 ],
-"title_expected": "Gradual assembly of avian body plan culminated in rapid rates of evolution across the dinosaur-bird transition"
+"title_expected": "Gradual assembly of avian body plan culminated in rapid rates of evolution across the dinosaur-bird transition",
+"first": ""
 },
 "xu2014": {
 "doi": "10.1126/science.1253293",
@@ -4630,7 +4913,8 @@
 "targets": [
 "t:dino"
 ],
-"title_expected": "An integrative approach to understanding bird origins"
+"title_expected": "An integrative approach to understanding bird origins",
+"first": ""
 },
 "sulej2019": {
 "doi": "10.1126/science.aal4853",
@@ -4645,11 +4929,12 @@
 "targets": [
 "a:Lisowicia"
 ],
-"title_expected": "An elephant-sized Late Triassic synapsid with erect limbs"
+"title_expected": "An elephant-sized Late Triassic synapsid with erect limbs",
+"first": ""
 },
 "hoffman2018": {
 "doi": "10.1038/s41586-018-0441-3",
-"title": "Jurassic stem-mammal perinates and the origin of mammalian reproduction and growth",
+"title": "Jurassic stem-mammal perinates and the origin of mammalian reproduction and growth",
 "journal": "Nature",
 "year": 2018,
 "authors": [
@@ -4660,11 +4945,12 @@
 "targets": [
 "a:Kayentatherium"
 ],
-"title_expected": "Jurassic stem-mammal perinates and the origin of mammalian reproduction and growth"
+"title_expected": "Jurassic stem-mammal perinates and the origin of mammalian reproduction and growth",
+"first": ""
 },
 "cabreira2022": {
 "doi": "10.1111/joa.13756",
-"title": "Diphyodont tooth replacement of Brasilodon—A Late Triassic eucynodont that challenges the time of origin of mammals",
+"title": "Diphyodont tooth replacement of Brasilodon —A Late Triassic eucynodont that challenges the time of origin of mammals",
 "journal": "Journal of Anatomy",
 "year": 2022,
 "authors": [
@@ -4677,11 +4963,12 @@
 "targets": [
 "a:Brasilodon"
 ],
-"title_expected": "Diphyodont tooth replacement of Brasilodon—A Late Triassic eucynodont that challenges the time of origin of mammals"
+"title_expected": "Diphyodont tooth replacement of Brasilodon—A Late Triassic eucynodont that challenges the time of origin of mammals",
+"first": ""
 },
 "jasinoski2017": {
 "doi": "10.7717/peerj.2875",
-"title": "Aggregations and parental care in the Early Triassic basal cynodonts\n                    Galesaurus planiceps\n                    and\n                    Thrinaxodon liorhinus",
+"title": "Aggregations and parental care in the Early Triassic basal cynodonts Galesaurus planiceps and Thrinaxodon liorhinus",
 "journal": "PeerJ",
 "year": 2017,
 "authors": [
@@ -4693,7 +4980,8 @@
 "a:Galesaurus",
 "a:Thrinaxodon"
 ],
-"title_expected": "Aggregations and parental care in the Early Triassic basal cynodonts Galesaurus planiceps and Thrinaxodon liorhinus"
+"title_expected": "Aggregations and parental care in the Early Triassic basal cynodonts Galesaurus planiceps and Thrinaxodon liorhinus",
+"first": ""
 },
 "groenewald2001": {
 "doi": "10.2307/3515526",
@@ -4709,7 +4997,8 @@
 "targets": [
 "a:Trirachodon"
 ],
-"title_expected": "Vertebrate burrow complexes from the Early Triassic Cynognathus Zone (Driekoppen Formation, Beaufort Group) of the Karoo Basin, South Africa"
+"title_expected": "Vertebrate burrow complexes from the Early Triassic Cynognathus Zone (Driekoppen Formation, Beaufort Group) of the Karoo Basin, South Africa",
+"first": ""
 },
 "liu2009": {
 "doi": "10.4202/app.2008.0071",
@@ -4725,7 +5014,8 @@
 "targets": [
 "a:Raranimus"
 ],
-"title_expected": "New basal synapsid supports Laurasian origin for therapsids"
+"title_expected": "New basal synapsid supports Laurasian origin for therapsids",
+"first": ""
 },
 "luo2001": {
 "doi": "10.1126/science.1058476",
@@ -4741,7 +5031,8 @@
 "targets": [
 "a:Hadrocodium"
 ],
-"title_expected": "A new mammaliaform from the Early Jurassic and evolution of mammalian characteristics"
+"title_expected": "A new mammaliaform from the Early Jurassic and evolution of mammalian characteristics",
+"first": ""
 },
 "luo2015": {
 "doi": "10.1126/science.1260880",
@@ -4758,7 +5049,8 @@
 "targets": [
 "a:Docofossor"
 ],
-"title_expected": "Evolutionary development in basal mammaliaforms as revealed by a docodontan"
+"title_expected": "Evolutionary development in basal mammaliaforms as revealed by a docodontan",
+"first": ""
 },
 "meng2017": {
 "doi": "10.1038/nature23476",
@@ -4775,7 +5067,8 @@
 "targets": [
 "a:Maiopatagium"
 ],
-"title_expected": "New gliding mammaliaforms from the Jurassic"
+"title_expected": "New gliding mammaliaforms from the Jurassic",
+"first": ""
 },
 "meng2006": {
 "doi": "10.1038/nature05234",
@@ -4792,7 +5085,8 @@
 "targets": [
 "a:Volaticotherium"
 ],
-"title_expected": "A Mesozoic gliding mammal from northeastern China"
+"title_expected": "A Mesozoic gliding mammal from northeastern China",
+"first": ""
 },
 "luo2005": {
 "doi": "10.1126/science.1108875",
@@ -4807,7 +5101,8 @@
 "targets": [
 "a:Fruitafossor"
 ],
-"title_expected": "A Late Jurassic digging mammal and early mammalian diversification"
+"title_expected": "A Late Jurassic digging mammal and early mammalian diversification",
+"first": ""
 },
 "ji2002": {
 "doi": "10.1038/416816a",
@@ -4824,11 +5119,12 @@
 "targets": [
 "a:Eomaia"
 ],
-"title_expected": "The earliest known eutherian mammal"
+"title_expected": "The earliest known eutherian mammal",
+"first": ""
 },
 "krause2020": {
 "doi": "10.1038/s41586-020-2234-8",
-"title": "Skeleton of a Cretaceous mammal from Madagascar reflects long-term insularity",
+"title": "Skeleton of a Cretaceous mammal from Madagascar reflects long-term insularity",
 "journal": "Nature",
 "year": 2020,
 "authors": [
@@ -4841,7 +5137,8 @@
 "targets": [
 "a:Adalatherium"
 ],
-"title_expected": "Skeleton of a Cretaceous mammal from Madagascar reflects long-term insularity"
+"title_expected": "Skeleton of a Cretaceous mammal from Madagascar reflects long-term insularity",
+"first": ""
 },
 "krause2014": {
 "doi": "10.1038/nature13922",
@@ -4858,7 +5155,8 @@
 "targets": [
 "a:Vintana"
 ],
-"title_expected": "First cranial remains of a gondwanatherian mammal reveal remarkable mosaicism"
+"title_expected": "First cranial remains of a gondwanatherian mammal reveal remarkable mosaicism",
+"first": ""
 },
 "archer1985": {
 "doi": "10.1038/318363a0",
@@ -4875,7 +5173,8 @@
 "targets": [
 "a:Steropodon"
 ],
-"title_expected": "First Mesozoic mammal from Australia—an early Cretaceous monotreme"
+"title_expected": "First Mesozoic mammal from Australia—an early Cretaceous monotreme",
+"first": ""
 },
 "choiniere2021": {
 "doi": "10.1126/science.abe7941",
@@ -4892,7 +5191,8 @@
 "targets": [
 "a:Shuvuuia"
 ],
-"title_expected": "Evolution of vision and hearing modalities in theropod dinosaurs"
+"title_expected": "Evolution of vision and hearing modalities in theropod dinosaurs",
+"first": ""
 },
 "xu2007": {
 "doi": "10.1038/nature05849",
@@ -4909,7 +5209,8 @@
 "targets": [
 "a:Gigantoraptor"
 ],
-"title_expected": "A gigantic bird-like dinosaur from the Late Cretaceous of China"
+"title_expected": "A gigantic bird-like dinosaur from the Late Cretaceous of China",
+"first": ""
 },
 "kirkland2005": {
 "doi": "10.1038/nature03468",
@@ -4926,7 +5227,8 @@
 "targets": [
 "a:Falcarius"
 ],
-"title_expected": "A primitive therizinosauroid dinosaur from the Early Cretaceous of Utah"
+"title_expected": "A primitive therizinosauroid dinosaur from the Early Cretaceous of Utah",
+"first": ""
 },
 "novas2009": {
 "doi": "10.1098/rspb.2008.1554",
@@ -4943,7 +5245,8 @@
 "targets": [
 "a:Austroraptor"
 ],
-"title_expected": "A bizarre Cretaceous theropod dinosaur from Patagonia and the evolution of Gondwanan dromaeosaurids"
+"title_expected": "A bizarre Cretaceous theropod dinosaur from Patagonia and the evolution of Gondwanan dromaeosaurids",
+"first": ""
 },
 "xu2002": {
 "doi": "10.1038/415780a",
@@ -4960,7 +5263,8 @@
 "targets": [
 "a:Sinovenator"
 ],
-"title_expected": "A basal troodontid from the Early Cretaceous of China"
+"title_expected": "A basal troodontid from the Early Cretaceous of China",
+"first": ""
 },
 "novas1998": {
 "doi": "10.1080/02724634.1998.10011030",
@@ -4974,7 +5278,8 @@
 "targets": [
 "a:Megaraptor"
 ],
-"title_expected": "Megaraptor namunhuaiquii, gen. et sp. nov., a large-clawed, Late Cretaceous theropod from Patagonia"
+"title_expected": "Megaraptor namunhuaiquii, gen. et sp. nov., a large-clawed, Late Cretaceous theropod from Patagonia",
+"first": ""
 },
 "kammerer2016": {
 "doi": "10.7717/peerj.1608",
@@ -4988,7 +5293,8 @@
 "targets": [
 "a:Rubidgea"
 ],
-"title_expected": "Systematics of the Rubidgeinae (Therapsida: Gorgonopsia)"
+"title_expected": "Systematics of the Rubidgeinae (Therapsida: Gorgonopsia)",
+"first": ""
 },
 "perle1993": {
 "doi": "10.1038/362623a0",
@@ -5005,7 +5311,8 @@
 "targets": [
 "a:Mononykus"
 ],
-"title_expected": "Flightless bird from the Cretaceous of Mongolia"
+"title_expected": "Flightless bird from the Cretaceous of Mongolia",
+"first": "Perle"
 },
 "ji1998": {
 "doi": "10.1038/31635",
@@ -5022,6 +5329,146 @@
 "targets": [
 "a:Caudipteryx"
 ],
-"title_expected": "Two feathered dinosaurs from northeastern China"
+"title_expected": "Two feathered dinosaurs from northeastern China",
+"first": "Ji"
+},
+"suarez2017": {
+"doi": "10.1371/journal.pone.0179262",
+"title": "A U-Pb zircon age constraint on the oldest-recorded air-breathing land animal",
+"journal": "PLOS ONE",
+"year": 2017,
+"authors": [
+"Suarez",
+"Brookfield",
+"Catlos",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Pneumodesmus"
+],
+"first": "",
+"title_expected": "A U-Pb zircon age constraint on the oldest-recorded air-breathing land animal"
+},
+"wilson2004": {
+"doi": "10.1666/0022-3360(2004)078<0169:matopm>2.0.co;2",
+"title": "Morphology and taxonomy of Paleozoic millipedes (Diplopoda: Chilognatha: Archipolypoda) from Scotland",
+"journal": "Journal of Paleontology",
+"year": 2004,
+"authors": [
+"Wilson",
+"Anderson"
+],
+"type": "journal-article",
+"targets": [
+"a:Pneumodesmus"
+],
+"first": "",
+"title_expected": "Morphology and taxonomy of Paleozoic millipedes (Diplopoda: Chilognatha: Archipolypoda) from Scotland"
+},
+"benoit2017": {
+"doi": "10.1371/journal.pone.0172047",
+"title": "Reappraisal of the envenoming capacity of Euchambersia mirabilis (Therapsida, Therocephalia) using μCT-scanning techniques",
+"journal": "PLOS ONE",
+"year": 2017,
+"authors": [
+"Benoit",
+"Norton",
+"Manger",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Euchambersia"
+],
+"first": "",
+"title_expected": "Reappraisal of the envenoming capacity of Euchambersia mirabilis (Therapsida, Therocephalia) using μCT-scanning techniques"
+},
+"fang2023": {
+"doi": "10.1186/s12862-023-02143-9",
+"title": "First filter feeding in the Early Triassic: cranial morphological convergence between Hupehsuchus and baleen whales",
+"journal": "BMC Ecology and Evolution",
+"year": 2023,
+"authors": [
+"Fang",
+"Li",
+"Yan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Hupehsuchus"
+],
+"first": "",
+"title_expected": "First filter feeding in the Early Triassic: cranial morphological convergence between Hupehsuchus and baleen whales"
+},
+"taylor2009": {
+"doi": "10.1671/039.029.0309",
+"title": "A re-evaluation of Brachiosaurus altithorax Riggs 1903 (Dinosauria, Sauropoda) and its generic separation from Giraffatitan brancai (Janensch 1914)",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 2009,
+"authors": [
+"Taylor"
+],
+"type": "journal-article",
+"targets": [
+"a:Giraffatitan",
+"a:Brachiosaurus"
+],
+"first": "",
+"title_expected": "A re-evaluation of Brachiosaurus altithorax Riggs 1903 (Dinosauria, Sauropoda) and its generic separation from Giraffatitan brancai (Janensch 1914)"
+},
+"gong2010": {
+"doi": "10.1073/pnas.0912360107",
+"title": "The birdlike raptor Sinornithosaurus was venomous",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2010,
+"authors": [
+"Gong",
+"Martin",
+"Burnham",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Sinornithosaurus"
+],
+"first": "",
+"title_expected": "The birdlike raptor Sinornithosaurus was venomous"
+},
+"gianechini2011": {
+"doi": "10.1007/s12542-010-0074-9",
+"title": "A reassessment of the purported venom delivery system of the bird-like raptor Sinornithosaurus",
+"journal": "Paläontologische Zeitschrift",
+"year": 2011,
+"authors": [
+"Gianechini",
+"Agnolín",
+"Ezcurra"
+],
+"type": "journal-article",
+"targets": [
+"a:Sinornithosaurus"
+],
+"first": "",
+"title_expected": "A reassessment of the purported venom delivery system of the bird-like raptor Sinornithosaurus"
+},
+"loron2026": {
+"doi": "10.1126/sciadv.aec6277",
+"title": "Prototaxites fossils are structurally and chemically distinct from extinct and extant Fungi",
+"journal": "Science Advances",
+"year": 2026,
+"authors": [
+"Loron",
+"Cooper",
+"McMahon",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Prototaxites"
+],
+"first": "",
+"title_expected": "Prototaxites fossils are structurally and chemically distinct from extinct and extant Fungi"
 }
 }

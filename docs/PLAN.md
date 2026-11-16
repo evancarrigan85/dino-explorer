@@ -18,9 +18,11 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 302, every one a journal article confirmed in Crossref |
-| Checks | 78 passing |
-| Page | about 1.08 MB, one file |
+| References | 310, every one a journal article confirmed in Crossref |
+| Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
+| Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
+| Checks | 92 passing |
+| Page | about 1.11 MB, one file |
 
 **Source coverage** (entries that cite at least one verified paper):
 
@@ -254,6 +256,63 @@ longest matching lineage path, so a new tree is mostly data.
   a published dated tree, not be estimated here.
 - **Link from the cards**: a "🌳 See it on the family tree" button on every animal that has one.
 
+## Release 7c — The other families (asked for by Evan; designed, not built)
+
+Evan asked for the synapsid treatment — a tree, plus the missing members — for the other families.
+The design was worked out on 15–16 Nov and nothing has been built yet. Build it as data in
+`data_trees.js` plus a new `data_branches.js` for the animals.
+
+- **Three new trees.** *From fish to four legs* (early chordates → jawless fishes → jaws → bony fishes
+  → lobe-fins → fish with limbs → four-legged animals → the egg laid on land, ending in two link
+  branches that open the mammal tree and the reptile tree). *The reptile tree* (early reptiles;
+  lizards, snakes and the mosasaurs that belong with them; turtles; the sea reptiles, with their
+  uncertain place stated; then the ruling reptiles splitting into the crocodile line and the bird
+  line — pterosaur cousins, pterosaurs, dinosaur cousins, dinosaurs). *Jointed legs* (lobopodians →
+  Opabinia → radiodonts → true arthropods: trilobites, the pincer-mouths, the jaw-biters).
+- **Give the Mammals branch real structure** in place of the flat fan of 28 twigs: egg-layers; the
+  extinct side branches; pouched mammals; placentals in their four great groups (Africa's mammals,
+  the sloth-and-armadillo group, primates-and-rodents, and the northern group that holds bats,
+  carnivores, hoofed mammals and whales), with an honest "placement uncertain" branch.
+- **A `link` field on a branch** that opens another tree, and a "🌳 See it on the family tree" button
+  on every animal card.
+- **About 30 animals for thin families**, each with the paper that described it: pterosaurs
+  (Anurognathus, Dsungaripterus, Tapejara, Anhanguera, Ctenochasma, Cryodrakon from Alberta,
+  Caelestiventus, Kunpengopterus) and their cousins (Lagerpeton, Scleromochlus); the crocodile line
+  (Protosuchus, Terrestrisuchus, Carnufex, Dakosaurus, Pakasuchus, a phytosaur); sea and other
+  reptiles (Cartorhynchus, Stenopterygius, Dinocephalosaurus, Albertonectes from Alberta,
+  Polycotylus, Platecarpus, Odontochelys, Najash); amphibians and early tetrapods (Elpistostege from
+  Quebec, Diadectes, Gerobatrachus, Triadobatrachus, Metoposaurus, Koolasuchus, Beelzebufo).
+
+## Release 7d — Finding your way around (navigation)
+
+The content has outgrown six tabs and a list. In order of value:
+
+1. **Search everything.** One box that finds animals, humans, cultures, drowned sites, finds,
+   periods, places and family-tree branches, and goes there. Today's box only searches animals.
+2. **A front door.** A first screen (and a Home button) with four or five ways in: *Your story*,
+   *Pick a time*, *Pick an animal*, *How do we know?*, *Where was my town?* — instead of landing in
+   the Jurassic with a list.
+3. **More journeys**, since they are cheap to write and are the easiest way in: the Ice Age world;
+   the first people in the Americas; from dinosaur to bird; the return to the sea (whales); the
+   Cambrian explosion. Add journey sources under `j:<id>` and show them on the last stop.
+4. **Deep links for everything**: finds, tree branches, journeys and stops in the address bar, so a
+   page can be shared at an exact place.
+5. **"Related" on every card**: its family-tree branch, its find, what it ate and what ate it (from
+   the food webs), and who else lived then — so every card leads somewhere.
+6. **Two reading levels**: a short card for a six-year-old, the full one for everyone else.
+
+## Release 7e — The living map, second pass
+
+Shipped so far: wakes, light on the water, eruptions and impacts. Next, in order:
+
+- **Ice that breathes**: animate the ice-sheet edge as the Ice Age cycles pass, rather than stepping.
+- **A terminator line and soft daylight on the globe view**, turning slowly while idle.
+- **Markers that arrive**: a short rise-and-settle when an animal first appears as time moves, and a
+  fade when it goes extinct — so scrubbing through an extinction visibly empties the map.
+- **Sound, off by default**: one low tone for eruptions and impacts, wind over ice. Ask Evan first.
+- **Ancient shorelines (Release 2)** remain the biggest visual gain; the motion will look far better
+  on real palaeogeography.
+
 ## Release 8 — Real fossil occurrences (needs one host approved)
 
 Show every recorded fossil of a selected animal or group as dots, from the Paleobiology Database
@@ -279,6 +338,11 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — Sources pass, your ancestors, journeys, the living map.** Every reference re-fetched
+  and confirmed published; titles and author names cleaned; seven cards that named a study without
+  citing it now cite it (one gap left: Palorchestes — find the skull study or reword the card). A bar
+  under the map names the reader's own ancestor at every moment; four guided journeys; wakes, water
+  light, and nine eruptions and impacts on the map. 92 checks.
 - **15 Nov 2026 — Family trees and the road to mammals.** Two trees (synapsids → mammals; dinosaurs →
   birds) with the feature each branch added and where experts disagree; 44 new animals (28 mammal
   ancestors and early mammals, plus dinosaurs from families that had none or few — alvarezsaurs,

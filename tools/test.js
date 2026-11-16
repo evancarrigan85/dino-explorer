@@ -119,7 +119,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('drowned: later it is under water, shown with a wave pin', await p.evaluate(() => /under water/.test(document.querySelector('#pane-humans .profile').innerText) && placeCache['ddoggerland'].icon === '🌊'));
   await p.click('#tab-life'); await p.waitForTimeout(150);
   // peer-reviewed sources
-  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 300 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
+  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 305 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
   await p.click('#tab-life'); await p.fill('#q', 'tiktaalik'); await p.waitForTimeout(300); await p.click('#lifeList [data-key="tiktaalik"]'); await p.waitForTimeout(2000);
   ok('sources: an opened card lists its paper with a DOI link', await p.evaluate(() => { const el = document.querySelector('#lifeList .creature-card.active .sources'); return !!el && /Daeschler/.test(el.innerText) && !!el.querySelector('a[href^="https://doi.org/10.1038/"]'); }));
   await p.fill('#q', ''); await p.waitForTimeout(200);
@@ -141,6 +141,36 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('finds: a find with no single fossil is pinned on today’s map', await p.evaluate(() => S.t === 0 && !!placeCache['fleonardo']));
   ok('finds: every find with a linked animal or human points at a real card', await p.evaluate(() => FINDS.every(f => (!f.animal || ALL.some(c => c.name === f.animal)) && (!f.hom || !!BY_KEY[f.hom]))));
   await p.evaluate(() => { setWindow(T_MAX, 0, true); switchTab('life'); }); await p.waitForTimeout(200);
+  // sources: linked, clean and complete
+  ok('sources: every citation on a card resolves, and every reference is used somewhere', await p.evaluate(() => Object.values(SRCMAP).every(ks => ks.every(k => REFS[k])) && Object.keys(REFS).every(k => Object.values(SRCMAP).some(ks => ks.includes(k)))));
+  ok('sources: titles and names are clean (no shouting, no glued or doubled words)', await p.evaluate(() => Object.values(REFS).every(r => !/\s{2,}|\n/.test(r.t) && r.t !== r.t.toUpperCase() && !/[a-z][A-Z][a-z]{3,} [a-z]+[a-z][A-Z]/.test(r.t) && !/\b[A-Z]{4,}\b/.test(r.a) && r.a && r.j)), await p.evaluate(() => Object.values(REFS).filter(r => /\s{2,}|\n/.test(r.t) || r.t === r.t.toUpperCase() || /\b[A-Z]{4,}\b/.test(r.a) || !r.a || !r.j).map(r => r.a + ': ' + r.t).slice(0, 5).join(' | ')));
+  const loose = await p.evaluate(() => { const rx = /\b(19|20)\d\d (study|paper|analysis|scan)|\bstud(y|ies) (in|of|from|published in) (19|20)\d\d/i; return ALL.filter(c => !c.hom && !SRCMAP['a:' + c.name] && rx.test([c.fact, c.know, c.debate].join(' '))).map(c => c.name); });
+  ok('sources: a card that names a study cites it (one known gap: Palorchestes)', loose.length <= 1 && loose.every(n => n === 'Palorchestes'), loose.join(', '));
+  ok('sources: names follow the paper, not the registry’s filing (Ji, Perle, Conway Morris)', await p.evaluate(() => REFS.ji1998.a.startsWith('Ji,') && REFS.perle1993.a.startsWith('Perle,') && REFS.morris2014.a.startsWith('Conway Morris') && REFS.ostrom1973.a === 'Ostrom'));
+  // you: the reader's own line
+  await p.evaluate(() => { setWindow(T_MAX, 0, true); setTime(250); }); await p.waitForTimeout(200);
+  ok('you: the bar names your ancestor at this moment', await p.evaluate(() => /cynodont/.test(document.getElementById('youBar').innerText) && /Thrinaxodon/.test(document.getElementById('youBar').innerText)));
+  ok('you: the line runs unbroken from 720 million years ago to today', await p.evaluate(() => YOU_LINE[0].from === 720 && YOU_LINE[YOU_LINE.length - 1].to === 0 && YOU_LINE.every((y, i) => !i || YOU_LINE[i - 1].to === y.from) && [700, 500, 300, 100, 10, 1, 0].every(t => youAt(t) && t <= youAt(t).from && t >= youAt(t).to)));
+  await p.click('#youBar'); await p.waitForTimeout(500);
+  ok('you: opening it tells the story and says the animal shown is a cousin', await p.evaluate(() => /Your ancestor/.test(document.getElementById('fpText').innerText) && /close cousin/.test(document.getElementById('fpText').innerText) && S.sel === 'thrinaxodon'));
+  await p.evaluate(() => closeFact());
+  // journeys
+  await p.click('#journeyBtn'); await p.waitForTimeout(150);
+  ok('journeys: the menu offers four', await p.evaluate(() => document.getElementById('journeyMenu').classList.contains('show') && document.querySelectorAll('#journeyMenu [data-journey]').length === 4));
+  await p.click('#journeyMenu [data-journey="drift"]'); await p.waitForTimeout(2600);
+  ok('journeys: the first stop is shown and time has travelled there', await p.evaluate(() => /1 \/ 9/.test(document.querySelector('#journey .jr-n').textContent) && Math.abs(S.t - 700) < 1 && document.getElementById('journey').classList.contains('show')));
+  await p.click('#journey [data-jr="next"]'); await p.waitForTimeout(2600);
+  ok('journeys: Next moves on through time', await p.evaluate(() => /2 \/ 9/.test(document.querySelector('#journey .jr-n').textContent) && Math.abs(S.t - 500) < 1 && /Gondwana/.test(document.querySelector('#journey .jr-head').textContent)));
+  await p.click('#journey [data-jr="end"]'); await p.waitForTimeout(150);
+  ok('journeys: closing ends it', await p.evaluate(() => !S.jr && !document.getElementById('journey').classList.contains('show')));
+  ok('journeys: each is built from the site’s own data', await p.evaluate(() => { const n = id => JOURNEYS.find(j => j.id === id).stops().length; return n('you') === YOU_LINE.length && n('extinctions') === 7 && n('finds') === 10 && n('drift') === 9; }));
+  await p.evaluate(() => startJourney('you')); await p.waitForTimeout(2600);
+  for (let i = 0; i < 11; i++) { await p.evaluate(() => stepJourney(1)); await p.waitForTimeout(120); }
+  await p.waitForTimeout(2600);
+  ok('journeys: “Your story” arrives at the cynodont that came through the Great Dying', await p.evaluate(() => Math.abs(S.t - 250) < 1 && S.sel === 'thrinaxodon' && /worst extinction/.test(document.querySelector('#journey .jr-text').textContent)));
+  await p.evaluate(() => { endJourney(); S.sel = null; WorldMap.select(null); switchTab('life'); }); await p.waitForTimeout(150);
+  // the living map
+  ok('motion: eruptions and impacts are placed, and motion can be switched off', await p.evaluate(() => { const a = SPARKS.length >= 8 && WorldMap.motion === true; WorldMap.setMotion(false); const b = WorldMap.motion === false; WorldMap.setMotion(true); return a && b; }));
   // family trees
   await p.click('#treeBtn'); await p.waitForTimeout(250);
   ok('trees: the road to mammals opens, trunk and side branches drawn', await p.evaluate(() => S.view === 'tree' && document.querySelectorAll('#lifeList .tn.trunk').length >= 6 && document.querySelectorAll('#lifeList .tn:not(.trunk)').length >= 12 && /Synapsida/.test(document.querySelector('#lifeList .tn').innerText)));
