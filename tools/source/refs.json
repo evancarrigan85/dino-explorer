@@ -6425,5 +6425,59 @@
 ],
 "first": "",
 "title_expected": "Proboscideans: Shoulder Height, Body Mass and Shape"
+},
+"renne2015": {
+"doi": "10.1126/science.aac7549",
+"title": "State shift in Deccan volcanism at the Cretaceous-Paleogene boundary, possibly induced by impact",
+"journal": "Science",
+"year": 2015,
+"authors": [
+"Renne",
+"Sprain",
+"Richards",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:cretaceous"
+],
+"first": "",
+"title_expected": "State shift in Deccan volcanism at the Cretaceous-Paleogene boundary, possibly induced by impact"
+},
+"schoene2019": {
+"doi": "10.1126/science.aau2422",
+"title": "U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction",
+"journal": "Science",
+"year": 2019,
+"authors": [
+"Schoene",
+"Eddy",
+"Samperton",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:cretaceous"
+],
+"first": "",
+"title_expected": "U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction"
+},
+"sprain2019": {
+"doi": "10.1126/science.aav1446",
+"title": "The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary",
+"journal": "Science",
+"year": 2019,
+"authors": [
+"Sprain",
+"Renne",
+"Vanderkluysen",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:cretaceous"
+],
+"first": "",
+"title_expected": "The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary"
 }
 }

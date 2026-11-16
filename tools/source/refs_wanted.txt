@@ -373,3 +373,6 @@ rauhut2016 | Rauhut | 2016 | The theropod dinosaur Elaphrosaurus bambergi Janens
 kirkland2013 | Kirkland | 2013 | The Basal Nodosaurid Ankylosaur Europelta carbonensis n. gen., n. sp. from the Lower Cretaceous (Lower Albian) Escucha Formation of Northeastern Spain | a:Europelta
 weishampel2003 | Weishampel | 2003 | Osteology and phylogeny of Zalmoxes (n. g.), an unusual Euornithopod dinosaur from the latest Cretaceous of Romania | a:Zalmoxes
 larramendi2016 | Larramendi | 2016 | Proboscideans: Shoulder Height, Body Mass and Shape | a:Palaeoloxodon namadicus
+renne2015 | Renne | 2015 | State shift in Deccan volcanism at the Cretaceous-Paleogene boundary, possibly induced by impact | e:cretaceous
+schoene2019 | Schoene | 2019 | U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction | e:cretaceous
+sprain2019 | Sprain | 2019 | The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary | e:cretaceous

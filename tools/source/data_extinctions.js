@@ -61,7 +61,7 @@ const EXTINCTIONS = [
     winners: 'Small animals that could shelter, and eat seeds, insects or rotting things: birds, mammals, crocodiles, turtles, frogs. Within ten million years mammals had become whales, bats and horses.',
     recovery: 'Forests regrew within thousands of years; full variety took several million.',
     know: 'A thin layer of clay rich in iridium — rare on Earth, common in asteroids — lies at this moment in rocks all over the world, with shocked quartz and beads of melted rock. The crater, 180 km across, is buried under Mexico.',
-    debate: 'How much the huge eruptions in India, already under way, had weakened life before the asteroid arrived.' },
+    debate: 'How big a part the eruptions in India played. They were a one-two punch with the asteroid: lava was already pouring out before the impact and kept going after it. One study suggested the impact’s shock made the eruptions stronger; two studies in 2019 dated the lava closely and disagreed — one found the largest pulse just before the impact, the other most of the lava just after.' },
   { id: 'quaternary', icon: '🦣', short: 'The loss of the giants', t: 0.012, from: 0.065, to: 0.009, win: [0.08, 0], lost: [0.06, 0.0085], pct: null, scene: 'people', at: null,
     steps: [[0, 'Our own species spreads out of Africa, reaching lands that have never known people.'],
       [0.13, 'People reach Australia. Its giant wombats, kangaroos and lizards disappear over the next ten thousand years.'],
