@@ -14,7 +14,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | | |
 |---|---|
 | Animals | 689 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
-| Family trees | The road to mammals (synapsids → mammals) and the dinosaur family tree, under Life → 🌳 Family trees |
+| Family trees | Four, linked to each other and to every animal card: the road to mammals, the dinosaur tree, from fish to four legs, the reptile tree |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
@@ -23,7 +23,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 144 passing |
+| Checks | 148 passing |
 | Page | about 1.42 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -311,7 +311,10 @@ Evan asked for the synapsid treatment — a tree, plus the missing members — f
 The design was worked out on 15–16 Nov and nothing has been built yet. Build it as data in
 `data_trees.js` plus a new `data_branches.js` for the animals.
 
-- **Three new trees.** *From fish to four legs* (early chordates → jawless fishes → jaws → bony fishes
+- **Two of the three new trees shipped 16 Nov** (*From fish to four legs* and *The reptile tree*, built
+  from animals already in the app, with `link` branches between trees and a “Family tree” button on
+  every card). Still to do: *Jointed legs* (arthropods), and the ~30 animals for thin families below.
+- **Originally planned:** *From fish to four legs* (early chordates → jawless fishes → jaws → bony fishes
   → lobe-fins → fish with limbs → four-legged animals → the egg laid on land, ending in two link
   branches that open the mammal tree and the reptile tree). *The reptile tree* (early reptiles;
   lizards, snakes and the mosasaurs that belong with them; turtles; the sea reptiles, with their
@@ -446,6 +449,9 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — Two more family trees.** From fish to four legs, and the reptile tree (pterosaurs,
+  ichthyosaurs and mosasaurs each on their own branch, not with the dinosaurs). Trees link to one
+  another; every animal card has a button to its branch. 148 checks.
 - **16 Nov 2026 — A front door, rivers and lakes, 16 more animals.** Fresh visits open on six ways in;
   rivers and lakes appear after the Ice Age (Natural Earth, `tools/build_rivers.py`); Europe's
   Cretaceous islands, the Jurassic of Africa and South America, Silurian China, Miocene Australia and

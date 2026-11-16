@@ -256,6 +256,18 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     await h.close(); }
   ok('rivers: present, and drawn only after the Ice Age', await p.evaluate(() => typeof RIVERS_PACKED === 'string' && RIVERS_PACKED.length > 8000 && /after the last Ice Age/.test(document.getElementById('mapAbout').innerText)));
   ok('coverage: Europe’s Cretaceous islands and Africa’s and South America’s Jurassic have their animals', await p.evaluate(() => ['Struthiosaurus', 'Zalmoxes', 'Ampelosaurus', 'Dicraeosaurus', 'Brachytrachelopan', 'Vulcanodon', 'Palaeoloxodon namadicus'].every(n => ALL.some(c => c.name === n))));
+  // more family trees, linked to each other and to the cards
+  ok('trees: four trees, and every fish, amphibian, reptile, sea reptile, croc and pterosaur hangs on a branch', await p.evaluate(() => TREES.length >= 4 && ALL.filter(c => ['fish', 'amphib', 'reptile', 'marine', 'croc', 'ptero'].includes(c.g)).every(c => TREES.some(T => buildTree(T).nodes.some(n => n.own.includes(c))))));
+  ok('trees: pterosaurs, ichthyosaurs and mosasaurs are not on the dinosaur branch', await p.evaluate(() => { const up = (T, name) => { const B = buildTree(TREES.find(t => t.id === T)); let n = B.nodes.find(n => n.own.some(c => c.name === name)); const o = []; for (; n; n = n.parent) o.push(n.n); return o; };
+    const q = up('reptile', 'Quetzalcoatlus'), ic = up('reptile', 'Shonisaurus'), mo = up('reptile', 'Mosasaurus');
+    return q[0] === 'Pterosaurs' && q.includes('The bird line') && !q.some(x => /Dinosaur/.test(x)) && ic[0] === 'Reptiles that went back to sea' && mo[0] === 'Lizards and snakes'; }));
+  ok('trees: the fish tree runs jaws → bone → lobe-fins → limbs → the land egg, and links on to the mammal and reptile trees', await p.evaluate(() => { const B = buildTree(TREES.find(t => t.id === 'fish')), trunk = []; for (let n = B.nodes[0]; n; n = (n.kids || []).find(k => k.trunk)) trunk.push(n.n);
+    return trunk.join('>') === 'Animals with a backbone line>Fishes with jaws>Bony fishes>Lobe-finned fishes>Fishes with limbs>Four-legged animals>Egg-layers on land>The reptile line' && B.nodes.some(n => n.link === 'synapsid'); }));
+  await p.evaluate(() => { switchTab('life'); setView('list'); S.q = 'tiktaalik'; renderLife(); }); await p.waitForTimeout(200);
+  await p.evaluate(() => select('tiktaalik', { keep: true })); await p.waitForTimeout(1500);
+  await p.click('#lifeList .creature-card.active [data-tree-go]'); await p.waitForTimeout(900);
+  ok('trees: a card’s “Family tree” button opens its tree at its branch, with the card shown', await p.evaluate(() => S.view === 'tree' && S.tree === 'fish' && S.sel === 'tiktaalik' && /Fishes with limbs/.test(document.querySelector('#lifeList .tn.open').innerText) && !!document.querySelector('#lifeList .tn.open .creature-card.active')));
+  await p.evaluate(() => { setView('list'); S.tree = null; S.treeOpen = {}; S.q = ''; $('q').value = ''; S.sel = null; WorldMap.select(null); renderLife(); }); await p.waitForTimeout(150);
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

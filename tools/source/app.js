@@ -438,6 +438,7 @@ function cardHTML(c, open) {
   if (open) {
     L.push(sizeHTML(c));
     L.push(findLinks(c));
+    L.push(treeLink(c));
     L.push(srcHTML(c.hom ? 'h:' + c.key : 'a:' + c.name));
     L.push(sec('🔎 How do we know?', esc(c.know || '')));
     L.push(sec('❓ Still debated', esc(c.debate || '')));
@@ -721,10 +722,10 @@ function treeHTML() {
     const members = isOpen ? n.own.slice().sort((a, b) => b.t[0] - a.t[0]) : [];
     return `<div class="tn${n.trunk || !n.parent ? ' trunk' : ''}${n.twig ? ' twig' : ''}${live ? ' live' : ''}${isOpen ? ' open' : ''}" style="--d:${n.depth + (n.twig ? 1 : 0)}">
       <button class="tn-head" data-node="${n.id}" aria-expanded="${isOpen}">
-        <span class="tn-name">${n.trunk ? '<i class="tn-arrow">↓</i>' : ''}${esc(n.n)}${n.sci ? ` <em>${esc(n.sci)}</em>` : ''}</span><span class="tn-n">${n.all.length}</span>
+        <span class="tn-name">${n.trunk ? '<i class="tn-arrow">↓</i>' : ''}${esc(n.n)}${n.sci ? ` <em>${esc(n.sci)}</em>` : ''}</span>${n.link ? '' : `<span class="tn-n">${n.all.length}</span>`}
         <span class="tn-bar">${n.all.length ? `<i style="left:${x(n.t0)}%;width:${Math.max(1.2, x(n.t1) - x(n.t0)).toFixed(2)}%"></i>` : ''}${S.t <= B.max ? `<b style="left:${x(S.t)}%"></b>` : ''}</span>
       </button>
-      ${n.step ? `<div class="tn-step"><b>＋</b> ${esc(n.step)}</div>` : ''}
+      ${n.step ? `<div class="tn-step"><b>＋</b> ${esc(n.step)}</div>` : ''}${n.link ? `<div class="tn-link">${n.note ? esc(n.note) + ' ' : ''}<button class="linkbtn" data-tree="${n.link}">🌳 Open ${esc((TREES.find(t => t.id === n.link) || {}).title || '')} →</button></div>` : ''}
       ${isOpen ? `<div class="tn-body">${n.note ? `<p>${esc(n.note)}</p>` : ''}${n.debate ? `<p class="tn-deb">❓ ${esc(n.debate)}</p>` : ''}
         ${n.all.length ? `<p class="tn-when">${esc(fmtLong(n.t0).replace(' ago', ''))} → ${esc(fmtLong(n.t1))} · from the ${n.all.length} in this app</p>` : ''}
         ${members.length ? `<div class="tn-mem">${members.map(c => `<button class="chip${c.key === S.sel ? ' on' : ''}${alive(c, S.t, pad) ? ' now' : ''}" data-key="${c.key}">${c.emoji} ${esc(c.name)}</button>`).join('')}</div>` : ''}
@@ -740,6 +741,15 @@ function treeHTML() {
     ${row(T.root)}
     <div class="ins-sec tn-debate"><h4>❓ Where the experts disagree</h4>${esc(T.debate)}</div>
     ${srcHTML('t:' + T.id, 'Sources for this tree')}</div>`;
+}
+// which tree, and which branch, an animal hangs on (the first tree that has it)
+function treeOf(c) { for (const T of TREES) { const n = buildTree(T).nodes.find(n => n.own.includes(c)); if (n) return [T, n]; } return null; }
+const treeLink = c => { if (c.hom) return ''; const h = treeOf(c); return h ? `<div class="found">🌳 <b>Family tree:</b> <button class="linkbtn" data-tree-go="${h[0].id}" data-tk="${c.key}">${esc(h[1].n)} · ${esc(h[0].title)}</button></div>` : ''; };
+function openTreeAt(treeId, key) {
+  if (S.tab !== 'life') switchTab('life');
+  S.tree = treeId; S.treeOpen = {}; if (key && BY_KEY[key]) { S.sel = key; WorldMap.select(key); }
+  setView('tree');
+  setTimeout(() => { const el = document.querySelector('#lifeList .tn.open .creature-card.active') || document.querySelector('#lifeList .tn.open'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80);
 }
 function setView(v) {
   S.view = v;
@@ -808,6 +818,7 @@ function bindFinds() {
     const f = e.target.closest('[data-find]'); if (f) selectFind(f.dataset.find);
   });
   // "How it was found" buttons on animal and human cards, anywhere else on the page
+  document.addEventListener('click', e => { const tg = e.target.closest('[data-tree-go]'); if (tg) { e.stopPropagation(); e.preventDefault(); openTreeAt(tg.dataset.treeGo, tg.dataset.tk); } }, true);
   document.addEventListener('click', e => { const f = e.target.closest('[data-find]'); if (f && !f.closest('#pane-finds')) { e.stopPropagation(); e.preventDefault(); selectFind(f.dataset.find); } }, true);
 }
 

@@ -119,4 +119,60 @@ const TREES = [
       ] },
     ] } },
 ];
+// Two more trees, built from the animals already in the app. A branch with `link` opens another tree.
+const FI_ = 'Fishes › ', AM_ = 'Amphibians & early tetrapods › ', RE_ = 'Reptiles › ', SE_ = 'Sea reptiles › ';
+TREES.push(
+  { id: 'fish', icon: '🐟', title: 'From fish to four legs',
+    intro: 'Every animal with a backbone — you included — is a kind of fish that changed. Follow the trunk down: jaws, then bone, then fleshy fins, then legs, then an egg that can be laid on dry land. Each ＋ is something everything below it still has.',
+    debate: 'Where the spiny sharks belong (they now look like early relatives of true sharks), and whether today’s frogs and salamanders come from the temnospondyls or the lepospondyls, are both still argued. The trunk — jaws, bone, lobe-fins, limbs — is agreed.',
+    root: { n: 'Animals with a backbone line', sci: 'Chordata', step: 'A stiff rod along the back, muscles in zig-zag blocks, and slits behind the head for gills.', paths: [FI_ + 'Early chordates'], kids: [
+      { n: 'Jawless fishes', sci: 'Agnatha', note: 'For tens of millions of years, all fishes looked like this: no jaws, often an armoured head. Lampreys and hagfish are their survivors.', paths: [FI_ + 'Jawless fishes'] },
+      { trunk: true, n: 'Fishes with jaws', sci: 'Gnathostomata', step: 'Jaws, made over from the bars that held up the gills — and paired fins, the beginnings of arms and legs.', paths: [], kids: [
+        { n: 'Armoured fishes', sci: 'Placodermi', note: 'Fishes in bony armour, from small bottom-feeders to Dunkleosteus. All gone by the end of the Devonian.', paths: [FI_ + 'Armoured fishes (placoderms)'] },
+        { n: 'Spiny sharks', sci: 'Acanthodii', note: 'Small fishes with a spine in front of every fin.', debate: 'Now thought to be early relatives of the true sharks.', paths: [FI_ + 'Spiny sharks'] },
+        { n: 'Sharks and their kin', sci: 'Chondrichthyes', step: 'A skeleton of gristle (cartilage) instead of bone.', paths: [FI_ + 'Sharks & kin'] },
+        { trunk: true, n: 'Bony fishes', sci: 'Osteichthyes', step: 'A skeleton of bone, and a sac of air in the body — a swim bladder in some, lungs in others.', paths: [], kids: [
+          { n: 'Ray-finned fishes', sci: 'Actinopterygii', note: 'Fins held up by thin rays. Today nearly half of all animals with a backbone are ray-finned fishes.', paths: [FI_ + 'Ray-finned fishes'] },
+          { trunk: true, n: 'Lobe-finned fishes', sci: 'Sarcopterygii', step: 'Fleshy fins built around bones: one bone, then two, then many — the plan of your own arm.', note: 'Coelacanths and lungfish are the survivors.', paths: [FI_ + 'Lobe-finned fishes'], kids: [
+            { trunk: true, n: 'Fishes with limbs', sci: 'Elpistostegalia', step: 'A flat head, a neck, and bones in the fins like wrists. They could prop themselves up in the shallows.', paths: [FI_ + 'Lobe-finned fishes › Fish with limbs'], kids: [
+              { trunk: true, n: 'Four-legged animals', sci: 'Tetrapoda', step: 'Legs with fingers and toes — at first seven or eight on each foot, not five.', paths: [AM_ + 'First four-legged animals', AM_ + 'Early tetrapods'], kids: [
+                { n: 'Temnospondyls', sci: 'Temnospondyli', note: 'Big-headed amphibians, some as long as crocodiles. They lasted into the age of dinosaurs.', paths: [AM_ + 'Temnospondyls'] },
+                { n: 'Lepospondyls', sci: 'Lepospondyli', note: 'Small and strange: some legless, one with a head shaped like a boomerang.', paths: [AM_ + 'Lepospondyls'] },
+                { n: 'Today’s amphibians', sci: 'Lissamphibia', note: 'Frogs, salamanders and caecilians.', debate: 'Which of the older groups they came from is not settled.', paths: [AM_ + 'Salamanders'] },
+                { n: 'Almost egg-layers', note: 'Animals close to the line that evolved the land egg — some still laid their eggs in water.', paths: [AM_ + 'Reptile-like tetrapods'] },
+                { trunk: true, n: 'Egg-layers on land', sci: 'Amniota', step: 'An egg with its own pond inside — membranes and a shell — so it can be laid on dry land. Now animals could leave the water for good.', paths: [], kids: [
+                  { n: 'The mammal line', sci: 'Synapsida', link: 'synapsid', note: 'Proto-mammals, then mammals — and you.' },
+                  { trunk: true, n: 'The reptile line', sci: 'Sauropsida', link: 'reptile', note: 'Reptiles, dinosaurs and birds.' },
+                ] },
+              ] },
+            ] },
+          ] },
+        ] },
+      ] },
+    ] } },
+  { id: 'reptile', icon: '🦎', title: 'The reptile tree',
+    intro: 'Pterosaurs were not dinosaurs. Neither were ichthyosaurs, plesiosaurs or mosasaurs. They were all reptiles — but on separate branches. This tree shows which. Crocodiles turn out to be closer to birds than to lizards.',
+    debate: 'Where turtles belong was argued for a century; most studies now put them inside the two-holed reptiles. Where the ichthyosaurs and plesiosaurs fit is still uncertain. Whether phytosaurs belong to the crocodile line or just outside it is argued too.',
+    root: { n: 'Reptiles', sci: 'Sauropsida', step: 'A tough, waterproof skin with scales, and eggs with a hard or leathery shell.', paths: [RE_ + 'Early reptiles'], kids: [
+      { n: 'Early side branches', sci: 'Parareptilia (in part)', note: 'Pareiasaurs, armoured plant-eaters the size of cattle, and Mesosaurus, one of the first reptiles to return to the water.', debate: 'Whether these form one natural group is argued.', paths: [RE_ + 'Pareiasaurs', RE_ + 'Mesosaurs'] },
+      { trunk: true, n: 'Two-holed reptiles', sci: 'Diapsida', step: 'Two openings in the skull behind each eye, for bigger jaw muscles.', paths: [RE_ + 'Early diapsids', RE_ + 'Gliding reptiles'], kids: [
+        { n: 'Turtles', sci: 'Testudines', note: 'They lost the holes in their skulls again. The shell began as broad ribs — perhaps for digging.', paths: [RE_ + 'Turtles'] },
+        { n: 'Reptiles that went back to sea', note: 'Ichthyosaurs, plesiosaurs and pliosaurs, placodonts and nothosaurs — separate returns to the water, none of them dinosaurs.', debate: 'Where on this tree they belong is still uncertain.', paths: [SE_ + 'Early sea reptiles', SE_ + 'Hupehsuchians', SE_ + 'Ichthyosaurs', SE_ + 'Nothosaurs', SE_ + 'Placodonts', SE_ + 'Plesiosaurs', SE_ + 'Pliosaurs'] },
+        { n: 'Lizards, snakes and the tuatara', sci: 'Lepidosauria', step: 'Skin shed in pieces or in one go, as snakes do.', paths: [], kids: [
+          { n: 'The tuatara line', sci: 'Rhynchocephalia', note: 'Common in the age of dinosaurs. One species survives, in New Zealand.', paths: [RE_ + 'Rhynchocephalians'] },
+          { n: 'Lizards and snakes', sci: 'Squamata', note: 'Including the mosasaurs: giant sea lizards related to monitor lizards and snakes, not to dinosaurs.', paths: [RE_ + 'Lizards', RE_ + 'Snakes', SE_ + 'Mosasaurs'] },
+        ] },
+        { n: 'Choristoderes', sci: 'Choristodera', note: 'Crocodile-shaped river reptiles that survived the asteroid.', debate: 'Their place on the tree is unsettled.', paths: [RE_ + 'Choristoderes'] },
+        { trunk: true, n: 'The archosaur line', sci: 'Archosauromorpha', step: 'Legs drawn in under the body, step by step.', paths: [RE_ + 'Long-necked archosaur relatives', RE_ + 'Rhynchosaurs'], kids: [
+          { trunk: true, n: 'Ruling reptiles', sci: 'Archosauria and near relatives', step: 'Teeth set in sockets, and an extra opening in front of the eye.', paths: [RE_ + 'Early archosaurs'], kids: [
+            { n: 'The crocodile line', sci: 'Pseudosuchia', note: 'In the Triassic these — not dinosaurs — were the big animals on land: armoured plant-eaters, giant hunters, even ostrich-shaped runners. Crocodiles are what is left.', paths: ['Crocodile line', RE_ + 'Phytosaurs'] },
+            { trunk: true, n: 'The bird line', sci: 'Avemetatarsalia', step: 'Slim legs held straight under the body, with an ankle that works like a hinge.', paths: [RE_ + 'Bird-line archosaurs'], kids: [
+              { n: 'Pterosaurs', sci: 'Pterosauria', step: 'Wings of skin stretched from one hugely long finger. The first animals with backbones to fly.', note: 'Cousins of the dinosaurs — not dinosaurs.', paths: ['Pterosaurs'] },
+              { trunk: true, n: 'Dinosaurs (and birds)', sci: 'Dinosauromorpha', link: 'dino', note: 'Dinosaurs and their closest cousins, ending in the birds.' },
+            ] },
+          ] },
+        ] },
+      ] },
+    ] } },
+);
 if (typeof module !== 'undefined') module.exports = { TREES };

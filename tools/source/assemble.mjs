@@ -170,6 +170,7 @@ const { YOU_LINE } = require('./data_you.js');
     if (!n.n) problems.push('tree ' + tree + ': a branch has no name');
     for (const p of n.paths || []) if (!paths.some(q => q === p || q.startsWith(p + ' › '))) problems.push('tree ' + tree + ': no animal on the path "' + p + '" (branch ' + n.n + ')');
     const trunks = (n.kids || []).filter(k => k.trunk).length; if (trunks > 1) problems.push('tree ' + tree + ': ' + n.n + ' has two trunks');
+    if (n.link && !TREES.some(t => t.id === n.link)) problems.push('tree ' + tree + ': ' + n.n + ' links to unknown tree ' + n.link);
     (n.kids || []).forEach(k => walk(k, tree));
   };
   for (const t of TREES) { if (ids.has(t.id)) problems.push('tree ' + t.id + ': duplicate id'); ids.add(t.id); walk(t.root, t.id); }

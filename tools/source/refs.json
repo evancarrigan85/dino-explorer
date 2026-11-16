@@ -575,7 +575,8 @@
 "et al."
 ],
 "targets": [
-"a:Guiyu"
+"a:Guiyu",
+"t:fish"
 ],
 "title_expected": "The oldest articulated osteichthyan reveals mosaic gnathostome characters",
 "type": "journal-article",
@@ -593,7 +594,8 @@
 "et al."
 ],
 "targets": [
-"a:Entelognathus"
+"a:Entelognathus",
+"t:fish"
 ],
 "title_expected": "A Silurian placoderm with osteichthyan-like marginal jaw bones",
 "type": "journal-article",
@@ -662,7 +664,8 @@
 "targets": [
 "a:Tiktaalik",
 "x:tiktaalik",
-"j:you"
+"j:you",
+"t:fish"
 ],
 "title_expected": "A Devonian tetrapod-like fish and the evolution of the tetrapod body plan",
 "type": "journal-article",
@@ -748,7 +751,8 @@
 "Clack"
 ],
 "targets": [
-"a:Pederpes"
+"a:Pederpes",
+"t:fish"
 ],
 "title_expected": "An early tetrapod from 'Romer's Gap'",
 "type": "journal-article",
@@ -871,7 +875,8 @@
 "et al."
 ],
 "targets": [
-"a:Eunotosaurus"
+"a:Eunotosaurus",
+"t:reptile"
 ],
 "title_expected": "Fossorial origin of the turtle shell",
 "type": "journal-article",
@@ -1086,7 +1091,8 @@
 "et al."
 ],
 "targets": [
-"a:Teleocrater"
+"a:Teleocrater",
+"t:reptile"
 ],
 "title_expected": "The earliest bird-line archosaurs and the assembly of the dinosaur body plan",
 "type": "journal-article",

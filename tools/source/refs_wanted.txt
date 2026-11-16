@@ -34,25 +34,25 @@ lamsdell2015 | Lamsdell | 2015 | The oldest described eurypterid: a giant Middle
 harper2014 | Harper | 2014 | End Ordovician extinctions: A coincidence of causes | p:ordovician, e:ordovician
 wellman2003 | Wellman | 2003 | Fragments of the earliest land plants | p:ordovician, a:Earliest land plants (spores)
 glasspool2004 | Glasspool | 2004 | Charcoal in the Silurian as evidence for the earliest wildfire | p:silurian
-zhu2009 | Zhu | 2009 | The oldest articulated osteichthyan reveals mosaic gnathostome characters | a:Guiyu
-zhu2013 | Zhu | 2013 | A Silurian placoderm with osteichthyan-like marginal jaw bones | a:Entelognathus
+zhu2009 | Zhu | 2009 | The oldest articulated osteichthyan reveals mosaic gnathostome characters | a:Guiyu, t:fish
+zhu2013 | Zhu | 2013 | A Silurian placoderm with osteichthyan-like marginal jaw bones | a:Entelognathus, t:fish
 briggs2016 | Briggs | 2016 | Tiny individuals attached to a new Silurian arthropod suggest a unique mode of brood care | a:Aquilonifer
 wells1963 | Wells | 1963 | Coral growth and geochronometry | p:devonian
 algeo1998 | Algeo | 1998 | Terrestrial-marine teleconnections in the Devonian: links between the evolution of land plants, weathering processes, and marine anoxic events | p:devonian, e:devonian
-daeschler2006 | Daeschler | 2006 | A Devonian tetrapod-like fish and the evolution of the tetrapod body plan | a:Tiktaalik, x:tiktaalik, j:you
+daeschler2006 | Daeschler | 2006 | A Devonian tetrapod-like fish and the evolution of the tetrapod body plan | a:Tiktaalik, x:tiktaalik, j:you, t:fish
 long2008 | Long | 2008 | Live birth in the Devonian period | a:Materpiscis
 niedzwiedzki2010 | Niedźwiedzki | 2010 | Tetrapod trackways from the early Middle Devonian period of Poland | a:Zachełmie trackmaker
 braddy2008 | Braddy | 2008 | Giant claw reveals the largest ever arthropod | a:Jaekelopterus
 engelman2023 | Engelman | 2023 | A Devonian Fish Tale: A New Method of Body Length Estimation Suggests Much Smaller Sizes for Dunkleosteus terrelli (Placodermi: Arthrodira) | a:Dunkleosteus | 10.3390/d15030318
 stein2007 | Stein | 2007 | Giant cladoxylopsid trees resolve the enigma of the Earth's earliest forest stumps at Gilboa | a:Wattieza
-clack2002 | Clack | 2002 | An early tetrapod from 'Romer's Gap' | a:Pederpes
+clack2002 | Clack | 2002 | An early tetrapod from 'Romer's Gap' | a:Pederpes, t:fish
 mccoy2016 | McCoy | 2016 | The 'Tully monster' is a vertebrate | a:Tullimonstrum (Tully monster)
 mikami2023 | Mikami | 2023 | Three-dimensional anatomy of the Tully monster casts doubt on its presumed vertebrate affinities | a:Tullimonstrum (Tully monster)
 selden2005 | Selden | 2005 | The true identity of the supposed giant fossil spider Megarachne | a:Megarachne
 lheritier2024 | Lhéritier | 2024 | Head anatomy and phylogenomics show the Carboniferous giant Arthropleura belonged to a millipede-centipede group | a:Arthropleura
 tapanila2013 | Tapanila | 2013 | Jaws for a spiral-tooth whorl: CT images reveal novel adaptation and phylogeny in fossil Helicoprion | a:Helicoprion
 botha2007 | Botha-Brink | 2007 | A mixed-age classed 'pelycosaur' aggregation from South Africa: earliest evidence of parental care in amniotes? | a:Heleosaurus
-lyson2016 | Lyson | 2016 | Fossorial origin of the turtle shell | a:Eunotosaurus
+lyson2016 | Lyson | 2016 | Fossorial origin of the turtle shell | a:Eunotosaurus, t:reptile
 nyakatura2019 | Nyakatura | 2019 | Reverse-engineering the locomotion of a stem amniote | a:Orobates
 frobisch2009 | Fröbisch | 2009 | The Late Permian herbivore Suminia and the early evolution of arboreality in terrestrial vertebrate ecosystems | a:Suminia
 burgess2014 | Burgess | 2014 | High-precision timeline for Earth's most severe extinction | p:permian, e:permian
@@ -64,7 +64,7 @@ fernandez2013 | Fernandez | 2013 | Synchrotron reveals Early Triassic odd couple
 sander2021 | Sander | 2021 | Early giant reveals faster evolution of large body size in ichthyosaurs than in cetaceans | a:Cymbospondylus
 nesbitt2013 | Nesbitt | 2013 | The oldest dinosaur? A Middle Triassic dinosauriform from Tanzania | a:Nyasasaurus
 nesbitt2010 | Nesbitt | 2010 | Ecologically distinct dinosaurian sister group shows early diversification of Ornithodira | a:Asilisaurus
-nesbitt2017 | Nesbitt | 2017 | The earliest bird-line archosaurs and the assembly of the dinosaur body plan | a:Teleocrater
+nesbitt2017 | Nesbitt | 2017 | The earliest bird-line archosaurs and the assembly of the dinosaur body plan | a:Teleocrater, t:reptile
 nesbitt2006 | Nesbitt | 2006 | Prey choice and cannibalistic behaviour in the theropod Coelophysis | a:Coelophysis, f:triassic
 nesbitt2006b | Nesbitt | 2006 | Extreme convergence in the body plans of an early suchian (Archosauria) and ornithomimid dinosaurs (Theropoda) | a:Effigia
 qvarnstrom2021 | Qvarnström | 2021 | Exceptionally preserved beetles in a Triassic coprolite of putative dinosauriform origin | a:Silesaurus

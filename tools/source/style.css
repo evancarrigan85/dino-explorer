@@ -570,3 +570,4 @@ header .logo,header h1{cursor:pointer}
 .door-note{text-align:center;color:#6f7d96;font-size:.68rem;margin-top:4px}
 @media (max-width:767px){.door-grid{grid-template-columns:1fr 1fr;gap:8px}.door-card{padding:14px 12px 10px}.door-h h2{font-size:1.35rem}.door-globe{font-size:2rem}.door-b{padding:10px}.door-b span:last-child{font-size:.68rem}}
 @media (prefers-reduced-motion:reduce){#door.show{animation:none}.door-b{transition:none}}
+.tn-link{font-size:.72rem;color:#b9c5da;padding:2px 4px 6px;line-height:1.4}.tn-link .linkbtn{margin-top:3px}
