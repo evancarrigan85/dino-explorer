@@ -117,7 +117,7 @@ const { EXTINCTIONS } = require('./data_extinctions.js');
   const xsrc = fs.readFileSync(SRC + 'data_extinctions.js', 'utf8');
   data += xsrc.slice(xsrc.indexOf('// ===='), xsrc.indexOf("if (typeof module")).trim() + '\n';
 }
-const { EMPIRES, BELIEFS, BELIEF_FAMILIES } = require('./data_history.js');
+const { EMPIRES, BELIEFS, BELIEF_FAMILIES, TRADE, WORKS } = require('./data_history.js');
 { const ids = new Set();
   for (const e of EMPIRES) {
     if (ids.has(e.id)) problems.push('empire ' + e.id + ': duplicate id'); ids.add(e.id);
@@ -132,6 +132,22 @@ const { EMPIRES, BELIEFS, BELIEF_FAMILIES } = require('./data_history.js');
     for (const g of b.grew || []) if (!BELIEFS.some(x => x.id === g)) problems.push('belief ' + b.id + ': grew from unknown ' + g);
     if (!b.idea || !b.who || !b.when || !b.today) problems.push('belief ' + b.id + ': missing a field');
     for (const sp of b.spread) if (!(sp[0] >= b.year && Math.abs(sp[1]) <= 90 && Math.abs(sp[2]) <= 180)) problems.push('belief ' + b.id + ': bad spread point ' + sp[3]);
+  }
+  const okPt = q => Array.isArray(q) && Math.abs(q[0]) <= 90 && Math.abs(q[1]) <= 180;
+  for (const e of EMPIRES) for (const [i, st] of (e.stages || []).entries()) {
+    if (!(st[0] >= e.from && st[0] <= e.to) || (i && st[0] <= e.stages[i - 1][0])) problems.push('empire ' + e.id + ': stage years must rise within its lifetime');
+    if (st[1] === null ? !e.poly : st[1].some(poly => poly.length < 4 || !poly.every(okPt))) problems.push('empire ' + e.id + ': bad stage sketch at ' + st[0]);
+    if (!st[2]) problems.push('empire ' + e.id + ': stage ' + st[0] + ' needs a note');
+  }
+  for (const r of TRADE) {
+    if (ids.has(r.id)) problems.push('route ' + r.id + ': duplicate id'); ids.add(r.id);
+    if (!(r.from < r.to) || !okPt(r.label) || !r.paths.length || r.paths.some(pa => pa.length < 2 || !pa.every(okPt))) problems.push('route ' + r.id + ': bad dates or path');
+    if (!r.goods || !r.story || !r.legacy || !r.color) problems.push('route ' + r.id + ': missing a field');
+  }
+  for (const w of WORKS) {
+    if (ids.has(w.id)) problems.push('work ' + w.id + ': duplicate id'); ids.add(w.id);
+    if (!(w.year <= w.done) || !okPt(w.at) || (w.end != null && w.end < w.done)) problems.push('work ' + w.id + ': bad dates or place');
+    if (!w.story || !w.who || !w.where) problems.push('work ' + w.id + ': missing a field');
   }
   const hsrc = fs.readFileSync(SRC + 'data_history.js', 'utf8');
   data += hsrc.slice(hsrc.indexOf('// ===='), hsrc.indexOf("if (typeof module")).trim() + '\n';
@@ -173,7 +189,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
@@ -214,9 +230,9 @@ const html = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦕 Dino Time Explorer</title>
+<title>Before Us — a deep-time atlas of Earth, life and people</title>
 <meta name="description" content="${desc}">
-<meta property="og:title" content="🦕 Dino Time Explorer">
+<meta property="og:title" content="Before Us — a deep-time atlas of Earth, life and people">
 <meta property="og:description" content="${desc}">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">

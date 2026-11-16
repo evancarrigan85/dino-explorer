@@ -5811,5 +5811,176 @@
 ],
 "first": "",
 "title_expected": "The formation of human populations in South and Central Asia"
+},
+"frachetti2017": {
+"doi": "10.1038/nature21696",
+"title": "Nomadic ecology shaped the highland geography of Asia’s Silk Roads",
+"journal": "Nature",
+"year": 2017,
+"authors": [
+"Frachetti",
+"Smith",
+"Traub",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"r:silkroad"
+],
+"first": "",
+"title_expected": "Nomadic ecology shaped the highland geography of Asia's Silk Roads"
+},
+"seland2014": {
+"doi": "10.1007/s10814-014-9075-7",
+"title": "Archaeology of Trade in the Western Indian Ocean, 300 BC–AD 700",
+"journal": "Journal of Archaeological Research",
+"year": 2014,
+"authors": [
+"Seland"
+],
+"type": "journal-article",
+"targets": [
+"r:monsoon"
+],
+"first": "",
+"title_expected": "Archaeology of Trade in the Western Indian Ocean, 300 BC–AD 700"
+},
+"eltis2001": {
+"doi": "10.2307/2674417",
+"title": "The Volume and Structure of the Transatlantic Slave Trade: A Reassessment",
+"journal": "The William and Mary Quarterly",
+"year": 2001,
+"authors": [
+"Eltis"
+],
+"type": "journal-article",
+"targets": [
+"r:atlantic"
+],
+"first": "",
+"title_expected": "The Volume and Structure of the Transatlantic Slave Trade: A Reassessment"
+},
+"nash2020": {
+"doi": "10.1126/sciadv.abc0133",
+"title": "Origins of the sarsen megaliths at Stonehenge",
+"journal": "Science Advances",
+"year": 2020,
+"authors": [
+"Nash",
+"Ciborowski",
+"Ullyott",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"w:stonehenge"
+],
+"first": "",
+"title_expected": "Origins of the sarsen megaliths at Stonehenge"
+},
+"parkerpearson2015": {
+"doi": "10.15184/aqy.2015.177",
+"title": "Craig Rhos-y-felin: a Welsh bluestone megalith quarry for Stonehenge",
+"journal": "Antiquity",
+"year": 2015,
+"authors": [
+"Parker Pearson",
+"Bevins",
+"Ixer",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"w:stonehenge"
+],
+"first": "",
+"title_expected": "Craig Rhos-y-felin: a Welsh bluestone megalith quarry for Stonehenge"
+},
+"sheisha2022": {
+"doi": "10.1073/pnas.2202530119",
+"title": "Nile waterscapes facilitated the construction of the Giza pyramids during the 3rd millennium BCE",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2022,
+"authors": [
+"Sheisha",
+"Kaniewski",
+"Marriner",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"w:giza"
+],
+"first": "",
+"title_expected": "Nile waterscapes facilitated the construction of the Giza pyramids during the 3rd millennium BCE"
+},
+"seymour2023": {
+"doi": "10.1126/sciadv.add1602",
+"title": "Hot mixing: Mechanistic insights into the durability of ancient Roman concrete",
+"journal": "Science Advances",
+"year": 2023,
+"authors": [
+"Seymour",
+"Maragh",
+"Sabatini",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"w:pantheon"
+],
+"first": "",
+"title_expected": "Hot mixing: Mechanistic insights into the durability of ancient Roman concrete"
+},
+"burger2021": {
+"doi": "10.15184/aqy.2021.99",
+"title": "New AMS dates for Machu Picchu: results and implications",
+"journal": "Antiquity",
+"year": 2021,
+"authors": [
+"Burger",
+"Salazar",
+"Nesbitt",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"w:machupicchu"
+],
+"first": "",
+"title_expected": "New AMS dates for Machu Picchu: results and implications"
+},
+"henderson2011": {
+"doi": "10.1016/j.vaccine.2011.06.080",
+"title": "The eradication of smallpox – An overview of the past, present, and future",
+"journal": "Vaccine",
+"year": 2011,
+"authors": [
+"Henderson"
+],
+"type": "journal-article",
+"targets": [
+"w:smallpox"
+],
+"first": "",
+"title_expected": "The eradication of smallpox – An overview of the past, present, and future"
+},
+"aad2012": {
+"doi": "10.1016/j.physletb.2012.08.020",
+"title": "Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC",
+"journal": "Physics Letters B",
+"year": 2012,
+"authors": [
+"Aad",
+"Abajyan",
+"Abbott",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"w:lhc"
+],
+"first": "",
+"title_expected": "Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC"
 }
 }

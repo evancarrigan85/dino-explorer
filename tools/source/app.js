@@ -184,7 +184,7 @@ function updatePlaces() {
   else if (S.tab === 'finds') places = FINDS.filter(f => f.at && (S.sel === 'find:' + f.id || (f.age == null ? S.t < 0.0117 : f.age <= p.start && f.age > p.end)))
     .map(f => placeCache['f' + f.id] || (placeCache['f' + f.id] = { key: 'find:' + f.id, name: f.title, note: f.when + ' · ' + f.where, icon: f.icon, at: WorldMap.attach(f.at[0], f.at[1], f.age || 0) }));
   else if (S.tab === 'geo') places = GEO_FEATURES.filter(f => f.at && f.periods.includes(p.id)).map(f => placeCache['g' + f.id + p.id] || (placeCache['g' + f.id + p.id] = { key: 'geo:' + f.id, name: f.name, note: f.shortDesc, icon: f.icon, at: WorldMap.attach(f.at[0], f.at[1], mid) }));
-  WorldMap.setLayers({ places, regions: S.tab === 'humans' ? HIST_REGIONS : [], routes: S.tab === 'humans' ? histRoutes() : [] });
+  WorldMap.setLayers({ places, regions: S.tab === 'humans' ? HIST_REGIONS.filter(r => histOn('emp') || r.key === S.sel) : [], routes: S.tab === 'humans' ? histRoutes() : [] });
 }
 
 // ── selecting things ────────────────────────────────────────────────
@@ -385,7 +385,7 @@ function switchTab(tab) {
   S.tab = tab; closeFact();
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
-  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && /^(cul|drw|emp|bel):/.test(S.sel)) && !(tab === 'finds' && /^find:/.test(S.sel)) && !(tab === 'ext' && /^ext:/.test(S.sel))) { S.sel = null; WorldMap.select(null); }
+  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && /^(cul|drw|emp|bel|rt|wk):/.test(S.sel)) && !(tab === 'finds' && /^find:/.test(S.sel)) && !(tab === 'ext' && /^ext:/.test(S.sel))) { S.sel = null; WorldMap.select(null); }
   updateMarkers(); updatePlaces(); renderPanel();
   $('panelContent').scrollTop = 0;
 }
@@ -595,7 +595,7 @@ function renderHumans() {
       <div class="hf-cursor" id="hfCursor"></div></div></div>
     <div class="hf-legend">${Object.keys(GROUPS).map(g => `<span><i class="g-${g}"></i>${GROUPS[g]}</span>`).join('')}</div>
     <div class="hf-note" id="hfNote"></div>
-    ${S.sel && S.sel.startsWith('emp:') && EMP[S.sel.slice(4)] ? empireHTML(EMP[S.sel.slice(4)]) : S.sel && S.sel.startsWith('bel:') && BEL[S.sel.slice(4)] ? beliefHTML(BEL[S.sel.slice(4)]) : S.sel && S.sel.startsWith('drw:') && DRW[S.sel.slice(4)] ? drownedHTML(DRW[S.sel.slice(4)]) : S.sel && S.sel.startsWith('cul:') && CUL[S.sel.slice(4)] ? cultureHTML(CUL[S.sel.slice(4)]) : sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
+    ${S.sel && S.sel.startsWith('rt:') && TRD[S.sel.slice(3)] ? routeHTML(TRD[S.sel.slice(3)]) : S.sel && S.sel.startsWith('wk:') && WRK[S.sel.slice(3)] ? workHTML(WRK[S.sel.slice(3)]) : S.sel && S.sel.startsWith('emp:') && EMP[S.sel.slice(4)] ? empireHTML(EMP[S.sel.slice(4)]) : S.sel && S.sel.startsWith('bel:') && BEL[S.sel.slice(4)] ? beliefHTML(BEL[S.sel.slice(4)]) : S.sel && S.sel.startsWith('drw:') && DRW[S.sel.slice(4)] ? drownedHTML(DRW[S.sel.slice(4)]) : S.sel && S.sel.startsWith('cul:') && CUL[S.sel.slice(4)] ? cultureHTML(CUL[S.sel.slice(4)]) : sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
     <div class="ms"><div class="list-h" style="padding-left:2px">Ways of life <small>homes, settlements and cultures — tap one, or a pin on the map</small></div>${CULTURES.map(c => `<div class="ms-item cul-item${culActive(c) ? ' now' : ''}${S.sel === 'cul:' + c.id ? ' sel' : ''}" data-cul="${c.id}"><span class="when">${c.t[0] >= 1 ? c.t[0] + ' MYA' : years(Math.round(c.t[0] * 1e6 / 100) * 100) + ' yrs'}</span><span>${c.icon}</span><div><b>${esc(c.name)}</b><span>${esc(c.where)}</span></div></div>`).join('')}</div>
     ${histListsHTML()}
     <div class="ms"><div class="list-h" style="padding-left:2px">Drowned worlds <small>places people lived that are now under water — 🌊 on the map once flooded</small></div>${DROWNED.map(d => `<div class="ms-item cul-item drw-item${drwShown(d) ? ' now' : ''}${S.sel === 'drw:' + d.id ? ' sel' : ''}" data-drw="${d.id}"><span class="when">${d.drowned >= 0.001 ? years(Math.round(d.drowned * 1e6 / 100) * 100) + ' yrs' : Math.round(d.drowned * 1e6) + ' yrs'}</span><span>${d.icon}</span><div><b>${esc(d.name)}</b><span>${esc(d.where)} · ${esc(d.depth)}</span></div></div>`).join('')}</div>
@@ -663,6 +663,11 @@ function selectCulture(id, fromMap) {
 function bindHumans() {
   $('pane-humans').addEventListener('click', e => {
     const g = e.target.closest('[data-goto]'); if (g) { if (!isFull() && S.win[0] < 7) setWindow(10, 0, true); goTo(+g.dataset.goto); return; }
+    const hl = e.target.closest('[data-hl]'); if (hl) { S.histOff = S.histOff || {}; S.histOff[hl.dataset.hl] = !S.histOff[hl.dataset.hl]; updatePlaces(); renderHumans(); return; }
+    const hg = e.target.closest('[data-hist-go]'); if (hg) { travel(tOfYear(1), () => { updatePlaces(); renderHumans(); }); return; }
+    const yr = e.target.closest('[data-year]'); if (yr) { travel(tOfYear(+yr.dataset.year + 1), () => { updatePlaces(); renderHumans(); }); return; }
+    const rt = e.target.closest('[data-rt]'); if (rt) { selectHist('rt', rt.dataset.rt); return; }
+    const wk = e.target.closest('[data-wk]'); if (wk) { selectHist('wk', wk.dataset.wk); return; }
     const em = e.target.closest('[data-emp]'); if (em) { selectEmpire(em.dataset.emp); return; }
     const be = e.target.closest('[data-bel]'); if (be) { selectBelief(be.dataset.bel); return; }
     const dw = e.target.closest('.drw-item'); if (dw) { selectDrowned(dw.dataset.drw); return; }
@@ -989,37 +994,56 @@ const empNow = (e, y = yearAt(S.t)) => y >= e.from && y <= e.to;
 const belNow = (b, y = yearAt(S.t)) => y >= b.year && (b.end == null || y <= b.end);
 const inHistory = () => S.t <= HIST_T * 1.04;
 // each sketch as a shape the map can draw (d3 wants the outline to run clockwise)
-const HIST_REGIONS = EMPIRES.filter(e => e.poly).map(e => {
-  const ring = e.poly.map(q => [q[1], q[0]]); ring.push(ring[0]);
-  const geo = { type: 'Polygon', coordinates: [ring] }; if (d3.geoArea(geo) > 2 * Math.PI) ring.reverse();
-  return { key: 'emp:' + e.id, color: e.color, geo, from: tOfYear(e.from), to: tOfYear(e.to) };
-});
+const sketch = polys => ({ type: 'MultiPolygon', coordinates: polys.map(poly => { const ring = poly.map(q => [q[1], q[0]]); ring.push(ring[0]); if (d3.geoArea({ type: 'Polygon', coordinates: [ring] }) > 2 * Math.PI) ring.reverse(); return [ring]; }) });
+// where an empire has several sketches, each is on the map from its year until the next one's
+const empStages = e => e.stages ? e.stages.map((st, i) => ({ year: st[0], until: i + 1 < e.stages.length ? e.stages[i + 1][0] : e.to, polys: st[1] || [e.poly], note: st[2] })) : e.poly ? [{ year: e.from, until: e.to, polys: [e.poly], note: '' }] : [];
+const HIST_REGIONS = EMPIRES.flatMap(e => empStages(e).map((st, i, all) => ({ key: 'emp:' + e.id, color: e.color, geo: sketch(st.polys), from: tOfYear(st.year), to: tOfYear(st.until) + (i + 1 < all.length ? 5e-7 : 0) })));   // a sketch ends half a year before the next begins
+const TRD = Object.fromEntries(TRADE.map(r => [r.id, r])), WRK = Object.fromEntries(WORKS.map(w => [w.id, w]));
+const trdNow = (r, y = yearAt(S.t)) => y >= r.from && y <= r.to;
+const wrkNow = (w, y = yearAt(S.t)) => y >= w.year && (w.end == null || y <= w.end);
+const HIST_LAYERS = [['emp', '🏛 Empires'], ['bel', '🕊 Beliefs'], ['rt', '🐪 Trade routes'], ['wk', '🏗 Great works']];
+const histOn = k => !S.histOff || !S.histOff[k];
 const selBelief = () => S.sel && S.sel.startsWith('bel:') ? BEL[S.sel.slice(4)] : null;
 function histPlaces() {
   if (!inHistory()) return [];
   const out = [], sb = selBelief(), y = yearAt(S.t);
-  for (const e of EMPIRES) if (empNow(e) || S.sel === 'emp:' + e.id) out.push(placeCache['e' + e.id] || (placeCache['e' + e.id] = { key: 'emp:' + e.id, name: e.name, note: e.kind + ' · ' + e.where, icon: e.icon, at: WorldMap.attach(e.cap[0], e.cap[1], 0) }));
-  for (const b of BELIEFS) if (b.origin && (b === sb || belNow(b))) out.push(placeCache['b' + b.id] || (placeCache['b' + b.id] = { key: 'bel:' + b.id, name: b.name, note: b.where, icon: b.icon, at: WorldMap.attach(b.origin[0], b.origin[1], 0) }));
+  if (histOn('emp') || (S.sel || '').startsWith('emp:')) for (const e of EMPIRES) if ((histOn('emp') && empNow(e)) || S.sel === 'emp:' + e.id) out.push(placeCache['e' + e.id] || (placeCache['e' + e.id] = { key: 'emp:' + e.id, name: e.name, note: e.kind + ' · ' + e.where, icon: e.icon, at: WorldMap.attach(e.cap[0], e.cap[1], 0) }));
+  for (const b of BELIEFS) if (b.origin && (b === sb || (histOn('bel') && belNow(b)))) out.push(placeCache['b' + b.id] || (placeCache['b' + b.id] = { key: 'bel:' + b.id, name: b.name, note: b.where, icon: b.icon, at: WorldMap.attach(b.origin[0], b.origin[1], 0) }));
+  for (const r of TRADE) if ((histOn('rt') && trdNow(r, y)) || S.sel === 'rt:' + r.id) out.push(placeCache['r' + r.id] || (placeCache['r' + r.id] = { key: 'rt:' + r.id, name: r.name, note: r.goods, icon: r.icon, at: WorldMap.attach(r.label[0], r.label[1], 0) }));
+  for (const w of WORKS) if ((histOn('wk') && wrkNow(w, y)) || S.sel === 'wk:' + w.id) out.push(placeCache['w' + w.id] || (placeCache['w' + w.id] = { key: 'wk:' + w.id, name: w.name, note: w.where, icon: w.icon, at: WorldMap.attach(w.at[0], w.at[1], 0) }));
   if (sb) sb.spread.forEach((sp, i) => { if (sp[0] <= y) out.push(placeCache['b' + sb.id + i] || (placeCache['b' + sb.id + i] = { key: 'bel:' + sb.id, name: sp[3] + ' · ' + fmtYear(sp[0]), note: sb.name, icon: sb.icon, at: WorldMap.attach(sp[1], sp[2], 0) })); });
   return out;
 }
+let TRADE_LINES = null;
 function histRoutes() {
-  const sb = selBelief(); if (!sb || !sb.origin || !inHistory()) return [];
-  const a = WorldMap.attach(sb.origin[0], sb.origin[1], 0);
-  return sb.spread.map(sp => ({ a, b: WorldMap.attach(sp[1], sp[2], 0), from: tOfYear(sp[0]), color: 'rgba(110,40,120,0.85)' }));
+  if (!inHistory()) return [];
+  if (!TRADE_LINES) TRADE_LINES = TRADE.flatMap(r => r.paths.flatMap(pa => pa.slice(1).map((q, i) => ({ id: r.id, key: 'rt:' + r.id, a: WorldMap.attach(pa[i][0], pa[i][1], 0), b: WorldMap.attach(q[0], q[1], 0), from: tOfYear(r.from), to: tOfYear(r.to), color: r.color, width: 2.3, dash: [9, 3] }))));
+  const out = TRADE_LINES.filter(l => histOn('rt') || S.sel === l.key), sb = selBelief();
+  if (sb && sb.origin) { const a = WorldMap.attach(sb.origin[0], sb.origin[1], 0); sb.spread.forEach(sp => out.push({ a, b: WorldMap.attach(sp[1], sp[2], 0), from: tOfYear(sp[0]), color: 'rgba(110,40,120,0.85)' })); }
+  return out;
 }
 // what is on the map right now — when this changes, the pins and the list highlights are refreshed
-const histKey = () => { if (!inHistory()) return ''; const y = yearAt(S.t), sb = selBelief(); return EMPIRES.filter(e => empNow(e, y)).map(e => e.id).join(',') + ';' + BELIEFS.filter(b => belNow(b, y)).map(b => b.id).join(',') + ';' + (sb ? sb.spread.filter(sp => sp[0] <= y).length : ''); };
+const histKey = () => { if (!inHistory()) return ''; const y = yearAt(S.t), sb = selBelief(); return EMPIRES.filter(e => empNow(e, y)).map(e => e.id + (e.stages ? e.stages.filter(st => st[0] <= y).length : '')).join(',') + ';' + BELIEFS.filter(b => belNow(b, y)).map(b => b.id).join(',') + ';' + (sb ? sb.spread.filter(sp => sp[0] <= y).length : '') + ';' + TRADE.filter(r => trdNow(r, y)).map(r => r.id).join(',') + ';' + WORKS.filter(w => wrkNow(w, y)).length; };
 function histMark() {
   const y = yearAt(S.t);
   document.querySelectorAll('#pane-humans [data-emp].hist-item').forEach(el => el.classList.toggle('now', inHistory() && empNow(EMP[el.dataset.emp], y)));
   document.querySelectorAll('#pane-humans [data-bel].hist-item').forEach(el => el.classList.toggle('now', inHistory() && belNow(BEL[el.dataset.bel], y)));
+  document.querySelectorAll('#pane-humans [data-rt].hist-item').forEach(el => el.classList.toggle('now', inHistory() && trdNow(TRD[el.dataset.rt], y)));
+  document.querySelectorAll('#pane-humans [data-wk].hist-item').forEach(el => el.classList.toggle('now', inHistory() && wrkNow(WRK[el.dataset.wk], y)));
+  if (S.sel && S.sel.startsWith('emp:') && EMP[S.sel.slice(4)] && EMP[S.sel.slice(4)].stages) { const el = document.querySelector('#pane-humans .emp-stages'); if (el) el.outerHTML = stagesHTML(EMP[S.sel.slice(4)]); }
 }
 function histListsHTML() {
   const y = yearAt(S.t), hist = inHistory();
   const emp = EMPIRES.slice().sort((a, b) => a.from - b.from).map(e => `<div class="ms-item hist-item${hist && empNow(e, y) ? ' now' : ''}${S.sel === 'emp:' + e.id ? ' sel' : ''}" data-emp="${e.id}"><span class="when">${fmtYear(e.from).replace(' CE', '')}</span><span>${e.icon}</span><div><b>${esc(e.name)}</b><span>${esc(e.kind)} · ${esc(e.where)}</span></div></div>`).join('');
   const bel = BELIEF_FAMILIES.map(([id, name, sub]) => `<div class="fam-h"><b>${esc(name)}</b><span>${esc(sub)}</span></div>` + BELIEFS.filter(b => b.fam === id).sort((a, b) => a.year - b.year).map(b => `<div class="ms-item hist-item${hist && belNow(b, y) ? ' now' : ''}${S.sel === 'bel:' + b.id ? ' sel' : ''}" data-bel="${b.id}"><span class="when">${b.year <= -5000 ? 'earliest' : fmtYear(b.year).replace(' CE', '')}</span><span>${b.icon}</span><div><b>${esc(b.name)}</b><span>${esc(b.where)}${b.end != null ? ' · no longer practised as it was' : ''}</span></div></div>`).join('')).join('');
-  return `<div class="ms"><div class="list-h" style="padding-left:2px">Empires and kingdoms <small>the last 5,500 years — tap one to go to its height; its lands are sketched on the map</small></div>${emp}</div>
+  const rts = TRADE.slice().sort((a, b) => a.from - b.from).map(r => `<div class="ms-item hist-item${hist && trdNow(r, y) ? ' now' : ''}${S.sel === 'rt:' + r.id ? ' sel' : ''}" data-rt="${r.id}"><span class="when">${fmtYear(r.from).replace(' CE', '')}</span><span>${r.icon}</span><div><b>${esc(r.name)}</b><span>${esc(r.goods.split(/[;—.]/)[0])}</span></div></div>`).join('');
+  const wks = WORKS.slice().sort((a, b) => a.year - b.year).map(w => `<div class="ms-item hist-item${hist && wrkNow(w, y) ? ' now' : ''}${S.sel === 'wk:' + w.id ? ' sel' : ''}" data-wk="${w.id}"><span class="when">${fmtYear(w.year).replace(' CE', '')}</span><span>${w.icon}</span><div><b>${esc(w.name)}</b><span>${esc(w.where)}</span></div></div>`).join('');
+  return `<div class="ms hist-top"><div class="list-h" style="padding-left:2px">Recorded history <small>the last 5,500 years</small></div>
+      <div class="hist-layers"><span>On the map:</span>${HIST_LAYERS.map(([k, l]) => `<button class="chip${histOn(k) ? ' on' : ''}" data-hl="${k}" aria-pressed="${histOn(k)}">${l}</button>`).join('')}</div>
+      ${hist ? '' : `<div class="hf-note" style="margin:2px 2px 0">You are at ${esc(fmtAgo(S.t))} — before any of this. <button class="linkbtn" data-hist-go="1">Go to recorded history</button></div>`}</div>
+    <div class="ms"><div class="list-h" style="padding-left:2px">Empires and kingdoms <small>tap one to go to its height; its lands are sketched on the map, and for the biggest the border shifts as time moves</small></div>${emp}</div>
+    <div class="ms"><div class="list-h" style="padding-left:2px">Trade routes <small>the roads and sea lanes that tied the world together</small></div>${rts}</div>
+    <div class="ms"><div class="list-h" style="padding-left:2px">Great works <small>things people built, or did, together</small></div>${wks}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Beliefs <small>where each began and how far it travelled</small></div>
       <div class="hf-note" style="margin:0 2px 6px">Each is described the way its own followers would put it, as fairly as we can. This site does not say which, if any, is true — that is for you and your family.</div>${bel}</div>`;
 }
@@ -1027,8 +1051,36 @@ function empireHTML(e) {
   const sec = (t, b) => b ? `<div class="label-sec"><h5>${t}</h5>${esc(b)}</div>` : '';
   return `<div class="profile culture hist" data-key="emp:${e.id}" style="border-color:${e.color}"><h3 style="font-style:normal">${e.icon} ${esc(e.name)}</h3>
     <dl class="facts"><dt>What</dt><dd>${esc(e.kind)}</dd><dt>When</dt><dd>${fmtYear(e.from)} → ${e.to >= NOW_YEAR ? 'today' : fmtYear(e.to)}</dd><dt>At its height</dt><dd>about ${fmtYear(e.peak)}${e.area ? ` · about ${e.area} million km²` : ''}</dd><dt>Chief city</dt><dd>${esc(e.cap[2])}</dd><dt>Where</dt><dd>${esc(e.where)}</dd></dl>
-    <div class="creature-fact">${esc(e.story)}</div>${sec('🎁 What it left us', e.legacy)}${sec('❓ Still debated', e.debate)}
-    <div class="found">📍 <b>On the map:</b> ${e.poly ? 'the shaded land is a rough sketch of its greatest reach, about ' + fmtYear(e.peak) + '. Real borders were fuzzy and kept moving; it was smaller before and after.' : 'its lands were scattered across the oceans, so only its capital is marked.'}</div>${srcHTML('k:' + e.id)}</div>`;
+    <div class="creature-fact">${esc(e.story)}</div>${e.stages ? stagesHTML(e) : ''}${sec('🎁 What it left us', e.legacy)}${sec('❓ Still debated', e.debate)}
+    <div class="found">📍 <b>On the map:</b> ${e.stages ? 'the shaded land is a rough sketch of what it held at each of the dates above. The border jumps from one sketch to the next — nobody surveyed it, and it is not drawn moving in between.' : e.poly ? 'the shaded land is a rough sketch of its greatest reach, about ' + fmtYear(e.peak) + '. Real borders were fuzzy and kept moving; it was smaller before and after.' : 'its lands were scattered across the oceans, so only its capital is marked.'}</div>${srcHTML('k:' + e.id)}</div>`;
+}
+function stagesHTML(e) {
+  const y = yearAt(S.t), sts = empStages(e), cur = inHistory() ? sts.filter(st => st.year <= y + 0.5 && y <= st.until).pop() : null;
+  return `<div class="label-sec emp-stages"><h5>🗺 How its borders moved</h5><ul>${sts.map(st => `<li class="${st === cur ? 'on' : ''}"><button class="linkbtn" data-year="${st.year}">${fmtYear(st.year)}</button> ${esc(st.note)}</li>`).join('')}</ul></div>`;
+}
+function routeHTML(r) {
+  const sec = (t, x) => x ? `<div class="label-sec"><h5>${t}</h5>${esc(x)}</div>` : '';
+  return `<div class="profile culture hist" data-key="rt:${r.id}" style="border-color:${r.color}"><h3 style="font-style:normal">${r.icon} ${esc(r.name)}</h3>
+    <dl class="facts"><dt>When</dt><dd>${fmtYear(r.from)} → ${r.to >= NOW_YEAR ? 'today' : fmtYear(r.to)}</dd><dt>Carried</dt><dd>${esc(r.goods)}</dd></dl>
+    <div class="creature-fact">${esc(r.story)}</div>${sec('🎁 What it changed', r.legacy)}${sec('🔎 How do we know?', r.know)}${sec('❓ Still debated', r.debate)}
+    <div class="found">📍 <b>On the map:</b> the line joins its main stops with straight hops. Real caravans and ships wandered, and there were many side routes.</div>${srcHTML('r:' + r.id)}</div>`;
+}
+function workHTML(w) {
+  const sec = (t, x) => x ? `<div class="label-sec"><h5>${t}</h5>${esc(x)}</div>` : '';
+  return `<div class="profile culture hist" data-key="wk:${w.id}"><h3 style="font-style:normal">${w.icon} ${esc(w.name)}</h3>
+    <dl class="facts"><dt>Built</dt><dd>${fmtYear(w.year)}${w.done > w.year ? ' → ' + (w.done >= NOW_YEAR ? 'still growing' : fmtYear(w.done)) : ''}${w.done - w.year >= 2 && w.done < NOW_YEAR ? ' · about ' + years(w.done - w.year) + ' years' : ''}</dd>${w.end != null ? `<dt>Lost</dt><dd>by about ${fmtYear(w.end)}</dd>` : ''}<dt>Where</dt><dd>${esc(w.where)}</dd><dt>Who</dt><dd>${esc(w.who)}</dd></dl>
+    <div class="creature-fact">${esc(w.story)}</div>${sec('🙃 What people get wrong', w.wrong)}${sec('🙋 Who gets left out', w.left)}${sec('🎁 What it left us', w.legacy)}${sec('🔎 How do we know?', w.know)}${sec('❓ Still debated', w.debate)}${srcHTML('w:' + w.id)}</div>`;
+}
+function selectHist(kind, id, fromMap) {
+  const x = kind === 'rt' ? TRD[id] : WRK[id]; if (!x) return;
+  S.sel = kind + ':' + id; WorldMap.select(S.sel);
+  if (S.tab !== 'humans') switchTab('humans');
+  const look = () => { updatePlaces(); const pl = placeCache[(kind === 'rt' ? 'r' : 'w') + id]; if (pl) WorldMap.lookAt(pl.at); renderHumans(); };
+  const on = kind === 'rt' ? trdNow(x) : wrkNow(x), target = kind === 'rt' ? x.from + Math.min(400, (Math.min(x.to, NOW_YEAR) - x.from) * 0.5) : Math.min(x.done, NOW_YEAR - 1);
+  if (!(inHistory() && on && fromMap)) travel(tOfYear(target), look) || look(); else look();
+  renderHumans();
+  if (fromMap && window.innerWidth < 768) showFact(x.icon, '<b>' + esc(x.name) + '</b> — ' + esc(x.story));
+  setTimeout(() => { const el = document.querySelector('#pane-humans .profile'); if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 80);
 }
 function beliefHTML(b) {
   const sec = (t, x) => x ? `<div class="label-sec"><h5>${t}</h5>${esc(x)}</div>` : '';
@@ -1231,7 +1283,7 @@ function renderClimateStrip() {
 // Go to a moment, zooming the timeline in or out so that moment is wide enough to stand on.
 // Returns false (and does nothing) when we are already there.
 function travel(target, done) {
-  if (Math.abs(S.t - target) <= Math.max(0.00002, target * 0.02)) return false;
+  if (Math.abs(S.t - target) <= (target < HIST_T ? 0.000004 : Math.max(0.00002, target * 0.02))) return false;
   const sp = target < HIST_T ? HIST_T * 1.1 : Math.max(0.03, target * 4);
   if (!isFull() && (target > S.win[0] || target < S.win[1] || span() > sp * 40)) setWindow(T_MAX, 0, true);
   if (isFull() && target < 5) setWindow(Math.min(T_MAX, sp), 0, true);
@@ -1366,6 +1418,7 @@ function init() {
     else if (h.place && h.place.key.startsWith('find:')) selectFind(h.place.key.slice(5), true);
     else if (h.place && h.place.key.startsWith('emp:')) selectEmpire(h.place.key.slice(4), true);
     else if (h.place && h.place.key.startsWith('bel:')) selectBelief(h.place.key.slice(4), true);
+    else if (h.place && /^(rt|wk):/.test(h.place.key)) selectHist(h.place.key.slice(0, 2), h.place.key.slice(3), true);
     else if (h.place) { selectPlace(h.place.key, h.place.at, h.place.icon || '📍', '<b>' + esc(h.place.name) + '</b> — ' + esc(h.place.note || '')); if (S.sel !== h.place.key) closeFact(); }
   };
   const tip = $('mapTip');

@@ -804,10 +804,10 @@ const WorldMap = (() => {
     }
     // routes: a dashed line from where something began to where it had reached by now
     for (const R of layers.routes) {
-      if (t > R.from) continue;
+      if (t > R.from || (R.to != null && t < R.to)) continue;
       const a = locate(R.a, t), b = locate(R.b, t); if (!a || !b) continue;
       const it = d3.geoInterpolate(a, b);
-      c.save(); c.setLineDash([6, 4]); c.lineWidth = 1.7; c.lineCap = 'round'; c.strokeStyle = R.color || 'rgba(120,40,20,0.85)';
+      c.save(); c.setLineDash(R.dash || [6, 4]); c.lineWidth = (R.width || 1.7) * (R.key && R.key === selected ? 1.7 : 1); c.lineCap = 'round'; c.strokeStyle = R.color || 'rgba(120,40,20,0.85)';
       c.stroke(geoP({ type: 'LineString', coordinates: Array.from({ length: 25 }, (_, i) => it(i / 24)) })); c.restore();
     }
     // places: famous fossil sites and geological features

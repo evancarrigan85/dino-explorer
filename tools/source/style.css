@@ -547,3 +547,7 @@ body.scening #journey,body.scening #mapNote{display:none}
 .fam-h{margin:9px 2px 3px;padding-top:6px;border-top:1px solid var(--border)}.fam-h b{display:block;font-size:.72rem;color:#e6ebf5}.fam-h span{font-size:.66rem;color:#8a97af;line-height:1.35}
 .profile.hist .linkbtn{margin:2px 2px 2px 0}
 .profile.belief{border-color:#9a6bc0}
+.hist-layers{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:2px 2px 4px;font-size:.66rem;color:#8a97af}
+.hist-layers .chip{font-size:.66rem;padding:3px 9px}
+.emp-stages ul{list-style:none;margin:2px 0 0}.emp-stages li{margin:0 0 4px;padding-left:0;opacity:.75}.emp-stages li.on{opacity:1;color:#fff}
+.emp-stages .linkbtn{padding:1px 8px;font-size:.66rem;margin-right:4px;min-width:64px}

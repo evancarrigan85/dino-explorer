@@ -18,13 +18,14 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 327, every one a published work confirmed in Crossref (326 journal articles, one book) |
+| References | 337, every one a published work confirmed in Crossref (336 journal articles, one book) |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 114 passing |
-| Page | about 1.19 MB, one file |
+| Checks | 126 passing |
+| Page | about 1.23 MB, one file |
+| Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
 
@@ -325,7 +326,10 @@ Shipped so far: wakes, light on the water, eruptions and impacts. Next, in order
 Shipped: `data_history.js`, shown in the Humans tab once the timeline is inside the last 5,500 years.
 Next, in order:
 
-1. **Better borders.** The empire shapes are hand sketches of greatest reach. The open
+1. **Better borders.** Seven empires now shift (Rome, Persia, Han, the Caliphates, the Mongols, the
+   Ottomans, the Inca: two to five hand sketches each, switched by date). The other eighteen still show
+   one sketch of greatest reach for their whole life — Russia, Qing, the Mughals and Maurya most need
+   stages next, and the Mongols need the four khanates after 1294. The open
    `historical-basemaps` dataset on GitHub (reachable from here) has world borders at about fifty
    dates, which would let empires grow and shrink truthfully. It is GPL-3.0, so embedding it puts
    that licence on the page — **ask Evan** before using it. Until then, do not animate the sketches'
@@ -349,15 +353,27 @@ Next, in order:
    the Norse; Confucianism, Daoism, Shinto); the stories and "what it left
    us" lines are from general knowledge. Give each the Release 1 treatment (history sources are
    mostly books — the checker accepts books and chapters registered in Crossref).
-6. **A history journey** ("Six thousand years in ten stops") and the writing systems, inventions and
-   trade routes (Silk Road, Indian Ocean, trans-Sahara) as a layer.
+6. **Spheres of influence beyond borders.** Evan asked for "shifting boundaries of influence". Borders
+   are done for seven empires; still to do is influence that was never a border: where each belief
+   was the main one at a few dates (sketched and dated like the empires, and handled with the same
+   care as the belief cards), the reach of languages and scripts (Greek, Latin, Arabic, Chinese
+   characters, Sanskrit), and trading spheres such as the Swahili coast and the Hanseatic towns.
+7. **More routes and works.** Routes: the Amber Road, the Tea Horse Road, the Hanseatic League, Roman
+   grain ships, Polynesian voyaging (a culture card exists), the Columbian Exchange as an animation of
+   crops and animals crossing. Works: Göbekli Tepe (a culture card exists), Mohenjo-daro's drains,
+   Angkor's waterworks, Great Zimbabwe, the moai, the printing press, vaccination, the Green
+   Revolution, the Human Genome Project. Sea routes are drawn as straight hops between ports and some
+   cut corners over land — give them more waypoints.
+8. **A history journey** ("Six thousand years in ten stops"), and writing systems and inventions as a layer.
+9. **Sources.** 3 of 11 routes and 6 of 26 works cite a paper; the rest are from general knowledge.
 
 ## The name
 
-The site has outgrown "Dino Time Explorer". Evan asked for candidates on 16 Nov 2026; nothing has
-been renamed. When he picks one, change the `<title>`, the header and description in `body.html` /
-`assemble.mjs`, this file and the README — and ask before renaming the repository, because that
-changes the live address.
+Changed on 16 Nov 2026 to **Before Us — a deep-time atlas of Earth, life and people**, in the page
+title and header. Evan liked the deep-time angle and said yes to a distinct name carrying it in the
+tagline; if he meant something else it is one line in `body.html` and two in `assemble.mjs`.
+Not done: a trademark check on the name, and renaming the repository or `dino-explorer.html` — that
+changes the live address, so **ask Evan** first.
 
 ## Release 8 — Real fossil occurrences (needs one host approved)
 
@@ -384,6 +400,12 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — Shifting borders, trade routes, great works; the new name.** Seven empires change
+  shape by date; 11 trade routes drawn on the map for the years they ran (Incense Route, Silk Roads,
+  monsoon sea routes, trans-Sahara, Viking river roads, Inca Road, Cape Route, Manila galleons, the
+  Atlantic slave trade, the fur-trade canoe routes, the Grand Trunk Road); 26 great works from
+  Stonehenge to the Large Hadron Collider; switches for each map layer; site renamed Before Us.
+  10 new verified references. 126 checks.
 - **16 Nov 2026 — Empires, kingdoms and beliefs.** In the Humans tab, for the last 5,500 years:
   27 empires and kingdoms (Egypt and Akkad to the British Empire, with the Maya, Mali, the Inca, the
   Aztecs and the Haudenosaunee), 25 of them sketched on the map at their greatest reach; 17 beliefs in

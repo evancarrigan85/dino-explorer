@@ -1,6 +1,6 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry) | optional: the surname to SHOW,
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -336,3 +336,14 @@ martinon2021 | Martinón-Torres | 2021 | Earliest known human burial in Africa |
 norenzayan2016 | Norenzayan | 2016 | The cultural evolution of prosocial religions | b:judaism, b:christianity, b:islam, b:buddhism, b:hinduism
 narasimhan2019 | Narasimhan | 2019 | The formation of human populations in South and Central Asia | b:hinduism | 10.1126/science.aat7487
 johnson2013 | Johnson | 2013 | The World's Religions in Figures: An Introduction to International Religious Demography | b:hinduism, b:judaism, b:zoroastrianism, b:buddhism, b:jainism, b:christianity, b:islam, b:sikhism, b:bahai
+# ── history: trade routes and great works ──
+frachetti2017 | Frachetti | 2017 | Nomadic ecology shaped the highland geography of Asia's Silk Roads | r:silkroad
+seland2014 | Seland | 2014 | Archaeology of Trade in the Western Indian Ocean, 300 BC–AD 700 | r:monsoon
+eltis2001 | Eltis | 2001 | The Volume and Structure of the Transatlantic Slave Trade: A Reassessment | r:atlantic
+nash2020 | Nash | 2020 | Origins of the sarsen megaliths at Stonehenge | w:stonehenge
+parkerpearson2015 | Parker Pearson | 2015 | Craig Rhos-y-felin: a Welsh bluestone megalith quarry for Stonehenge | w:stonehenge
+sheisha2022 | Sheisha | 2022 | Nile waterscapes facilitated the construction of the Giza pyramids during the 3rd millennium BCE | w:giza
+seymour2023 | Seymour | 2023 | Hot mixing: Mechanistic insights into the durability of ancient Roman concrete | w:pantheon
+burger2021 | Burger | 2021 | New AMS dates for Machu Picchu: results and implications | w:machupicchu
+aad2012 | Aad | 2012 | Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC | w:lhc | 10.1016/j.physletb.2012.08.020
+henderson2011 | Henderson | 2011 | The eradication of smallpox – An overview of the past, present, and future | w:smallpox
