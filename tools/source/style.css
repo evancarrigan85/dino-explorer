@@ -541,3 +541,9 @@ body.scening #journey,body.scening #mapNote{display:none}
 #sceneCap.below{position:static;max-width:none;margin:0;border-radius:0;border-left:0;border-right:0;box-shadow:none}
 @media (max-width:767px){#sceneCap{padding:7px 10px 6px}.sc-text{font-size:.76rem;min-height:3.2em}
   body.scening .period-info,body.scening #youBar,body.scening .events-ribbon{display:none}}
+
+/* history: empires and beliefs in the Humans tab */
+.hist-item{opacity:.7}.hist-item.now{opacity:1;background:rgba(240,192,64,.07)}.hist-item.sel{opacity:1;background:rgba(240,192,64,.16);outline:1px solid var(--accent)}
+.fam-h{margin:9px 2px 3px;padding-top:6px;border-top:1px solid var(--border)}.fam-h b{display:block;font-size:.72rem;color:#e6ebf5}.fam-h span{font-size:.66rem;color:#8a97af;line-height:1.35}
+.profile.hist .linkbtn{margin:2px 2px 2px 0}
+.profile.belief{border-color:#9a6bc0}

@@ -216,7 +216,7 @@ const WorldMap = (() => {
   let centerLon = 0;                          // flat view central meridian
   let proj = null, baseScale = 1, baseT = [0, 0];
   let dirty = true, raf = 0;
-  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], pin: null };
+  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], regions: [], routes: [], pin: null };
   let selected = null, hits = [], rings = [];
   let pal = null;
   const QS = 4;                               // soft effects are built at 1/4 size
@@ -651,6 +651,14 @@ const WorldMap = (() => {
       RELIEF_LV.forEach((lv, i) => { L.globalAlpha = (al[i] || 0.15) * rf; L.fillStyle = '#5a3610'; L.fill(reliefP[i] || (reliefP[i] = geoP(lv.geo))); });
       L.globalAlpha = 1;
     }
+    // lands a state held (a sketch the page supplies): a wash of its colour and a dashed edge, on land only
+    for (const R of layers.regions) {
+      if (t > R.from || t < R.to) continue;
+      const pth = geoP(R.geo), on = R.key === selected;
+      L.globalAlpha = on ? 0.58 : 0.42; L.fillStyle = R.color; L.fill(pth);
+      L.globalAlpha = on ? 1 : 0.9; L.strokeStyle = R.color; L.lineWidth = on ? 2.6 : 1.3; L.setLineDash([5, 3]); L.stroke(pth); L.setLineDash([]);
+    }
+    L.globalAlpha = 1;
     // land ice, feathered at its edge
     for (const [south, r] of [[true, I.s], [false, I.n]]) {
       if (r < 0.5) continue;
@@ -793,6 +801,14 @@ const WorldMap = (() => {
       const size = 9.5 * zs;
       c.beginPath(); c.arc(p[0], p[1], 2.2, 0, 7); c.fillStyle = 'rgba(40,70,60,0.85)'; c.fill();
       label(N.text, [p[0] + 6, p[1]], size, { align: 'left', italic: true, weight: 400, color: '#1f3d33', spacing: 0.4, haloW: 3, wk: 0.6 });
+    }
+    // routes: a dashed line from where something began to where it had reached by now
+    for (const R of layers.routes) {
+      if (t > R.from) continue;
+      const a = locate(R.a, t), b = locate(R.b, t); if (!a || !b) continue;
+      const it = d3.geoInterpolate(a, b);
+      c.save(); c.setLineDash([6, 4]); c.lineWidth = 1.7; c.lineCap = 'round'; c.strokeStyle = R.color || 'rgba(120,40,20,0.85)';
+      c.stroke(geoP({ type: 'LineString', coordinates: Array.from({ length: 25 }, (_, i) => it(i / 24)) })); c.restore();
     }
     // places: famous fossil sites and geological features
     for (const P of layers.places) {

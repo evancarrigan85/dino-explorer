@@ -117,6 +117,25 @@ const { EXTINCTIONS } = require('./data_extinctions.js');
   const xsrc = fs.readFileSync(SRC + 'data_extinctions.js', 'utf8');
   data += xsrc.slice(xsrc.indexOf('// ===='), xsrc.indexOf("if (typeof module")).trim() + '\n';
 }
+const { EMPIRES, BELIEFS, BELIEF_FAMILIES } = require('./data_history.js');
+{ const ids = new Set();
+  for (const e of EMPIRES) {
+    if (ids.has(e.id)) problems.push('empire ' + e.id + ': duplicate id'); ids.add(e.id);
+    if (!(e.from < e.to && e.peak >= e.from && e.peak <= e.to)) problems.push('empire ' + e.id + ': peak must lie between its start and end');
+    if (!(Math.abs(e.cap[0]) <= 90 && Math.abs(e.cap[1]) <= 180)) problems.push('empire ' + e.id + ': bad capital');
+    if (e.poly && (e.poly.length < 4 || e.poly.some(q => !(Math.abs(q[0]) <= 90 && Math.abs(q[1]) <= 180)))) problems.push('empire ' + e.id + ': bad sketch');
+    if (!e.story || !e.legacy || !e.where || !e.color) problems.push('empire ' + e.id + ': missing a field');
+  }
+  for (const b of BELIEFS) {
+    if (ids.has(b.id)) problems.push('belief ' + b.id + ': duplicate id'); ids.add(b.id);
+    if (!BELIEF_FAMILIES.some(f => f[0] === b.fam)) problems.push('belief ' + b.id + ': unknown family ' + b.fam);
+    for (const g of b.grew || []) if (!BELIEFS.some(x => x.id === g)) problems.push('belief ' + b.id + ': grew from unknown ' + g);
+    if (!b.idea || !b.who || !b.when || !b.today) problems.push('belief ' + b.id + ': missing a field');
+    for (const sp of b.spread) if (!(sp[0] >= b.year && Math.abs(sp[1]) <= 90 && Math.abs(sp[2]) <= 180)) problems.push('belief ' + b.id + ': bad spread point ' + sp[3]);
+  }
+  const hsrc = fs.readFileSync(SRC + 'data_history.js', 'utf8');
+  data += hsrc.slice(hsrc.indexOf('// ===='), hsrc.indexOf("if (typeof module")).trim() + '\n';
+}
 const { YOU_LINE } = require('./data_you.js');
 { YOU_LINE.forEach((y, i) => {
     if (i && YOU_LINE[i - 1].to !== y.from) problems.push('you: gap or overlap before ' + y.from);
@@ -154,7 +173,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');

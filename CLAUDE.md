@@ -85,11 +85,15 @@ builds, passes the checks and has been looked at.
   a function of progress 0→1 drawn over the map through `WorldMap.setFx()`, while `playScene()` runs
   the timeline through the event. A scene illustrates the order of events the card describes — it
   must not show anything the card does not say.
+  `data_history.js` holds the empires, kingdoms and beliefs of the last 5,500 years, shown in the
+  Humans tab. Years there are calendar years (negative = BCE); `tOfYear()`/`yearAt()` convert. Empire
+  shapes are hand sketches of greatest reach and the page says so. Beliefs are described in their
+  followers' own terms (“Muslims hold that…”), never judged, and every one gets the same care.
 - Sources: `refs_wanted.txt` (what we want to cite, and which entries each paper supports) →
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
-  `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `m:` map layer
-  (`plates|sealevel|climate|time`).
+  `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `k:` empire id, `b:` belief id,
+  `m:` map layer (`plates|sealevel|climate|history|time`).
 
 ## Network
 

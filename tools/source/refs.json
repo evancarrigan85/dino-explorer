@@ -5589,5 +5589,227 @@
 ],
 "first": "",
 "title_expected": "On impact and volcanism across the Cretaceous-Paleogene boundary"
+},
+"taagepera1997": {
+"doi": "10.1111/0020-8833.00053",
+"title": "Expansion and Contraction Patterns of Large Polities: Context for Russia",
+"journal": "International Studies Quarterly",
+"year": 1997,
+"authors": [
+"Taagepera"
+],
+"type": "journal-article",
+"targets": [
+"m:history",
+"k:persia",
+"k:maurya",
+"k:han",
+"k:rome",
+"k:tang",
+"k:caliphate",
+"k:mongol",
+"k:inca",
+"k:ottoman",
+"k:mughal",
+"k:qing",
+"k:russia",
+"k:spanish",
+"k:british"
+],
+"first": "",
+"title_expected": "Expansion and Contraction Patterns of Large Polities: Context for Russia"
+},
+"turchin2006": {
+"doi": "10.5195/jwsr.2006.369",
+"title": "East-West Orientation of Historical Empires and Modern States",
+"journal": "Journal of World-Systems Research",
+"year": 2006,
+"authors": [
+"Turchin",
+"Adams",
+"Hall"
+],
+"type": "journal-article",
+"targets": [
+"m:history",
+"k:egypt-kingdom",
+"k:shang",
+"k:assyria",
+"k:gupta",
+"k:aksum",
+"k:carolingian",
+"k:mali"
+],
+"first": "",
+"title_expected": "East-West Orientation of Historical Empires and Modern States"
+},
+"weiss1993": {
+"doi": "10.1126/science.261.5124.995",
+"title": "The Genesis and Collapse of Third Millennium North Mesopotamian Civilization",
+"journal": "Science",
+"year": 1993,
+"authors": [
+"Weiss",
+"Courty",
+"Wetterstrom",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"k:akkad"
+],
+"first": "",
+"title_expected": "The Genesis and Collapse of Third Millennium North Mesopotamian Civilization"
+},
+"kennett2012": {
+"doi": "10.1126/science.1226299",
+"title": "Development and Disintegration of Maya Political Systems in Response to Climate Change",
+"journal": "Science",
+"year": 2012,
+"authors": [
+"Kennett",
+"Breitenbach",
+"Aquino",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"k:maya"
+],
+"first": "",
+"title_expected": "Development and Disintegration of Maya Political Systems in Response to Climate Change"
+},
+"spyrou2022": {
+"doi": "10.1038/s41586-022-04800-3",
+"title": "The source of the Black Death in fourteenth-century central Eurasia",
+"journal": "Nature",
+"year": 2022,
+"authors": [
+"Spyrou",
+"Musralina",
+"Gnecchi Ruscone",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"k:mongol"
+],
+"first": "",
+"title_expected": "The source of the Black Death in fourteenth-century central Eurasia"
+},
+"mann1997": {
+"doi": "10.17953/aicr.21.2.k36m1485r3062510",
+"title": "A Sign in the Sky: Dating the League of the Haudenosaunee",
+"journal": "American Indian Culture and Research Journal",
+"year": 1997,
+"authors": [
+"Mann",
+"Fields"
+],
+"type": "journal-article",
+"targets": [
+"k:haudenosaunee"
+],
+"first": "",
+"title_expected": "A Sign in the Sky: Dating the League of the Haudenosaunee"
+},
+"peoples2016": {
+"doi": "10.1007/s12110-016-9260-0",
+"title": "Hunter-Gatherers and the Origins of Religion",
+"journal": "Human Nature",
+"year": 2016,
+"authors": [
+"Peoples",
+"Duda",
+"Marlowe"
+],
+"type": "journal-article",
+"targets": [
+"b:spirits"
+],
+"first": "",
+"title_expected": "Hunter-Gatherers and the Origins of Religion"
+},
+"martinon2021": {
+"doi": "10.1038/s41586-021-03457-8",
+"title": "Earliest known human burial in Africa",
+"journal": "Nature",
+"year": 2021,
+"authors": [
+"Martinón-Torres",
+"d’Errico",
+"Santos",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"b:spirits"
+],
+"first": "",
+"title_expected": "Earliest known human burial in Africa"
+},
+"norenzayan2016": {
+"doi": "10.1017/s0140525x14001356",
+"title": "The cultural evolution of prosocial religions",
+"journal": "Behavioral and Brain Sciences",
+"year": 2016,
+"authors": [
+"Norenzayan",
+"Shariff",
+"Gervais",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"b:judaism",
+"b:christianity",
+"b:islam",
+"b:buddhism",
+"b:hinduism"
+],
+"first": "",
+"title_expected": "The cultural evolution of prosocial religions"
+},
+"johnson2013": {
+"doi": "10.1002/9781118555767",
+"title": "The World's Religions in Figures",
+"journal": "Wiley",
+"year": 2013,
+"authors": [
+"Johnson",
+"Grim"
+],
+"type": "monograph",
+"targets": [
+"b:hinduism",
+"b:judaism",
+"b:zoroastrianism",
+"b:buddhism",
+"b:jainism",
+"b:christianity",
+"b:islam",
+"b:sikhism",
+"b:bahai"
+],
+"first": "",
+"title_expected": "The World's Religions in Figures: An Introduction to International Religious Demography"
+},
+"narasimhan2019": {
+"doi": "10.1126/science.aat7487",
+"title": "The formation of human populations in South and Central Asia",
+"journal": "Science",
+"year": 2019,
+"authors": [
+"Narasimhan",
+"Patterson",
+"Moorjani",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"b:hinduism"
+],
+"first": "",
+"title_expected": "The formation of human populations in South and Central Asia"
 }
 }

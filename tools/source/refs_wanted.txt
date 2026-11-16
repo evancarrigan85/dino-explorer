@@ -1,6 +1,6 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry) | optional: the surname to SHOW,
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -324,3 +324,15 @@ hull2020 | Hull | 2020 | On impact and volcanism across the Cretaceous-Paleogene
 sandom2014 | Sandom | 2014 | Global late Quaternary megafauna extinctions linked to humans, not climate change | e:quaternary
 barnosky2011 | Barnosky | 2011 | Has the Earth's sixth mass extinction already arrived? | e:holocene
 mcghee2013 | McGhee | 2013 | A new ecological-severity ranking of major Phanerozoic biodiversity crises | e:devonian, e:ordovician
+# ── history: empires and beliefs ──
+taagepera1997 | Taagepera | 1997 | Expansion and Contraction Patterns of Large Polities: Context for Russia | m:history, k:persia, k:maurya, k:han, k:rome, k:tang, k:caliphate, k:mongol, k:inca, k:ottoman, k:mughal, k:qing, k:russia, k:spanish, k:british
+turchin2006 | Turchin | 2006 | East-West Orientation of Historical Empires and Modern States | m:history, k:egypt-kingdom, k:shang, k:assyria, k:gupta, k:aksum, k:carolingian, k:mali
+weiss1993 | Weiss | 1993 | The Genesis and Collapse of Third Millennium North Mesopotamian Civilization | k:akkad
+kennett2012 | Kennett | 2012 | Development and Disintegration of Maya Political Systems in Response to Climate Change | k:maya
+spyrou2022 | Spyrou | 2022 | The source of the Black Death in fourteenth-century central Eurasia | k:mongol
+mann1997 | Mann | 1997 | A Sign in the Sky: Dating the League of the Haudenosaunee | k:haudenosaunee
+peoples2016 | Peoples | 2016 | Hunter-Gatherers and the Origins of Religion | b:spirits
+martinon2021 | Martinón-Torres | 2021 | Earliest known human burial in Africa | b:spirits
+norenzayan2016 | Norenzayan | 2016 | The cultural evolution of prosocial religions | b:judaism, b:christianity, b:islam, b:buddhism, b:hinduism
+narasimhan2019 | Narasimhan | 2019 | The formation of human populations in South and Central Asia | b:hinduism | 10.1126/science.aat7487
+johnson2013 | Johnson | 2013 | The World's Religions in Figures: An Introduction to International Religious Demography | b:hinduism, b:judaism, b:zoroastrianism, b:buddhism, b:jainism, b:christianity, b:islam, b:sikhism, b:bahai

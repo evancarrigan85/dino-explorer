@@ -18,12 +18,13 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 316, every one a journal article confirmed in Crossref |
+| References | 327, every one a published work confirmed in Crossref (326 journal articles, one book) |
+| History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 103 passing |
-| Page | about 1.14 MB, one file |
+| Checks | 114 passing |
+| Page | about 1.19 MB, one file |
 
 **Source coverage** (entries that cite at least one verified paper):
 
@@ -319,6 +320,45 @@ Shipped so far: wakes, light on the water, eruptions and impacts. Next, in order
 - **Ancient shorelines (Release 2)** remain the biggest visual gain; the motion will look far better
   on real palaeogeography.
 
+## Release 7f — History, second pass (empires, kingdoms and beliefs)
+
+Shipped: `data_history.js`, shown in the Humans tab once the timeline is inside the last 5,500 years.
+Next, in order:
+
+1. **Better borders.** The empire shapes are hand sketches of greatest reach. The open
+   `historical-basemaps` dataset on GitHub (reachable from here) has world borders at about fifty
+   dates, which would let empires grow and shrink truthfully. It is GPL-3.0, so embedding it puts
+   that licence on the page — **ask Evan** before using it. Until then, do not animate the sketches'
+   size: that would claim borders nobody has data for here.
+2. **Fill the gaps.** Missing and worth adding, each with a source: Sumer's city-states, the Hittites,
+   Kush and Nubia, Carthage, Alexander's empire and its successors, the Parthians and Sasanians,
+   Byzantium, the Vikings, Ghana and Songhai, Great Zimbabwe (a culture card exists), Benin, Ethiopia
+   after Aksum, the Khmer (a culture card exists), Japan, Korea, Vietnam, the Olmec, Teotihuacan,
+   Tiwanaku and Wari, the Mississippian towns, the Comanche and Lakota, Hawai‘i and Tonga, the
+   Portuguese, Dutch and French empires, the Soviet Union, and the countries of today.
+3. **Beliefs.** Add Mesopotamian religion, Manichaeism, Tengrism (the sky-god of the steppe), Yoruba
+   religion and its Atlantic descendants, the Dreaming of Aboriginal Australia (with care, and from
+   published Aboriginal-authored sources), Mormonism, and "no religion" as a modern position. Give
+   Christianity and Islam their main branches. Tie each belief's "today" figure to the one book
+   already cited, or to a newer published count.
+4. **Read every card with Evan before his kids do.** The belief texts were written to be fair and
+   plain, in each tradition's own terms; a family will have its own view of what is right for its
+   children, and this is exactly the content where that matters. Change whatever he asks.
+5. **Sources.** 24 of 27 empires cite something (not yet: the Greek city-states, Srivijaya, the
+   Aztecs) and 10 of 17 beliefs (not yet: the gods of Egypt, Greece and Rome, the Maya and Aztecs and
+   the Norse; Confucianism, Daoism, Shinto); the stories and "what it left
+   us" lines are from general knowledge. Give each the Release 1 treatment (history sources are
+   mostly books — the checker accepts books and chapters registered in Crossref).
+6. **A history journey** ("Six thousand years in ten stops") and the writing systems, inventions and
+   trade routes (Silk Road, Indian Ocean, trans-Sahara) as a layer.
+
+## The name
+
+The site has outgrown "Dino Time Explorer". Evan asked for candidates on 16 Nov 2026; nothing has
+been renamed. When he picks one, change the `<title>`, the header and description in `body.html` /
+`assemble.mjs`, this file and the README — and ask before renaming the repository, because that
+changes the live address.
+
 ## Release 8 — Real fossil occurrences (needs one host approved)
 
 Show every recorded fossil of a selected animal or group as dots, from the Paleobiology Database
@@ -344,6 +384,13 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — Empires, kingdoms and beliefs.** In the Humans tab, for the last 5,500 years:
+  27 empires and kingdoms (Egypt and Akkad to the British Empire, with the Maya, Mali, the Inca, the
+  Aztecs and the Haudenosaunee), 25 of them sketched on the map at their greatest reach; 17 beliefs in
+  six families (the first beliefs and shamanism, the old gods, Zoroastrianism, the Abrahamic
+  religions, the Indian religions, East Asia), each with where it began and dated routes showing how
+  far it had travelled. Calendar years on the clock and ticks, a "Recorded history" zoom, and a map
+  cleared of animals for that span. 11 new verified references. 114 checks.
 - **16 Nov 2026 — Extinctions view.** A seventh tab: the five great dyings, the loss of the Ice Age
   giants, and now. Each has a card (toll, cause, recovery, who was lost and who came through — counted
   from the app's own animals — how we know, what is argued) and a "Watch it happen" scene on the map:

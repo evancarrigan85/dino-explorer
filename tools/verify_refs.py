@@ -56,7 +56,7 @@ def by_doi(doi):
     return []
 
 def search(q, rows=8, year=None):
-    params = {'query.bibliographic': q, 'rows': rows, 'select': 'DOI,title,container-title,issued,published-print,published-online,author,type'}
+    params = {'query.bibliographic': q, 'rows': rows, 'select': 'DOI,title,container-title,publisher,issued,published-print,published-online,author,type'}
     if year: params['filter'] = f'from-pub-date:{year - 1},until-pub-date:{year + 1}'
     url = 'https://api.crossref.org/works?' + urllib.parse.urlencode(params)
     for attempt in range(4):
@@ -115,9 +115,10 @@ for w in wanted:
             why = f'closest: "{t[:90]}" ({y}, {", ".join(fam[:2])}) sim={sim:.2f}'
     if best:
         it = best[1]; ok += 1
+        # (a book has no journal, so its publisher is shown in that place)
         auth = [a.get('family', '') for a in it.get('author', []) if a.get('family')]
         done[w['key']] = {'doi': it['DOI'].lower(), 'title': clean_title((it.get('title') or [''])[0]),
-                          'journal': (it.get('container-title') or [''])[0], 'year': year_of(it),
+                          'journal': (it.get('container-title') or [''])[0] or it.get('publisher', ''), 'year': year_of(it),
                           'authors': auth[:3] + (['et al.'] if len(auth) > 3 else []), 'type': it.get('type'), 'targets': w['targets'], 'first': w['first'], 'title_expected': w['title']}
         print(f"  ok   {w['key']}: {it['DOI']}")
     else:
