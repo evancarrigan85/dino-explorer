@@ -18,13 +18,13 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 355, every one a published work confirmed in Crossref |
+| References | 356, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 132 passing |
-| Page | about 1.28 MB, one file |
+| Checks | 138 passing |
+| Page | about 1.38 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -75,19 +75,21 @@ textured from a published climate-zone map. What is still to do, most valuable f
 1. **Landscape in deep time, from the rocks.** The land texture is research-based only for the last
    6,000 years. For everything older it is still the latitude sketch. Three sources, in order of how
    soon they can be used:
-   - *Climate-indicator rocks* (coal = wet, salt = dry, glacial rubble = ice, bauxite = hot and wet):
-     8,698 dated points are already on disk in the GPlates web-service clone (Release 3). Paint the
-     land near each from its rock type, attached to the plates, and leave the rest plain. **Ask Evan**
-     about the dataset's terms first.
+   - *Climate-indicator rocks* — **shipped 16 Nov** (`tools/build_rocks.py`, Boucot, Chen & Scotese
+     2013, credited on the page; Evan said proceed). 6,305 patches from 8,521 dated sites, painted as
+     soft washes and carried on the plates. Next: tune patch size against Evan's eye on a phone; add
+     the atlas's other indicators (reefs, evaporite basins) only if they read clearly; and still
+     confirm the atlas's reuse terms with SEPM before anything commercial.
    - *Ancient shorelines and mountains* (Release 2) — needs `www.earthbyte.org` or `zenodo.org`.
    - *Ice Age vegetation* (the mammoth steppe, shrunken rainforests): find a published, downloadable
      reconstruction of the world 21,000 years ago before promising this.
 2. **Custom sprites** (Release 6) — the single biggest change to how it looks. Blocked on the
    PixelLab token.
-3. **Animals that arrive and leave.** A short rise when an animal first appears as time moves and a
-   fade when it dies out, as the extinction scenes already do.
-4. **Fewer, calmer pins.** Cluster markers that overlap; show labels only for what is selected or
-   hovered; let the history layers default to two at a time on a phone.
+3. **Animals that arrive and leave** — shipped 16 Nov: a short rise on arrival, a fading medallion on
+   departure (skipped when the change is wholesale, e.g. a tab switch).
+4. **Fewer, calmer pins** — partly shipped 16 Nov: a "+N" badge where animals did not fit (tap to zoom
+   in), and place names hidden on a crowded map until you zoom. Still to do: let the history layers
+   default to two at a time on a phone.
 5. **A front door** (Release 7d) with "Your story" as the first thing offered.
 6. **Rivers and lakes** for the last 5 million years from Natural Earth; **night lights** for the
    last century.
@@ -442,6 +444,12 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — The land read from its rocks; named eruptions; animals that come and go.** Deep-time
+  land now carries colour and grain from 8,521 dated climate rocks (coal, salt, bauxite, glacial
+  rubble). Every great eruption and impact is labelled on the map and explains itself on a tap —
+  Evan saw the Deccan Traps glow over India and took it for the asteroid. At a period boundary the
+  header now names the younger period, as the epoch rows already did. Markers rise in and fade out;
+  crowded spots show "+N". 138 checks.
 - **16 Nov 2026 — A calmer, truer map; 37 animals for the empty regions.** Tapping the map no longer
   moves it or changes the time; moves glide. For recorded history the land is drawn from a published
   climate-zone map (rainforest, savanna, steppe, desert, temperate, Mediterranean, boreal, tundra,

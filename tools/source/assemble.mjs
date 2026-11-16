@@ -190,10 +190,10 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
-  if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
+  if (!['journal-article', 'book-chapter', 'book', 'edited-book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
   // names as people should read them: the surname we were told to show, and no SHOUTING
   const names = r.authors.map((n, i) => i === 0 && r.first ? r.first : n === n.toUpperCase() && n !== 'et al.' ? n.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (x, s, c) => s + c.toUpperCase()) : n);
   REFS[k] = { a: names.length ? names.join(', ').replace(', et al.', ' et al.') : '', y: r.year, t: r.title, j: r.journal, d: r.doi };
@@ -221,6 +221,7 @@ const plates = fs.readFileSync(SRC + 'plates-data.js', 'utf8').trim();
 const shelf = fs.readFileSync(SRC + 'shelf-data.js', 'utf8').trim();
 const relief = fs.readFileSync(SRC + 'relief-data.js', 'utf8').trim();
 const landcover = fs.readFileSync(SRC + 'landcover-data.js', 'utf8').trim();
+const rocks = fs.readFileSync(SRC + 'rocks-data.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }
 const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
 let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
@@ -271,6 +272,10 @@ ${relief}
 <!-- ─── GENERATED: today's landscapes from measured climate. Rebuild with tools/build_landcover.py — do not edit ─── -->
 <script>
 ${landcover}
+</script>
+<!-- ─── GENERATED: climate read from dated rocks, for the deep-time land. Rebuild with tools/build_rocks.py — do not edit ─── -->
+<script>
+${rocks}
 </script>
 <!-- ─── END GENERATED: shelves ─── -->
 

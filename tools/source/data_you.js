@@ -58,17 +58,18 @@ const YOU_LINE = [
     text: 'People like you — who paint, sing, tell stories and bury their dead. From here on, every one of your ancestors would be at home in your family, if you only knew their names.' },
 ];
 // Great eruptions and impacts, shown on the map while the timeline is inside their window.
-//   [lat, lon (today), from, to (million years ago), kind, size, name]
+// Each is drawn with its name, so a lava glow is never mistaken for an asteroid strike.
+//   [lat, lon (today), from, to (million years ago), kind, size, name, what happened]
 const SPARKS = [
-  [66.0, 96.0, 252.6, 251.2, 'volcano', 46, 'Siberian Traps'],
-  [26.5, 102.0, 260.6, 259.2, 'volcano', 26, 'Emeishan Traps'],
-  [32.0, -8.0, 201.9, 200.9, 'volcano', 30, 'Central Atlantic eruptions'],
-  [40.6, -74.2, 201.9, 200.9, 'volcano', 26, 'Central Atlantic eruptions'],
-  [51.4, -68.7, 214.4, 213.7, 'impact', 20, 'Manicouagan impact'],
-  [19.0, 74.0, 66.5, 65.5, 'volcano', 30, 'Deccan Traps'],
-  [21.4, -89.5, 66.04, 65.7, 'impact', 30, 'Chicxulub impact'],
-  [68.0, -28.0, 56.4, 55.5, 'volcano', 28, 'North Atlantic eruptions'],
-  [2.6, 98.8, 0.0745, 0.0735, 'volcano', 22, 'Toba super-eruption'],
+  [66.0, 96.0, 252.6, 251.2, 'volcano', 46, 'Siberian Traps', 'Lava floods across Siberia for hundreds of thousands of years. Its gases drove the Great Dying — the worst extinction in Earth’s history.'],
+  [26.5, 102.0, 260.6, 259.2, 'volcano', 26, 'Emeishan Traps', 'Lava floods across what is now south-west China, during a smaller extinction about 260 million years ago.'],
+  [32.0, -8.0, 201.9, 200.9, 'volcano', 30, 'Central Atlantic eruptions', 'Lava pours from the crack where Pangaea is tearing apart — where the Atlantic Ocean is today. Its gases drove the end-Triassic extinction.'],
+  [40.6, -74.2, 201.9, 200.9, 'volcano', 26, 'Central Atlantic eruptions', 'Lava pours from the crack where Pangaea is tearing apart — where the Atlantic Ocean is today. Its gases drove the end-Triassic extinction.'],
+  [51.4, -68.7, 214.4, 213.7, 'impact', 20, 'Manicouagan impact', 'An asteroid strikes what is now Quebec. Its crater is now a ring-shaped lake, about 70 km across, that you can see from space.'],
+  [19.0, 74.0, 66.5, 65.5, 'volcano', 30, 'Deccan Traps', 'Volcanic eruptions in India — not the asteroid, which struck Mexico. Lava flooded much of India for hundreds of thousands of years, before and after the impact. How much the eruptions added to the extinction is still argued over.'],
+  [21.4, -89.5, 66.04, 65.7, 'impact', 30, 'Chicxulub impact', 'The asteroid that ended the age of dinosaurs: about 10 km wide, striking a shallow sea where Mexico’s Yucatán Peninsula is today.'],
+  [68.0, -28.0, 56.4, 55.5, 'volcano', 28, 'North Atlantic eruptions', 'Lava pours out as Greenland pulls away from Europe. Its carbon may have helped cause a sudden warming 56 million years ago.'],
+  [2.6, 98.8, 0.0745, 0.0735, 'volcano', 22, 'Toba super-eruption', 'A super-eruption in Sumatra about 74,000 years ago, one of the largest of the last two million years. Its ash fell as far away as India.'],
 ];
 // Journeys: guided trips through time. "you", "extinctions" and "finds" are built from the data
 // above and elsewhere; this one is written out.

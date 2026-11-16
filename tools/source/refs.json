@@ -6298,5 +6298,23 @@
 ],
 "first": "",
 "title_expected": "The climate of the European Alps: Shift of very high resolution Köppen-Geiger climate zones 1800–2100"
+},
+"boucot2013": {
+"doi": "10.2110/sepmcsp.11",
+"title": "Phanerozoic Paleoclimate",
+"journal": "SEPM (Society for Sedimentary Geology)",
+"year": 2013,
+"authors": [
+"Boucot",
+"Xu",
+"Scotese",
+"et al."
+],
+"type": "edited-book",
+"targets": [
+"m:rocks"
+],
+"first": "",
+"title_expected": "Phanerozoic Paleoclimate"
 }
 }

@@ -63,7 +63,7 @@ const posOf = t => isFull() ? storyPos(t) / 1000 : clamp((S.win[0] - t) / span()
 const timeAt = x => { x = clamp(x, 0, 1); return isFull() ? storyTime(x * 1000) : S.win[0] - x * span(); };
 
 function getPeriod(t) {
-  for (const p of PERIODS) if (t <= p.start && t >= p.end) return p;
+  for (const p of PERIODS) if (t <= p.start && (t > p.end || p.end === 0)) return p;   // a boundary belongs to the younger period, as in the epoch rows
   return t > PERIODS[0].start ? PERIODS[0] : PERIODS[PERIODS.length - 1];
 }
 function divAt(t, rank) { for (const d of DIVS) if (d[3] === rank && t <= d[1] && t > d[2]) return d[0]; return ''; }
@@ -1409,10 +1409,13 @@ function init() {
     oceans: OCEANS.map(([text, a, b, from, to, min, k]) => ({ text, from, to, min, k, a: WorldMap.attach(a[0], a[1], from), b: WorldMap.attach(b[0], b[1], from) })),
     superocean: SUPEROCEAN,
     notes: ICE_AGE_NOTES.map(([name, lat, lon, what]) => ({ text: name + ' · ' + what, lat, lon, from: 2.58, to: 0.0117 })),
-    sparks: SPARKS.map(([lat, lon, from, to, kind, r, name]) => ({ at: WorldMap.attach(lat, lon, (from + to) / 2), from, to, kind, r, name })),
+    rocks: (() => { const o = []; for (let i = 0; i < ROCKS.length; i += 5) o.push({ k: ROCKS[i], lat: ROCKS[i + 1] * ROCK_CELL, lon: ROCKS[i + 2] * ROCK_CELL, from: ROCKS[i + 3], to: ROCKS[i + 4] }); return o; })(),
+    sparks: SPARKS.map(([lat, lon, from, to, kind, r, name, note]) => ({ at: WorldMap.attach(lat, lon, (from + to) / 2), from, to, kind, r, name, note })),
   });
   WorldMap.onPick = (h, x, y) => {
     if (h) noLook = performance.now() + 2500;
+    if (h && h.more) { WorldMap.zoomAt(x, y, 2.4); return; }
+    if (h && h.spark) { showFact(h.spark.kind === 'impact' ? '☄️' : '🌋', '<b>' + esc(h.spark.name) + '</b> — ' + esc(h.spark.note), 14000); return; }      // the "+N" badge: come closer to see them all
     if (!h) {
       $('mapAbout').classList.remove('show');
       if ($('pinPanel').classList.contains('show')) { const q = WorldMap.pickPresent(x, y); if (q) setPin(+q.lat.toFixed(2), +q.lon.toFixed(2), null); else $('pinHint').textContent = 'That spot was open ocean then — tap land, or type a city.'; }
@@ -1431,13 +1434,13 @@ function init() {
   const tip = $('mapTip');
   WorldMap.onHover = (h, x, y) => {
     if (!h) { tip.style.display = 'none'; return; }
-    tip.innerHTML = h.marker ? esc(h.marker.name) + '<small>click for its story</small>' : h.pin ? esc(h.pin.name) + '<small>your pin</small>' : esc(h.place.name);
+    tip.innerHTML = h.spark ? esc(h.spark.name) + '<small>' + (h.spark.kind === 'impact' ? 'asteroid impact' : 'volcanic eruptions') + ' · click to read</small>' : h.more ? h.more.n + ' more here<small>click to zoom in</small>' : h.marker ? esc(h.marker.name) + '<small>click for its story</small>' : h.pin ? esc(h.pin.name) + '<small>your pin</small>' : esc(h.place.name);
     tip.style.display = 'block'; tip.style.left = x + 'px'; tip.style.top = y + 'px';
   };
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
-  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
   $('mapNote').onclick = () => $('mapAbout').classList.toggle('show'); $('mapAboutX').onclick = () => $('mapAbout').classList.remove('show');
   $('eventsRibbon').onclick = () => switchTab('insights');
   $('fpClose').onclick = closeFact;

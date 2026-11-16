@@ -216,7 +216,7 @@ const WorldMap = (() => {
   let centerLon = 0;                          // flat view central meridian
   let proj = null, baseScale = 1, baseT = [0, 0];
   let dirty = true, raf = 0;
-  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], regions: [], routes: [], pin: null };
+  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], regions: [], routes: [], rocks: [], pin: null };
   let selected = null, hits = [], rings = [];
   let pal = null;
   const QS = 4;                               // soft effects are built at 1/4 size
@@ -410,6 +410,32 @@ const WorldMap = (() => {
   const COVER = { 1: ['#3d7a45', 'trees', '#1f5229'], 2: ['#b7b560', 'grass', '#7f8a35'], 3: ['#cfbd80', 'grass', '#a08a4a'], 4: ['#e8d29a', 'sand', '#b9975a'], 5: ['#7fae68', 'trees', '#4c7f43'],
     6: ['#b0ac62', 'grass', '#7d7a3a'], 7: ['#5c8a68', 'trees', '#35604a'], 8: ['#b5b39a', 'sand', '#8a8872'], 9: ['#f3f8fb', null, null] };
   let coverP = {}, coverTiles = {};
+  // Deep time: climate read from the rocks (build_rocks.py). Each dated rock site paints a soft patch of the
+  // land around it — coal green, salt and desert crust sandy, bauxite and kaolin deep green, glacial rubble white —
+  // carried on its plate. Land with no patch has no rock evidence in the dataset, and stays plain.
+  const ROCK = [['#4f8a4f', 'trees', '#2b5a30'], ['#ead49c', 'sand', '#b08f52'], ['#2f7038', 'trees', '#17421f'], ['#f2f7fb', null, null]];
+  let rockSprites = null;
+  function rockSprite(k) {
+    if (!rockSprites) rockSprites = {};
+    if (rockSprites[k]) return rockSprites[k];
+    const n = 96, cv = document.createElement('canvas'); cv.width = cv.height = n;
+    const x = cv.getContext('2d'), [tint, grain, ink] = ROCK[k];
+    if (grain) { x.fillStyle = x.strokeStyle = ink; x.lineCap = 'round';
+      for (let i = 0; i < 26; i++) {                      // fixed marks, densest in the middle
+        const a = i * 2.39996, d = Math.sqrt((i + 0.5) / 26) * n * 0.4, px = n / 2 + Math.cos(a) * d, py = n / 2 + Math.sin(a) * d;
+        if (grain === 'trees') { x.beginPath(); x.arc(px, py, 3.1, Math.PI, 0); x.arc(px + 4, py, 2.4, Math.PI, 0); x.fill(); }
+        else { x.beginPath(); x.arc(px, py, 1.2, 0, 7); x.fill(); }
+      } }
+    x.globalCompositeOperation = 'destination-over';
+    const g = x.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2); g.addColorStop(0, tint); g.addColorStop(0.3, tint); g.addColorStop(1, tint + '00');
+    x.fillStyle = g; x.fillRect(0, 0, n, n);
+    x.globalCompositeOperation = 'destination-in';        // fade the whole patch, grain and all, to nothing at its edge
+    const m = x.createRadialGradient(n / 2, n / 2, n * 0.05, n / 2, n / 2, n / 2); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = m; x.fillRect(0, 0, n, n);
+    return rockSprites[k] = cv;
+  }
+  // markers that arrive and leave: when each first appeared, where it was last drawn, and the ones just gone
+  let born = {}, lastAt = {}, ghosts = [], animUntil = 0;
   // small repeating marks that give each landscape its grain: clumps for forest, ticks for grass, grains for sand
   function coverTile(kind, ink) {
     const key = kind + ink; if (coverTiles[key]) return coverTiles[key];
@@ -664,6 +690,22 @@ const WorldMap = (() => {
         L.fill(capPath(false, 90 - la)); L.fill(capPath(true, 90 - la));
       }
     }
+    // deep time: the land near each dated rock takes the look of the climate that rock records
+    if (layers.rocks.length && t > 0.009) {
+      const order = [2, 0, 1, 3];
+      for (const k of order) for (const R of layers.rocks) {
+        if (R.k !== k || t > R.from || t < R.to) continue;
+        if (R.at === undefined) { R.at = attach(R.lat, R.lon, (R.from + R.to) / 2); if (R.at.f < 0) R.at = null; }
+        if (!R.at) continue;
+        const ll = locate(R.at, t); if (!ll) continue;
+        const p = project(ll); if (!p) continue;
+        const q2 = proj([ll[0], Math.max(-89, Math.min(89, ll[1] + (ll[1] > 0 ? -6 : 6)))]); if (!q2) continue;
+        const rad = Math.max(5, Math.min(140, Math.hypot(q2[0] - p[0], q2[1] - p[1])));
+        if (!inView(p[0], p[1], -rad)) continue;
+        L.globalAlpha = k === 3 ? 0.85 : 0.62; L.drawImage(rockSprite(k), p[0] - rad, p[1] - rad, rad * 2, rad * 2);
+      }
+      L.globalAlpha = 1;
+    }
     // today's landscapes, for recorded history only: a wash of colour and a grain for each
     const cf = t <= 0.0058 ? 1 : t >= 0.009 ? 0 : (0.009 - t) / 0.0032;
     if (cf > 0 && COVER_LV.length) {
@@ -841,6 +883,17 @@ const WorldMap = (() => {
       c.save(); c.setLineDash(R.dash || [6, 4]); c.lineWidth = (R.width || 1.7) * (R.key && R.key === selected ? 1.7 : 1); c.lineCap = 'round'; c.strokeStyle = R.color || 'rgba(120,40,20,0.85)';
       c.stroke(geoP({ type: 'LineString', coordinates: Array.from({ length: 25 }, (_, i) => it(i / 24)) })); c.restore();
     }
+    const sparkLabels = [];
+    // great eruptions and impacts: always named, so a glow is never a mystery (the animated glow is on the fx layer)
+    for (const sp of layers.sparks) {
+      if (t > sp.from || t < sp.to) continue;
+      const p = project(locate(sp.at, t)); if (!p || !inView(p[0], p[1], 10)) continue;
+      const imp = sp.kind === 'impact', sz = 10.5 * zs;
+      const ly = p[1] + (sp.r || 26) * zs * 0.55 + 9, bw = Math.max(sp.name.length * sz * 0.58, 100) + 12;
+      sparkLabels.push([sp, p, ly, sz, imp]);
+      boxes.push([p[0] - bw / 2, ly - sz, bw, sz * 2.7]); mboxes.push([p[0] - bw / 2, p[1] - 16 * zs, bw, ly - p[1] + 16 * zs + sz * 2]);   // animals make room for it
+      hits.push({ x: p[0], y: p[1], r: 16 * zs, spark: sp });
+    }
     // places: famous fossil sites and geological features
     for (const P of layers.places) {
       const p = project(locate(P.at, t)); if (!p || !inView(p[0], p[1], 6)) continue;
@@ -856,6 +909,7 @@ const WorldMap = (() => {
       hits.push({ x: p[0], y: p[1], r: r + 7, place: P });
       if (P.key === selected) rings.push([p[0], p[1], r + 5]);
       const size = 10.5 * zs;
+      if (P.key === selected || zoom >= 1.7 || layers.places.length <= 12 || P.label)   // a crowded map names only what is picked, until you zoom in
       label(P.name, [p[0] + (P.icon ? 11 : r + 5) * 1, p[1]], size, { align: 'left', spacing: 0.3, weight: P.key === selected ? 700 : 400, haloW: 3, wk: 0.62 });
     }
     // creatures: one medallion each at a fossil site; the selected one shows
@@ -871,10 +925,15 @@ const WorldMap = (() => {
       }
       return null;
     };
+    const nowMs = performance.now(), crowd = {};
     const medal = (m, at, strong) => {
       const p = project(locate(at, t)); if (!p || !inView(p[0], p[1], -16)) return;
       const r = (strong ? 1.2 : 1) * R0;
-      const q_ = strong ? (mboxes.push([p[0] - r, p[1] - r, r * 2, r * 2]), p) : place(p, r); if (!q_) return;
+      const q_ = strong ? (mboxes.push([p[0] - r, p[1] - r, r * 2, r * 2]), p) : place(p, r);
+      if (!q_) { const ck = Math.round(p[0] / (R0 * 5)) + ',' + Math.round(p[1] / (R0 * 5)), cr = crowd[ck] || (crowd[ck] = { x: p[0], y: p[1], n: 0 }); cr.n++; return; }   // no room: counted, and shown as "+N"
+      const age = motion && born[m.key] ? (nowMs - born[m.key]) / 420 : 1, grow = age >= 1 ? 1 : 1 - Math.pow(1 - Math.max(0, age), 3);
+      if (grow < 1) { c.save(); c.globalAlpha = grow; c.translate(q_[0], q_[1] + (1 - grow) * 9); c.scale(0.6 + 0.4 * grow, 0.6 + 0.4 * grow); c.translate(-q_[0], -q_[1]); }
+      lastAt[m.key] = [q_[0], q_[1], r, m.emoji];
       if (q_ !== p && (q_[0] !== p[0] || q_[1] !== p[1])) {
         c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q_[0], q_[1]); c.strokeStyle = 'rgba(60,34,10,0.7)'; c.lineWidth = 1; c.stroke();
         c.beginPath(); c.arc(p[0], p[1], 2, 0, 7); c.fillStyle = 'rgba(60,34,10,0.9)'; c.fill();
@@ -884,6 +943,7 @@ const WorldMap = (() => {
       c.lineWidth = strong ? 2 : 1; c.strokeStyle = strong ? 'rgba(190,60,20,0.95)' : 'rgba(70,40,12,0.8)'; c.stroke();
       c.font = `${Math.round(r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
       c.fillText(m.emoji, q_[0], q_[1] + r * 0.08);
+      if (grow < 1) c.restore();
       hits.push({ x: q_[0], y: q_[1], r: r + 3, marker: m });
       if (strong) rings.push([q_[0], q_[1], r]);
       return q_;
@@ -897,6 +957,30 @@ const WorldMap = (() => {
       }
     }
     for (const m of layers.markers) { if (m === sel) continue; for (const s of m.sites) { if (medal(m, s.at, false)) break; } }
+    // where animals would not fit: a badge with how many more are here — tap it to zoom in
+    for (const k in crowd) {
+      const cr = crowd[k], bx = cr.x + R0 * 0.2, by = cr.y - R0 * 1.5, br = 8.5 * zs, tx = '+' + cr.n;
+      if (!inView(bx, by, br)) continue;
+      c.beginPath(); c.arc(bx, by, br, 0, 7); c.fillStyle = 'rgba(52,30,10,0.92)'; c.fill(); c.lineWidth = 1.2; c.strokeStyle = 'rgba(250,236,200,0.95)'; c.stroke();
+      c.font = `700 ${Math.round(9 * zs)}px system-ui,-apple-system,'Segoe UI',sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fbeecb'; c.fillText(tx, bx, by + 0.5);
+      hits.push({ x: bx, y: by, r: br + 4, more: cr });
+    }
+    for (const [sp, p, ly, sz, imp] of sparkLabels) {
+      c.font = `${Math.round(15 * zs)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(imp ? '☄️' : '🌋', p[0], p[1]);
+      text(c, sp.name, p[0], ly, sz, { weight: 700, spacing: 0.4, haloW: 3.6, color: imp ? '#7a1e08' : '#5a1608', font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
+      text(c, imp ? 'asteroid impact' : 'volcanic eruptions', p[0], ly + sz * 1.15, sz * 0.82, { weight: 500, spacing: 0.4, haloW: 3, color: '#4a2a14', italic: true, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
+    }
+    // animals that have just gone: a medallion fading and sinking where it stood
+    if (ghosts.length) {
+      ghosts = ghosts.filter(g => nowMs - g.t < 520);
+      for (const g of ghosts) {
+        const u = (nowMs - g.t) / 520;
+        c.save(); c.globalAlpha = 0.85 * (1 - u) * (1 - u);
+        c.beginPath(); c.arc(g.x, g.y + u * 7, g.r * (1 - 0.25 * u), 0, 7); c.fillStyle = 'rgba(214,200,170,0.9)'; c.fill(); c.lineWidth = 1; c.strokeStyle = 'rgba(70,40,12,0.6)'; c.stroke();
+        c.font = `${Math.round(g.r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(g.e, g.x, g.y + u * 7 + g.r * 0.08);
+        c.restore();
+      }
+    }
     // a dropped pin: its whole journey as a dotted trail, today's spot, and where it is now
     const PN = layers.pin;
     if (PN) {
@@ -980,6 +1064,7 @@ const WorldMap = (() => {
         const g = fctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], R * breathe);
         g.addColorStop(0, 'rgba(255,214,120,0.9)'); g.addColorStop(0.3, 'rgba(240,96,30,0.6)'); g.addColorStop(0.7, 'rgba(150,30,14,0.28)'); g.addColorStop(1, 'rgba(90,20,10,0)');
         fctx.fillStyle = g; fctx.beginPath(); fctx.arc(p[0], p[1], R * breathe, 0, 7); fctx.fill();
+        for (let i = 0; i < 4; i++) { const u = ((sec / 3.2) + i / 4) % 1, px = p[0] + Math.sin(i * 2.1 + sec * 0.6) * R * 0.18 + u * R * 0.25, py = p[1] - u * R * 1.25; fctx.beginPath(); fctx.arc(px, py, R * (0.12 + u * 0.3), 0, 7); fctx.fillStyle = `rgba(74,62,58,${0.4 * Math.sin(u * Math.PI)})`; fctx.fill(); }   // ash rising
         const k = (sec / 4) % 1; fctx.beginPath(); fctx.arc(p[0], p[1], R * (0.6 + k * 1.3), 0, 7); fctx.strokeStyle = `rgba(70,50,44,${0.3 * (1 - k)})`; fctx.lineWidth = 5 * (1 - k) + 1; fctx.stroke();   // ash spreading
       }
     }
@@ -998,8 +1083,8 @@ const WorldMap = (() => {
     raf = 0;
     if (dirty) draw(); else drawFx();
     if (document.hidden) return;
-    if (trailLife > 0 && !dirty) dirty = true;                       // keep fading the wake after the land stops
-    if (rings.length || trailLife > 0 || fxHook || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
+    if ((trailLife > 0 || performance.now() < animUntil) && !dirty) dirty = true;                       // keep fading the wake after the land stops
+    if (rings.length || trailLife > 0 || fxHook || performance.now() < animUntil || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
   }
   function resize() {
     const r = canvas.getBoundingClientRect();
@@ -1007,7 +1092,7 @@ const WorldMap = (() => {
     W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     for (const cv of [canvas, fx, land, sheet]) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     for (const cv of q) { cv.width = Math.ceil(canvas.width / QS); cv.height = Math.ceil(canvas.height / QS); }
-    seabed = null; coverTiles = {}; makePaper(); makePatterns(); setupProjection();
+    seabed = null; coverTiles = {}; lastAt = {}; ghosts = []; makePaper(); makePatterns(); setupProjection();
   }
 
   // ── pointer, wheel and touch ───────────────────────────────────────
@@ -1131,7 +1216,18 @@ const WorldMap = (() => {
       };
       requestAnimationFrame(step);
     },
-    setLayers(l) { Object.assign(layers, l); dirty = true; schedule(); },
+    setLayers(l) {
+      if (l.markers && motion) {
+        const now = performance.now(), had = new Set(layers.markers.map(m => m.key)), has = new Set(l.markers.map(m => m.key));
+        // a wholesale change (a new tab, a filter, a jump through time) is not an arrival or an extinction
+        const added = l.markers.filter(m => !had.has(m.key)), gone = layers.markers.filter(m => !has.has(m.key));
+        if (had.size && added.length <= 14) for (const m of added) born[m.key] = now;
+        if (gone.length <= 14) for (const m of gone) { const a = lastAt[m.key]; if (a) ghosts.push({ x: a[0], y: a[1], r: a[2], e: a[3], t: now }); }
+        for (const m of gone) { delete born[m.key]; delete lastAt[m.key]; }
+        if (added.length || gone.length) animUntil = now + 560;
+      }
+      Object.assign(layers, l); dirty = true; schedule();
+    },
     select(key) { if (key !== selected) { selected = key; dirty = true; schedule(); } },
     hit(x, y) { for (let i = hits.length - 1; i >= 0; i--) { const h = hits[i]; if (Math.hypot(h.x - x, h.y - y) <= h.r) return h; } return null; },
     redraw() { dirty = true; schedule(); },

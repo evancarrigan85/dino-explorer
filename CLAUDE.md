@@ -39,6 +39,8 @@ and where something is a guess, a sketch or still argued over, the page says so.
    (wakes behind drifting land, light on the water, eruptions and impacts) runs off the clock, stops
    for readers who ask for reduced motion, and is switched off with `WorldMap.setMotion(false)`.
    Motion may decorate; it may not claim anything the data does not hold.
+   **Every glow, ring or burst on the map is named on the map** (`SPARKS` labels, scene captions):
+   an unlabelled lava glow over India was read as the asteroid.
 6. **Text is for a curious 10-year-old and an adult reading over their shoulder.** Plain words, short
    sentences, no jargon without a gloss. Use `’` not `'` inside single-quoted JS strings.
 7. **Never put a secret in a file or in chat.** API keys go through the environment's network secrets.
@@ -100,7 +102,7 @@ builds, passes the checks and has been looked at.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `k:` empire id, `b:` belief id,
   `r:` trade route id, `w:` great work id, `m:` map layer
-  (`plates|sealevel|climate|landcover|history|time`).
+  (`plates|sealevel|climate|rocks|landcover|history|time`).
 
 ## Network
 

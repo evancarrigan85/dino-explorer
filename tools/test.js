@@ -119,7 +119,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('drowned: later it is under water, shown with a wave pin', await p.evaluate(() => /under water/.test(document.querySelector('#pane-humans .profile').innerText) && placeCache['ddoggerland'].icon === '🌊'));
   await p.click('#tab-life'); await p.waitForTimeout(150);
   // peer-reviewed sources
-  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 350 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
+  ok('sources: 240+ verified references, every one with a DOI', await p.evaluate(() => Object.keys(REFS).length >= 355 && Object.values(REFS).every(r => /^10\.\d{4,}\//.test(r.d) && r.t && r.y)));
   await p.click('#tab-life'); await p.fill('#q', 'tiktaalik'); await p.waitForTimeout(300); await p.click('#lifeList [data-key="tiktaalik"]'); await p.waitForTimeout(2000);
   ok('sources: an opened card lists its paper with a DOI link', await p.evaluate(() => { const el = document.querySelector('#lifeList .creature-card.active .sources'); return !!el && /Daeschler/.test(el.innerText) && !!el.querySelector('a[href^="https://doi.org/10.1038/"]'); }));
   await p.fill('#q', ''); await p.waitForTimeout(200);
@@ -226,6 +226,21 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('coverage: regions that were empty now have animals', await p.evaluate(() => { const inP = (id, test) => { const q = PERIODS.find(x => x.id === id); return ALL.filter(a => !a.hom && a.t[0] > q.end && a.t[1] < q.start && (a.sites || []).some(test)).length; };
     const india = s => s[0] < 35 && s[0] > 5 && s[1] >= 68 && s[1] < 92, aus = s => s[1] >= 110 && s[1] < 156 && s[0] < -10, ant = s => s[0] < -60, sib = s => s[0] >= 50 && s[1] >= 60;
     return inP('jurassic', india) >= 1 && inP('jurassic', aus) >= 1 && inP('jurassic', sib) >= 1 && inP('cretaceous', india) >= 3 && inP('cretaceous', sib) >= 1 && inP('paleogene', ant) >= 1 && inP('paleogene', india) >= 6 && inP('triassic', aus) >= 1 && ALL.length >= 690; }));
+  // eruptions and impacts are named, and the K–Pg boundary reads the same everywhere
+  await p.evaluate(() => { switchTab('life'); setWindow(T_MAX, 0, true); WorldMap.setMode('flat'); WorldMap.resetView(); setTime(66); closeFact(); }); await p.waitForTimeout(700);
+  ok('boundary: at 66 million years the header, the period and the epoch row agree', await p.evaluate(() => S.period.id === 'paleogene' && /Paleocene/.test(document.getElementById('periodEraLabel').textContent) && /Paleogene/.test(document.getElementById('periodName').textContent) && getPeriod(66.01).id === 'cretaceous' && getPeriod(0).id === 'holocene'));
+  const spark = await p.evaluate(() => { const bb = document.getElementById('mapCanvas').getBoundingClientRect(); const found = {}; for (let y = 4; y < bb.height; y += 4) for (let x = 4; x < bb.width; x += 4) { const h = WorldMap.hit(x, y); if (h && h.spark && !found[h.spark.name]) found[h.spark.name] = { x: bb.left + x, y: bb.top + y, kind: h.spark.kind }; } return found; });
+  ok('events: at 66 million years both the Deccan eruptions and the Chicxulub impact are on the map, each named for what it is', !!spark['Deccan Traps'] && spark['Deccan Traps'].kind === 'volcano' && !!spark['Chicxulub impact'] && spark['Chicxulub impact'].kind === 'impact', JSON.stringify(spark));
+  if (spark['Deccan Traps']) { await p.mouse.click(spark['Deccan Traps'].x, spark['Deccan Traps'].y); await p.waitForTimeout(400); }
+  ok('events: tapping the glow over India says it is volcanoes, not the asteroid', await p.evaluate(() => /Deccan Traps/.test(document.getElementById('fpText').innerText) && /not the asteroid/.test(document.getElementById('fpText').innerText)));
+  await p.evaluate(() => closeFact());
+  // deep-time land from the rocks
+  ok('rocks: thousands of dated rock patches, credited to the atlas', await p.evaluate(() => ROCKS.length / 5 > 5000 && /Boucot/.test(document.getElementById('mapAbout').innerText) && /evidence rather than a picture/.test(document.getElementById('mapAbout').innerText)));
+  ok('rocks: at 300 million years coal lies near the equator and glacial rubble far to the south — the coal forests and the southern ice', await p.evaluate(() => { const at = t => { const o = []; for (let i = 0; i < ROCKS.length; i += 5) if (t <= ROCKS[i + 3] && t >= ROCKS[i + 4]) { const ll = WorldMap.locate(WorldMap.attach(ROCKS[i + 1] * ROCK_CELL, ROCKS[i + 2] * ROCK_CELL, t), t); if (ll) o.push([ROCKS[i], ll[1]]); } return o; };
+    const r = at(300), coal = r.filter(x => x[0] === 0).map(x => Math.abs(x[1])), ice = r.filter(x => x[0] === 3).map(x => x[1]), mean = a => a.reduce((s, x) => s + x, 0) / a.length;
+    return coal.length > 30 && ice.length > 3 && mean(coal) < 25 && mean(ice) < -35; }));
+  // animals arrive and leave
+  ok('markers: the map notices arrivals and departures, and a crowded spot shows how many more are there', await p.evaluate(() => { const src = WorldMap.setLayers.toString(); return /born\[m\.key\]/.test(src) && /ghosts\.push/.test(src); }));
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

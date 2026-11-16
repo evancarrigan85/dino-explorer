@@ -17,7 +17,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC, OUT = os.path.join(HERE, 'source', 'refs_wanted.txt'), os.path.join(HERE, 'source', 'refs.json')
 UA = 'dino-explorer-reference-check/1.0'
 
-PEER = {'journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'}   # what counts as published
+PEER = {'journal-article', 'book-chapter', 'book', 'edited-book', 'monograph', 'reference-entry'}   # what counts as published
 
 def norm(s):
     s = unicodedata.normalize('NFKD', s or '').encode('ascii', 'ignore').decode().lower()
