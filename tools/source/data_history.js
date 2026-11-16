@@ -391,4 +391,33 @@ const WORKS = [
   { id: 'lhc', icon: '⚛️', name: 'The Large Hadron Collider', year: 1998, done: 2008, at: [46.23, 6.05], where: 'Under the French–Swiss border, near Geneva', who: 'About 10,000 scientists and engineers from more than 100 countries',
     story: 'A ring 27 km around, 100 m underground, colder inside than outer space. It smashes particles together to see what the universe is made of. In 2012 it found the Higgs boson, predicted almost fifty years before.' },
 ];
-if (typeof module !== 'undefined') module.exports = { EMPIRES, BELIEFS, BELIEF_FAMILIES, TRADE, WORKS };
+// OLD: ancient cities, the rivers as they ran then, and the fields people watered — so the map of the
+// first cities matches the land they knew. Rivers move: Ur stood on the Euphrates, which is now about
+// 15 km away. Courses and fields are SKETCHES from the studies cited; city positions are the excavated sites.
+//   kind   city | river | fields      from/to  years (negative = BCE)      at  [lat, lon]
+//   path   (river) [lat, lon] points  poly  (fields) [lat, lon] corners
+const OLD = [
+  { id: 'eridu', kind: 'city', icon: '🏛️', name: 'Eridu', at: [30.816, 45.996], from: -5400, to: -600,
+    note: 'Perhaps the oldest city of Sumer: its temple was rebuilt on the same spot at least eighteen times over 3,000 years. Sumerians said it was where kingship first came down from heaven.' },
+  { id: 'uruk', kind: 'city', icon: '🏛️', name: 'Uruk', at: [31.324, 45.637], from: -4500, to: 300,
+    note: 'Around 3000 BCE probably the largest city in the world, with tens of thousands of people inside a wall 9 km long. The earliest known writing comes from here — records of grain, beer and sheep. Its most famous king was Gilgamesh.' },
+  { id: 'ur-city', kind: 'city', icon: '🏛️', name: 'Ur', at: [30.962, 46.103], from: -3800, to: -300,
+    note: 'A port city on the Euphrates, with its great ziggurat and royal tombs full of gold and lapis lazuli. When the river moved away, the city emptied; it was abandoned by about 300 BCE. Jewish, Christian and Muslim tradition remember “Ur of the Chaldees” as Abraham’s home.' },
+  { id: 'lagash', kind: 'city', icon: '🏛️', name: 'Lagash', at: [31.41, 46.40], from: -4000, to: -1800,
+    note: 'A city-state that fought its neighbour Umma for generations over a strip of farmland and the canal that watered it — one of the first border wars ever written down.' },
+  { id: 'nippur', kind: 'city', icon: '🏛️', name: 'Nippur', at: [32.127, 45.231], from: -5000, to: 800,
+    note: 'The holy city of the god Enlil. It was never a capital, yet every king wanted its blessing. Its scribal schools left tens of thousands of clay tablets.' },
+  { id: 'shuruppak', kind: 'city', icon: '🏛️', name: 'Shuruppak', at: [31.78, 45.51], from: -3000, to: -1900,
+    note: 'In Sumerian tradition, the home of Ziusudra, who survived the great flood in a boat — a story older than the Bible’s Noah.' },
+  { id: 'kish', kind: 'city', icon: '🏛️', name: 'Kish', at: [32.54, 44.60], from: -3100, to: -500,
+    note: 'The Sumerian King List says kingship returned to Kish first after the flood; “King of Kish” became a title meaning ruler of all Sumer.' },
+  { id: 'babylon', kind: 'city', icon: '🏛️', name: 'Babylon', at: [32.536, 44.421], from: -2300, to: 100,
+    note: 'Small at first, then the capital of Hammurabi, whose laws were carved on a black stone pillar, and around 600 BCE perhaps the largest city on Earth.' },
+  { id: 'euphrates-old', kind: 'river', icon: '💧', name: 'The Euphrates of Sumer', at: [32.30, 44.85], from: -4500, to: -500,
+    path: [[33.06, 44.25], [32.54, 44.42], [32.30, 44.85], [32.127, 45.231], [31.78, 45.51], [31.324, 45.637], [31.10, 45.95], [30.962, 46.103], [30.85, 46.30], [30.62, 46.62]],
+    note: 'The Euphrates of the first cities ran east of where it runs now, past Nippur, Shuruppak, Uruk and Ur, in many branches and canals. Over the centuries it shifted west, leaving the cities stranded in the desert. This line is a simplified sketch of its main course in the third millennium BCE.' },
+  { id: 'sumer-fields', kind: 'fields', icon: '🌾', name: 'The watered fields of Sumer', at: [32.85, 44.20], from: -5500, to: 2025,
+    poly: [[33.3, 44.0], [33.0, 44.7], [32.5, 45.4], [31.9, 46.0], [31.4, 46.6], [30.8, 46.6], [30.6, 46.0], [31.0, 45.4], [31.7, 44.9], [32.3, 44.2], [32.9, 43.9]],
+    note: 'Almost no rain falls here. Farming only worked because people dug canals to lead river water onto the fields — barley, dates, onions and flax. Feeding canals needed planning and records, which helped bring about cities, kings and writing. Over centuries the watering left salt in the soil, and some fields had to be abandoned.' },
+];
+if (typeof module !== 'undefined') module.exports = { EMPIRES, BELIEFS, BELIEF_FAMILIES, TRADE, WORKS, OLD };

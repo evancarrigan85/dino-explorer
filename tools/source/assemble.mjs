@@ -118,7 +118,7 @@ const { EXTINCTIONS } = require('./data_extinctions.js');
   const xsrc = fs.readFileSync(SRC + 'data_extinctions.js', 'utf8');
   data += xsrc.slice(xsrc.indexOf('// ===='), xsrc.indexOf("if (typeof module")).trim() + '\n';
 }
-const { EMPIRES, BELIEFS, BELIEF_FAMILIES, TRADE, WORKS } = require('./data_history.js');
+const { EMPIRES, BELIEFS, BELIEF_FAMILIES, TRADE, WORKS, OLD } = require('./data_history.js');
 { const ids = new Set();
   for (const e of EMPIRES) {
     if (ids.has(e.id)) problems.push('empire ' + e.id + ': duplicate id'); ids.add(e.id);
@@ -149,6 +149,12 @@ const { EMPIRES, BELIEFS, BELIEF_FAMILIES, TRADE, WORKS } = require('./data_hist
     if (ids.has(w.id)) problems.push('work ' + w.id + ': duplicate id'); ids.add(w.id);
     if (!(w.year <= w.done) || !okPt(w.at) || (w.end != null && w.end < w.done)) problems.push('work ' + w.id + ': bad dates or place');
     if (!w.story || !w.who || !w.where) problems.push('work ' + w.id + ': missing a field');
+  }
+  for (const o of OLD) {
+    if (ids.has(o.id)) problems.push('old place ' + o.id + ': duplicate id'); ids.add(o.id);
+    if (!['city', 'river', 'fields'].includes(o.kind) || !okPt(o.at) || !(o.from < o.to) || !o.note) problems.push('old place ' + o.id + ': bad kind, place, dates or note');
+    if (o.kind === 'river' && !(o.path && o.path.length > 1 && o.path.every(okPt))) problems.push('old place ' + o.id + ': bad river path');
+    if (o.kind === 'fields' && !(o.poly && o.poly.length > 3 && o.poly.every(okPt))) problems.push('old place ' + o.id + ': bad fields sketch');
   }
   const hsrc = fs.readFileSync(SRC + 'data_history.js', 'utf8');
   data += hsrc.slice(hsrc.indexOf('// ===='), hsrc.indexOf("if (typeof module")).trim() + '\n';
@@ -191,7 +197,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => id === 'sumer' || OLD.some(o => o.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'edited-book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');

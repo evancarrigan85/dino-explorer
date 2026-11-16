@@ -1,6 +1,6 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry) | optional: the surname to SHOW,
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -376,3 +376,9 @@ larramendi2016 | Larramendi | 2016 | Proboscideans: Shoulder Height, Body Mass a
 renne2015 | Renne | 2015 | State shift in Deccan volcanism at the Cretaceous-Paleogene boundary, possibly induced by impact | e:cretaceous
 schoene2019 | Schoene | 2019 | U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction | e:cretaceous
 sprain2019 | Sprain | 2019 | The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary | e:cretaceous
+# ── Sumer: cities, rivers and fields ──
+jotheri2016 | Jotheri | 2016 | Holocene Avulsions of the Euphrates River in the Najaf Area of Western Mesopotamia: Impacts on Human Settlement | o:sumer, o:euphrates-old
+hritz2010 | Hritz | 2010 | Tracing Settlement Patterns and Channel Systems in Southern Mesopotamia Using Remote Sensing | o:sumer, o:euphrates-old
+wilkinson2015 | Wilkinson | 2015 | Hydraulic landscapes in Mesopotamia: the role of human niche construction | o:sumer, o:sumer-fields
+lambeck1996 | Lambeck | 1996 | Shoreline reconstructions for the Persian Gulf since the last glacial maximum | o:sumer
+jacobsen1958 | Jacobsen | 1958 | Salt and Silt in Ancient Mesopotamian Agriculture | o:sumer-fields

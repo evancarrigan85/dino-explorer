@@ -418,7 +418,7 @@ const WorldMap = (() => {
     const d = RIVERS_PACKED; let pos = 0;
     const u = () => { let r = 0, sh = 0, c; do { c = lut[d.charCodeAt(pos++)]; r += (c & 31) * Math.pow(2, sh); sh += 5; } while (c & 32); return r; };
     const z = () => { const v = u(); return v % 2 ? -(v + 1) / 2 : v / 2; };
-    const pts = () => { const n = u(), o = []; let x = 0, y = 0; for (let i = 0; i < n; i++) { x += z(); y += z(); o.push([x / 10, y / 10]); } return o; };
+    const pts = () => { const n = u(), o = []; let x = 0, y = 0; for (let i = 0; i < n; i++) { x += z(); y += z(); o.push([x / 100, y / 100]); } return o; };   // hundredths of a degree
     const byRank = [[], [], []], nl = u();
     for (let i = 0; i < nl; i++) { const r = u(); byRank[r <= 2 ? 0 : r <= 4 ? 1 : 2].push(pts()); }
     const lakes = [], nk = u();
@@ -1204,13 +1204,13 @@ const WorldMap = (() => {
     /* A scene to draw over the map every frame, or null to stop. Called as fn(ctx, helpers, now). */
     setFx(fn) { fxHook = fn || null; schedule(); },
     /* Decorative motion on or off (tests and screenshots turn it off; so does the reader's reduced-motion setting). */
-    setMotion(on) { motion = !!on; api.motion = motion; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
+    setMotion(on) { motion = !!on; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
     motion,
     get mode() { return mode; },
     setMode(m) { mode = m; zoom = 1; panX = panY = 0; setupProjection(); },
     get zoom() { return zoom; },
     zoomAt(x, y, f) {
-      const z = Math.max(1, Math.min(mode === 'flat' ? 10 : 5, zoom * f)), k = z / zoom;
+      const z = Math.max(1, Math.min(mode === 'flat' ? 36 : 18, zoom * f)), k = z / zoom;
       if (mode === 'flat') { const tx = proj.translate(); panX += (x - tx[0]) * (1 - k); panY += (y - tx[1]) * (1 - k); }
       zoom = z; if (zoom <= 1.001) { zoom = 1; panX = panY = 0; } applyView();
     },
@@ -1261,5 +1261,7 @@ const WorldMap = (() => {
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
     _draw: draw, _ctx: () => ctx,
   });
+  // Object.assign copies a getter's value once; these must stay live (the globe button reads `mode`)
+  Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true } });
   return api;
 })();

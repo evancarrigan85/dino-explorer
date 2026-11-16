@@ -18,13 +18,13 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 365, every one a published work confirmed in Crossref |
+| References | 370, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 148 passing |
-| Page | about 1.42 MB, one file |
+| Checks | 152 passing |
+| Page | about 1.47 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -448,6 +448,14 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — Rivers as they were.** Evan, looking for Ur: today's rivers were stored to only
+  11 km and showed where the rivers run now. Rivers are now stored to about 1 km; Sumer gets its own
+  layer — eight excavated cities, the Euphrates as it ran past them (a dated sketch), and the watered
+  fields between the rivers (a sketch), with five verified sources. The flat map zooms to city scale
+  (36×, was 10×), and the globe button switches back to the flat map again (it could not before).
+  **Next in this line:** the same for the Nile delta's old branches and the Indus and the vanished
+  Ghaggar–Hakra; the old head of the Gulf as a dated sketch once a source gives coordinates.
 
 - **16 Nov 2026 — Two more family trees.** From fish to four legs, and the reptile tree (pterosaurs,
   ichthyosaurs and mosasaurs each on their own branch, not with the dinosaurs). Trees link to one

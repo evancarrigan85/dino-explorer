@@ -5,7 +5,7 @@ Source: Natural Earth 1:50m rivers and lake centrelines, and lakes (public domai
     https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_rivers_lake_centerlines.geojson
     https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_lakes.geojson
 
-Only the larger ones are kept (Natural Earth's scalerank), simplified, and packed in the same
+Only the larger ones are kept (Natural Earth's scalerank), lightly simplified, stored to about 1 km, and packed in the same
 varint scheme as the other layers. The page draws them only after the Ice Age: before that, ice
 sheets covered the Great Lakes and the Baltic, and many rivers ran elsewhere.
 
@@ -27,7 +27,7 @@ def sz(n): u(-n * 2 - 1 if n < 0 else n * 2)
 def put(coords):
     pts = []
     for x, y in coords:
-        q = (round(x * 10), round(y * 10))
+        q = (round(x * 100), round(y * 100))      # hundredths of a degree, about 1 km
         if not pts or q != pts[-1]: pts.append(q)
     u(len(pts)); px = py = 0
     for x, y in pts: sz(x - px); sz(y - py); px, py = x, y
@@ -37,14 +37,14 @@ lines, names = [], []
 for f in json.load(open(rv))['features']:
     p = f['properties']
     if p.get('featurecla') not in ('River', 'Lake Centerline') or (p.get('scalerank') or 99) > 6: continue
-    g = shape(f['geometry']).simplify(0.06, preserve_topology=False)
+    g = shape(f['geometry']).simplify(0.012, preserve_topology=False)
     for part in (g.geoms if isinstance(g, MultiLineString) else [g]):
         if isinstance(part, LineString) and part.length > 0.4: lines.append((p['scalerank'], list(part.coords)))
 lakes = []
 for f in json.load(open(lk))['features']:
     p = f['properties']
     if (p.get('scalerank') or 99) > 3: continue
-    g = shape(f['geometry']).simplify(0.05, preserve_topology=True)
+    g = shape(f['geometry']).simplify(0.012, preserve_topology=True)
     for part in (g.geoms if isinstance(g, MultiPolygon) else [g]):
         if isinstance(part, Polygon) and part.area > 0.15: lakes.append(list(orient(part, sign=-1.0).exterior.coords)[:-1])
 lines.sort(key=lambda r: r[0])

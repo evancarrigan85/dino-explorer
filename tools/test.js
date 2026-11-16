@@ -184,7 +184,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#pane-humans [data-bel="buddhism"]'); await p.waitForTimeout(3000);
   ok('history: a belief opens with what its followers hold, where it grew from and how it travelled', await p.evaluate(() => { const t = document.querySelector('#pane-humans .profile').innerText; return S.sel === 'bel:buddhism' && /WHAT ITS FOLLOWERS HOLD/i.test(t) && /GREW OUT OF/i.test(t) && /Hinduism/.test(t) && /250 BCE — Sri Lanka/.test(t); }));
   await p.evaluate(() => setTime(tOfYear(700))); await p.waitForTimeout(400);
-  ok('history: its routes reach only the places it had arrived at by that year', await p.evaluate(() => { const y = yearAt(S.t), r = histRoutes().filter(x => !x.id), shown = r.filter(x => S.t <= x.from).length; return r.length === 6 && shown === BEL.buddhism.spread.filter(sp => sp[0] <= y).length && shown === 5 && !!placeCache.bbuddhism0; }));
+  ok('history: its routes reach only the places it had arrived at by that year', await p.evaluate(() => { const y = yearAt(S.t), r = histRoutes().filter(x => !x.id && !x.key), shown = r.filter(x => S.t <= x.from).length; return r.length === 6 && shown === BEL.buddhism.spread.filter(sp => sp[0] <= y).length && shown === 5 && !!placeCache.bbuddhism0; }));
   ok('history: the beliefs section says the site takes no side', await p.evaluate(() => /does not say which, if any, is true/.test(document.getElementById('pane-humans').innerText)));
   ok('history: every empire and belief with a figure cites a source', await p.evaluate(() => EMPIRES.filter(e => e.area).every(e => (SRCMAP['k:' + e.id] || []).length) && ['spirits', 'christianity', 'islam', 'hinduism', 'buddhism', 'judaism'].every(id => (SRCMAP['b:' + id] || []).length)));
   await p.evaluate(() => { S.sel = null; WorldMap.select(null); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(200);
@@ -198,11 +198,11 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#pane-humans .emp-stages [data-year="-27"]'); await p.waitForTimeout(2200);
   ok('borders: a date on the card travels there and marks the stage in force', await p.evaluate(() => Math.abs(yearAt(S.t) + 26) < 3 && /Augustus/.test(document.querySelector('#pane-humans .emp-stages li.on').textContent)));
   ok('borders: every sketch is a sane shape that does not wrap the globe', await p.evaluate(() => HIST_REGIONS.every(r => { const a = d3.geoArea(r.geo); return a > 0 && a < 2.2 && r.from > r.to; })));
-  ok('trade and works: all are listed, with layer switches', await p.evaluate(() => document.querySelectorAll('#pane-humans [data-rt].hist-item').length === TRADE.length && TRADE.length >= 11 && document.querySelectorAll('#pane-humans [data-wk].hist-item').length === WORKS.length && WORKS.length >= 25 && document.querySelectorAll('#pane-humans [data-hl]').length === 4));
+  ok('trade and works: all are listed, with layer switches', await p.evaluate(() => document.querySelectorAll('#pane-humans [data-rt].hist-item').length === TRADE.length && TRADE.length >= 11 && document.querySelectorAll('#pane-humans [data-wk].hist-item').length === WORKS.length && WORKS.length >= 25 && document.querySelectorAll('#pane-humans [data-hl]').length === 5));
   await p.evaluate(() => { S.sel = null; WorldMap.select(null); setTime(tOfYear(1300)); renderHumans(); updatePlaces(); }); await p.waitForTimeout(400);
   ok('trade: in 1300 the Silk Roads, the monsoon routes and the Sahara caravans are running; the galleons are not yet', await p.evaluate(() => { const on = [...document.querySelectorAll('#pane-humans [data-rt].hist-item.now')].map(e => e.dataset.rt), ln = histRoutes().filter(l => S.t <= l.from && S.t >= l.to).map(l => l.id); return ['silkroad', 'monsoon', 'sahara'].every(id => on.includes(id) && ln.includes(id)) && !on.includes('galleon') && !ln.includes('galleon') && !!placeCache.rsilkroad; }));
   await p.click('#pane-humans [data-hl="rt"]'); await p.waitForTimeout(250);
-  ok('layers: switching trade routes off clears their lines and pins', await p.evaluate(() => histRoutes().length === 0 && !histPlaces().some(pl => pl.key.startsWith('rt:')) && document.querySelector('#pane-humans [data-hl="rt"]').getAttribute('aria-pressed') === 'false'));
+  ok('layers: switching trade routes off clears their lines and pins', await p.evaluate(() => histRoutes().filter(l => l.id).length === 0 && !histPlaces().some(pl => pl.key.startsWith('rt:')) && document.querySelector('#pane-humans [data-hl="rt"]').getAttribute('aria-pressed') === 'false'));
   await p.click('#pane-humans [data-hl="rt"]'); await p.waitForTimeout(200);
   await p.click('#pane-humans [data-rt="atlantic"]'); await p.waitForTimeout(3000);
   ok('trade: the Atlantic slave trade is told plainly, with its numbers and their source', await p.evaluate(() => { const t = document.querySelector('#pane-humans .profile').innerText; return S.sel === 'rt:atlantic' && /12\.5 million/.test(t) && /1\.8 million died/.test(t) && /Eltis/.test(t) && yearAt(S.t) > 1500 && yearAt(S.t) < 1867; }));
@@ -268,6 +268,16 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#lifeList .creature-card.active [data-tree-go]'); await p.waitForTimeout(900);
   ok('trees: a card’s “Family tree” button opens its tree at its branch, with the card shown', await p.evaluate(() => S.view === 'tree' && S.tree === 'fish' && S.sel === 'tiktaalik' && /Fishes with limbs/.test(document.querySelector('#lifeList .tn.open').innerText) && !!document.querySelector('#lifeList .tn.open .creature-card.active')));
   await p.evaluate(() => { setView('list'); S.tree = null; S.treeOpen = {}; S.q = ''; $('q').value = ''; S.sel = null; WorldMap.select(null); renderLife(); }); await p.waitForTimeout(150);
+  // Sumer: the first cities on the river as it ran then; the globe button; deeper zoom
+  ok('globe: the button switches to the globe and back to the flat map', await p.evaluate(() => { const a = WorldMap.mode; document.getElementById('mapGlobe').click(); const b = WorldMap.mode; document.getElementById('mapGlobe').click(); const c = WorldMap.mode; return a === 'flat' && b === 'globe' && c === 'flat'; }));
+  ok('zoom: the flat map zooms in to city scale', await p.evaluate(() => { WorldMap.resetView(); for (let i = 0; i < 8; i++) WorldMap.zoomBy(2); const z = WorldMap.zoom; WorldMap.resetView(); return z >= 30; }));
+  await p.evaluate(() => { switchTab('humans'); }); await p.waitForTimeout(200);
+  await p.click('#pane-humans [data-old="ur-city"]'); await p.waitForTimeout(3200);
+  ok('Sumer: Ur opens in the third millennium BCE, with the Euphrates as it ran then, the watered fields, and their sources', await p.evaluate(() => { const y = yearAt(S.t), t = document.querySelector('#pane-humans .profile').innerText;
+    return S.sel === 'old:ur-city' && y > -2600 && y < -2000 && /river moved away/.test(t) && /Jotheri/.test(t) && /Lambeck/.test(t)
+      && histRoutes().some(l => l.key === 'old:euphrates-old' && S.t <= l.from && S.t >= l.to) && OLD_REGIONS.length === 1 && ['eridu', 'uruk', 'ur-city', 'nippur'].every(id => !!placeCache['o' + id]); }));
+  ok('rivers: today’s rivers are stored to about a kilometre, not ten', await p.evaluate(() => typeof RIVERS_PACKED === 'string' && RIVERS_PACKED.length > 30000));
+  await p.evaluate(() => { S.sel = null; WorldMap.select(null); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(200);
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

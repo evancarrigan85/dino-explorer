@@ -6479,5 +6479,88 @@
 ],
 "first": "",
 "title_expected": "The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary"
+},
+"jotheri2016": {
+"doi": "10.1002/gea.21548",
+"title": "Holocene Avulsions of the Euphrates River in the Najaf Area of Western Mesopotamia: Impacts on Human Settlement Patterns",
+"journal": "Geoarchaeology",
+"year": 2016,
+"authors": [
+"Jotheri",
+"Allen",
+"Wilkinson"
+],
+"type": "journal-article",
+"targets": [
+"o:sumer",
+"o:euphrates-old"
+],
+"first": "",
+"title_expected": "Holocene Avulsions of the Euphrates River in the Najaf Area of Western Mesopotamia: Impacts on Human Settlement"
+},
+"hritz2010": {
+"doi": "10.1179/009346910x12707321520477",
+"title": "Tracing Settlement Patterns and Channel Systems in Southern Mesopotamia Using Remote Sensing",
+"journal": "Journal of Field Archaeology",
+"year": 2010,
+"authors": [
+"Hritz"
+],
+"type": "journal-article",
+"targets": [
+"o:sumer",
+"o:euphrates-old"
+],
+"first": "",
+"title_expected": "Tracing Settlement Patterns and Channel Systems in Southern Mesopotamia Using Remote Sensing"
+},
+"wilkinson2015": {
+"doi": "10.1007/s12685-015-0127-9",
+"title": "Hydraulic landscapes in Mesopotamia: the role of human niche construction",
+"journal": "Water History",
+"year": 2015,
+"authors": [
+"Wilkinson",
+"Rayne",
+"Jotheri"
+],
+"type": "journal-article",
+"targets": [
+"o:sumer",
+"o:sumer-fields"
+],
+"first": "",
+"title_expected": "Hydraulic landscapes in Mesopotamia: the role of human niche construction"
+},
+"lambeck1996": {
+"doi": "10.1016/0012-821x(96)00069-6",
+"title": "Shoreline reconstructions for the Persian Gulf since the last glacial maximum",
+"journal": "Earth and Planetary Science Letters",
+"year": 1996,
+"authors": [
+"Lambeck"
+],
+"type": "journal-article",
+"targets": [
+"o:sumer"
+],
+"first": "",
+"title_expected": "Shoreline reconstructions for the Persian Gulf since the last glacial maximum"
+},
+"jacobsen1958": {
+"doi": "10.1126/science.128.3334.1251",
+"title": "Salt and Silt in Ancient Mesopotamian Agriculture",
+"journal": "Science",
+"year": 1958,
+"authors": [
+"Jacobsen",
+"Adams"
+],
+"type": "journal-article",
+"targets": [
+"o:sumer-fields"
+],
+"first": "",
+"title_expected": "Salt and Silt in Ancient Mesopotamian Agriculture"
 }
 }
