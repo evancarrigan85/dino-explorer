@@ -163,12 +163,35 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('journeys: Next moves on through time', await p.evaluate(() => /2 \/ 9/.test(document.querySelector('#journey .jr-n').textContent) && Math.abs(S.t - 500) < 1 && /Gondwana/.test(document.querySelector('#journey .jr-head').textContent)));
   await p.click('#journey [data-jr="end"]'); await p.waitForTimeout(150);
   ok('journeys: closing ends it', await p.evaluate(() => !S.jr && !document.getElementById('journey').classList.contains('show')));
-  ok('journeys: each is built from the site’s own data', await p.evaluate(() => { const n = id => JOURNEYS.find(j => j.id === id).stops().length; return n('you') === YOU_LINE.length && n('extinctions') === 7 && n('finds') === 10 && n('drift') === 9; }));
+  ok('journeys: each is built from the site’s own data', await p.evaluate(() => { const n = id => JOURNEYS.find(j => j.id === id).stops().length; return n('you') === YOU_LINE.length && n('extinctions') === EXTINCTIONS.length && n('finds') === 10 && n('drift') === 9; }));
   await p.evaluate(() => startJourney('you')); await p.waitForTimeout(2600);
   for (let i = 0; i < 11; i++) { await p.evaluate(() => stepJourney(1)); await p.waitForTimeout(120); }
   await p.waitForTimeout(2600);
   ok('journeys: “Your story” arrives at the cynodont that came through the Great Dying', await p.evaluate(() => Math.abs(S.t - 250) < 1 && S.sel === 'thrinaxodon' && /worst extinction/.test(document.querySelector('#journey .jr-text').textContent)));
   await p.evaluate(() => { endJourney(); S.sel = null; WorldMap.select(null); switchTab('life'); }); await p.waitForTimeout(150);
+  // extinctions: their own view, each with a map scene
+  await p.click('#tab-ext'); await p.waitForTimeout(300);
+  ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));
+  await p.click('#pane-ext .ext-item[data-ext="permian"]'); await p.waitForTimeout(2600);
+  ok('extinctions: choosing one zooms the timeline to it and opens its card', await p.evaluate(() => S.sel === 'ext:permian' && Math.abs(S.t - 252.5) < 0.05 && S.win[0] <= 256 && S.win[1] >= 248 && /Great Dying/.test(document.querySelector('#pane-ext .profile').innerText) && document.querySelectorAll('#pane-ext .ext-steps li').length === 5));
+  ok('extinctions: the card counts who was lost and who came through, from the app’s own animals', await p.evaluate(() => { const e = EXT.permian, lost = extLost(e).map(c => c.name), thr = extThrough(e).map(c => c.name); return lost.includes('Inostrancevia') && lost.length >= 10 && thr.includes('Lystrosaurus') === false && thr.length >= 1 && !lost.some(n => thr.includes(n)); }));
+  ok('extinctions: the card cites its research', await p.evaluate(() => /Burgess/.test(document.querySelector('#pane-ext .profile .sources').innerText) && /Penn/.test(document.querySelector('#pane-ext .profile .sources').innerText)));
+  ok('extinctions: every event has a scene, steps and at least one source', await p.evaluate(() => EXTINCTIONS.every(e => typeof SCENES[e.scene] === 'function' && e.steps.length >= 4 && (SRCMAP['e:' + e.id] || []).length >= 1)));
+  await p.click('#pane-ext [data-play="permian"]'); await p.waitForTimeout(5200);
+  ok('extinctions: Watch plays a scene — caption on the map, time moving through the event', await p.evaluate(() => !!S.scene && S.scene.id === 'permian' && document.getElementById('sceneCap').classList.contains('show') && S.scene.step >= 1 && S.t < 252.5 && S.t > 251.5 && /■ Stop/.test(document.querySelector('#pane-ext .watch').textContent)));
+  await p.waitForTimeout(9000);
+  ok('extinctions: animals in the app go out as the scene passes their last date', await p.evaluate(() => S.scene && Object.keys(S.scene.gone).length >= 5 && document.querySelectorAll('#pane-ext .ext-steps li.on').length === 1));
+  await p.click('#pane-ext [data-play="permian"]'); await p.waitForTimeout(200);
+  ok('extinctions: Stop ends the scene and clears the map', await p.evaluate(() => !S.scene && !document.getElementById('sceneCap').classList.contains('show')));
+  await p.evaluate(() => playScene('cretaceous')); await p.waitForTimeout(3000);
+  const before = await p.evaluate(() => S.t);
+  await p.waitForTimeout(9500);
+  ok('extinctions: the asteroid scene holds before the impact, then crosses 66 million years', before > 66.02 && await p.evaluate(() => S.t < 66.03 && S.scene && S.scene.step >= 2), 'before=' + before);
+  await p.evaluate(() => switchTab('life')); await p.waitForTimeout(150);
+  ok('extinctions: leaving the view stops the scene', await p.evaluate(() => !S.scene));
+  await p.evaluate(() => { WorldMap.setMotion(false); playScene('triassic'); }); await p.waitForTimeout(300);
+  ok('extinctions: with motion off, Watch shows the steps as text instead', await p.evaluate(() => !S.scene && Math.abs(S.t - 200.9) < 0.01 && /Pangaea begins to tear/.test(document.getElementById('fpText').innerText)));
+  await p.evaluate(() => { WorldMap.setMotion(true); closeFact(); setWindow(T_MAX, 0, true); S.sel = null; switchTab('life'); }); await p.waitForTimeout(150);
   // the living map
   ok('motion: eruptions and impacts are placed, and motion can be switched off', await p.evaluate(() => { const a = SPARKS.length >= 8 && WorldMap.motion === true; WorldMap.setMotion(false); const b = WorldMap.motion === false; WorldMap.setMotion(true); return a && b; }));
   // family trees

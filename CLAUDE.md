@@ -76,14 +76,19 @@ builds, passes the checks and has been looked at.
   tectonic plates (Merdith et al. 2021), with Ice Age shorelines, ice, relief, labels, markers and a
   pin. It knows nothing about animals.
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
-  Life, Humans, Insights, Finds, Quiz, Geology. Map pins for a tab are built in `updatePlaces()`.
+  Life, Humans, Insights, Extinctions, Finds, Quiz, Geology. Map pins for a tab are built in
+  `updatePlaces()`.
   The Life tab has three views: the list, the range chart and the family trees (`data_trees.js`).
   `data_you.js` holds the reader's own line (`YOU_LINE`, shown in the bar under the map), the eruptions
   and impacts drawn on the map (`SPARKS`), and feeds the guided journeys (`JOURNEYS` in `app.js`).
+  `data_extinctions.js` holds the Extinctions view; each event names a scene in `SCENES` (`app.js`),
+  a function of progress 0→1 drawn over the map through `WorldMap.setFx()`, while `playScene()` runs
+  the timeline through the event. A scene illustrates the order of events the card describes — it
+  must not show anything the card does not say.
 - Sources: `refs_wanted.txt` (what we want to cite, and which entries each paper supports) →
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
-  `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `m:` map layer
+  `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `m:` map layer
   (`plates|sealevel|climate|time`).
 
 ## Network

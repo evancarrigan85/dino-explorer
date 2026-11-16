@@ -18,11 +18,12 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 310, every one a journal article confirmed in Crossref |
+| References | 316, every one a journal article confirmed in Crossref |
+| Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 92 passing |
-| Page | about 1.11 MB, one file |
+| Checks | 103 passing |
+| Page | about 1.14 MB, one file |
 
 **Source coverage** (entries that cite at least one verified paper):
 
@@ -305,6 +306,11 @@ The content has outgrown six tabs and a list. In order of value:
 
 Shipped so far: wakes, light on the water, eruptions and impacts. Next, in order:
 
+- **Extinction scenes, second pass.** Seven scenes shipped (`SCENES` in `app.js`). To add: the
+  end-Guadalupian crisis (about 260 Ma, Emeishan Traps) and the Carnian rains (233 Ma) as smaller
+  events; a scene for the Late Devonian's second crisis; palaeogeography under the scenes once
+  Release 2 lands (the seaway matters for the asteroid's tsunami); and check each scene's timings
+  and colours with Evan and the kids — they were tuned from still frames.
 - **Ice that breathes**: animate the ice-sheet edge as the Ice Age cycles pass, rather than stepping.
 - **A terminator line and soft daylight on the globe view**, turning slowly while idle.
 - **Markers that arrive**: a short rise-and-settle when an animal first appears as time moves, and a
@@ -338,6 +344,12 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 
 ## Shipped
 
+- **16 Nov 2026 — Extinctions view.** A seventh tab: the five great dyings, the loss of the Ice Age
+  giants, and now. Each has a card (toll, cause, recovery, who was lost and who came through — counted
+  from the app's own animals — how we know, what is argued) and a "Watch it happen" scene on the map:
+  ice growing and seas draining; coasts blooming and seas going stagnant; lava, gas and acid seas;
+  the rift; the asteroid, the shock wave, fire and darkness; people arriving land by land; last
+  sightings. Animals in the app go out on the map as the scene passes their last date. 103 checks.
 - **16 Nov 2026 — Sources pass, your ancestors, journeys, the living map.** Every reference re-fetched
   and confirmed published; titles and author names cleaned; seven cards that named a study without
   citing it now cite it (one gap left: Palorchestes — find the skull study or reword the card). A bar

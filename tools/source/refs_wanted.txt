@@ -1,6 +1,6 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry) | optional: the surname to SHOW,
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate  x:<find id>  t:<family tree id>  j:<journey id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -31,14 +31,14 @@ vanroy2015 | Van Roy | 2015 | Anomalocaridid trunk limb homology revealed by a g
 rudkin2003 | Rudkin | 2003 | The world's biggest trilobite: Isotelus rex new species from the Upper Ordovician of northern Manitoba, Canada | a:Isotelus
 rudkin2008 | Rudkin | 2008 | The oldest horseshoe crab: a new xiphosurid from Late Ordovician Konservat-Lagerstätten deposits, Manitoba, Canada | a:Lunataspis
 lamsdell2015 | Lamsdell | 2015 | The oldest described eurypterid: a giant Middle Ordovician (Darriwilian) megalograptid from the Winneshiek Lagerstätte of Iowa | a:Pentecopterus
-harper2014 | Harper | 2014 | End Ordovician extinctions: A coincidence of causes | p:ordovician
+harper2014 | Harper | 2014 | End Ordovician extinctions: A coincidence of causes | p:ordovician, e:ordovician
 wellman2003 | Wellman | 2003 | Fragments of the earliest land plants | p:ordovician, a:Earliest land plants (spores)
 glasspool2004 | Glasspool | 2004 | Charcoal in the Silurian as evidence for the earliest wildfire | p:silurian
 zhu2009 | Zhu | 2009 | The oldest articulated osteichthyan reveals mosaic gnathostome characters | a:Guiyu
 zhu2013 | Zhu | 2013 | A Silurian placoderm with osteichthyan-like marginal jaw bones | a:Entelognathus
 briggs2016 | Briggs | 2016 | Tiny individuals attached to a new Silurian arthropod suggest a unique mode of brood care | a:Aquilonifer
 wells1963 | Wells | 1963 | Coral growth and geochronometry | p:devonian
-algeo1998 | Algeo | 1998 | Terrestrial-marine teleconnections in the Devonian: links between the evolution of land plants, weathering processes, and marine anoxic events | p:devonian
+algeo1998 | Algeo | 1998 | Terrestrial-marine teleconnections in the Devonian: links between the evolution of land plants, weathering processes, and marine anoxic events | p:devonian, e:devonian
 daeschler2006 | Daeschler | 2006 | A Devonian tetrapod-like fish and the evolution of the tetrapod body plan | a:Tiktaalik, x:tiktaalik, j:you
 long2008 | Long | 2008 | Live birth in the Devonian period | a:Materpiscis
 niedzwiedzki2010 | Niedźwiedzki | 2010 | Tetrapod trackways from the early Middle Devonian period of Poland | a:Zachełmie trackmaker
@@ -55,10 +55,10 @@ botha2007 | Botha-Brink | 2007 | A mixed-age classed 'pelycosaur' aggregation fr
 lyson2016 | Lyson | 2016 | Fossorial origin of the turtle shell | a:Eunotosaurus
 nyakatura2019 | Nyakatura | 2019 | Reverse-engineering the locomotion of a stem amniote | a:Orobates
 frobisch2009 | Fröbisch | 2009 | The Late Permian herbivore Suminia and the early evolution of arboreality in terrestrial vertebrate ecosystems | a:Suminia
-burgess2014 | Burgess | 2014 | High-precision timeline for Earth's most severe extinction | p:permian
+burgess2014 | Burgess | 2014 | High-precision timeline for Earth's most severe extinction | p:permian, e:permian
 sun2012 | Sun | 2012 | Lethally hot temperatures during the Early Triassic greenhouse | p:triassic
 dalcorso2020 | Dal Corso | 2020 | Extinction and dawn of the modern world in the Carnian (Late Triassic) | p:triassic
-blackburn2013 | Blackburn | 2013 | Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province | p:triassic
+blackburn2013 | Blackburn | 2013 | Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province | p:triassic, e:triassic
 motani2014 | Motani | 2014 | Terrestrial origin of viviparity in Mesozoic marine reptiles indicated by Early Triassic embryonic fossils | a:Chaohusaurus
 fernandez2013 | Fernandez | 2013 | Synchrotron reveals Early Triassic odd couple: injured amphibian and aestivating therapsid share burrow | a:Thrinaxodon
 sander2021 | Sander | 2021 | Early giant reveals faster evolution of large body size in ichthyosaurs than in cetaceans | a:Cymbospondylus
@@ -113,9 +113,9 @@ field2018 | Field | 2018 | Complete Ichthyornis skull illuminates mosaic assembl
 clarke2016 | Clarke | 2016 | Fossil evidence of the avian vocal organ from the Mesozoic | a:Vegavis
 wilson2016 | Wilson | 2016 | A large carnivorous mammal from the Late Cretaceous and the North American origin of marsupials | a:Didelphodon
 field2020 | Field | 2020 | Late Cretaceous neornithine from Europe illuminates the origins of crown birds | a:Asteriornis
-alvarez1980 | Alvarez | 1980 | Extraterrestrial cause for the Cretaceous-Tertiary extinction | p:cretaceous, x:asteroid, j:extinctions
-hildebrand1991 | Hildebrand | 1991 | Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico | p:cretaceous, x:asteroid 
-schulte2010 | Schulte | 2010 | The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary | p:cretaceous | 10.1126/science.1177265
+alvarez1980 | Alvarez | 1980 | Extraterrestrial cause for the Cretaceous-Tertiary extinction | p:cretaceous, x:asteroid, j:extinctions, e:cretaceous
+hildebrand1991 | Hildebrand | 1991 | Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico | p:cretaceous, x:asteroid, e:cretaceous
+schulte2010 | Schulte | 2010 | The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary | p:cretaceous, e:cretaceous | 10.1126/science.1177265
 head2009 | Head | 2009 | Giant boid snake from the Palaeocene neotropics reveals hotter past equatorial temperatures | a:Titanoboa
 westerhold2020 | Westerhold | 2020 | An astronomically dated record of Earth's climate and its predictability over the last 66 million years | p:paleogene, p:neogene
 deconto2003 | DeConto | 2003 | Rapid Cenozoic glaciation of Antarctica induced by declining atmospheric CO2 | p:paleogene
@@ -156,9 +156,9 @@ wroe2005 | Wroe | 2005 | Bite club: comparative bite force in big biting mammals
 fry2009 | Fry | 2009 | A central role for venom in predation by Varanus komodoensis (Komodo Dragon) and the extinct giant Varanus (Megalania) priscus | a:Megalania (Giant Monitor), a:Komodo Dragon
 miller2016 | Miller | 2016 | Human predation contributed to the extinction of the Australian megafaunal bird Genyornis newtoni ~47 ka | a:Genyornis
 kosintsev2019 | Kosintsev | 2019 | Evolution and extinction of the giant rhinoceros Elasmotherium sibiricum sheds light on late Quaternary megafaunal extinctions | a:Elasmotherium (Siberian Unicorn)
-barnosky2004 | Barnosky | 2004 | Assessing the causes of Late Pleistocene extinctions on the continents | p:quaternary
+barnosky2004 | Barnosky | 2004 | Assessing the causes of Late Pleistocene extinctions on the continents | p:quaternary, e:quaternary
 luthi2008 | Lüthi | 2008 | High-resolution carbon dioxide concentration record 650,000–800,000 years before present | p:quaternary
-ceballos2015 | Ceballos | 2015 | Accelerated modern human-induced species losses: Entering the sixth mass extinction | p:holocene, f:holocene, j:extinctions
+ceballos2015 | Ceballos | 2015 | Accelerated modern human-induced species losses: Entering the sixth mass extinction | p:holocene, f:holocene, j:extinctions, e:holocene
 shapiro2002 | Shapiro | 2002 | Flight of the dodo | a:Dodo (Raphus cucullatus)
 higuchi1984 | Higuchi | 1984 | DNA sequences from the quagga, an extinct member of the horse family | a:Quagga
 turvey2007 | Turvey | 2007 | First human-caused extinction of a cetacean species? | a:Baiji (Yangtze River Dolphin)
@@ -207,7 +207,7 @@ sutikna2016 | Sutikna | 2016 | Revised stratigraphy and chronology for Homo flor
 vandenbergh2016 | van den Bergh | 2016 | Homo floresiensis-like fossils from the early Middle Pleistocene of Flores | h:floresiensis
 detroit2019 | Détroit | 2019 | A new species of Homo from the Late Pleistocene of the Philippines | h:luzonensis
 hublin2017 | Hublin | 2017 | New fossils from Jebel Irhoud, Morocco and the pan-African origin of Homo sapiens | h:sapiens, x:irhoud 
-bennett2021 | Bennett | 2021 | Evidence of humans in North America during the Last Glacial Maximum | h:sapiens, c:monte-verde, x:whitesands 
+bennett2021 | Bennett | 2021 | Evidence of humans in North America during the Last Glacial Maximum | h:sapiens, c:monte-verde, x:whitesands, e:quaternary
 clarkson2017 | Clarkson | 2017 | Human occupation of northern Australia by 65,000 years ago | h:sapiens, c:first-australians
 plummer2023 | Plummer | 2023 | Expanded geographic distribution and dietary strategies of the earliest Oldowan hominins and Paranthropus | c:oldowan
 lepre2011 | Lepre | 2011 | An earlier origin for the Acheulian | c:acheulean
@@ -317,3 +317,10 @@ taylor2009 | Taylor | 2009 | A re-evaluation of Brachiosaurus altithorax Riggs 1
 gong2010 | Gong | 2010 | The birdlike raptor Sinornithosaurus was venomous | a:Sinornithosaurus
 gianechini2011 | Gianechini | 2011 | A reassessment of the purported venom delivery system of the bird-like raptor Sinornithosaurus | a:Sinornithosaurus
 loron2026 | Loron | 2026 | Prototaxites fossils are structurally and chemically distinct from extinct and extant Fungi | a:Prototaxites
+# ── extinctions ──
+finnegan2011 | Finnegan | 2011 | The magnitude and duration of Late Ordovician–Early Silurian glaciation | e:ordovician
+penn2018 | Penn | 2018 | Temperature-dependent hypoxia explains biogeography and severity of end-Permian marine mass extinction | e:permian
+hull2020 | Hull | 2020 | On impact and volcanism across the Cretaceous-Paleogene boundary | e:cretaceous | 10.1126/science.aay5055
+sandom2014 | Sandom | 2014 | Global late Quaternary megafauna extinctions linked to humans, not climate change | e:quaternary
+barnosky2011 | Barnosky | 2011 | Has the Earth's sixth mass extinction already arrived? | e:holocene
+mcghee2013 | McGhee | 2013 | A new ecological-severity ranking of major Phanerozoic biodiversity crises | e:devonian, e:ordovician

@@ -66,7 +66,7 @@ const SPARKS = [
   [40.6, -74.2, 201.9, 200.9, 'volcano', 26, 'Central Atlantic eruptions'],
   [51.4, -68.7, 214.4, 213.7, 'impact', 20, 'Manicouagan impact'],
   [19.0, 74.0, 66.5, 65.5, 'volcano', 30, 'Deccan Traps'],
-  [21.4, -89.5, 66.3, 65.7, 'impact', 30, 'Chicxulub impact'],
+  [21.4, -89.5, 66.04, 65.7, 'impact', 30, 'Chicxulub impact'],
   [68.0, -28.0, 56.4, 55.5, 'volcano', 28, 'North Atlantic eruptions'],
   [2.6, 98.8, 0.0745, 0.0735, 'volcano', 22, 'Toba super-eruption'],
 ];

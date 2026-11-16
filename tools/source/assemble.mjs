@@ -105,6 +105,18 @@ const RAW = JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8'));
 const { CULTURES } = require('./data_cultures.js'), { DROWNED } = require('./data_drowned.js');
 const { FINDS, FIND_ERAS, FIND_THEMES } = require('./data_finds.js');
 const { TREES } = require('./data_trees.js');
+const { EXTINCTIONS } = require('./data_extinctions.js');
+{ for (const e of EXTINCTIONS) {
+    const p = byId[e.id];
+    if (!p || !P.INSIGHTS[e.id] || !P.INSIGHTS[e.id].ext) { problems.push('extinction ' + e.id + ': its period has no extinction entry in data_periods.js'); continue; }
+    if (!(e.from > e.to && e.t <= e.from && e.t >= e.to - 1e-9)) problems.push('extinction ' + e.id + ': the scene must run through its moment');
+    if (!(e.win[0] >= e.from && e.win[1] <= e.to)) problems.push('extinction ' + e.id + ': the timeline window must hold the scene');
+    if (!e.steps.length || e.steps[0][0] !== 0 || e.steps.some((s, i) => i && s[0] <= e.steps[i - 1][0])) problems.push('extinction ' + e.id + ': steps must start at 0 and rise');
+    if (!['ice', 'anoxia', 'traps', 'rift', 'impact', 'people', 'now'].includes(e.scene)) problems.push('extinction ' + e.id + ': unknown scene ' + e.scene);
+  }
+  const xsrc = fs.readFileSync(SRC + 'data_extinctions.js', 'utf8');
+  data += xsrc.slice(xsrc.indexOf('// ===='), xsrc.indexOf("if (typeof module")).trim() + '\n';
+}
 const { YOU_LINE } = require('./data_you.js');
 { YOU_LINE.forEach((y, i) => {
     if (i && YOU_LINE[i - 1].to !== y.from) problems.push('you: gap or overlap before ' + y.from);
@@ -142,7 +154,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), m: id => ['plates', 'sealevel', 'time', 'climate'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');

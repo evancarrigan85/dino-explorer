@@ -514,3 +514,30 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
   #journeyBtn{padding:4px 8px}}
 #journey.below{position:static;max-width:none;margin:0;border-radius:0;border-left:0;border-right:0;box-shadow:none;background:#0f1628;backdrop-filter:none}
 @media (max-width:767px){body.journeying .period-info,body.journeying #youBar,body.journeying .events-ribbon{display:none}}
+
+/* extinctions view and its map scenes */
+.tab-bar{flex-wrap:wrap}
+.tab-btn{flex:1 0 25%;white-space:nowrap;padding:8px 4px}
+.profile.ext{border-color:#d0603a}
+.ext-chart{margin:4px 0 8px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:6px 8px 4px}
+.ext-bar{display:grid;grid-template-columns:minmax(118px,36%) 1fr 54px;gap:8px;align-items:center;width:100%;background:none;border:0;color:#c5d0e3;font:inherit;font-size:.72rem;padding:4px 4px;border-radius:6px;cursor:pointer;text-align:left}
+.ext-bar:hover,.ext-bar.sel{background:rgba(255,255,255,.06)}.ext-bar.sel .eb-n{color:#fff;font-weight:700}
+.eb-t{position:relative;height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.eb-t i{position:absolute;left:0;top:0;bottom:0;background:#d0603a;border-radius:5px 0 0 5px}.eb-t i.hi{background:#d0603a;opacity:.4;border-radius:0}
+.eb-v{font-variant-numeric:tabular-nums;color:#f0b89a;font-weight:700;text-align:right}
+.watch{display:block;width:100%;margin:10px 0 2px;padding:10px 12px;border-radius:9px;border:1px solid #e07a4c;background:linear-gradient(180deg,rgba(224,122,76,.28),rgba(224,122,76,.12));color:#ffe3d2;font:inherit;font-size:.86rem;font-weight:800;cursor:pointer}
+.watch:hover{background:rgba(224,122,76,.36)}
+.ext-steps{margin:4px 0 0 18px;font-size:.76rem;line-height:1.45;color:#b9c5da}.ext-steps li{margin-bottom:3px;padding-left:2px}
+.ext-steps li.on{color:#fff;font-weight:600}.ext-steps li.on::marker{color:#e07a4c}
+.exts .more{font-size:.68rem;color:#8a97af;align-self:center}
+#sceneCap{display:none;position:absolute;left:270px;right:70px;top:10px;z-index:8;max-width:560px;margin:0 auto;background:rgba(12,10,14,.9);color:#fff;border:1px solid rgba(224,122,76,.7);border-radius:12px;padding:9px 12px 8px;box-shadow:0 10px 30px rgba(0,0,0,.55)}
+#sceneCap.show{display:block}
+.sc-top{display:flex;gap:8px;align-items:center;font-size:.62rem;text-transform:uppercase;letter-spacing:.7px;color:#f0a37e;font-weight:800}
+.sc-top span:first-child{flex:1}.sc-n{color:#b9a9a0}
+.sc-top button{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:5px;font-size:.6rem;padding:1px 6px;cursor:pointer}
+.sc-text{font-size:.86rem;line-height:1.4;margin:4px 0 6px;min-height:2.4em}
+#sceneCap .jr-bar{margin:0}#sceneCap .jr-bar i{background:#e07a4c;transition:none}
+body.scening #journey,body.scening #mapNote{display:none}
+#sceneCap.below{position:static;max-width:none;margin:0;border-radius:0;border-left:0;border-right:0;box-shadow:none}
+@media (max-width:767px){#sceneCap{padding:7px 10px 6px}.sc-text{font-size:.76rem;min-height:3.2em}
+  body.scening .period-info,body.scening #youBar,body.scening .events-ribbon{display:none}}

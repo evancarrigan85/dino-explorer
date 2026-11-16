@@ -521,7 +521,8 @@
 "Rasmussen"
 ],
 "targets": [
-"p:ordovician"
+"p:ordovician",
+"e:ordovician"
 ],
 "title_expected": "End Ordovician extinctions: A coincidence of causes",
 "type": "journal-article",
@@ -641,7 +642,8 @@
 "Scheckler"
 ],
 "targets": [
-"p:devonian"
+"p:devonian",
+"e:devonian"
 ],
 "title_expected": "Terrestrial-marine teleconnections in the Devonian: links between the evolution of land plants, weathering processes, and marine anoxic events",
 "type": "journal-article",
@@ -920,7 +922,8 @@
 "Shen"
 ],
 "targets": [
-"p:permian"
+"p:permian",
+"e:permian"
 ],
 "title_expected": "High-precision timeline for Earth's most severe extinction",
 "type": "journal-article",
@@ -974,7 +977,8 @@
 "et al."
 ],
 "targets": [
-"p:triassic"
+"p:triassic",
+"e:triassic"
 ],
 "title_expected": "Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province",
 "type": "journal-article",
@@ -1912,7 +1916,8 @@
 "targets": [
 "p:cretaceous",
 "x:asteroid",
-"j:extinctions"
+"j:extinctions",
+"e:cretaceous"
 ],
 "title_expected": "Extraterrestrial cause for the Cretaceous-Tertiary extinction",
 "type": "journal-article",
@@ -1931,7 +1936,8 @@
 ],
 "targets": [
 "p:cretaceous",
-"x:asteroid"
+"x:asteroid",
+"e:cretaceous"
 ],
 "title_expected": "Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico",
 "type": "journal-article",
@@ -2641,7 +2647,8 @@
 "et al."
 ],
 "targets": [
-"p:quaternary"
+"p:quaternary",
+"e:quaternary"
 ],
 "title_expected": "Assessing the causes of Late Pleistocene extinctions on the continents",
 "type": "journal-article",
@@ -2679,7 +2686,8 @@
 "targets": [
 "p:holocene",
 "f:holocene",
-"j:extinctions"
+"j:extinctions",
+"e:holocene"
 ],
 "title_expected": "Accelerated modern human-induced species losses: Entering the sixth mass extinction",
 "type": "journal-article",
@@ -3497,7 +3505,8 @@
 "targets": [
 "h:sapiens",
 "c:monte-verde",
-"x:whitesands"
+"x:whitesands",
+"e:quaternary"
 ],
 "title_expected": "Evidence of humans in North America during the Last Glacial Maximum",
 "type": "journal-article",
@@ -4174,7 +4183,8 @@
 "et al."
 ],
 "targets": [
-"p:cretaceous"
+"p:cretaceous",
+"e:cretaceous"
 ],
 "title_expected": "The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary",
 "type": "journal-article",
@@ -5470,5 +5480,114 @@
 ],
 "first": "",
 "title_expected": "Prototaxites fossils are structurally and chemically distinct from extinct and extant Fungi"
+},
+"finnegan2011": {
+"doi": "10.1126/science.1200803",
+"title": "The Magnitude and Duration of Late Ordovician–Early Silurian Glaciation",
+"journal": "Science",
+"year": 2011,
+"authors": [
+"Finnegan",
+"Bergmann",
+"Eiler",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:ordovician"
+],
+"first": "",
+"title_expected": "The magnitude and duration of Late Ordovician–Early Silurian glaciation"
+},
+"penn2018": {
+"doi": "10.1126/science.aat1327",
+"title": "Temperature-dependent hypoxia explains biogeography and severity of end-Permian marine mass extinction",
+"journal": "Science",
+"year": 2018,
+"authors": [
+"Penn",
+"Deutsch",
+"Payne",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:permian"
+],
+"first": "",
+"title_expected": "Temperature-dependent hypoxia explains biogeography and severity of end-Permian marine mass extinction"
+},
+"sandom2014": {
+"doi": "10.1098/rspb.2013.3254",
+"title": "Global late Quaternary megafauna extinctions linked to humans, not climate change",
+"journal": "Proceedings of the Royal Society B: Biological Sciences",
+"year": 2014,
+"authors": [
+"Sandom",
+"Faurby",
+"Sandel",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:quaternary"
+],
+"first": "",
+"title_expected": "Global late Quaternary megafauna extinctions linked to humans, not climate change"
+},
+"barnosky2011": {
+"doi": "10.1038/nature09678",
+"title": "Has the Earth’s sixth mass extinction already arrived?",
+"journal": "Nature",
+"year": 2011,
+"authors": [
+"Barnosky",
+"Matzke",
+"Tomiya",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:holocene"
+],
+"first": "",
+"title_expected": "Has the Earth's sixth mass extinction already arrived?"
+},
+"mcghee2013": {
+"doi": "10.1016/j.palaeo.2012.12.019",
+"title": "A new ecological-severity ranking of major Phanerozoic biodiversity crises",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2013,
+"authors": [
+"McGhee",
+"Clapham",
+"Sheehan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:devonian",
+"e:ordovician"
+],
+"first": "",
+"title_expected": "A new ecological-severity ranking of major Phanerozoic biodiversity crises"
+},
+"hull2020": {
+"doi": "10.1126/science.aay5055",
+"title": "On impact and volcanism across the Cretaceous-Paleogene boundary",
+"journal": "Science",
+"year": 2020,
+"authors": [
+"Hull",
+"Bornemann",
+"Penman",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"e:cretaceous"
+],
+"first": "",
+"title_expected": "On impact and volcanism across the Cretaceous-Paleogene boundary"
 }
 }

@@ -364,13 +364,15 @@ function renderPanel() {
   else if (S.tab === 'insights') renderInsights();
   else if (S.tab === 'quiz') renderQuiz();
   else if (S.tab === 'finds') renderFinds();
+  else if (S.tab === 'ext') renderExt();
   else renderGeo();
 }
 function switchTab(tab) {
+  if (S.scene && tab !== 'ext') stopScene();
   S.tab = tab; closeFact();
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
-  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && /^(cul|drw):/.test(S.sel)) && !(tab === 'finds' && /^find:/.test(S.sel))) { S.sel = null; WorldMap.select(null); }
+  if (S.sel && !BY_KEY[S.sel] && !(tab === 'humans' && /^(cul|drw):/.test(S.sel)) && !(tab === 'finds' && /^find:/.test(S.sel)) && !(tab === 'ext' && /^ext:/.test(S.sel))) { S.sel = null; WorldMap.select(null); }
   updateMarkers(); updatePlaces(); renderPanel();
   $('panelContent').scrollTop = 0;
 }
@@ -782,6 +784,189 @@ function bindFinds() {
   document.addEventListener('click', e => { const f = e.target.closest('[data-find]'); if (f && !f.closest('#pane-finds')) { e.stopPropagation(); e.preventDefault(); selectFind(f.dataset.find); } }, true);
 }
 
+// --- Extinctions: the great dyings, each with a scene on the map ---
+const EXT = Object.fromEntries(EXTINCTIONS.map(e => [e.id, e]));
+const extInfo = e => PERIODS.find(p => p.id === e.id).insight.ext;
+const extLost = e => ALL.filter(c => !c.hom && c.t[1] <= e.lost[0] && c.t[1] >= e.lost[1] && c.t[1] > 0).sort((a, b) => b.t[1] - a.t[1]);
+const extThrough = e => ALL.filter(c => !c.hom && c.t[0] > e.lost[0] && c.t[1] < e.lost[1] - (e.lost[0] - e.lost[1]) * 0.5).sort((a, b) => (b.t[0] - b.t[1]) - (a.t[0] - a.t[1]));
+function renderExt() {
+  const sel = S.sel && S.sel.startsWith('ext:') && EXT[S.sel.slice(4)], five = EXTINCTIONS.filter(e => e.pct);
+  const chip = c => `<button class="chip" data-meet="${c.key}">${c.emoji} ${esc(c.name)}</button>`;
+  const detail = e => {
+    const x = extInfo(e), lost = extLost(e), thr = extThrough(e), playing = S.scene && S.scene.id === e.id;
+    return `<div class="profile culture ext" data-key="ext:${e.id}"><h3 style="font-style:normal">${e.icon} ${esc(x.name)}</h3>
+      <dl class="facts"><dt>When</dt><dd>${esc(x.when)}</dd><dt>Lost</dt><dd>${esc(x.toll)}</dd><dt>Cause</dt><dd>${esc(x.cause)}</dd><dt>Recovery</dt><dd>${esc(e.recovery)}</dd></dl>
+      <button class="watch" data-play="${e.id}">${playing ? '■ Stop' : '▶ Watch it happen on the map'}</button>
+      <div class="label-sec"><h5>🎬 What happened, step by step</h5><ol class="ext-steps">${e.steps.map((st, i) => `<li${playing && S.scene.step === i ? ' class="on"' : ''}>${esc(st[1])}</li>`).join('')}</ol></div>
+      ${lost.length ? `<div class="label-sec"><h5>🕯 Last seen about now — ${lost.length} in this app</h5><div class="tn-mem">${lost.slice(0, 36).map(chip).join('')}${lost.length > 36 ? `<span class="more">+ ${lost.length - 36} more</span>` : ''}</div></div>` : ''}
+      ${thr.length ? `<div class="label-sec"><h5>🌱 Came through — ${thr.length} in this app</h5><div class="tn-mem">${thr.slice(0, 18).map(chip).join('')}${thr.length > 18 ? `<span class="more">+ ${thr.length - 18} more</span>` : ''}</div></div>` : ''}
+      <div class="label-sec"><h5>🌅 Who inherited the world</h5>${esc(e.winners)}</div>
+      <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(e.know)}</div><div class="label-sec"><h5>❓ Still debated</h5>${esc(e.debate)}</div>
+      ${srcHTML('e:' + e.id)}</div>`;
+  };
+  $('pane-ext').innerHTML = `<div class="hf exts">
+    <div class="hf-intro">At least five times, most of the living things on Earth have died within a short time. Each time life came back — but different. You are here because of who came through. Pick one, then watch it happen on the map.</div>
+    <div class="ext-chart" aria-label="Share of species lost in each of the five great dyings">${five.map(e => `<button class="ext-bar${sel === e ? ' sel' : ''}" data-ext="${e.id}"><span class="eb-n">${e.icon} ${esc(e.short)}</span>
+      <span class="eb-t"><i style="width:${e.pct[0]}%"></i>${e.pct[1] > e.pct[0] ? `<i class="hi" style="left:${e.pct[0]}%;width:${e.pct[1] - e.pct[0]}%"></i>` : ''}</span><span class="eb-v">${e.pct[0] === e.pct[1] ? e.pct[0] : e.pct[0] + '–' + e.pct[1]}%</span></button>`).join('')}
+      <div class="hf-note">Share of species lost — best estimates, worked out mostly from sea-life fossils. Paler bar = the range of estimates.</div></div>
+    ${sel ? detail(sel) : ''}
+    <div class="ms"><div class="list-h" style="padding-left:2px">The great dyings <small>oldest first</small></div>${EXTINCTIONS.map(e => { const x = extInfo(e); return `<div class="ms-item cul-item now ext-item${sel === e ? ' sel' : ''}" data-ext="${e.id}"><span class="when">${e.t >= 1 ? tidy(e.t) + ' MYA' : e.t > 0 ? years(Math.round(e.t * 1e6 / 100) * 100) + ' yrs' : 'now'}</span><span>${e.icon}</span><div><b>${esc(e.short)}</b><span>${esc(x.name)} · ${esc(x.toll.split(/[;:]/)[0])}</span></div></div>`; }).join('')}</div>
+    <div class="src">The map scenes are illustrations of what the evidence says happened, in order — not pictures of what it looked like. Colours, speeds and sizes are chosen to be read, and each card says what is still argued over.</div></div>`;
+}
+function selectExt(id, o = {}) {
+  const e = EXT[id]; if (!e) return;
+  if (S.scene && S.scene.id !== id) stopScene();
+  S.sel = 'ext:' + id; WorldMap.select(null);
+  if (S.tab !== 'ext') switchTab('ext');
+  if (!o.stay) { setWindow(e.win[0], e.win[1], true); goTo(e.from, () => renderExt()); }
+  renderExt();
+  if (!o.stay) setTimeout(() => { const el = document.querySelector('#pane-ext .profile'); if (el && window.innerWidth >= 768) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 80);
+}
+
+// ── scenes: what each extinction did, drawn over the map ──
+// Every scene is a function of k (0 → 1 through the scene) and the clock; nothing is left to chance.
+const ramp = (k, a, b) => clamp((k - a) / (b - a), 0, 1), bump = (k, a, b, c, d) => Math.min(ramp(k, a, b), 1 - ramp(k, c, d));
+const fillAll = (g, color) => c => { c.fillStyle = color; c.fillRect(0, 0, g.W, g.H); };
+const glow = (c, p, R, stops) => { const gr = c.createRadialGradient(p[0], p[1], 0, p[0], p[1], R); stops.forEach(([o, col]) => gr.addColorStop(o, col)); c.fillStyle = gr; c.beginPath(); c.arc(p[0], p[1], R, 0, 7); c.fill(); };
+const LAVA = [[0, 'rgba(255,224,130,0.95)'], [0.3, 'rgba(244,104,30,0.7)'], [0.7, 'rgba(150,30,14,0.3)'], [1, 'rgba(90,20,10,0)']];
+const SCENES = {
+  // Ordovician: ice grows over the polar land, the seas chill and drain, then stagnate as it melts
+  ice(g, k, sc) {
+    const ice = bump(k, 0.1, 0.44, 0.6, 0.8), out = 1 - ramp(k, 0.94, 1);
+    g.layer('sea', fillAll(g, `rgba(170,205,240,${0.3 * ice * out})`));
+    g.layer('sea', c => g.halo(c, 7 * ice, `rgba(226,210,160,${0.75 * ice})`));                       // sea floor left dry
+    g.layer('all', c => { for (const [d, a] of [[0, 0.9], [5, 0.45], [10, 0.2]]) { c.fillStyle = `rgba(244,249,252,${a * Math.min(1, ice * 1.4)})`; c.fill(g.cap(true, 4 + 36 * ice - d + (d ? 0 : 0))); } });
+    g.layer('sea', fillAll(g, `rgba(72,40,92,${0.42 * bump(k, 0.6, 0.8, 0.94, 1)})`));                 // oxygen-poor water
+  },
+  // Devonian: land greens, nutrients wash off the coasts, the seas go stagnant
+  anoxia(g, k, sc, now) {
+    const out = 1 - ramp(k, 0.94, 1), pulse = 0.85 + 0.15 * Math.sin(now / 900);
+    g.layer('land', fillAll(g, `rgba(46,128,58,${0.42 * ramp(k, 0.03, 0.3) * out})`));
+    g.layer('sea', c => g.halo(c, 4 + 12 * ramp(k, 0.26, 0.55), `rgba(132,158,62,${0.6 * bump(k, 0.26, 0.45, 0.8, 0.95)})`));
+    g.layer('sea', fillAll(g, `rgba(66,34,86,${0.46 * ramp(k, 0.48, 0.72) * pulse * out})`));
+  },
+  // End-Permian: lava in Siberia, gas round the planet, heat on land, acid and airless seas
+  traps(g, k, sc, now) {
+    const out = 1 - ramp(k, 0.94, 1), p = sc.at && g.pt(sc.at);
+    g.layer('all', c => { const path = sc.at && g.circle(sc.at, 6 + 174 * ramp(k, 0.14, 0.5)); if (path) { c.fillStyle = `rgba(176,84,34,${0.2 * ramp(k, 0.14, 0.24) * out})`; c.fill(path); } });
+    g.layer('land', fillAll(g, `rgba(206,84,22,${0.3 * ramp(k, 0.34, 0.58) * out})`));
+    g.layer('sea', fillAll(g, `rgba(84,30,92,${0.46 * ramp(k, 0.52, 0.76) * out})`));
+    if (p) g.layer('all', c => glow(c, p, (26 + 70 * ramp(k, 0.02, 0.3)) * (0.92 + 0.08 * Math.sin(now / 420)) * out, LAVA));
+  },
+  // End-Triassic: a line of eruptions where Pangaea tears, then the same gases and acid seas
+  rift(g, k, sc, now) {
+    const out = 1 - ramp(k, 0.94, 1), pts = (sc.ats || []).map(a => g.pt(a)).filter(Boolean), on = ramp(k, 0.02, 0.28);
+    g.layer('all', c => { const path = sc.ats[2] && g.circle(sc.ats[2], 6 + 174 * ramp(k, 0.2, 0.55)); if (path) { c.fillStyle = `rgba(176,84,34,${0.18 * ramp(k, 0.2, 0.3) * out})`; c.fill(path); } });
+    g.layer('land', fillAll(g, `rgba(206,84,22,${0.24 * ramp(k, 0.4, 0.6) * out})`));
+    g.layer('sea', fillAll(g, `rgba(84,30,92,${0.36 * ramp(k, 0.44, 0.68) * out})`));
+    g.layer('all', c => {
+      if (pts.length > 1) { c.lineCap = c.lineJoin = 'round'; c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); for (const [w, col] of [[14, `rgba(240,96,30,${0.28 * on * out})`], [5, `rgba(255,214,120,${0.8 * on * out})`]]) { c.lineWidth = w; c.strokeStyle = col; c.stroke(); } }
+      pts.forEach((p, i) => glow(c, p, 22 * on * out * (0.85 + 0.15 * Math.sin(now / 380 + i * 1.7)) + 0.01, LAVA));
+    });
+  },
+  // End-Cretaceous: the fall, the flash, the shock wave, fire, then darkness — and the sky clearing
+  impact(g, k, sc, now) {
+    const p = sc.at && g.pt(sc.at), hit = 0.2;
+    if (k < hit && p) g.layer('all', c => {                                                           // the rock coming in
+      const u = Math.pow(k / hit, 1.6), x = p[0] + (1 - u) * g.W * 0.42, y = p[1] - (1 - u) * g.H * 0.62;
+      const gr = c.createLinearGradient(x, y, x + g.W * 0.07, y - g.H * 0.1); gr.addColorStop(0, 'rgba(255,236,190,0.95)'); gr.addColorStop(1, 'rgba(255,170,80,0)');
+      c.strokeStyle = gr; c.lineWidth = 3; c.lineCap = 'round'; c.beginPath(); c.moveTo(x, y); c.lineTo(x + g.W * 0.07, y - g.H * 0.1); c.stroke();
+      glow(c, [x, y], 7, [[0, 'rgba(255,255,240,1)'], [1, 'rgba(255,200,120,0)']]);
+    });
+    if (k >= hit) {
+      g.layer('land', fillAll(g, `rgba(226,74,20,${0.4 * bump(k, hit, 0.3, 0.42, 0.58)})`));           // fires
+      g.layer('all', fillAll(g, `rgba(10,9,13,${0.66 * bump(k, 0.3, 0.48, 0.8, 0.96)})`));             // soot and dust
+      g.layer('all', c => {
+        const w = ramp(k, hit, 0.5), path = sc.at && g.circle(sc.at, 2 + 176 * w);
+        if (path && w < 1) { c.strokeStyle = `rgba(255,232,186,${0.9 * (1 - w)})`; c.lineWidth = 2 + 3 * (1 - w); c.stroke(path); }
+        if (p) glow(c, p, 30 * (1 - 0.5 * ramp(k, 0.3, 0.9)), [[0, 'rgba(255,250,225,0.95)'], [0.35, 'rgba(255,170,70,0.6)'], [1, 'rgba(255,110,40,0)']]);
+        c.fillStyle = `rgba(255,252,240,${0.92 * (1 - ramp(k, hit, hit + 0.07))})`; c.fillRect(0, 0, g.W, g.H);   // the flash
+      });
+    }
+  },
+  // Ice Age giants: people arriving, land by land, as the timeline runs
+  people(g, k, sc, now) {
+    const ka = S.t * 1000, out = 1 - ramp(k, 0.95, 1);
+    g.layer('all', c => {
+      for (const [, , when, name, at] of sc.arrive) {
+        if (ka > when) continue;
+        const u = clamp((when - ka) / (when * 0.3 + 1.5), 0, 1), path = g.circle(at, 2 + 20 * u), p = g.pt(at);
+        if (path) { c.fillStyle = `rgba(240,170,60,${0.2 * (1 - u * 0.6) * out})`; c.fill(path); c.strokeStyle = `rgba(250,196,90,${0.85 * (1 - u * 0.7) * out})`; c.lineWidth = 1.6; c.stroke(path); }
+        if (p) { c.font = '600 11px Inter,system-ui,sans-serif'; c.textAlign = 'center'; c.lineWidth = 3; c.strokeStyle = `rgba(20,14,6,${0.75 * out})`; c.fillStyle = `rgba(255,236,190,${out})`; const tx = '🚶 ' + name + ' · about ' + when + ',000 yrs ago'; c.strokeText(tx, p[0], p[1] - 9); c.fillText(tx, p[0], p[1] - 9); }
+      }
+    });
+  },
+  // Now: nothing but the last sightings, which the player draws for every scene
+  now() {},
+};
+// time through a scene: mostly a steady run, with two exceptions
+const sceneTime = (e, k) => e.scene === 'impact' ? (k < 0.2 ? e.from - (e.from - 66.03) * (k / 0.2) : 66.03 - (66.03 - e.to) * ramp(k, 0.3, 0.9))
+  : e.scene === 'people' ? e.from * Math.pow(e.to / e.from, k) : e.from + (e.to - e.from) * ramp(k, 0.04, 0.96);
+let sceneRaf = 0;
+function stopScene(done) {
+  cancelAnimationFrame(sceneRaf); WorldMap.setFx(null);
+  $('sceneCap').classList.remove('show'); document.body.classList.remove('scening');
+  const was = S.scene; S.scene = null;
+  if (was && S.tab === 'ext') renderExt();
+  if (was && done) { const e = EXT[was.id]; showFact(e.icon, '<b>' + esc(extInfo(e).name) + '.</b> ' + esc(e.winners) + '<br><small><button class="linkbtn" data-play="' + e.id + '">↻ Watch again</button></small>', 14000); }
+}
+function playScene(id) {
+  const e = EXT[id]; if (!e) return;
+  if (S.scene) { const same = S.scene.id === id; stopScene(); if (same) return; }
+  stopPlay(); cancelTween(); closeFact();
+  if (S.sel !== 'ext:' + id) selectExt(id, { stay: true });
+  setWindow(e.win[0], e.win[1], true); setTime(e.from);
+  const lost = extLost(e).filter(c => c.sites && c.sites.length).map(c => ({ c, at: sitesOf(c)[0].at, end: c.t[1] }));
+  if (!WorldMap.motion) {     // reduced motion: no scene, just the before and after — the steps are listed on the card
+    setTime(e.to); showFact(e.icon, '<b>' + esc(extInfo(e).name) + '.</b> ' + e.steps.map(s => esc(s[1])).join(' '), 20000); return;
+  }
+  const dur = e.scene === 'now' ? 16000 : 21000;
+  S.scene = { id, step: -1, t0: performance.now(), gone: {},
+    at: e.at && !Array.isArray(e.at[0]) ? WorldMap.attach(e.at[0], e.at[1], e.t) : null, ats: e.at && Array.isArray(e.at[0]) ? e.at.map(a => WorldMap.attach(a[0], a[1], e.t)) : [],
+    arrive: PEOPLE_ARRIVE.map(a => a.concat([WorldMap.attach(a[0], a[1], 0.05)])) };
+  document.body.classList.add('scening');
+  if (window.innerWidth < 768) $('mapArea').scrollIntoView({ block: 'center', behavior: 'smooth' });
+  WorldMap.setFx((c, g, now) => {
+    const sc = S.scene; if (!sc) return;
+    const k = clamp((now - sc.t0) / dur, 0, 1);
+    SCENES[e.scene](g, k, sc, now);
+    // last sightings: every animal in the app whose record ends inside this scene goes out where its fossils lie
+    g.layer('all', cx => {
+      for (const v of lost) {
+        if (S.t > v.end) continue;
+        const t1 = sc.gone[v.c.key] || (sc.gone[v.c.key] = now), u = (now - t1) / 2200; if (u >= 1) continue;
+        const p = g.pt(v.at); if (!p) continue;
+        cx.beginPath(); cx.arc(p[0], p[1], 9 + 20 * u, 0, 7); cx.strokeStyle = `rgba(255,96,64,${0.85 * (1 - u)})`; cx.lineWidth = 2.4 * (1 - u) + 0.4; cx.stroke();
+        cx.globalAlpha = Math.max(0, 1 - u * 1.3); cx.font = '15px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(v.c.emoji, p[0], p[1] - 14 * u); cx.globalAlpha = 1;
+      }
+    });
+  });
+  const tick = now => {
+    const sc = S.scene; if (!sc || sc.id !== id) return;
+    const k = clamp((now - sc.t0) / dur, 0, 1);
+    setTime(sceneTime(e, k), { fast: true });
+    let i = 0; while (i + 1 < e.steps.length && e.steps[i + 1][0] <= k) i++;
+    if (i !== sc.step) {
+      sc.step = i;
+      $('sceneCap').innerHTML = `<div class="sc-top"><span>${e.icon} ${esc(e.short)}</span><span class="sc-n">${i + 1} / ${e.steps.length}</span><button data-play="${id}" aria-label="Stop">■</button></div><div class="sc-text">${esc(e.steps[i][1])}</div><div class="jr-bar"><i id="scBar"></i></div>`;
+      $('sceneCap').classList.add('show');
+      document.querySelectorAll('#pane-ext .ext-steps li').forEach((li, n) => li.classList.toggle('on', n === i));
+    }
+    const bar = $('scBar'); if (bar) bar.style.width = (k * 100).toFixed(1) + '%';
+    if (k >= 1) { setTime(e.to); setTimeout(() => { if (S.scene === sc) stopScene(true); }, 1600); return; }
+    sceneRaf = requestAnimationFrame(tick);
+  };
+  renderExt(); sceneRaf = requestAnimationFrame(tick);
+}
+function bindExt() {
+  $('pane-ext').addEventListener('click', e => {
+    const m = e.target.closest('[data-meet]'); if (m) { stopScene(); switchTab('life'); if (S.view !== 'list') setView('list'); select(m.dataset.meet, { keep: true }); return; }
+    if (e.target.closest('[data-play]')) return;       // handled below, wherever the button is
+    const x = e.target.closest('[data-ext]'); if (x) selectExt(x.dataset.ext);
+  });
+  document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) playScene(b.dataset.play); });
+}
+
 // --- Insights ---
 function renderInsights() {
   const p = S.period, I = p.insight, sites = SITES.filter(s => s[3].includes(p.id));
@@ -976,7 +1161,7 @@ const JOURNEYS = [
     stops: () => YOU_LINE.map(y => { const c = youLike(y); return { t: y.at, head: y.what.charAt(0).toUpperCase() + y.what.slice(1), text: y.text, key: c && c.key, hom: !!y.hom, note: c ? 'Shown: ' + shortName(c.name) + ', a close cousin of your real ancestor.' : '' }; }) },
   { id: 'drift', icon: '🌍', title: 'The drifting continents', blurb: 'Watch one supercontinent form and break into the world you know.', stops: () => DRIFT_STOPS },
   { id: 'extinctions', icon: '☠️', title: 'The great dyings', blurb: 'Five times most of life was wiped out — and what came through.',
-    stops: () => PERIODS.filter(p => p.insight && p.insight.ext && p.id in EXT_T).map(p => ({ t: EXT_T[p.id], head: p.insight.ext.name, text: 'Lost: ' + p.insight.ext.toll + '. ' + p.insight.ext.cause, tab: 'insights' })) },
+    stops: () => EXTINCTIONS.map(e => { const x = extInfo(e); return { ext: e.id, t: e.t, head: x.name, text: 'Lost: ' + x.toll + '. ' + x.cause, note: 'Press “Watch it happen” in the panel to see it play out on the map.' }; }) },
   { id: 'finds', icon: '⛏️', title: 'How we found out', blurb: 'Ten discoveries that changed what people thought the past was.',
     stops: () => ['plot', 'anning', 'buckland', 'archaeopteryx', 'gobi', 'wegener', 'lucy', 'asteroid', 'sinosauropteryx', 'tiktaalik'].map(id => FIND[id]).filter(Boolean).map(f => ({ find: f.id, head: f.title + ' · ' + f.when, text: f.story })) },
 ];
@@ -1008,6 +1193,7 @@ function showStop() {
     if (S.jr.auto) jTimer = setTimeout(() => stepJourney(1), 9000 + s.text.length * 28);
   };
   if (s.find) { selectFind(s.find); setTimeout(arrived, 2200); }
+  else if (s.ext) { selectExt(s.ext); setTimeout(arrived, 2200); }
   else { if (S.sel) { S.sel = null; WorldMap.select(null); } travel(s.t, arrived) || arrived(); }
 }
 function bindJourneys() {
@@ -1025,7 +1211,7 @@ function bindJourneys() {
   });
   $('youBar').onclick = openYou;
   // on a phone the map is too small to carry the caption, so it sits just under the map instead
-  const place = () => { const small = window.innerWidth < 768, j = $('journey'); if (small && j.parentNode.id === 'mapArea') $('mapArea').after(j); else if (!small && j.parentNode.id !== 'mapArea') $('mapArea').appendChild(j); j.classList.toggle('below', small); };
+  const place = () => { const small = window.innerWidth < 768; for (const j of [$('journey'), $('sceneCap')]) { if (small && j.parentNode.id === 'mapArea') $('mapArea').after(j); else if (!small && j.parentNode.id !== 'mapArea') $('mapArea').appendChild(j); j.classList.toggle('below', small); } };
   place(); window.addEventListener('resize', place);
 }
 
@@ -1099,7 +1285,7 @@ function init() {
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }
   });
   window.addEventListener('hashchange', readHash);
-  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds(); bindTree(); bindJourneys();
+  bindPin(); bindTimeline(); bindLife(); bindHumans(); bindInsights(); bindGeo(); bindQuiz(); bindFinds(); bindTree(); bindJourneys(); bindExt();
   renderTimeline(); renderClimateStrip();
   if (!readHash()) {
     setTime(150);

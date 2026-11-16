@@ -411,6 +411,30 @@ const WorldMap = (() => {
   let trail = null, tctx = null, trailKey = '', trailT = null, trailLife = 0;   // where the land was a moment ago
   let liveUntil = 0, swell = null, sphereP = null, sphereKey = '';
   const wake = () => { if (motion) { liveUntil = performance.now() + 14000; schedule(); } };
+  // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
+  // it a canvas and a few helpers; what the scene means is the page's business.
+  let fxHook = null, scn = null, scx = null;
+  const fxHelp = {
+    get W() { return W; }, get H() { return H; }, get zoom() { return zoom; },
+    pt: at => project(locate(at, time)),
+    circle(at, deg) { const ll = locate(at, time); return ll ? geoP(d3.geoCircle().center(ll).radius(Math.max(0.2, Math.min(179.5, deg))).precision(2.5)()) : null; },
+    cap: (south, deg) => capPath(south, deg),
+    /* Draw one layer of the scene, clipped to the globe, and keep only the part over 'sea', over 'land', or 'all'. */
+    layer(mask, draw) {
+      if (!scn) { scn = document.createElement('canvas'); scx = scn.getContext('2d'); }
+      if (scn.width !== fx.width || scn.height !== fx.height) { scn.width = fx.width; scn.height = fx.height; }
+      scx.setTransform(1, 0, 0, 1, 0, 0); scx.globalAlpha = 1; scx.globalCompositeOperation = 'source-over'; scx.clearRect(0, 0, scn.width, scn.height);
+      scx.save(); scx.setTransform(dpr, 0, 0, dpr, 0, 0); scx.clip(geoP({ type: 'Sphere' })); draw(scx); scx.restore();
+      if (mask !== 'all') { scx.setTransform(1, 0, 0, 1, 0, 0); scx.globalAlpha = 1; scx.globalCompositeOperation = mask === 'sea' ? 'destination-out' : 'destination-in'; scx.drawImage(land, 0, 0); scx.globalCompositeOperation = 'source-over'; }
+      fctx.save(); fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.drawImage(scn, 0, 0); fctx.restore();
+    },
+    /* A soft band of colour hugging the coasts (the land's outline, swollen by r pixels). */
+    halo(c, r, color) {
+      c.save(); c.setTransform(1, 0, 0, 1, 0, 0);
+      for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; c.globalAlpha = 0.5; c.drawImage(land, Math.cos(a) * r * dpr, Math.sin(a) * r * dpr); }
+      c.globalAlpha = 1; c.globalCompositeOperation = 'source-in'; c.fillStyle = color; c.fillRect(0, 0, scn.width, scn.height); c.restore();
+    },
+  };
 
   // ── drawing ────────────────────────────────────────────────────────
   const sink = {
@@ -875,7 +899,7 @@ const WorldMap = (() => {
     }
     return cv;
   }
-  const sparksNow = () => motion ? layers.sparks.filter(sp => time <= sp.from && time >= sp.to) : [];
+  const sparksNow = () => motion && !fxHook ? layers.sparks.filter(sp => time <= sp.from && time >= sp.to) : [];   // a playing scene draws its own
   function drawFx() {
     const now = performance.now();
     fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'source-over'; fctx.clearRect(0, 0, fx.width, fx.height);
@@ -912,6 +936,7 @@ const WorldMap = (() => {
         const k = (sec / 4) % 1; fctx.beginPath(); fctx.arc(p[0], p[1], R * (0.6 + k * 1.3), 0, 7); fctx.strokeStyle = `rgba(70,50,44,${0.3 * (1 - k)})`; fctx.lineWidth = 5 * (1 - k) + 1; fctx.stroke();   // ash spreading
       }
     }
+    if (fxHook) { fctx.save(); fxHook(fctx, fxHelp, now); fctx.restore(); fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'source-over'; }
     if (!rings.length) return;
     const k = (now % 1700) / 1700;
     for (const [x, y, r] of rings) {
@@ -927,7 +952,7 @@ const WorldMap = (() => {
     if (dirty) draw(); else drawFx();
     if (document.hidden) return;
     if (trailLife > 0 && !dirty) dirty = true;                       // keep fading the wake after the land stops
-    if (rings.length || trailLife > 0 || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
+    if (rings.length || trailLife > 0 || fxHook || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
   }
   function resize() {
     const r = canvas.getBoundingClientRect();
@@ -1017,6 +1042,8 @@ const WorldMap = (() => {
     },
     get time() { return time; },
     setTime(t) { t = Math.max(0, Math.min(MAXT, t)); if (t !== time) { time = t; dirty = true; wake(); schedule(); } },
+    /* A scene to draw over the map every frame, or null to stop. Called as fn(ctx, helpers, now). */
+    setFx(fn) { fxHook = fn || null; schedule(); },
     /* Decorative motion on or off (tests and screenshots turn it off; so does the reader's reduced-motion setting). */
     setMotion(on) { motion = !!on; api.motion = motion; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
     motion,
