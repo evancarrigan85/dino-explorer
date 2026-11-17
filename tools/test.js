@@ -296,6 +296,13 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.evaluate(() => { S.sel = null; WorldMap.select(null); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(200);
   // no land missing from today's outline (a band of Siberia and Scandinavia was, until Nov 2026)
   ok('land: northern Siberia and Scandinavia are covered by today’s land in every era since 410 million years ago', await p.evaluate(() => [[67, 90], [68, 100], [66, 120], [66, 80], [66, 60], [67, 28], [68, 20], [69, 125], [65, 105]].every(([la, lo]) => WorldMap._cover(la, lo).split(' ').some(x => /\.\.-0\.1\]/.test(x)))));
+  ok('lakes: the big lakes are drawn — all five Great Lakes, Victoria and Baikal among them', await p.evaluate(() => {
+    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', lut = new Int8Array(128); for (let i = 0; i < 64; i++) lut[A.charCodeAt(i)] = i;
+    const d = RIVERS_PACKED; let pos = 0; const u = () => { let r = 0, sh = 0, c; do { c = lut[d.charCodeAt(pos++)]; r += (c & 31) * Math.pow(2, sh); sh += 5; } while (c & 32); return r; }; const z = () => { const v = u(); return v % 2 ? -(v + 1) / 2 : v / 2; };
+    const pts = () => { const n = u(), o = []; let x = 0, y = 0; for (let i = 0; i < n; i++) { x += z(); y += z(); o.push([x / 100, y / 100]); } return o; };
+    const nl = u(); for (let i = 0; i < nl; i++) { u(); pts(); } const nk = u(), lakes = []; for (let i = 0; i < nk; i++) { const r = pts(); r.push(r[0]); lakes.push({ type: 'Polygon', coordinates: [d3.geoArea({ type: 'Polygon', coordinates: [r] }) > 2 * Math.PI ? r.slice().reverse() : r] }); }
+    const wet = (lon, lat) => lakes.some(g => d3.geoContains(g, [lon, lat]));
+    return nk >= 100 && [[-87.5, 47.6], [-87.0, 43.5], [-82.4, 44.8], [-81.2, 42.2], [-77.8, 43.6], [33, -1], [108, 53.5]].every(([lo, la]) => wet(lo, la)); }));
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

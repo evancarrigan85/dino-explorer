@@ -36,14 +36,17 @@ def put(coords):
 lines, names = [], []
 for f in json.load(open(rv))['features']:
     p = f['properties']
-    if p.get('featurecla') not in ('River', 'Lake Centerline') or (p.get('scalerank') or 99) > 6: continue
+    # (a rank of 0 means MOST important: `or 99` here used to throw away every top-ranked river and lake)
+    rank = p.get('scalerank'); rank = 99 if rank is None else rank
+    if p.get('featurecla') != 'River' or rank > 6: continue          # lake centrelines run through lakes: the lakes are drawn
     g = shape(f['geometry']).simplify(0.012, preserve_topology=False)
     for part in (g.geoms if isinstance(g, MultiLineString) else [g]):
-        if isinstance(part, LineString) and part.length > 0.4: lines.append((p['scalerank'], list(part.coords)))
+        if isinstance(part, LineString) and part.length > 0.4: lines.append((rank, list(part.coords)))
 lakes = []
 for f in json.load(open(lk))['features']:
     p = f['properties']
-    if (p.get('scalerank') or 99) > 3: continue
+    rank = p.get('scalerank'); rank = 99 if rank is None else rank
+    if rank > 3: continue
     g = shape(f['geometry']).simplify(0.012, preserve_topology=True)
     for part in (g.geoms if isinstance(g, MultiPolygon) else [g]):
         if isinstance(part, Polygon) and part.area > 0.15: lakes.append(list(orient(part, sign=-1.0).exterior.coords)[:-1])

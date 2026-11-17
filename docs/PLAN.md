@@ -23,7 +23,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 160 passing |
+| Checks | 161 passing |
 | Page | about 1.47 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -448,6 +448,12 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — The Great Lakes.** Evan: "the Great Lakes aren't doing great". `build_rivers.py`
+  treated Natural Earth's rank 0 (most important) as "no rank" and dropped every top-ranked lake and
+  river — all five Great Lakes, Victoria, Baikal, Great Bear — leaving only the centrelines that run
+  through them as a tangle of blue lines. Fixed; centrelines through lakes dropped; a fine shoreline at
+  close zoom; a check now tests points in each Great Lake, Victoria and Baikal. 124 lakes. 161 checks.
 
 - **17 Nov 2026 — A missing band of Siberia.** Evan saw a thin strip floating over the top of the
   map (108.7 Ma, zoomed in). Cause: Natural Earth's Eurasia outline crosses the date line at Chukotka,

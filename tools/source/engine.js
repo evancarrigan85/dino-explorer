@@ -858,6 +858,7 @@ const WorldMap = (() => {
     if (rvf > 0 && RIVERS) {
       if (!riverP) riverP = { lines: RIVERS.lines.map(g => geoP(g)), lakes: geoP(RIVERS.lakes) };
       L.globalAlpha = 0.95 * rvf; L.fillStyle = pal.o2; L.fill(riverP.lakes);
+      if (zoom > 2.5) { L.globalAlpha = Math.min(1, (zoom - 2.5) / 3) * 0.7 * rvf; L.lineWidth = 1.1; L.strokeStyle = '#2f5c78'; L.lineJoin = 'round'; L.stroke(riverP.lakes); }   // a fine shore line when close
       L.lineCap = L.lineJoin = 'round'; L.strokeStyle = '#5f8fae';
       const zw = Math.min(2.2, 0.75 + zoom * 0.25);
       [[1.5, 0.85], [1.0, 0.7], [0.65, zoom > 1.6 ? 0.6 : 0]].forEach(([w, a], i) => { if (!a) return; L.globalAlpha = a * rvf; L.lineWidth = w * zw; L.stroke(riverP.lines[i]); });
