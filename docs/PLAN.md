@@ -18,12 +18,12 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 379, every one a published work confirmed in Crossref |
+| References | 390, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 165 passing |
+| Checks | 172 passing |
 | Page | about 1.47 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -335,6 +335,27 @@ The design was worked out on 15–16 Nov and nothing has been built yet. Build i
   Polycotylus, Platecarpus, Odontochelys, Najash); amphibians and early tetrapods (Elpistostege from
   Quebec, Diadectes, Gerobatrachus, Triadobatrachus, Metoposaurus, Koolasuchus, Beelzebufo).
 
+## Release 0c — Make the map feel alive (Evan, 17 Nov: "make the map feel like nothing else, like it's alive")
+
+Shipped so far: wakes behind drifting land, light on the water, eruptions and impacts, animals that
+rise and fade, flick momentum, fly-to, stories and extinction scenes. In order of impact, next:
+
+1. **Life that moves.** Herds and migrations drawn as soft moving trails where the evidence supports
+   them: mammoths and people across Beringia, wildebeest-like grazers on the Ice Age steppe, whales
+   along today's routes. Each path needs a source; draw only what a paper says moved.
+2. **Seasons and daylight.** A slow day/night terminator on the globe and a yearly pulse of sea ice and
+   snow at the poles in the last few thousand years — the planet breathing. Pure astronomy, no claims.
+3. **Ice Age cycles that breathe.** Animate ice sheets growing and shrinking with the sea-level curve
+   already in the page, instead of stepping.
+4. **Ocean currents.** Flowing particles along today's great currents (Gulf Stream, Kuroshio, the
+   Antarctic Circumpolar) for recent times, from a published current climatology; earlier only where
+   a reconstruction exists.
+5. **Weather of deep time.** Gentle cloud bands in the tropics and storm tracks, shifting with the
+   reconstructed temperature — labelled as an illustration.
+6. **Sound, off by default** — wind, surf, an eruption's rumble. Ask Evan first.
+7. **WebGL map** for smooth 3D zoom and lit relief (see the render discussion of 17 Nov) — the biggest
+   single step, several sessions.
+
 ## Release 7d — Finding your way around (navigation)
 
 The content has outgrown six tabs and a list. In order of value:
@@ -448,6 +469,13 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — Three more Earth stories; a camera that flies.** Geology tab: the Himalayas (India's
+  track north from 80 Ma, the Deccan eruptions, the collision, the mountains rising), the Mediterranean
+  drying to salt and the Zanclean flood refilling it, and Hawaii's islands born over the hot spot and
+  carried north-west (today's islands hidden while the story builds its own). 11 verified sources.
+  The map now coasts after a flick and flies (pulls back and swoops in) on long jumps when zoomed in.
+  172 checks.
 
 - **17 Nov 2026 — How the Great Lakes were made.** Evan: the glaciers scraping them out "should be an
   event". A new “Watch the Earth being made” section in the Geology tab plays it on the map over 26

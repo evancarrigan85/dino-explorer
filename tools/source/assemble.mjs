@@ -110,7 +110,9 @@ const { EXTINCTIONS } = require('./data_extinctions.js');
 { const { STORIES } = require('./data_stories.js');
   for (const st of STORIES) {
     if (!st.steps.length || st.steps[0][0] !== 0 || st.steps.some((s, i) => i && s[0] <= st.steps[i - 1][0])) problems.push('story ' + st.id + ': steps must start at 0 and rise');
-    if (st.ka[0][0] !== 0 || st.ka[st.ka.length - 1][0] !== 1 || st.ka.some((a, i) => i && (a[0] <= st.ka[i - 1][0] || a[1] > st.ka[i - 1][1]))) problems.push('story ' + st.id + ': the clock must run 0→1, forward in time');
+    const ck = st.ka || st.ma;
+    if (!ck || ck[0][0] !== 0 || ck[ck.length - 1][0] !== 1 || ck.some((a, i) => i && (a[0] <= ck[i - 1][0] || a[1] > ck[i - 1][1]))) problems.push('story ' + st.id + ': the clock must run 0→1, forward in time');
+    if (!st.onmap || !st.know || !st.debate) problems.push('story ' + st.id + ': needs onmap, know and debate');
     if (st.margin && st.margin.edges.some(e => e[1].length !== st.margin.lons.length)) problems.push('story ' + st.id + ': every ice edge needs one latitude per longitude');
   }
   const ssrc = fs.readFileSync(SRC + 'data_stories.js', 'utf8');

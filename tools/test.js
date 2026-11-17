@@ -313,6 +313,20 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#sceneCap [data-story]'); await p.waitForTimeout(200);
   ok('stories: Stop ends it and gives the map back', await p.evaluate(() => !S.story && !document.getElementById('sceneCap').classList.contains('show')));
   await p.evaluate(() => { WorldMap.resetView(); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(200);
+  // more stories, and the camera
+  ok('stories: four of them, each with steps, evidence and at least three verified sources', await p.evaluate(() => STORIES.length >= 4 && STORIES.every(st => st.steps.length >= 6 && st.know && st.debate && st.onmap && (SRCMAP['s:' + st.id] || []).length >= 3 && typeof STORY_SCENES[st.id] === 'function')));
+  for (const [id, wait, test] of [['himalaya', 9000, '() => S.t < 72 && S.t > 30 && !!S.story.india'], ['mediterranean', 14500, '() => S.t < 5.97 && S.t > 5.33'], ['hawaii', 11000, '() => S.t < 4 && S.t > 1 && !!S.story']]) {
+    await p.evaluate(id => { switchTab('geo'); playStory(id); }, id); await p.waitForTimeout(wait);
+    ok('stories: ' + id + ' plays — caption up, clock running through its own stretch of time', await p.evaluate(new Function('return (' + test + ')()')) && await p.evaluate(() => document.getElementById('sceneCap').classList.contains('show')));
+    await p.evaluate(() => stopStory()); await p.waitForTimeout(150);
+  }
+  ok('stories: Hawaii hides today’s islands while it builds its own, and gives them back after', await p.evaluate(() => !S.story && WorldMap._cover(19.6, -155.5) !== ''));
+  await p.evaluate(() => { WorldMap.resetView(); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(400);
+  ok('camera: a flick keeps the zoomed map coasting after the finger lifts', await (async () => { await p.evaluate(() => WorldMap.zoomBy(4)); await p.waitForTimeout(400); const bb = await (await p.$('#mapCanvas')).boundingBox();
+    const probe = () => p.evaluate(() => { const q = WorldMap.pickPresent(document.getElementById('mapCanvas').getBoundingClientRect().width / 2, 300); return q ? q.lat.toFixed(2) + ',' + q.lon.toFixed(2) : 'sea'; });
+    await p.mouse.move(bb.x + 600, bb.y + 300); await p.mouse.down(); for (let i = 1; i <= 8; i++) { await p.mouse.move(bb.x + 600 - i * 25, bb.y + 300); await p.waitForTimeout(12); } await p.mouse.up();
+    await p.waitForTimeout(40); const a = await probe(); await p.waitForTimeout(700); return a !== await probe(); })());
+  ok('camera: a long jump on the zoomed map pulls back and swoops in', await p.evaluate(async () => { WorldMap.resetView(); WorldMap.zoomBy(4); noLook = 0; await new Promise(r => setTimeout(r, 300)); let min = 99; const t0 = performance.now(); select('giraffatitan', { keep: true }); while (performance.now() - t0 < 1600) { min = Math.min(min, WorldMap.zoom); await new Promise(r => requestAnimationFrame(r)); } const end = WorldMap.zoom; S.sel = null; WorldMap.select(null); WorldMap.resetView(); return min < 3 && Math.abs(end - 4) < 0.01; }));
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

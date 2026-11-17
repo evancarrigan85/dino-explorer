@@ -457,7 +457,7 @@ const WorldMap = (() => {
   }
   // the detailed land for the view, or null to use the plate model (not zoomed in, too long ago, or still loading)
   function detailedLand(t, vk) {
-    if (!coastHas || zoom < 3 || t > 0.0065 || seaLevel(t) < -2) return null;
+    if (!coastHas || hideBox || zoom < 3 || t > 0.0065 || seaLevel(t) < -2) return null;
     let lo0 = 999, lo1 = -999, la0 = 999, la1 = -999;
     for (let i = 0; i <= 6; i++) for (let j = 0; j <= 6; j++) {
       const ll = proj.invert && proj.invert([W * i / 6, H * j / 6]); if (!ll || !isFinite(ll[0])) continue;
@@ -589,7 +589,8 @@ const WorldMap = (() => {
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
   let fxHook = null, scn = null, scx = null, glide = 0;
-  let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false;
+  let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false, hideBox = null;
+  const inHide = p => { if (!hideBox) return false; const lo = Math.atan2(p.c[1], p.c[0]) * R2D, la = Math.asin(p.c[2]) * R2D; return lo >= hideBox[0] && lo <= hideBox[2] && la >= hideBox[1] && la <= hideBox[3]; };
   const fxHelp = {
     get W() { return W; }, get H() { return H; }, get zoom() { return zoom; },
     pt: at => project(locate(at, time)),
@@ -597,6 +598,8 @@ const WorldMap = (() => {
     cap: (south, deg) => capPath(south, deg),
     /* a present-day [lon, lat] on screen, for scenes of the last few thousand years (plates have barely moved) */
     ll: (lon, lat) => project([lon, lat]),
+    /* where a plate-carried point was at another time, on today's screen */
+    ptAt: (at, t) => project(locate(at, t)),
     /* Draw one layer of the scene, clipped to the globe, and keep only the part over 'sea', over 'land', or 'all'. */
     layer(mask, draw) {
       if (!scn) { scn = document.createElement('canvas'); scx = scn.getContext('2d'); }
@@ -630,7 +633,7 @@ const WorldMap = (() => {
     const pxPerDeg = proj.scale() * D2R * (mode === 'flat' ? 0.86 : 1);
     const lod = 0.8 * pxPerDeg <= 1.15 ? 2 : 0.3 * pxPerDeg <= 1.15 ? 1 : 0;
     for (const p of polys) {
-      if (!visible(p, t)) continue;
+      if (!visible(p, t) || inHide(p)) continue;
       const rings_ = p.lod[lod]; if (!rings_.length) continue;
       const m = famRot(p.f, t); if (!m) continue;
       st.polygonStart();
@@ -768,7 +771,7 @@ const WorldMap = (() => {
     const sl = seaLevel(t);
     const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
     if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; coverP = {}; riverP = null; }
-    if (sl < -1 && SHELF_LV.length) {
+    if (sl < -1 && SHELF_LV.length && !hideBox) {
       const lv = i => shelfP[i] || (shelfP[i] = geoP(SHELF_LV[i].geo));
       // the deepest level already reached is drawn in full; the next one fades in
       const drop = -sl; let k = -1; while (k + 1 < SHELF_LV.length && SHELF_LV[k + 1].m <= drop) k++;
@@ -1262,12 +1265,12 @@ const WorldMap = (() => {
 
   // ── pointer, wheel and touch ───────────────────────────────────────
   function bind() {
-    const pts = new Map(); let moved = 0, downAt = 0, pinch = 0;
+    const pts = new Map(); let moved = 0, downAt = 0, pinch = 0, trail = [];   // trail: recent [time, dx, dy] of a one-finger drag
     const pos = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     canvas.addEventListener('pointerdown', () => { glide++; });   // touching the map cancels any glide in progress
     canvas.addEventListener('pointerdown', wake); canvas.addEventListener('pointermove', e => { if (performance.now() > liveUntil - 9000) wake(); });
     canvas.addEventListener('pointerdown', e => {
-      pts.set(e.pointerId, pos(e)); moved = 0; downAt = performance.now();
+      pts.set(e.pointerId, pos(e)); moved = 0; downAt = performance.now(); trail = [];
       if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = Math.hypot(a[0] - b[0], a[1] - b[1]); }
       try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
     });
@@ -1282,7 +1285,7 @@ const WorldMap = (() => {
       pts.set(e.pointerId, p);
       if (pts.size === 1) {
         const dx = p[0] - prev[0], dy = p[1] - prev[1]; moved += Math.abs(dx) + Math.abs(dy);
-        if (moved > 4) { api.panBy(dx, dy); canvas.style.cursor = 'grabbing'; }
+        if (moved > 4) { api.panBy(dx, dy); canvas.style.cursor = 'grabbing'; const n = performance.now(); trail.push([n, dx, dy]); while (trail.length && n - trail[0][0] > 90) trail.shift(); }
       } else if (pts.size === 2) {
         const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
         if (pinch > 0) api.zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinch);
@@ -1291,6 +1294,17 @@ const WorldMap = (() => {
     });
     const up = e => {
       const p = pts.get(e.pointerId); pts.delete(e.pointerId); pinch = 0;
+      // a flick keeps the map coasting, easing to a stop — like sliding a sheet of paper across a table
+      if (motion && moved > 6 && !pts.size && trail.length > 1 && performance.now() - trail[trail.length - 1][0] < 60) {
+        const span = Math.max(16, trail[trail.length - 1][0] - trail[0][0]);
+        let vx = trail.reduce((a, q) => a + q[1], 0) / span, vy = trail.reduce((a, q) => a + q[2], 0) / span;   // px per ms
+        if (Math.hypot(vx, vy) > 0.25) {
+          const id = ++glide; let last = performance.now();
+          const coast = now => { if (id !== glide) return; const dt = Math.min(40, now - last); last = now; vx *= Math.pow(0.9955, dt); vy *= Math.pow(0.9955, dt); if (Math.hypot(vx, vy) < 0.02) return; api.panBy(vx * dt, vy * dt); requestAnimationFrame(coast); };
+          requestAnimationFrame(coast);
+        }
+      }
+      trail = [];
       if (p && moved <= 6 && performance.now() - downAt < 600 && e.type === 'pointerup') {
         const h = api.hit(p[0], p[1]);
         if (api.onPick) api.onPick(h, p[0], p[1]);
@@ -1344,6 +1358,10 @@ const WorldMap = (() => {
     setFx(fn) { fxHook = fn || null; schedule(); },
     /* hide the drawn North American ice sheet while a story draws its own, retreating one */
     setIceOff(on) { iceOff = !!on; dirty = true; schedule(); },
+    /* hide today's land inside a [lon0, lat0, lon1, lat1] box while a story draws its own (null to stop) */
+    setHideBox(b) { hideBox = b || null; shelfKey = ''; dirty = true; schedule(); },
+    /* turn the map to a present-day [lon, lat] */
+    lookAtLL(lon, lat) { api.lookAt({ ll: [lon, lat] }); },
     /* Decorative motion on or off (tests and screenshots turn it off; so does the reader's reduced-motion setting). */
     setMotion(on) { motion = !!on; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
     motion,
@@ -1366,12 +1384,29 @@ const WorldMap = (() => {
     resetView() { zoom = 1; panX = panY = 0; centerLon = 0; rotL = -20; rotP = -15; applyView(); },
     /* Bring a place into view: turn the globe to it, or re-centre a zoomed flat map. */
     lookAt(at) {
-      const ll = locate(at, time); if (!ll) return;
+      const ll = at && at.ll ? at.ll : locate(at, time); if (!ll) return;
       // glide there rather than jump; the globe turns the short way round
       let to = null;
       if (mode === 'globe') { let dl = ((-ll[0] - rotL + 540) % 360) - 180; to = { rotL: rotL + dl, rotP: -Math.max(-70, Math.min(70, ll[1])) }; }
       else if (zoom > 1) { const p = proj(ll); if (p) to = { panX: panX + W / 2 - p[0], panY: panY + H / 2 - p[1] }; }
       if (!to) return;
+      // a long hop on a zoomed-in flat map flies like a camera: up, across, and down again
+      if (mode === 'flat' && motion && zoom > 1.8) {
+        const p = proj(ll), z0 = zoom, far = Math.hypot(p[0] - W / 2, p[1] - H / 2) / Math.max(W, H);
+        if (far > 0.45) {
+          const c0 = [(W / 2 - baseT[0] - panX) / z0, (H / 2 - baseT[1] - panY) / z0], c1 = [(p[0] - baseT[0] - panX) / z0, (p[1] - baseT[1] - panY) / z0];
+          const dip = Math.min(0.75, 1 - Math.max(1, z0 / (1 + far * 3)) / z0), t0 = performance.now(), dur = 900 + 500 * Math.min(1, far), id = ++glide;
+          const step = now => {
+            if (id !== glide) return;
+            const k = Math.min(1, (now - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+            zoom = z0 * (1 - dip * Math.sin(Math.PI * k));
+            const cx = c0[0] + (c1[0] - c0[0]) * e, cy = c0[1] + (c1[1] - c0[1]) * e;
+            panX = W / 2 - baseT[0] - zoom * cx; panY = H / 2 - baseT[1] - zoom * cy;
+            applyView(); if (k < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step); return;
+        }
+      }
       const from = { rotL, rotP, panX, panY }, far = mode === 'globe' ? Math.hypot(to.rotL - rotL, to.rotP - rotP) / 90 : Math.hypot(to.panX - panX, to.panY - panY) / Math.max(W, H);
       if (!motion || far < 0.02) { if (mode === 'globe') { rotL = to.rotL; rotP = to.rotP; } else { panX = to.panX; panY = to.panY; } applyView(); return; }
       const t0 = performance.now(), dur = 380 + 420 * Math.min(1, far), id = ++glide;

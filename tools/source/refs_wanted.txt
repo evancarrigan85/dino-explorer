@@ -393,3 +393,15 @@ larson2001 | Larson | 2001 | Origin and Evolution of the Great Lakes | s:greatla
 teller2004 | Teller | 2004 | Glacial Lake Agassiz: A 5000 yr history of change and its relationship to the δ18O record of Greenland | s:greatlakes
 barber1999 | Barber | 1999 | Forcing of the cold event of 8,200 years ago by catastrophic drainage of Laurentide lakes | s:greatlakes
 dalton2020 | Dalton | 2020 | An updated radiocarbon-based ice margin chronology for the last deglaciation of the North American Ice Sheet Complex | s:greatlakes | 10.1016/j.quascirev.2020.106223
+# ── Earth being made: the Himalayas, the Mediterranean, Hawaii ──
+molnar1975 | Molnar | 1975 | Cenozoic Tectonics of Asia: Effects of a Continental Collision | s:himalaya
+patriat1984 | Patriat | 1984 | India–Eurasia collision chronology has implications for crustal shortening and driving mechanism of plates | s:himalaya
+vanhinsbergen2012 | van Hinsbergen | 2012 | Greater India Basin hypothesis and a two-stage Cenozoic collision between India and Asia | s:himalaya
+hu2016 | Hu | 2016 | The timing of India-Asia collision onset – Facts, theories, controversies | s:himalaya
+hsu1973 | Hsü | 1973 | Late Miocene Desiccation of the Mediterranean | s:mediterranean
+krijgsman1999 | Krijgsman | 1999 | Chronology, causes and progression of the Messinian salinity crisis | s:mediterranean
+garciacastellanos2009 | Garcia-Castellanos | 2009 | Catastrophic flood of the Mediterranean after the Messinian salinity crisis | s:mediterranean
+roveri2014 | Roveri | 2014 | The Messinian Salinity Crisis: Past and future of a great challenge for marine sciences | s:mediterranean
+wilson1963 | Wilson | 1963 | A possible origin of the Hawaiian Islands | s:hawaii
+tarduno2003 | Tarduno | 2003 | The Emperor Seamounts: Southward Motion of the Hawaiian Hotspot Plume in Earth's Mantle | s:hawaii
+sharp2006 | Sharp | 2006 | 50-Ma Initiation of Hawaiian-Emperor Bend Records Major Change in Pacific Plate Motion | s:hawaii

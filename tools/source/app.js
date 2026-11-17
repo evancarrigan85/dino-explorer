@@ -1011,7 +1011,8 @@ function bindExt() {
 
 // --- Stories: the Earth being made, played out on the map (Geology tab) ---
 const STORY_BY = Object.fromEntries(STORIES.map(st => [st.id, st]));
-const kaAt = (st, k) => { const a = st.ka; let i = 0; while (i < a.length - 2 && a[i + 1][0] <= k) i++; const [k0, y0] = a[i], [k1, y1] = a[i + 1]; return y0 + (y1 - y0) * clamp((k - k0) / (k1 - k0), 0, 1); };
+const clockOf = st => st.ka || st.ma.map(([k, m]) => [k, m * 1000]);
+const kaAt = (st, k) => { const a = clockOf(st); let i = 0; while (i < a.length - 2 && a[i + 1][0] <= k) i++; const [k0, y0] = a[i], [k1, y1] = a[i + 1]; return y0 + (y1 - y0) * clamp((k - k0) / (k1 - k0), 0, 1); };
 // the sketched ice edge at a moment: one latitude per longitude, blended between the dated edges
 function iceEdge(m, ka) {
   const E = m.edges; let i = 0; while (i < E.length - 2 && E[i + 1][0] >= ka) i++;
@@ -1072,11 +1073,117 @@ const STORY_SCENES = {
     g.layer('all', c => { const placed = []; want.sort((a, b) => a[0] - b[0]).forEach(L => drawLabel(c, placed, L)); });
   },
 };
+
+// labels placed most-important first, none on top of another: [priority, text, x, y, size, colour, italic]
+function placeLabels(c, items) {
+  const placed = [];
+  items.sort((a, b) => a[0] - b[0]).forEach(([, txt, x, y, size, col, italic]) => {
+    c.font = `${italic ? 'italic ' : ''}700 ${size}px Inter,system-ui,sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+    const w = c.measureText(txt).width + 8, h = size + 6, box = [x - w / 2, y - h / 2, w, h];
+    if (placed.some(b => box[0] < b[0] + b[2] && box[0] + box[2] > b[0] && box[1] < b[1] + b[3] && box[1] + box[3] > b[1])) return;
+    placed.push(box); c.lineWidth = 3.5; c.strokeStyle = 'rgba(255,255,255,0.88)'; c.strokeText(txt, x, y); c.fillStyle = col; c.fillText(txt, x, y);
+  });
+}
+Object.assign(STORY_SCENES, {
+  // India's journey north and the mountains it pushes up
+  himalaya(g, k, st, now) {
+    const sc = S.story, t = S.t, L = [], lab = (txt, p, size, col, italic, pri, dx = 0, dy = 0) => { if (p) L.push([pri, txt, p[0] + dx, p[1] + dy, size, col, italic]); };
+    if (!sc.india) { sc.india = WorldMap.attach(20, 78, 0); sc.front = st.front.map(([la, lo]) => WorldMap.attach(la, lo, 0)); sc.deccan = WorldMap.attach(19, 74, 66); }
+    g.layer('all', c => {
+      const tr = []; for (let a = 80; a > t; a -= 1) { const p = g.ptAt(sc.india, a); if (p) tr.push(p); }
+      const pn = g.pt(sc.india); if (pn) tr.push(pn);
+      c.setLineDash([2, 6]); c.lineCap = 'round'; c.strokeStyle = 'rgba(140,60,20,0.85)'; c.lineWidth = 2.6; c.beginPath(); tr.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.stroke(); c.setLineDash([]);
+      for (let a = 80; a > t + 4; a -= 10) { const p = g.ptAt(sc.india, a); if (!p) continue; c.beginPath(); c.arc(p[0], p[1], 3, 0, 7); c.fillStyle = 'rgba(140,60,20,0.9)'; c.fill(); lab(a + ' million years ago', p, 10, '#7a3a14', true, 6, 0, 12); }
+      if (pn) { c.beginPath(); c.arc(pn[0], pn[1], 6.5, 0, 7); c.fillStyle = '#c0501d'; c.fill(); c.lineWidth = 2; c.strokeStyle = '#fff3e0'; c.stroke(); lab('India', pn, 15, '#7a2a08', false, 1, 34, -14); }
+      const dk = clamp(1 - Math.abs(t - 66) / 2, 0, 1), pd = dk > 0 && g.pt(sc.deccan);
+      if (pd) { glow(c, pd, 30 * dk * (0.9 + 0.1 * Math.sin(now / 300)) + 0.1, LAVA); lab('Deccan eruptions', pd, 11, '#7a1e08', true, 2, 0, 28); }
+      const col = ramp(k, 0.42, 0.5), up = ramp(k, 0.45, 0.92);
+      if (col > 0) {
+        const P = sc.front.map(a => g.pt(a)).filter(Boolean);
+        if (P.length > 1) {
+          c.lineCap = c.lineJoin = 'round'; c.strokeStyle = `rgba(200,90,40,${0.35 * col})`; c.lineWidth = 16; c.beginPath(); P.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.stroke();
+          for (let i = 0; i < P.length - 1; i++) for (let q = 0; q < 4; q++) {
+            const u = (q + 0.5) / 4, x = P[i][0] + (P[i + 1][0] - P[i][0]) * u, y = P[i][1] + (P[i + 1][1] - P[i][1]) * u, h = (7 + 11 * Math.sin((i * 4 + q) * 1.7) ** 2) * up;
+            if (h < 0.6) continue;
+            c.beginPath(); c.moveTo(x - h * 0.7, y + 2); c.lineTo(x, y + 2 - h); c.lineTo(x + h * 0.7, y + 2); c.closePath(); c.fillStyle = '#8a5a2e'; c.fill(); c.lineWidth = 0.8; c.strokeStyle = '#4a2a0e'; c.stroke();
+            c.beginPath(); c.moveTo(x - h * 0.24, y + 2 - h * 0.66); c.lineTo(x, y + 2 - h); c.lineTo(x + h * 0.24, y + 2 - h * 0.66); c.closePath(); c.fillStyle = '#f4f6f8'; c.fill();
+          }
+          const mid = P[Math.floor(P.length / 2)];
+          if (up > 0.15) lab('Himalayas', mid, 13, '#5a2e0a', false, 1, 0, -30);
+          if (up > 0.45) lab('Tibetan Plateau', mid, 11, '#5a2e0a', true, 3, 0, -52);
+          if (col > 0.5 && up < 0.3) lab('India meets Asia', mid, 12, '#7a2a08', true, 1, 0, 26);
+        }
+      }
+      placeLabels(c, L);
+    });
+  },
+  // the Messinian salinity crisis and the Zanclean flood
+  mediterranean(g, k, st, now) {
+    const t = S.t, dry = clamp((5.97 - t) / 0.45, 0, 1), flood = ramp(k, 0.7, 0.9), out = 1 - ramp(k, 0.93, 1), L = [];
+    const ring = c => { const P = st.sea.map(([la, lo]) => g.ll(lo, la)); if (P.some(x => !x)) return false; c.beginPath(); P.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); return true; };
+    const dpx = (la, lo, d) => { const a = g.ll(lo, la), b = g.ll(lo + d, la); return a && b ? Math.abs(b[0] - a[0]) : 0; };
+    if (dry > 0) g.layer('sea', c => {
+      if (!ring(c)) return; c.save(); c.clip(); c.lineWidth = 22;
+      c.fillStyle = `rgba(247,245,238,${0.96 * dry})`; c.fillRect(0, 0, g.W, g.H);
+      c.fillStyle = `rgba(200,190,170,${0.35 * dry})`; for (let y = 0; y < g.H; y += 7) for (let x = (y % 14) ? 0 : 3.5; x < g.W; x += 7) c.fillRect(x, y, 1.2, 1.2);   // a crust of salt crystals
+      for (const [la, lo, r] of st.pools) { const p = g.ll(lo, la); if (!p) continue; const rx = dpx(la, lo, r * (1 - 0.65 * dry)); c.beginPath(); c.ellipse(p[0], p[1], rx, rx * 0.6, 0, 0, 7); c.fillStyle = `rgba(110,170,175,${0.9 * dry})`; c.fill(); }
+      c.restore();
+      if (ring(c)) { c.strokeStyle = `rgba(247,245,238,${0.96 * dry})`; c.lineWidth = 10; c.stroke(); }
+    });
+    if (flood > 0) g.layer('sea', c => {
+      const gb = g.ll(st.gibraltar[1], st.gibraltar[0]); if (!gb) return;
+      const R = flood * dpx(36, 0, 44);
+      c.save(); c.beginPath(); c.arc(gb[0], gb[1], R, 0, 7); c.clip();
+      if (ring(c)) { c.fillStyle = `rgba(62,120,170,${0.92 * out})`; c.fill(); c.lineWidth = 10; c.strokeStyle = `rgba(62,120,170,${0.92 * out})`; c.stroke(); }
+      c.restore();
+    });
+    g.layer('all', c => {
+      const gb = g.ll(st.gibraltar[1], st.gibraltar[0]);
+      const pour = clamp(1 - Math.abs(k - 0.78) / 0.12, 0, 1);
+      if (gb && pour > 0) { c.save(); c.setLineDash([9, 6]); c.lineDashOffset = -now / 18; c.lineCap = 'round'; for (let i = -2; i <= 2; i++) { c.strokeStyle = `rgba(40,100,170,${0.85 * pour})`; c.lineWidth = 3; c.beginPath(); c.moveTo(gb[0] - 40, gb[1] + i * 5); c.lineTo(gb[0] + 30, gb[1] + i * 7); c.stroke(); } c.restore(); L.push([1, 'the Atlantic breaks in', gb[0], gb[1] - 22, 12, '#1f4f80', true]); }
+      if (gb && dry > 0.15 && flood < 0.5) { const p = g.ll(-4.5, 36.9); if (p) L.push([2, 'channels closing', p[0], p[1] - 16, 11, '#7a3a14', true]); }
+      if (dry > 0.4 && flood < 0.6) { const p = g.ll(18, 36.2); if (p) L.push([1, 'salt flats and salty lakes', p[0], p[1], 13, '#7a5a1a', false]); }
+      if (flood > 0.2 && flood < 1) { const p = g.ll(13, 35.5); if (p) L.push([3, 'the flood', p[0], p[1] + 20, 12, '#1f4f80', true]); }
+      placeLabels(c, L);
+    });
+  },
+  // Hawaii: islands born over the hot spot, carried away north-west
+  hawaii(g, k, st, now) {
+    const t = S.t, hs = st.hotspot, L = [], out = 1 - ramp(k, 0.95, 1);
+    const px = (la, lo, km) => { const a = g.ll(lo, la), b = g.ll(lo, la + km / 111); return a && b ? Math.abs(b[1] - a[1]) : 0; };
+    g.layer('all', c => {
+      // the conveyor: the plate's direction
+      const a0 = g.ll(-154.6, 18.6), a1 = g.ll(-160.6, 22.6);
+      if (a0 && a1) { c.save(); c.globalAlpha = 0.5 * out; c.setLineDash([12, 10]); c.lineDashOffset = -now / 40; c.strokeStyle = '#2b5d86'; c.lineWidth = 2; c.beginPath(); c.moveTo(a0[0], a0[1]); c.lineTo(a1[0], a1[1]); c.stroke(); c.restore();
+        L.push([4, '← the Pacific plate carries the islands this way', a1[0] + 120, a1[1] - 26, 11, '#2b5d86', true]); }
+      const [sn, sla, slo, sage, skm] = st.seamount;
+      for (const [name, la, lo, age, km] of st.islands.concat([st.seamount])) {
+        if (t > age) continue;
+        const u = clamp((age - t) / age, 0, 1), la2 = hs[0] + (la - hs[0]) * u, lo2 = hs[1] + (lo - hs[1]) * u, p = g.ll(lo2, la2); if (!p) continue;
+        const grow = clamp((age - t) / Math.min(0.35, age * 0.3), 0, 1), r = Math.max(2, px(la2, lo2, km)) * (0.3 + 0.7 * grow) * (1 - 0.12 * u * (age / 5.1));
+        const under = name === sn;
+        c.save(); c.globalAlpha = out;
+        c.beginPath(); c.ellipse(p[0], p[1], r * 1.15, r * 0.85, -0.55, 0, 7);
+        if (under) { c.setLineDash([3, 3]); c.strokeStyle = 'rgba(40,90,140,0.9)'; c.lineWidth = 1.5; c.stroke(); c.setLineDash([]); }
+        else { c.fillStyle = age - t < 0.4 ? '#9a8a6a' : '#c9b27c'; c.fill(); c.lineWidth = 1.8; c.strokeStyle = '#4a2a0e'; c.stroke(); }
+        c.restore();
+        if (age - t < 0.5 && !under) glow(c, p, r * 0.7 * out + 0.1, LAVA);
+        const yrs = age >= 1 ? 'about ' + age + ' million years' : 'about ' + Math.round(age * 1000) + ',000 years';
+        L.push([under ? 3 : (km > 20 ? 1 : 4), under ? sn + ' — under the sea, still growing' : name, p[0], p[1] - r - 9, under ? 10 : 12, under ? '#2b5d86' : '#4a2a0e', under]);
+        if (!under && km > 15) L.push([5, yrs, p[0], p[1] + r + 9, 10, '#6a4a2a', true]);
+      }
+      const hp = g.ll(hs[1], hs[0]);
+      if (hp) { glow(c, hp, (18 + 4 * Math.sin(now / 350)) * out + 0.1, LAVA); L.push([2, 'hot spot', hp[0] + 34, hp[1] + 20, 11, '#7a1e08', true]); }
+      const k1 = g.ll(-160.7, 22.3); if (k1) L.push([6, '← older islands, worn down and sunk: Midway is about 28 million years old', k1[0] + 10, k1[1] - 40, 10, '#2b5d86', true]);
+      placeLabels(c, L);
+    });
+  },
+});
 let storyRaf = 0;
 function stopStory(done) {
   cancelAnimationFrame(storyRaf); const was = S.story; S.story = null;
   if (!was) return;
-  WorldMap.setFx(null); WorldMap.setIceOff(false); updateMarkers();
+  WorldMap.setFx(null); WorldMap.setIceOff(false); WorldMap.setHideBox(null); updateMarkers();
   $('sceneCap').classList.remove('show'); document.body.classList.remove('scening');
   if (S.tab === 'geo') renderGeo();
   if (done) { const st = STORY_BY[was.id]; showFact(st.icon, '<b>' + esc(st.title) + '.</b> ' + esc(st.steps[st.steps.length - 1][1]) + '<br><small><button class="linkbtn" data-story="' + st.id + '">↻ Watch again</button></small>', 14000); }
@@ -1086,13 +1193,14 @@ function playStory(id) {
   if (S.story) { const same = S.story.id === id; stopStory(); if (same) return; }
   if (S.scene) stopScene();
   stopPlay(); cancelTween(); closeFact(); if (S.jr) endJourney();
-  const t0 = st.ka[0][1] / 1000, t1 = st.ka[st.ka.length - 1][1] / 1000;
+  const ck = clockOf(st), t0 = ck[0][1] / 1000, t1 = ck[ck.length - 1][1] / 1000;
   setWindow(t0 * 1.15, 0, true); setTime(t0);
-  WorldMap.resetView(); if (WorldMap.mode === 'flat') WorldMap.zoomBy(st.view[2]); WorldMap.lookAt(WorldMap.attach(st.view[0], st.view[1], t0));
+  WorldMap.resetView(); if (WorldMap.mode === 'flat') WorldMap.zoomBy(st.view[2]);
+  if (st.view[3] === 'abs') WorldMap.lookAtLL(st.view[1], st.view[0]); else WorldMap.lookAt(WorldMap.attach(st.view[0], st.view[1], t0));
   if (!WorldMap.motion) { setTime(t1); showFact(st.icon, '<b>' + esc(st.title) + '.</b> ' + st.steps.map(x => esc(x[1])).join(' '), 24000); return; }
   const dur = 26000;
   S.story = { id, step: -1, t0: performance.now() }; updateMarkers();
-  WorldMap.setIceOff(true); document.body.classList.add('scening');
+  if (st.hideIce) WorldMap.setIceOff(true); if (st.hide) WorldMap.setHideBox(st.hide); document.body.classList.add('scening');
   if (window.innerWidth < 768) $('mapArea').scrollIntoView({ block: 'center', behavior: 'smooth' });
   WorldMap.setFx((c, g, now) => { const sc = S.story; if (!sc) return; STORY_SCENES[id](g, clamp((now - sc.t0) / dur, 0, 1), st, now); });
   const tick = now => {
@@ -1107,6 +1215,7 @@ function playStory(id) {
       document.querySelectorAll('#pane-geo .story-steps li').forEach((li, n) => li.classList.toggle('on', n === i));
     }
     const bar = $('scBar'); if (bar) bar.style.width = (k * 100).toFixed(1) + '%';
+    if (k > 0.95 && st.hide && !sc.unhid) { sc.unhid = true; WorldMap.setHideBox(null); }   // today's real coasts come back for the ending
     if (k >= 1) { setTime(t1); setTimeout(() => { if (S.story === sc) stopStory(true); }, 1600); return; }
     storyRaf = requestAnimationFrame(tick);
   };
@@ -1119,7 +1228,7 @@ function storiesHTML() {
       <button class="watch" data-story="${st.id}">${on ? '■ Stop' : '▶ Watch it happen on the map'}</button>
       ${open ? `<div class="label-sec"><h5>🎬 Step by step</h5><ol class="ext-steps story-steps">${st.steps.map((x, i) => `<li${on && S.story.step === i ? ' class="on"' : ''}>${esc(x[1])}</li>`).join('')}</ol></div>
         <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(st.know)}</div><div class="label-sec"><h5>❓ Still debated</h5>${esc(st.debate)}</div>
-        <div class="found">📍 <b>On the map:</b> the ice edge, the meltwater lakes and Lake Agassiz are rough sketches after published maps of the ice sheet’s retreat. Today’s lakes appear once the ice has gone.</div>${srcHTML('s:' + st.id)}` : `<button class="linkbtn" data-story-open="${st.id}">Read the steps and the evidence</button>`}</div>`; }).join('')}</div>`;
+        <div class="found">📍 <b>On the map:</b> ${esc(st.onmap)}</div>${srcHTML('s:' + st.id)}` : `<button class="linkbtn" data-story-open="${st.id}">Read the steps and the evidence</button>`}</div>`; }).join('')}</div>`;
 }
 
 // --- History: empires, kingdoms and beliefs of the last 5,500 years ---

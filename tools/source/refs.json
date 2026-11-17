@@ -6723,5 +6723,193 @@
 ],
 "first": "",
 "title_expected": "An updated radiocarbon-based ice margin chronology for the last deglaciation of the North American Ice Sheet Complex"
+},
+"molnar1975": {
+"doi": "10.1126/science.189.4201.419",
+"title": "Cenozoic Tectonics of Asia: Effects of a Continental Collision: Features of recent continental tectonics in Asia can be interpreted as results of the India-Eurasia collision",
+"journal": "Science",
+"year": 1975,
+"authors": [
+"Molnar",
+"Tapponnier"
+],
+"type": "journal-article",
+"targets": [
+"s:himalaya"
+],
+"first": "",
+"title_expected": "Cenozoic Tectonics of Asia: Effects of a Continental Collision"
+},
+"patriat1984": {
+"doi": "10.1038/311615a0",
+"title": "India–Eurasia collision chronology has implications for crustal shortening and driving mechanism of plates",
+"journal": "Nature",
+"year": 1984,
+"authors": [
+"Patriat",
+"Achache"
+],
+"type": "journal-article",
+"targets": [
+"s:himalaya"
+],
+"first": "",
+"title_expected": "India–Eurasia collision chronology has implications for crustal shortening and driving mechanism of plates"
+},
+"vanhinsbergen2012": {
+"doi": "10.1073/pnas.1117262109",
+"title": "Greater India Basin hypothesis and a two-stage Cenozoic collision between India and Asia",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2012,
+"authors": [
+"van Hinsbergen",
+"Lippert",
+"Dupont-Nivet",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:himalaya"
+],
+"first": "",
+"title_expected": "Greater India Basin hypothesis and a two-stage Cenozoic collision between India and Asia"
+},
+"hu2016": {
+"doi": "10.1016/j.earscirev.2016.07.014",
+"title": "The timing of India-Asia collision onset – Facts, theories, controversies",
+"journal": "Earth-Science Reviews",
+"year": 2016,
+"authors": [
+"Hu",
+"Garzanti",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:himalaya"
+],
+"first": "",
+"title_expected": "The timing of India-Asia collision onset – Facts, theories, controversies"
+},
+"hsu1973": {
+"doi": "10.1038/242240a0",
+"title": "Late Miocene Desiccation of the Mediterranean",
+"journal": "Nature",
+"year": 1973,
+"authors": [
+"HSÜ",
+"RYAN",
+"CITA"
+],
+"type": "journal-article",
+"targets": [
+"s:mediterranean"
+],
+"first": "",
+"title_expected": "Late Miocene Desiccation of the Mediterranean"
+},
+"krijgsman1999": {
+"doi": "10.1038/23231",
+"title": "Chronology, causes and progression of the Messinian salinity crisis",
+"journal": "Nature",
+"year": 1999,
+"authors": [
+"Krijgsman",
+"Hilgen",
+"Raffi",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:mediterranean"
+],
+"first": "",
+"title_expected": "Chronology, causes and progression of the Messinian salinity crisis"
+},
+"garciacastellanos2009": {
+"doi": "10.1038/nature08555",
+"title": "Catastrophic flood of the Mediterranean after the Messinian salinity crisis",
+"journal": "Nature",
+"year": 2009,
+"authors": [
+"Garcia-Castellanos",
+"Estrada",
+"Jiménez-Munt",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:mediterranean"
+],
+"first": "",
+"title_expected": "Catastrophic flood of the Mediterranean after the Messinian salinity crisis"
+},
+"roveri2014": {
+"doi": "10.1016/j.margeo.2014.02.002",
+"title": "The Messinian Salinity Crisis: Past and future of a great challenge for marine sciences",
+"journal": "Marine Geology",
+"year": 2014,
+"authors": [
+"Roveri",
+"Flecker",
+"Krijgsman",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:mediterranean"
+],
+"first": "",
+"title_expected": "The Messinian Salinity Crisis: Past and future of a great challenge for marine sciences"
+},
+"wilson1963": {
+"doi": "10.1139/p63-094",
+"title": "A Possible Origin of the Hawaiian Islands",
+"journal": "Canadian Journal of Physics",
+"year": 1963,
+"authors": [
+"Wilson"
+],
+"type": "journal-article",
+"targets": [
+"s:hawaii"
+],
+"first": "",
+"title_expected": "A possible origin of the Hawaiian Islands"
+},
+"tarduno2003": {
+"doi": "10.1126/science.1086442",
+"title": "The Emperor Seamounts: Southward Motion of the Hawaiian Hotspot Plume in Earth's Mantle",
+"journal": "Science",
+"year": 2003,
+"authors": [
+"Tarduno",
+"Duncan",
+"Scholl",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:hawaii"
+],
+"first": "",
+"title_expected": "The Emperor Seamounts: Southward Motion of the Hawaiian Hotspot Plume in Earth's Mantle"
+},
+"sharp2006": {
+"doi": "10.1126/science.1128489",
+"title": "50-Ma Initiation of Hawaiian-Emperor Bend Records Major Change in Pacific Plate Motion",
+"journal": "Science",
+"year": 2006,
+"authors": [
+"Sharp",
+"Clague"
+],
+"type": "journal-article",
+"targets": [
+"s:hawaii"
+],
+"first": "",
+"title_expected": "50-Ma Initiation of Hawaiian-Emperor Bend Records Major Change in Pacific Plate Motion"
 }
 }
