@@ -60,7 +60,7 @@
     <div class="map-area" id="mapArea">
       <canvas id="mapCanvas" aria-label="World map showing where the continents were at the selected time"></canvas>
       <canvas id="mapFx"></canvas>
-      <div id="cartouche"><div class="ct-title" id="ctTitle"></div><div class="ct-date" id="ctDate"></div><div class="ct-temp" id="ctTemp"></div></div>
+      <div id="cartouche"><div class="ct-title" id="ctTitle"></div><div class="ct-date"><span id="ctDate"></span><span class="ct-mini" id="ctMini"></span></div><div class="ct-temp" id="ctTemp"></div></div>
       <div class="map-ctl">
         <button class="map-btn" id="mapGlobe" title="Switch between flat map and globe" aria-label="Switch between flat map and globe">🌐</button>
         <button class="map-btn" id="mapIn" title="Zoom in" aria-label="Zoom map in">+</button>
@@ -78,7 +78,7 @@
         <circle r="4.5" fill="#2e1506"/><circle r="2.5" fill="#d4a030"/>
         <text y="-33" text-anchor="middle" font-family="Cinzel,Georgia,serif" font-size="9" font-weight="700" fill="#1a0a02">N</text>
       </svg>
-      <button id="mapNote" title="About this map">ⓘ Continents move with their plates · tap for how this map is made</button>
+      <button id="mapNote" title="About this map" aria-label="How this map is made">ⓘ <span class="mn-long">Continents move with their plates · tap for how this map is made</span><span class="mn-short">How this map is made</span></button>
       <div id="mapAbout" role="dialog" aria-label="About this map">
         <button class="x" id="mapAboutX" aria-label="Close">✕</button>
         <h4>How this map is made</h4>

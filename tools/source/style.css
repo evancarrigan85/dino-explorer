@@ -577,3 +577,19 @@ header .logo,header h1{cursor:pointer}
 .story{background:rgba(120,180,230,.06);border:1px solid rgba(120,180,230,.35);border-radius:10px;padding:10px 11px;margin:4px 0 8px}
 .story-top{display:flex;gap:10px;align-items:flex-start}.story-i{font-size:1.5rem}.story-top b{display:block;color:#fff;font-size:.88rem}.story-top span{font-size:.72rem;color:#9fb0c8;line-height:1.35}
 .story .watch{border-color:#6fa8dc;background:linear-gradient(180deg,rgba(111,168,220,.28),rgba(111,168,220,.1));color:#e3f0ff}
+
+/* the title box: one slim line on a phone (the period's name is already in the panel above the map) */
+#cartouche .ct-mini{display:none}
+@media (max-width:767px){
+  #cartouche{left:7px;top:7px;padding:2px 8px 2px;max-width:60%;background:rgba(243,224,178,.88);pointer-events:auto;cursor:pointer;
+    box-shadow:0 1px 4px rgba(40,20,0,.3), inset 0 0 0 2px rgba(243,224,178,.88), inset 0 0 0 2.6px rgba(96,58,16,.3)}
+  #cartouche .ct-title,#cartouche .ct-temp{display:none}
+  #cartouche .ct-date{border-top:0;margin:0;padding:1px 0 0;font-size:.56rem;letter-spacing:.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #cartouche .ct-mini{display:inline}
+  #cartouche.open{max-width:86%;padding:4px 10px;background:rgba(243,224,178,.97)}
+  #cartouche.open .ct-title,#cartouche.open .ct-temp{display:block}
+  #cartouche.open .ct-date{border-top:1px solid rgba(96,58,16,.45);margin-top:3px;padding-top:2px}
+  #cartouche.open .ct-mini{display:none}
+}
+#mapNote .mn-short{display:none}
+@media (max-width:767px){#mapNote .mn-long{display:none}#mapNote .mn-short{display:inline}}

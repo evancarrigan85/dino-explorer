@@ -327,6 +327,13 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     await p.mouse.move(bb.x + 600, bb.y + 300); await p.mouse.down(); for (let i = 1; i <= 8; i++) { await p.mouse.move(bb.x + 600 - i * 25, bb.y + 300); await p.waitForTimeout(12); } await p.mouse.up();
     await p.waitForTimeout(40); const a = await probe(); await p.waitForTimeout(700); return a !== await probe(); })());
   ok('camera: a long jump on the zoomed map pulls back and swoops in', await p.evaluate(async () => { WorldMap.resetView(); WorldMap.zoomBy(4); noLook = 0; await new Promise(r => setTimeout(r, 300)); let min = 99; const t0 = performance.now(); select('giraffatitan', { keep: true }); while (performance.now() - t0 < 1600) { min = Math.min(min, WorldMap.zoom); await new Promise(r => requestAnimationFrame(r)); } const end = WorldMap.zoom; S.sel = null; WorldMap.select(null); WorldMap.resetView(); return min < 3 && Math.abs(end - 4) < 0.01; }));
+  { const q = await open(null, '#0.0059mya', { ...require('playwright').devices['iPhone 13'] });
+    await q.waitForTimeout(600);
+    const box = await q.evaluate(() => { const c = document.getElementById('cartouche').getBoundingClientRect(), m = document.getElementById('mapArea').getBoundingClientRect(); return { h: c.height, w: c.width, mw: m.width, title: getComputedStyle(document.querySelector('#cartouche .ct-title')).display, text: document.getElementById('cartouche').innerText, note: document.getElementById('mapNote').getBoundingClientRect().width }; });
+    ok('phone: the title box is one slim line with the date and temperature, and the map note is short', box.h < 30 && box.w < box.mw * 0.62 && box.title === 'none' && /YEARS AGO/.test(box.text) && /°C/.test(box.text) && box.note < box.mw * 0.6, JSON.stringify(box));
+    await q.tap('#cartouche'); await q.waitForTimeout(200);
+    ok('phone: tapping the title box opens it in full', await q.evaluate(() => document.getElementById('cartouche').classList.contains('open') && getComputedStyle(document.querySelector('#cartouche .ct-title')).display === 'block'));
+    await q.close(); }
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

@@ -128,6 +128,7 @@ function updateClock(fromSlider) {
   $('ctDate').textContent = fmtAgo(t).toUpperCase() + (sl <= -10 ? ' · SEA ' + sl + ' M' : sl >= 4 ? ' · SEA +' + sl + ' M' : '');
   const T = globalTemp(t), dT = T == null ? 0 : T - TEMP_TODAY;
   $('ctTemp').textContent = T == null ? '' : '🌡 about ' + Math.round(T) + ' °C · ' + (Math.abs(dT) < 0.75 ? 'much like today' : Math.round(Math.abs(dT)) + '° ' + (dT > 0 ? 'warmer' : 'colder') + ' than today');
+  $('ctMini').textContent = T == null ? '' : ' · ' + Math.round(T) + ' °C';
   $('ctDate').title = sl <= -10 ? 'Sea level about ' + (-sl) + ' m lower than today — the paler land around today’s coasts was dry ground' : '';
   if (!fromSlider) $('timeSlider').value = Math.round(posOf(t) * 10000);
   $('timeSlider').setAttribute('aria-valuetext', p.name + ', ' + fmtAgo(t));
@@ -1739,6 +1740,9 @@ function init() {
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
   $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  // on a phone the title box is one slim line; a tap opens it in full for a few seconds
+  let ctTimer = 0;
+  $('cartouche').addEventListener('click', () => { const c = $('cartouche'); c.classList.toggle('open'); clearTimeout(ctTimer); if (c.classList.contains('open')) ctTimer = setTimeout(() => c.classList.remove('open'), 6000); });
   $('mapNote').onclick = () => $('mapAbout').classList.toggle('show'); $('mapAboutX').onclick = () => $('mapAbout').classList.remove('show');
   $('eventsRibbon').onclick = () => switchTab('insights');
   $('fpClose').onclick = closeFact;

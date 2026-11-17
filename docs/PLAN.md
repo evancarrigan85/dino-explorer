@@ -23,7 +23,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 172 passing |
+| Checks | 174 passing |
 | Page | about 1.47 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -469,6 +469,11 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — A slimmer title box on phones.** Evan: the banner "covers the map too much". On a
+  phone the title box is now one slim line (date, sea level when it matters, temperature) — the
+  period's name is already in the panel above the map — and a tap opens the full card for six
+  seconds. The bottom note reads just "How this map is made" on phones. Desktop unchanged. 174 checks.
 
 - **17 Nov 2026 — Three more Earth stories; a camera that flies.** Geology tab: the Himalayas (India's
   track north from 80 Ma, the Deccan eruptions, the collision, the mountains rising), the Mediterranean

@@ -592,6 +592,22 @@ header .logo,header h1{cursor:pointer}
 .story{background:rgba(120,180,230,.06);border:1px solid rgba(120,180,230,.35);border-radius:10px;padding:10px 11px;margin:4px 0 8px}
 .story-top{display:flex;gap:10px;align-items:flex-start}.story-i{font-size:1.5rem}.story-top b{display:block;color:#fff;font-size:.88rem}.story-top span{font-size:.72rem;color:#9fb0c8;line-height:1.35}
 .story .watch{border-color:#6fa8dc;background:linear-gradient(180deg,rgba(111,168,220,.28),rgba(111,168,220,.1));color:#e3f0ff}
+
+/* the title box: one slim line on a phone (the period's name is already in the panel above the map) */
+#cartouche .ct-mini{display:none}
+@media (max-width:767px){
+  #cartouche{left:7px;top:7px;padding:2px 8px 2px;max-width:60%;background:rgba(243,224,178,.88);pointer-events:auto;cursor:pointer;
+    box-shadow:0 1px 4px rgba(40,20,0,.3), inset 0 0 0 2px rgba(243,224,178,.88), inset 0 0 0 2.6px rgba(96,58,16,.3)}
+  #cartouche .ct-title,#cartouche .ct-temp{display:none}
+  #cartouche .ct-date{border-top:0;margin:0;padding:1px 0 0;font-size:.56rem;letter-spacing:.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #cartouche .ct-mini{display:inline}
+  #cartouche.open{max-width:86%;padding:4px 10px;background:rgba(243,224,178,.97)}
+  #cartouche.open .ct-title,#cartouche.open .ct-temp{display:block}
+  #cartouche.open .ct-date{border-top:1px solid rgba(96,58,16,.45);margin-top:3px;padding-top:2px}
+  #cartouche.open .ct-mini{display:none}
+}
+#mapNote .mn-short{display:none}
+@media (max-width:767px){#mapNote .mn-long{display:none}#mapNote .mn-short{display:inline}}
 </style>
 </head>
 <body>
@@ -657,7 +673,7 @@ header .logo,header h1{cursor:pointer}
     <div class="map-area" id="mapArea">
       <canvas id="mapCanvas" aria-label="World map showing where the continents were at the selected time"></canvas>
       <canvas id="mapFx"></canvas>
-      <div id="cartouche"><div class="ct-title" id="ctTitle"></div><div class="ct-date" id="ctDate"></div><div class="ct-temp" id="ctTemp"></div></div>
+      <div id="cartouche"><div class="ct-title" id="ctTitle"></div><div class="ct-date"><span id="ctDate"></span><span class="ct-mini" id="ctMini"></span></div><div class="ct-temp" id="ctTemp"></div></div>
       <div class="map-ctl">
         <button class="map-btn" id="mapGlobe" title="Switch between flat map and globe" aria-label="Switch between flat map and globe">🌐</button>
         <button class="map-btn" id="mapIn" title="Zoom in" aria-label="Zoom map in">+</button>
@@ -675,7 +691,7 @@ header .logo,header h1{cursor:pointer}
         <circle r="4.5" fill="#2e1506"/><circle r="2.5" fill="#d4a030"/>
         <text y="-33" text-anchor="middle" font-family="Cinzel,Georgia,serif" font-size="9" font-weight="700" fill="#1a0a02">N</text>
       </svg>
-      <button id="mapNote" title="About this map">ⓘ Continents move with their plates · tap for how this map is made</button>
+      <button id="mapNote" title="About this map" aria-label="How this map is made">ⓘ <span class="mn-long">Continents move with their plates · tap for how this map is made</span><span class="mn-short">How this map is made</span></button>
       <div id="mapAbout" role="dialog" aria-label="About this map">
         <button class="x" id="mapAboutX" aria-label="Close">✕</button>
         <h4>How this map is made</h4>
@@ -5303,6 +5319,7 @@ function updateClock(fromSlider) {
   $('ctDate').textContent = fmtAgo(t).toUpperCase() + (sl <= -10 ? ' · SEA ' + sl + ' M' : sl >= 4 ? ' · SEA +' + sl + ' M' : '');
   const T = globalTemp(t), dT = T == null ? 0 : T - TEMP_TODAY;
   $('ctTemp').textContent = T == null ? '' : '🌡 about ' + Math.round(T) + ' °C · ' + (Math.abs(dT) < 0.75 ? 'much like today' : Math.round(Math.abs(dT)) + '° ' + (dT > 0 ? 'warmer' : 'colder') + ' than today');
+  $('ctMini').textContent = T == null ? '' : ' · ' + Math.round(T) + ' °C';
   $('ctDate').title = sl <= -10 ? 'Sea level about ' + (-sl) + ' m lower than today — the paler land around today’s coasts was dry ground' : '';
   if (!fromSlider) $('timeSlider').value = Math.round(posOf(t) * 10000);
   $('timeSlider').setAttribute('aria-valuetext', p.name + ', ' + fmtAgo(t));
@@ -6914,6 +6931,9 @@ function init() {
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
   $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  // on a phone the title box is one slim line; a tap opens it in full for a few seconds
+  let ctTimer = 0;
+  $('cartouche').addEventListener('click', () => { const c = $('cartouche'); c.classList.toggle('open'); clearTimeout(ctTimer); if (c.classList.contains('open')) ctTimer = setTimeout(() => c.classList.remove('open'), 6000); });
   $('mapNote').onclick = () => $('mapAbout').classList.toggle('show'); $('mapAboutX').onclick = () => $('mapAbout').classList.remove('show');
   $('eventsRibbon').onclick = () => switchTab('insights');
   $('fpClose').onclick = closeFact;
