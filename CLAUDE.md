@@ -85,7 +85,12 @@ builds, passes the checks and has been looked at.
   the last finished frame (`drawQuick`) and redraws properly 140 ms after the hand stops.
 - `engine.js` is `WorldMap`: a canvas map that carries today's coastlines back in time on their
   tectonic plates (Merdith et al. 2021), with Ice Age shorelines, ice, relief, labels, markers and a
-  pin. It knows nothing about animals.
+  pin. It knows nothing about animals. From 540 Ma to 3 Ma it also draws **seas over the continents**
+  (`seas-data.js`, Kocsis & Scotese 2021): published ancient-coast maps, one every 5 Myr, carried on
+  our plates and traced into outlines in the page. There the land is the mapped land, not today's
+  coast, and the coast ink is the edge of the land as drawn; a dotted line shows today's coast (after
+  410 Ma). `WorldMap.seaAt()` and `seaShare()` answer “was this place under the sea?” and “how much
+  of the continents was?”. The Geology tab charts it.
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
   Life, Humans, Insights, Extinctions, Finds, Quiz, Geology. Map pins for a tab are built in
   `updatePlaces()`.
@@ -110,10 +115,13 @@ builds, passes the checks and has been looked at.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `s:` story id, `k:` empire id, `b:` belief id,
   `r:` trade route id, `w:` great work id, `m:` map layer
-  (`plates|sealevel|climate|rocks|landcover|history|time`).
+  (`plates|seas|sealevel|climate|rocks|landcover|history|time`).
 
 ## Network
 
 This environment reaches GitHub, npm, PyPI, Crossref and `api.pixellab.ai`. It does **not** reach
 `zenodo.org`, `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
-so, and the host has to be approved by Evan first.
+so, and the host has to be approved by Evan first. Public GitHub repositories can be cloned with
+`git clone` even though the GitHub API is scoped to this project — search them with
+`gh api -X GET search/repositories` first: that is how the ancient-coast data was found when the
+usual hosts were closed. Check each dataset's licence before using it.

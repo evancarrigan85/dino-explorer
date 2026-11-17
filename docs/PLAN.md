@@ -16,15 +16,15 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Animals | 689 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
 | Family trees | Four, linked to each other and to every animal card: the road to mammals, the dinosaur tree, from fish to four legs, the reptile tree |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
-| Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
+| Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 390, every one a published work confirmed in Crossref |
+| References | 396, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 174 passing |
-| Page | about 1.47 MB, one file |
+| Checks | 191 passing |
+| Page | about 1.70 MB, one file (plus close-up tiles loaded on demand) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -47,10 +47,11 @@ that the data cannot support.
 
 What is missing, most important first:
 
-1. **Before the Ice Age, the coastlines are today's coasts carried back in time.** The real ancient
-   shorelines are not shown: no seaway down the middle of Cretaceous North America, no shallow sea
-   over Jurassic Europe, no flooded Sahara. This is the single biggest gap between the map and the
-   science, and Release 2 fixes it.
+1. ~~Before the Ice Age, the coastlines are today's coasts carried back in time.~~ **Fixed 17 Nov
+   2026** for 540 → 3 Ma: the sea over the continents and the ancient coasts are drawn from Kocsis &
+   Scotese (2021). What remains: their coast is the sea at its *highest* in each 5-Myr stage, the dots
+   are ~1° (about 100 km), they were made on another plate model (PALEOMAP), and nothing exists before
+   540 Ma. All four are said in "How this map is made".
 2. **No ancient mountains.** The Appalachians were once Himalaya-sized; the map shows flat land.
    Also Release 2 (the same dataset has mountain belts).
 3. **Land colour is a latitude sketch**, not reconstructed climate. Release 3 adds the rock evidence
@@ -148,9 +149,27 @@ story (1976) and trail length; Jefferson's hope for living mammoths; Sue's sale 
 bombing date; the Tiktaalik naming with the Nunavut elders. Fix or soften anything a source does
 not support.
 
-## Release 2 — Ancient shorelines and mountains (needs one host approved)
+## Release 2 — Ancient shorelines and mountains
 
-**Goal.** For 400 Ma → 2 Ma, draw where the sea actually covered the continents and where the
+**Shipped (17 Nov 2026): the shorelines.** No host was needed after all: Kocsis & Scotese's
+PaleoCoastlines (CC-BY 4.0), already turned back to present-day positions as ~1° pixels by
+J. Salvador Arias, are in a public GitHub repository (`js-arias/gml-kocsis`) that `git clone` reaches.
+`tools/build_seas.py` ties every pixel to one of our plate families; the page traces the outlines
+itself, plate by plate. See `tools/README.md`. A check on every one of the 109 maps makes sure each
+outline closes and no plate's outline reads as most of the globe (one did, before a fix: the whole
+Atlantic turned to land at 65 Ma in a zoomed view).
+
+**Next for the seas, in order:** name the great seaways on the map (Western Interior Seaway, the
+Trans-Saharan seaway, the Turgai Strait, the Zechstein Sea), each with a verified source and dates
+taken from the maps; a “Watch the Earth being made” story for the Western Interior Seaway; a share of
+marine fossil sites that fall in water before vs after (report it); a cross-fade between neighbouring
+maps instead of a jump.
+
+**Still to do: the mountains (needs one host approved).** The plan below stands for mountain belts.
+Do **not** use the PALEOMAP PaleoDEMs (in the Kocsis repository and on Zenodo): their licence is
+CC-BY-NC-ND, which forbids derived layers. Cao et al. 2017 (CC-BY) is the route.
+
+**Goal (original).** For 400 Ma → 2 Ma, draw where the sea actually covered the continents and where the
 mountain belts stood, on top of the moving plates.
 
 **Data.** Cao, Zahirovic, Flament, Williams, Golonka & Müller (2017), *Improving global
@@ -469,6 +488,17 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — Seas over the continents, 540 million years ago to the Ice Age.** Evan: “no
+  indication of the shallow seas, even way back in the Ordovician”. The map now draws, from Kocsis &
+  Scotese (2021), where the sea lay over the continents: pale blue over the drowned continents, darker
+  deep ocean, and land only where the coast then stood — the Ordovician seas over North America, the
+  Western Interior Seaway, Jurassic Europe as islands, the Trans-Saharan seaway. A dotted line shows
+  today's coast on its plate (after 410 Ma). The title box says how much of the continents was under
+  the sea (“43% · today 30%”); the Geology tab charts it from 540 Ma, taps to travel, and explains
+  that the sea's height in metres is argued over (Haq 2014 vs Miller et al. 2005; Haq & Schutter 2008
+  for the Paleozoic). The pin card now says whether your town was under the sea. Six new verified
+  sources (396). 191 checks, including all 109 maps traced and checked.
 
 - **17 Nov 2026 — A slimmer title box on phones.** Evan: the banner "covers the map too much". On a
   phone the title box is now one slim line (date, sea level when it matters, temperature) — the

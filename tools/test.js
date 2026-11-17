@@ -383,6 +383,39 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('climate: the map title carries the temperature', await p.evaluate(() => /about 20 °C/.test(document.getElementById('ctTemp').textContent)));
   ok('climate: map notes cite the temperature research', await p.evaluate(() => /Scotese/.test(document.getElementById('mapAbout').innerText) && /Tierney/.test(document.getElementById('mapAbout').innerText)));
   ok('relief: the mountain layer is present and is not a preprint-sized stub', await p.evaluate(() => typeof RELIEF_PACKED === 'string' && RELIEF_PACKED.length > 5000));
+  // seas over the continents (Kocsis & Scotese 2021, carried on our plates)
+  await p.evaluate(() => setTime(450)); await p.waitForFunction(() => WorldMap._sea().st === 'ready', null, { timeout: 10000 }); await p.waitForTimeout(150);
+  const sea450 = await p.evaluate(() => WorldMap._sea());
+  ok('seas: the maps unpack and trace into outlines at 450 Ma', sea450.M > 50 && sea450.L > 50, JSON.stringify(sea450));
+  { const chk = await p.evaluate(() => WorldMap._seaCheck());
+    ok('seas: on all 109 maps every outline closes, no plate’s outline reads as most of the globe, and traced areas match the pixels', chk.open === 0 && chk.badFam.length === 0 && chk.maps.length === 109 && chk.maps.every(m => m[1] > 0.9 && m[1] < 1.4 && (m[2] > 0.9 && m[2] < 1.4)), JSON.stringify({ open: chk.open, bad: chk.badFam.slice(0, 5), off: chk.maps.filter(m => !(m[1] > 0.9 && m[1] < 1.4 && m[2] > 0.9 && m[2] < 1.4)).slice(0, 5) })); }
+  // (the globe faces the land: Pangaea alone fills about 70% of it, so the globe's limit is higher)
+  { const swamp = await p.evaluate(() => { const out = []; for (const mode of ['flat', 'globe']) { WorldMap.setMode(mode); for (let t = 5; t <= 540; t += 5) { setTime(t); WorldMap._draw(); if (WorldMap._landFrac() > (mode === 'flat' ? 0.6 : 0.8)) out.push(mode + ' ' + t); } } WorldMap.setMode('flat'); setTime(450); return out; });
+    ok('seas: no map from 540 Ma to today is swamped with land (flat and globe)', swamp.length === 0, swamp.join(', ')); }
+  ok('seas: outlines wind the right way (traced area matches the pixels)', sea450.mArea / sea450.pxArea > 0.9 && sea450.mArea / sea450.pxArea < 1.4, JSON.stringify(sea450));
+  ok('seas: about half the Ordovician continents under the sea, under a tenth in the Triassic; no maps before 540 Ma or in the Ice Age', await p.evaluate(() => { const a = WorldMap.seaShare(450), tr = WorldMap.seaShare(205); return a && a.pct > 35 && a.pct < 55 && tr.pct < 10 && WorldMap.seaShare(600) === null && WorldMap.seaShare(1) === null; }));
+  ok('seas: Kansas under the seaway at 90 Ma, dry at 200 Ma', await p.evaluate(() => WorldMap.seaAt(39, -98.4, 90) === 'sea' && WorldMap.seaAt(39, -98.4, 200) === 'land' && WorldMap.seaAt(39, -98.4, 1) === null));
+  await p.evaluate(() => setTime(90)); await p.waitForTimeout(200);
+  const probe = await p.evaluate(() => { WorldMap._draw(); return [WorldMap._px(39, -98.4), WorldMap._px(-29, 25), WorldMap.seaAt(-29, 25, 90)]; });
+  ok('seas: drawn as sea where the maps say sea (Kansas), as land where they say land (South Africa)', probe[0].land < 20 && probe[1].land > 235 && probe[2] === 'land', JSON.stringify(probe));
+  ok('seas: the map title says how much of the continents was under the sea', await p.evaluate(() => /sea over 38% of the continents · today 30%/.test(document.getElementById('ctSea').textContent)));
+  ok('seas: the map note names pale blue and the dotted coast', await p.evaluate(() => /Pale blue/.test(document.getElementById('mnLong').textContent) && /dotted/.test(document.getElementById('mnLong').textContent)));
+  await p.evaluate(() => setTime(450)); await p.waitForTimeout(150);
+  ok('seas: no dotted coast before 410 Ma (the land there is the model’s own blocks)', await p.evaluate(() => /Pale blue/.test(document.getElementById('mnLong').textContent) && !/dotted/.test(document.getElementById('mnLong').textContent)));
+  await p.evaluate(() => setTime(1)); await p.waitForTimeout(150);
+  ok('seas: none in the Ice Age — title and note go back to today’s coasts', await p.evaluate(() => document.getElementById('ctSea').textContent === '' && /Continents move/.test(document.getElementById('mnLong').textContent)));
+  ok('seas: map notes explain the seas, their limits, and cite Kocsis', await p.evaluate(() => { const t = document.getElementById('mapAbout').innerText; return /Seas over the land/.test(t) && /highest/.test(t) && /540 million/.test(t) && /Kocsis/.test(t) && /different plate model/.test(t); }));
+  await p.evaluate(() => { setTime(250); switchTab('geo'); }); await p.waitForTimeout(250);
+  ok('seas: the Geology tab charts the seas through time, with a cursor at now', await p.evaluate(() => { const c = document.getElementById('seasCur'); return !!c && Math.abs(+c.getAttribute('x1') - seaX(250)) < 0.2 && /250 MYA: 15%/.test(document.getElementById('seasNow').textContent); }));
+  ok('seas: the chart says how high the sea was is argued over, and cites both sides', await p.evaluate(() => { const t = document.getElementById('seasCard').textContent; return /argued over/.test(t) && /Haq/.test(document.querySelector('#seasCard .sources').textContent) && /Miller/.test(document.querySelector('#seasCard .sources').textContent); }));
+  { const box = await p.evaluate(() => { document.getElementById('seasSvg').scrollIntoView({ block: 'center' }); const r = document.getElementById('seasSvg').getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; });
+    await p.mouse.click(box[0] + box[2] * (1 - 100 / 540), box[1] + box[3] / 2); await p.waitForTimeout(2200);
+    ok('seas: tapping the chart travels to that time', await p.evaluate(() => Math.abs(S.t - 100) < 6), String(await p.evaluate(() => S.t))); }
+  await p.evaluate(() => { setTime(90); setPin(39, -98.4, 'Kansas', true); }); await p.waitForTimeout(200);
+  ok('seas: a pin in Kansas at 90 Ma says it lay under the sea', await p.evaluate(() => /under the sea/.test(document.getElementById('pinCard').innerText)));
+  await p.evaluate(() => { setTime(200); }); await p.waitForTimeout(150);
+  ok('seas: …and at 200 Ma that it was dry land', await p.evaluate(() => /dry land/.test(document.getElementById('pinCard').innerText)));
+  await p.evaluate(() => { setPin(null); switchTab('life'); setTime(150); }); await p.waitForTimeout(150);
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));

@@ -43,6 +43,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `RELIEF_PACKED` (today's high ground) | `build_relief.py` |
 | `LANDCOVER_PACKED` (today's landscapes, from measured climate) | `build_landcover.py` |
 | `ROCKS` (deep-time climate from dated rocks) | `build_rocks.py` |
+| `SEAS_PACKED` (seas over the continents, 540 Ma → today, one map every 5 Myr) | `build_seas.py` (rebuild it whenever `PLATE_DATA` changes) |
 | `RIVERS_PACKED` (today's great rivers and lakes) | `build_rivers.py` |
 | `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
@@ -52,6 +53,24 @@ packed text) are the only files the page loads besides itself, and only when you
 served by GitHub Pages next to the page. Opened straight from disk the page still works: the terrain
 images load, but the detailed coast does not (browsers will not `fetch` local files), so the plate
 coastline is used.
+
+## Rebuilding the seas over the continents
+
+```
+git clone --depth 1 https://github.com/js-arias/gml-kocsis     # Kocsis & Scotese 2021 paleocoastlines as pixels, CC-BY 4.0
+python3 -I tools/build_seas.py gml-kocsis                         # writes tools/source/seas-data.js (about 125 KB)
+```
+
+The source maps (Kocsis & Scotese 2021, *Earth-Science Reviews* 213, 103463) mark the coast at the
+sea's highest in each stage and the continents' edge at −1,400 m, on the PALEOMAP plate model.
+J. Salvador Arias turned them back to present-day positions as equal-area pixels about 1° across.
+`build_seas.py` ties each pixel to one of *our* plate families with the same rule as `attach()` in
+`engine.js`, so the families come from `plates-data.js` — rebuild the seas after the plates. In the
+page, `engine.js` unpacks the block with the browser's `DecompressionStream`, traces each map into
+smooth outlines plate by plate (marching squares on a softened grid), and draws the sea over the
+continents under the land and the mapped land into the land layer. The coast ink there is the edge of
+whatever land is drawn; the dotted line is today's coast. Do not use the PALEOMAP PaleoDEMs for
+mountains instead: their licence (CC-BY-NC-ND) forbids derived layers.
 
 ## Rebuilding the plate data
 

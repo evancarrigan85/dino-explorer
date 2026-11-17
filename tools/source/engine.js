@@ -205,6 +205,144 @@ const WorldMap = (() => {
     return [Math.atan2(Y, X) * R2D, Math.asin(Math.max(-1, Math.min(1, Z))) * R2D];
   }
 
+  // ── seas over the continents, 540 million years ago to today ───────
+  // Kocsis & Scotese (2021) mapped, for 81 moments, where the coast stood (at the highest the sea
+  // reached) and where each continent's edge lay (1,400 m down). J. S. Arias turned their maps back to
+  // today's positions as ~1° pixels, one map every 5 million years. Here each pixel rides on its
+  // plate, so the seas drift with the land; the pixels are read as a grid and traced into smooth
+  // outlines once per map, plate by plate.
+  const SEA = { P: typeof SEAS_PACKED === 'undefined' ? null : SEAS_PACKED, st: 'idle', cache: new Map() };
+  const GW = 360, GH = 181;
+  function seaLoad() {
+    if (!SEA.P || SEA.st !== 'idle') return;
+    if (typeof DecompressionStream === 'undefined' || typeof Response === 'undefined') { SEA.st = 'none'; return; }
+    SEA.st = 'loading';
+    const P = SEA.P, bin = Uint8Array.from(atob(P.z), ch => ch.charCodeAt(0));
+    new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer().then(buf => {
+      const b = new Uint8Array(buf), n = P.n, S = P.stages; let pos = 0, id = 0;
+      const total = P.rows.reduce((a, r) => a + (r >> 1), 0), where = new Int32Array(total).fill(-1);
+      for (let i = 0; i < n; i++) { let v = 0, sh = 0, c; do { c = b[pos++]; v += (c & 127) * 2 ** sh; sh += 7; } while (c & 128); id += v; where[id] = i; }
+      const fam = new Int16Array(n); for (let i = 0; i < n; i++) fam[i] = b[pos++] - 1;
+      const val = new Uint8Array(n * S); for (let i = 0; i < n * S; i++) val[i] = (b[pos + (i >> 2)] >> ((i & 3) * 2)) & 3;
+      // the pixel under each grid point: rings every degree from the north pole, points every degree from -179.5°
+      const cell = new Int32Array(GW * GH).fill(-1); let first = 0;
+      P.rows.forEach((r, i) => {
+        const nn = r >> 1, off = (r & 1) / 2, w = 360 / nn;
+        for (let j = 0; j < GW; j++) cell[i * GW + j] = where[first + ((Math.round((j + 0.5) / w - off) % nn) + nn) % nn];
+        first += nn;
+      });
+      Object.assign(SEA, { S, fam, val, cell, where, st: 'ready' });
+      dirty = true; schedule();
+      if (api.onSeas) api.onSeas();
+    }).catch(() => { SEA.st = 'none'; });
+  }
+  /* Outlines of one indicator (lv 1: sea over the continent or land; lv 2: land), traced plate by plate.
+     The 0/1 grid is softened a little first, so the outline runs smoothly between pixel centres
+     instead of in steps. Each plate's region is grown by one pixel into its neighbours, so pieces
+     overlap a little along their seams, the way the land pieces do. Rings keep the inside on their
+     right as d3 expects (clockwise, seen from above). */
+  const SK = GW * GH * 2, sNext = new Int32Array(SK), sStamp = new Int32Array(SK), sPt = new Float32Array(SK * 3); let sRun = 0;
+  function seaTrace(V, F, lv) {
+    const N = GW * GH, I = new Float32Array(N), T = new Float32Array(N), B = new Float32Array(N), Fg = new Float32Array(N);
+    for (let g = 0; g < N; g++) I[g] = V[g] >= lv ? 1 : 0;
+    for (let i = 0; i < GH; i++) { const g = i * GW; for (let j = 0; j < GW; j++) T[g + j] = (I[g + (j + GW - 1) % GW] + 6 * I[g + j] + I[g + (j + 1) % GW]) / 8; }
+    for (let i = 0; i < GH; i++) { const u = Math.max(0, i - 1) * GW, d = Math.min(GH - 1, i + 1) * GW, g = i * GW; for (let j = 0; j < GW; j++) B[g + j] = (T[u + j] + 6 * T[g + j] + T[d + j]) / 8; }
+    // each plate's patch of the grid: the rows it holds, and the shortest run of columns (it may wrap past 180°)
+    // (every cell of the plate counts, not only the ones that are in: the one-pixel overlap into a
+    // neighbour can reach past the plate's own land, and the patch must hold all of it)
+    const box = new Map();
+    for (let g = 0; g < N; g++) {
+      const f = F[g]; if (f < 0) continue;
+      const i = (g / GW) | 0; let r = box.get(f);
+      if (!r) box.set(f, r = { a: i, b: i, cols: new Uint8Array(GW), any: false });
+      if (i < r.a) r.a = i; if (i > r.b) r.b = i; r.cols[g - i * GW] = 1; if (I[g]) r.any = true;
+    }
+    const out = [], D2 = Math.PI / 180;
+    for (const [f, r] of box) {
+      if (!r.any) continue;
+      // the widest gap between used columns is where the patch does not reach
+      let gapLen = 0, gapEnd = 0, run = 0;
+      for (let k = 0; k < 2 * GW; k++) { if (r.cols[k % GW]) run = 0; else if (++run > gapLen) { gapLen = Math.min(run, GW); gapEnd = k % GW; } }
+      const r0 = Math.max(0, r.a - 2), r1 = Math.min(GH - 1, r.b + 2), pole = r0 === 0 || r1 === GH - 1;
+      const full = pole || gapLen < 6, c0 = full ? 0 : (gapEnd + 1 - 2 + GW) % GW, nc = full ? GW : GW - gapLen + 4;
+      for (let i = r0; i <= r1; i++) for (let q = 0; q < nc; q++) {
+        const j = (c0 + q) % GW, g = i * GW + j;
+        const mine = F[g] === f || (j > 0 ? F[g - 1] : F[g + GW - 1]) === f || (j < GW - 1 ? F[g + 1] : F[g - GW + 1]) === f || (i > 0 && F[g - GW] === f) || (i < GH - 1 && F[g + GW] === f);
+        Fg[g] = mine ? B[g] : 0;
+      }
+      for (const i of [0, GH - 1]) if (i >= r0 && i <= r1) {           // a pole ring is one point: give it one value
+        let m = 0; for (let j = 0; j < GW; j++) m += Fg[i * GW + j];
+        m /= GW; for (let j = 0; j < GW; j++) Fg[i * GW + j] = m;
+      }
+      const inside = (i, j) => i >= r0 && i <= r1 && (full || ((j - c0 + GW) % GW) < nc);
+      const at = (i, j) => inside(i, j) ? Fg[i * GW + j] : 0;
+      const run_ = ++sRun, starts = [];
+      const cross = (key, v0, v1, lon, lat, horiz) => {
+        if (sStamp[key] !== run_) {
+          sStamp[key] = run_; sNext[key] = -1;
+          const k = (0.5 - v0) / (v1 - v0), lo = (horiz ? lon + k : lon) * D2, la = (horiz ? lat : lat - k) * D2, c = Math.cos(la);
+          sPt[key * 3] = c * Math.cos(lo); sPt[key * 3 + 1] = c * Math.sin(lo); sPt[key * 3 + 2] = Math.sin(la);
+        }
+        return key;
+      };
+      const link = (a, b) => { sNext[a] = b; starts.push(a); };
+      const rows = Math.min(r1, GH - 1), ncs = full ? GW : nc - 1;
+      for (let i = r0; i < rows; i++) for (let q = 0; q < ncs; q++) {
+        const j = (c0 + q) % GW, j1 = (j + 1) % GW, a = at(i, j), b = at(i, j1), c = at(i + 1, j1), d = at(i + 1, j);
+        const A = a >= 0.5, Bq = b >= 0.5, C = c >= 0.5, Dq = d >= 0.5;
+        if (A === Bq && Bq === C && C === Dq) continue;
+        const lon = -179.5 + j, lat = 90 - i;
+        // the square's edges clockwise from its north-west corner: top, right, bottom, left.
+        // e[k][1] true: walking clockwise round the square we leave the inside there (an exit)
+        const e = [];
+        if (A !== Bq) e.push([cross((i * GW + j) * 2, a, b, lon, lat, true), A]);
+        if (Bq !== C) e.push([cross((i * GW + j1) * 2 + 1, b, c, lon + 1, lat, false), Bq]);
+        if (C !== Dq) e.push([cross(((i + 1) * GW + j) * 2, d, c, lon, lat - 1, true), C]);
+        if (Dq !== A) e.push([cross((i * GW + j) * 2 + 1, a, d, lon, lat, false), Dq]);
+        // an exit joins the next entry: the outline then keeps the inside on its right, as d3 wants
+        if (e.length === 2) { if (e[0][1]) link(e[0][0], e[1][0]); else link(e[1][0], e[0][0]); }
+        else { const joined = (a + b + c + d) / 4 >= 0.5; for (let k = 0; k < 4; k++) if (e[k][1]) link(e[k][0], e[(k + (joined ? 1 : 3)) % 4][0]); }
+      }
+      const rings = [], buf = [];
+      for (const k0 of starts) {
+        if (sNext[k0] < 0) continue;
+        buf.length = 0; let k = k0, guard = 0;
+        let closed = false;
+        while (k >= 0 && guard++ < 200000) { buf.push(k); const nk = sNext[k]; sNext[k] = -1; if (nk === k0) { closed = true; break; } k = nk; }
+        if (!closed || buf.length < 4) { if (!closed) SEA.open = (SEA.open || 0) + 1; continue; }   // an outline that does not close would fill the world
+        const a3 = new Float32Array(buf.length * 3);
+        for (let n = 0; n < buf.length; n++) { const q = buf[n] * 3; a3[n * 3] = sPt[q]; a3[n * 3 + 1] = sPt[q + 1]; a3[n * 3 + 2] = sPt[q + 2]; }
+        rings.push(a3);
+      }
+      if (rings.length) out.push({ f, rings });
+    }
+    return out;
+  }
+  /* Thinned copies of traced rings, ring by ring (a plate's rings mix outlines and holes, in any order). */
+  function seaThin(fr, tolDeg) {
+    const tol = tolDeg * Math.PI / 180, small = tol * tol * 0.5;
+    return fr.map(({ f, rings }) => ({ f, rings: rings.map(full => {
+      const A = ringArea(full), hole = A > 2 * Math.PI, aFull = hole ? 4 * Math.PI - A : A;
+      if (aFull < small) return null;
+      const r = thinRing(full, tol); if (!r) return null;
+      const a0 = ringArea(r), a = hole ? 4 * Math.PI - a0 : a0;
+      return (a0 > 2 * Math.PI) === hole && a > aFull * 0.4 && a < aFull * 2.5 ? r : full;
+    }).filter(Boolean) })).filter(x => x.rings.length);
+  }
+  function seaStage(s) {
+    let c = SEA.cache.get(s); if (c) return c;
+    const N = GW * GH, V = new Uint8Array(N), F = new Int16Array(N).fill(-1), S = SEA.S;
+    for (let g = 0; g < N; g++) { const k = SEA.cell[g]; if (k < 0) continue; V[g] = SEA.val[k * S + s]; F[g] = SEA.fam[k]; }
+    const M = seaTrace(V, F, 1), L = seaTrace(V, F, 2);
+    c = { M: [M], L: [L] };                       // thinner copies are made when a view first asks for them
+    if (SEA.cache.size > 30) SEA.cache.delete(SEA.cache.keys().next().value);
+    SEA.cache.set(s, c); return c;
+  }
+  /* How strongly the seas show at time t: from 540 million years ago (where the maps begin) to the
+     start of the Ice Age, when today's coasts and the Ice Age shorelines take over. */
+  const seaFade = t => t <= 3 ? 0 : t < 5 ? (t - 3) / 2 : t <= 540 ? 1 : t < 545 ? (545 - t) / 5 : 0;
+  const seaStep = t => SEA.P ? Math.max(0, Math.min(SEA.P.stages - 1, Math.round(t / SEA.P.step))) : -1;
+
   // ── view state ─────────────────────────────────────────────────────
   let canvas, ctx, fx, fctx, W = 0, H = 0, dpr = 1;
   let land, lctx, paper, sheet, sctx;         // offscreen layers
@@ -589,7 +727,7 @@ const WorldMap = (() => {
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
   let fxHook = null, scn = null, scx = null, glide = 0;
-  let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false, hideBox = null;
+  let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false, hideBox = null, inkCv = null, ictx = null, todayCv = null, tdx = null, dotPat = null;
   const inHide = p => { if (!hideBox) return false; const lo = Math.atan2(p.c[1], p.c[0]) * R2D, la = Math.asin(p.c[2]) * R2D; return lo >= hideBox[0] && lo <= hideBox[2] && la >= hideBox[1] && la <= hideBox[3]; };
   const fxHelp = {
     get W() { return W; }, get H() { return H; }, get zoom() { return zoom; },
@@ -651,6 +789,44 @@ const WorldMap = (() => {
     return path;
   }
   const geoP = obj => { const p = new Path2D(); d3.geoPath(proj, p)(obj); return p; };
+  /* The traced seas of one map, each plate's rings carried to time t, as one path. */
+  function seaPath(fr, t) {
+    const path = new Path2D(); sink.p = path;
+    const st = proj.stream(sink);
+    for (const { f, rings } of fr) {
+      const m = famRot(f, t); if (!m) continue;
+      st.polygonStart();
+      for (const xyz of rings) {
+        st.lineStart();
+        for (let i = 0; i < xyz.length; i += 3) {
+          const x = xyz[i], y = xyz[i + 1], z = xyz[i + 2];
+          const X = m[0] * x + m[1] * y + m[2] * z, Y = m[3] * x + m[4] * y + m[5] * z, Z = m[6] * x + m[7] * y + m[8] * z;
+          st.point(Math.atan2(Y, X) * R2D, Math.asin(Z > 1 ? 1 : Z < -1 ? -1 : Z) * R2D);
+        }
+        st.lineEnd();
+      }
+      st.polygonEnd();
+    }
+    return path;
+  }
+  /* The seas to draw this frame, or null: the sea over the continents (M: everything inside the
+     continents' edges) and the land as mapped for that moment (L). */
+  function seaNow(t) {
+    const k = seaFade(t);
+    if (k <= 0 || !SEA.P || hideBox) return null;
+    if (SEA.st !== 'ready') { seaLoad(); return null; }
+    const st = seaStep(t), c = seaStage(st);
+    if (SEA.last !== undefined && SEA.last !== st) {             // time is moving: trace the next map while the reader looks at this one
+      const nx = st + Math.sign(st - SEA.last);
+      if (nx >= 0 && nx < SEA.S && !SEA.cache.has(nx)) setTimeout(() => { if (!SEA.cache.has(nx)) seaStage(nx); }, 16);
+    }
+    SEA.last = st;
+    const pxPerDeg = proj.scale() * D2R * (mode === 'flat' ? 0.86 : 1);      // the same choice of detail as the land
+    const lod = 0.8 * pxPerDeg <= 1.15 ? 2 : 0.3 * pxPerDeg <= 1.15 ? 1 : 0;
+    const tol = [0, 0.3, 0.8][lod];
+    for (const x of [c.M, c.L]) if (!x[lod]) x[lod] = seaThin(x[0], tol);
+    return { k, M: seaPath(c.M[lod], t), L: seaPath(c.L[lod], t) };
+  }
   const capGeo = (poleLat, radius) => d3.geoCircle().center([0, poleLat]).radius(radius).precision(5)();
   const graticule = d3.geoGraticule().step([30, 30]).extent([[-180, -89.99], [180, 89.99]]);
   const latY = lat => proj([centerLon, lat])[1];
@@ -767,6 +943,15 @@ const WorldMap = (() => {
     c.stroke(geoP({ type: 'LineString', coordinates: Array.from({ length: 73 }, (_, i) => [-180 + i * 5, 0]) }));
     c.setLineDash([]);
 
+    // deep time: the sea over the continents and their edges, paler than the deep ocean
+    const sea = seaNow(t);
+    if (sea) {
+      c.globalAlpha = 0.16 * sea.k; c.fillStyle = '#123a5c'; c.fillRect(0, 0, W, H);         // the deep ocean a shade deeper
+      c.globalAlpha = 0.86 * sea.k; c.fillStyle = mix(pal.o1, '#d6f2e6', 0.55); c.fill(sea.M);
+      c.globalAlpha = 0.55 * sea.k; c.strokeStyle = mix(pal.o1, '#f4fbf6', 0.65); c.lineWidth = 1; c.stroke(sea.M);
+      c.globalAlpha = 1;
+    }
+
     // Ice Age: the continental shelves come out of the sea as the water drops
     const sl = seaLevel(t);
     const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
@@ -816,6 +1001,16 @@ const WorldMap = (() => {
     L.clearRect(0, 0, land.width, land.height);
     L.setTransform(dpr, 0, 0, dpr, 0, 0);
     L.fillStyle = pal.land; L.fill(lp);
+    const guide = sea && t < 405 ? sea.k * Math.min(1, (405 - t) / 5) : 0;   // before 410 Ma the land is the model's own blocks, not today's coasts
+    if (guide) {
+      if (!todayCv) { todayCv = document.createElement('canvas'); tdx = todayCv.getContext('2d'); }
+      if (todayCv.width !== land.width || todayCv.height !== land.height) { todayCv.width = land.width; todayCv.height = land.height; }
+      tdx.setTransform(1, 0, 0, 1, 0, 0); tdx.globalAlpha = 1; tdx.globalCompositeOperation = 'copy'; tdx.drawImage(land, 0, 0); tdx.globalCompositeOperation = 'source-over';
+    }
+    if (sea) {
+      L.globalCompositeOperation = 'destination-out'; L.globalAlpha = sea.k; L.fill(sea.M);
+      L.globalCompositeOperation = 'source-over'; L.fill(sea.L); L.globalAlpha = 1;
+    }
     L.globalCompositeOperation = 'source-atop';
     if (mode === 'flat') {
       const yN = latY(89.9), yS = latY(-89.9), g = L.createLinearGradient(0, yN, 0, yS);
@@ -922,7 +1117,28 @@ const WorldMap = (() => {
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     // Plate pieces overlap along their seams, so stroking every piece and
     // then laying the merged land on top leaves ink only on true coasts.
-    c.strokeStyle = 'rgba(52,30,10,0.95)'; c.lineWidth = det ? 2.2 : 2.6; c.lineJoin = 'round'; c.stroke(det ? det.ink : lp);
+    const vInk = sea ? 1 - sea.k : 1;
+    if (vInk > 0) { c.globalAlpha = vInk; c.strokeStyle = 'rgba(52,30,10,0.95)'; c.lineWidth = det ? 2.2 : 2.6; c.lineJoin = 'round'; c.stroke(det ? det.ink : lp); c.globalAlpha = 1; }
+    if (sea) {                                     // the coast is the edge of the land as drawn: a dark rim, a little wider than it
+      if (!inkCv) { inkCv = document.createElement('canvas'); ictx = inkCv.getContext('2d'); }
+      if (inkCv.width !== land.width || inkCv.height !== land.height) { inkCv.width = land.width; inkCv.height = land.height; }
+      ictx.setTransform(1, 0, 0, 1, 0, 0); ictx.globalAlpha = 1; ictx.globalCompositeOperation = 'copy'; ictx.drawImage(land, 0, 0);
+      ictx.globalCompositeOperation = 'source-in'; ictx.fillStyle = 'rgb(52,30,10)'; ictx.fillRect(0, 0, inkCv.width, inkCv.height);
+      ictx.globalCompositeOperation = 'source-over';
+      c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 0.6 * sea.k;
+      const r = 1.3 * dpr;
+      for (const [dx, dy] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) c.drawImage(inkCv, dx * r * 0.8, dy * r * 0.8);
+      c.globalAlpha = 1; c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    if (guide) {                                   // today's coast, dotted, where the sea now covers it (the land drawn next hides the rest)
+      const ix = ictx, w = inkCv.width, h = inkCv.height, d = Math.max(1, Math.round(dpr));
+      ix.setTransform(1, 0, 0, 1, 0, 0); ix.globalAlpha = 1; ix.globalCompositeOperation = 'source-over'; ix.clearRect(0, 0, w, h);
+      for (const [dx, dy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) ix.drawImage(todayCv, dx, dy);
+      ix.globalCompositeOperation = 'destination-out'; ix.drawImage(todayCv, 0, 0);
+      if (!dotPat) { const pc = document.createElement('canvas'); pc.width = pc.height = 4 * d; const px = pc.getContext('2d'); px.fillStyle = '#2c1c0c'; px.fillRect(0, 0, 2 * d, 2 * d); px.fillRect(2 * d, 2 * d, 2 * d, 2 * d); dotPat = ix.createPattern(pc, 'repeat'); }
+      ix.globalCompositeOperation = 'source-in'; ix.fillStyle = dotPat; ix.fillRect(0, 0, w, h); ix.globalCompositeOperation = 'source-over';
+      c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 0.5 * guide; c.drawImage(inkCv, 0, 0); c.globalAlpha = 1; c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.drawImage(land, 0, 0);
     c.drawImage(q[2], 0, 0, land.width, land.height);
@@ -1437,6 +1653,46 @@ const WorldMap = (() => {
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
     _draw: draw, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
     /* Which land pieces cover a present-day point (for checks): 'index:family[from..to]' list. */
+    /* How much of the continents was under the sea at t, in percent (and today), from the same maps; null where there are none. */
+    seaShare(t) { if (!SEA.P || seaFade(t) <= 0) return null; const i = seaStep(t); return { pct: SEA.P.share[i] / 10, today: SEA.P.share[0] / 10, map: i * SEA.P.step }; },
+    /* Was a present-day place under the sea at t? 'sea', 'land', 'none' (no continent there on the maps), or null (no maps for t, or not loaded yet). */
+    seaAt(lat, lon, t) {
+      if (SEA.st !== 'ready' || seaFade(t) <= 0) return null;
+      const i = Math.max(0, Math.min(GH - 1, Math.round(90 - lat))); let first = 0;
+      for (let r = 0; r < i; r++) first += SEA.P.rows[r] >> 1;
+      const R = SEA.P.rows[i], nn = R >> 1, off = (R & 1) / 2, k = SEA.where[first + ((Math.round((lon + 180) / (360 / nn) - off) % nn) + nn) % nn];
+      const v = k < 0 ? 0 : SEA.val[k * SEA.S + seaStep(t)];
+      return v === 1 ? 'sea' : v === 2 ? 'land' : 'none';
+    },
+    /* share of the map's sheet the land layer covers, sampled on a coarse grid (tests) */
+    _landFrac() { const d = lctx.getImageData(0, 0, land.width, land.height).data, w = land.width; let n = 0, k = 0; for (let y = 4; y < land.height; y += 16) for (let x = 4; x < w; x += 16) { const sx = x / dpr, sy = y / dpr; const ll = proj.invert && proj.invert([sx, sy]); if (!ll || !isFinite(ll[0]) || (mode === 'globe' && d3.geoDistance(ll, [-proj.rotate()[0], -proj.rotate()[1]]) > 1.5)) continue; n++; if (d[(y * w + x) * 4 + 3] > 128) k++; } return n ? k / n : 0; },
+    _seaCheck() {                                   // every map: traced area against the pixels' area, for both outlines (tests)
+      const area = r => { const c = []; for (let i = 0; i < r.length; i += 3) c.push([Math.atan2(r[i + 1], r[i]) * R2D, Math.asin(Math.max(-1, Math.min(1, r[i + 2]))) * R2D]); c.push(c[0]); return d3.geoArea({ type: 'Polygon', coordinates: [c] }); };
+      const net = fr => fr.flatMap(x => x.rings).map(area).reduce((a, A) => a + (A > 2 * Math.PI ? A - 4 * Math.PI : A), 0);
+      const total = SEA.P.rows.reduce((a, r) => a + (r >> 1), 0), out = [], badFam = [];
+      for (let st = 0; st < SEA.S; st++) {
+        const c = seaStage(st); let nM = 0, nL = 0;
+        for (let k = 0; k < SEA.P.n; k++) { if (SEA.fam[k] < 0) continue; const v = SEA.val[k * SEA.S + st]; if (v >= 1) nM++; if (v === 2) nL++; }
+        out.push([st * SEA.P.step, net(c.M[0]) / (nM * 4 * Math.PI / total), net(c.L[0]) / (nL * 4 * Math.PI / total)]);
+        for (const fr of [...c.M[0], ...c.L[0]]) {                 // as d3 reads it: one plate's outlines together must not cover half the globe
+          const A = d3.geoArea({ type: 'Polygon', coordinates: fr.rings.map(r => { const q = []; for (let i = 0; i < r.length; i += 3) q.push([Math.atan2(r[i + 1], r[i]) * R2D, Math.asin(Math.max(-1, Math.min(1, r[i + 2]))) * R2D]); q.push(q[0]); return q; }) });
+          if (A > 2 * Math.PI) badFam.push([st * SEA.P.step, fr.f, +A.toFixed(2)]);
+        }
+      }
+      return { maps: out, open: SEA.open || 0, badFam };
+    },
+    _sea() {
+      const s0 = SEA.st === 'ready' ? seaStage(seaStep(time)) : null, s = s0 && { M: s0.M[0], L: s0.L[0] };
+      if (!s) return { st: SEA.st, fade: seaFade(time) };
+      const area = r => { const c = []; for (let i = 0; i < r.length; i += 3) c.push([Math.atan2(r[i + 1], r[i]) * R2D, Math.asin(Math.max(-1, Math.min(1, r[i + 2]))) * R2D]); c.push(c[0]); return d3.geoArea({ type: 'Polygon', coordinates: [c] }); };
+      const net = fr => fr.flatMap(x => x.rings).map(area).reduce((a, A) => a + (A > 2 * Math.PI ? A - 4 * Math.PI : A), 0);   // outlines add, holes take away
+      let nM = 0; const st = seaStep(time); for (let k = 0; k < SEA.P.n; k++) if (SEA.val[k * SEA.S + st] >= 1 && SEA.fam[k] >= 0) nM++;
+      const total = SEA.P.rows.reduce((a, r) => a + (r >> 1), 0);
+      return { st: SEA.st, fade: seaFade(time), M: s.M.reduce((a, x) => a + x.rings.length, 0), L: s.L.reduce((a, x) => a + x.rings.length, 0),
+        pts: [...s.M, ...s.L].reduce((a, x) => a + x.rings.reduce((b, r) => b + r.length / 3, 0), 0), mArea: net(s.M), pxArea: nM * 4 * Math.PI / total };
+    },
+    /* the colour drawn where a present-day place sits now, and how solid the land layer is there (tests) */
+    _px(lat, lon) { const a = attach(lat, lon, time), ll = locate(a, time); if (!ll) return null; const p = project(ll); if (!p) return null; const x = Math.round(p[0] * dpr), y = Math.round(p[1] * dpr); return { rgb: Array.from(ctx.getImageData(x, y, 1, 1).data).slice(0, 3), land: lctx.getImageData(x, y, 1, 1).data[3] }; },
     _cover(lat, lon) { const D = Math.PI / 180, c = Math.cos(lat * D), P = [c * Math.cos(lon * D), c * Math.sin(lon * D), Math.sin(lat * D)], o = [];
       polys.forEach((q, i) => { if (q.c[0] * P[0] + q.c[1] * P[1] + q.c[2] * P[2] < q.cosr - 0.02) return; if (ringContains(q.rings[0], P)) o.push(i + ':f' + q.f + '[' + q.hi + '..' + q.lo + ']'); }); return o.join(' '); },
   });

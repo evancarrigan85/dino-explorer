@@ -6911,5 +6911,103 @@
 ],
 "first": "",
 "title_expected": "50-Ma Initiation of Hawaiian-Emperor Bend Records Major Change in Pacific Plate Motion"
+},
+"haq2008": {
+"doi": "10.1126/science.1161648",
+"title": "A Chronology of Paleozoic Sea-Level Changes",
+"journal": "Science",
+"year": 2008,
+"authors": [
+"Haq",
+"Schutter"
+],
+"type": "journal-article",
+"targets": [
+"m:seas"
+],
+"first": "",
+"title_expected": "A Chronology of Paleozoic Sea-Level Changes"
+},
+"miller2005": {
+"doi": "10.1126/science.1116412",
+"title": "The Phanerozoic Record of Global Sea-Level Change",
+"journal": "Science",
+"year": 2005,
+"authors": [
+"Miller",
+"Kominz",
+"Browning",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:seas"
+],
+"first": "",
+"title_expected": "The Phanerozoic Record of Global Sea-Level Change"
+},
+"haq2014": {
+"doi": "10.1016/j.gloplacha.2013.12.007",
+"title": "Cretaceous eustasy revisited",
+"journal": "Global and Planetary Change",
+"year": 2014,
+"authors": [
+"Haq"
+],
+"type": "journal-article",
+"targets": [
+"m:seas"
+],
+"first": "",
+"title_expected": "Cretaceous eustasy revisited"
+},
+"kocsis2021": {
+"doi": "10.1016/j.earscirev.2020.103463",
+"title": "Mapping paleocoastlines and continental flooding during the Phanerozoic",
+"journal": "Earth-Science Reviews",
+"year": 2021,
+"authors": [
+"Kocsis",
+"Scotese"
+],
+"type": "journal-article",
+"targets": [
+"m:seas"
+],
+"first": "",
+"title_expected": "Mapping paleocoastlines and continental flooding during the Phanerozoic"
+},
+"ronov1994": {
+"doi": "10.2475/ajs.294.7.777",
+"title": "Phanerozoic transgressions and regressions on the continents; a quantitative approach based on areas flooded by the sea and areas of marine and continental deposition",
+"journal": "American Journal of Science",
+"year": 1994,
+"authors": [
+"Ronov"
+],
+"type": "journal-article",
+"targets": [
+"m:seas"
+],
+"first": "",
+"title_expected": "Phanerozoic transgressions and regressions on the continents; a quantitative approach based on areas flooded by the sea and areas of marine and continental deposition"
+},
+"cao2017": {
+"doi": "10.5194/bg-14-5425-2017",
+"title": "Improving global paleogeography since the late Paleozoic using paleobiology",
+"journal": "Biogeosciences",
+"year": 2017,
+"authors": [
+"Cao",
+"Zahirovic",
+"Flament",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:seas"
+],
+"first": "",
+"title_expected": "Improving global paleogeography since the late Paleozoic using paleobiology"
 }
 }

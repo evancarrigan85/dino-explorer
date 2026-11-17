@@ -444,6 +444,7 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 #cartouche .ct-temp:empty{display:none}
 #ovTemp{position:absolute;right:0;bottom:0;height:4px;pointer-events:none;border-top:1px solid rgba(10,14,26,.7)}
 @media (max-width:767px){#cartouche .ct-temp{font-size:.52rem}}
+#cartouche .ct-sea{color:#1f5a70}
 
 /* family trees */
 .tree{padding:6px 10px 14px}
@@ -577,6 +578,17 @@ header .logo,header h1{cursor:pointer}
 .story{background:rgba(120,180,230,.06);border:1px solid rgba(120,180,230,.35);border-radius:10px;padding:10px 11px;margin:4px 0 8px}
 .story-top{display:flex;gap:10px;align-items:flex-start}.story-i{font-size:1.5rem}.story-top b{display:block;color:#fff;font-size:.88rem}.story-top span{font-size:.72rem;color:#9fb0c8;line-height:1.35}
 .story .watch{border-color:#6fa8dc;background:linear-gradient(180deg,rgba(111,168,220,.28),rgba(111,168,220,.1));color:#e3f0ff}
+
+/* seas over the continents, through time (Geology tab) */
+#pinCard .pc-sea{margin-top:5px;font-size:.78rem;line-height:1.35}
+.seas{padding:8px 10px 6px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.seas h4{margin:0 0 2px;font-size:.86rem;color:var(--accent,#f0c060)}
+.seas .seas-now{font-size:.74rem;color:var(--muted,#9aa3b8);margin-bottom:4px}
+.seas .seas-now b{color:#8fd8e8}
+.seas svg{display:block;width:100%;height:auto;cursor:pointer;border-radius:6px;background:rgba(20,40,70,.35)}
+.seas p{font-size:.74rem;line-height:1.45;margin:6px 0 0;color:var(--text,#dde3ee)}
+.seas details{font-size:.72rem;margin-top:6px;color:var(--muted,#9aa3b8)}
+.seas details summary{cursor:pointer;color:#8fd8e8}
 
 /* the title box: one slim line on a phone (the period's name is already in the panel above the map) */
 #cartouche .ct-mini{display:none}

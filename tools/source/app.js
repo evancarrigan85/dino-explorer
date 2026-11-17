@@ -129,6 +129,11 @@ function updateClock(fromSlider) {
   const T = globalTemp(t), dT = T == null ? 0 : T - TEMP_TODAY;
   $('ctTemp').textContent = T == null ? '' : '🌡 about ' + Math.round(T) + ' °C · ' + (Math.abs(dT) < 0.75 ? 'much like today' : Math.round(Math.abs(dT)) + '° ' + (dT > 0 ? 'warmer' : 'colder') + ' than today');
   $('ctMini').textContent = T == null ? '' : ' · ' + Math.round(T) + ' °C';
+  const sea = WorldMap.seaShare(t);
+  $('ctSea').textContent = sea ? '🌊 sea over ' + Math.round(sea.pct) + '% of the continents · today ' + Math.round(sea.today) + '%' : '';
+  $('ctSea').title = sea ? 'How much of the continents (with their drowned edges, down to about 1,400 m) lay under the sea, at its highest around ' + sea.map + ' million years ago — measured on the maps of Kocsis and Scotese (2021)' : '';
+  $('mnLong').textContent = sea ? 'Pale blue: sea over the continents' + (t < 405 ? ' · dotted: today’s coast' : '') + ' · tap for how this map is made' : 'Continents move with their plates · tap for how this map is made';
+  if (S.tab === 'geo') seasMark();
   $('ctDate').title = sl <= -10 ? 'Sea level about ' + (-sl) + ' m lower than today — the paler land around today’s coasts was dry ground' : '';
   if (!fromSlider) $('timeSlider').value = Math.round(posOf(t) * 10000);
   $('timeSlider').setAttribute('aria-valuetext', p.name + ', ' + fmtAgo(t));
@@ -1453,15 +1458,49 @@ function bindInsights() {
 // --- Geology ---
 function renderGeo() {
   const p = S.period, fs = GEO_FEATURES.filter(f => f.periods && f.periods.includes(p.id));
-  $('pane-geo').innerHTML = storiesHTML() + `<div class="geo-list"><div class="list-h" style="padding:2px 4px 8px">Geology of the ${esc(p.name)}</div>` + (fs.length ? fs.map(f => `
+  $('pane-geo').innerHTML = storiesHTML() + seasHTML() + `<div class="geo-list"><div class="list-h" style="padding:2px 4px 8px">Geology of the ${esc(p.name)}</div>` + (fs.length ? fs.map(f => `
     <div class="geo-card${S.sel === 'geo:' + f.id ? ' sel expanded' : ''}" data-key="geo:${f.id}">
       <div class="geo-card-top"><div class="geo-icon">${f.icon}</div><div class="geo-info"><div class="geo-name">${esc(f.name)}</div><div class="geo-short">${esc(f.shortDesc || '')}</div></div></div>
       <div class="geo-full">${f.fullDesc ? `<div style="margin-bottom:5px">${esc(f.fullDesc)}</div>` : ''}${f.funFact ? `<div class="geo-fun">💡 ${esc(f.funFact)}</div>` : ''}</div>
       ${f.type ? `<div><span class="geo-type-badge">${esc(f.type)}</span>${f.at ? '<span class="geo-type-badge" style="margin-left:4px">📍 on the map</span>' : ''}</div>` : ''}</div>`).join('')
     : '<div class="empty">No geological features recorded for this period yet.</div>') + '</div>';
+  seasMark();
+}
+// How much of the continents lay under the sea, map by map (Kocsis & Scotese 2021, measured on their maps).
+const SEA_W = 300, SEA_H = 74, seaX = ma => (1 - ma / 540) * SEA_W, seaY = pct => SEA_H - 6 - pct / 55 * (SEA_H - 14);
+function seasHTML() {
+  if (typeof SEAS_PACKED === 'undefined') return '';
+  const P = SEAS_PACKED, pts = P.share.map((v, i) => [seaX(i * P.step), seaY(v / 10)]);
+  const line = pts.map(([x, y]) => x.toFixed(1) + ',' + y.toFixed(1)).join(' ');
+  const today = seaY(P.share[0] / 10), ticks = [[485, 'Ord'], [419, 'Dev'], [299, 'Perm'], [201, 'Jur'], [145, 'Cret']];
+  return `<div class="seas" id="seasCard"><h4>🌊 How much of the continents was under the sea</h4>
+    <div class="seas-now" id="seasNow"></div>
+    <svg viewBox="0 0 ${SEA_W} ${SEA_H}" id="seasSvg" role="img" aria-label="Chart: share of the continents under the sea, from 540 million years ago to today. Tap to go to a time.">
+      <polygon points="${SEA_W},${SEA_H} ${line} 0,${SEA_H}" fill="rgba(143,216,232,.35)"/>
+      <polyline points="${line}" fill="none" stroke="#8fd8e8" stroke-width="1.4" stroke-linejoin="round"/>
+      <line x1="0" x2="${SEA_W}" y1="${today.toFixed(1)}" y2="${today.toFixed(1)}" stroke="#f0d9a0" stroke-width=".7" stroke-dasharray="3 3"/>
+      <text x="${SEA_W - 3}" y="${(today - 3).toFixed(1)}" text-anchor="end" font-size="7" fill="#f0d9a0">today</text>
+      ${ticks.map(([ma, l]) => `<text x="${(seaX(ma) + 2).toFixed(1)}" y="${SEA_H - 2}" font-size="6.5" fill="#9aa3b8">${l}</text><line x1="${seaX(ma).toFixed(1)}" x2="${seaX(ma).toFixed(1)}" y1="${SEA_H - 9}" y2="${SEA_H}" stroke="#9aa3b8" stroke-width=".5"/>`).join('')}
+      <text x="3" y="9" font-size="6.5" fill="#9aa3b8">half</text><line x1="0" x2="6" y1="${seaY(50).toFixed(1)}" y2="${seaY(50).toFixed(1)}" stroke="#9aa3b8" stroke-width=".6"/>
+      <line id="seasCur" x1="0" x2="0" y1="0" y2="${SEA_H}" stroke="#f0c060" stroke-width="1.4"/>
+    </svg>
+    <p>Pale blue on the map is sea lying over the continents. When the ocean stood high it spread far inland: through the Ordovician, Silurian and Devonian about <b>half</b> of the continents’ area was under water, and in the Late Cretaceous a seaway split North America in two. When Pangaea stood together in the Triassic, less than a tenth was. Today about 30% is — the drowned edges of the continents around every coast.</p>
+    <details><summary>How do we know? How high was the sea?</summary>
+      <p>Rocks laid down in the sea, and the fossils of sea creatures in them, show where the sea reached at each time; geologists have mapped them across every continent. These maps mark the coast at the sea’s highest in each stretch of time, so the share is a “most”, not an average.</p>
+      <p>How high the sea stood in metres is still argued over. For the Cretaceous, one study of rock layers worldwide puts the highest sea about 250 m above today’s (Haq, 2014); another, built from cores drilled near New Jersey, about 100 m, give or take 50 (Miller and others, 2005). In the Paleozoic the sea rose through the Cambrian and stood highest in the Late Ordovician, then fell sharply, for a short while, as ice grew at the South Pole (Haq and Schutter, 2008) — the time of the first great extinction.</p>
+      ${srcHTML('m:seas', 'Sources')}
+    </details></div>`;
+}
+function seasMark() {
+  const c = $('seasCur'); if (!c) return;
+  const on = S.t <= 540, x = seaX(Math.min(540, S.t)).toFixed(1), sea = WorldMap.seaShare(S.t);
+  c.setAttribute('x1', x); c.setAttribute('x2', x); c.style.display = on ? '' : 'none';
+  $('seasNow').innerHTML = sea ? `${esc(fmtAgo(S.t))}: <b>${Math.round(sea.pct)}%</b> of the continents under the sea (today ${Math.round(sea.today)}%).` : S.t > 540 ? 'The maps of ancient seas start 540 million years ago.' : 'In the last 3 million years the map shows today’s coasts and the Ice Age shorelines instead.';
 }
 function bindGeo() {
   $('pane-geo').addEventListener('click', e => {
+    const sv = e.target.closest('#seasSvg');
+    if (sv) { const r = sv.getBoundingClientRect(), ma = Math.round((1 - (e.clientX - r.left) / r.width) * 540); travel(clamp(ma, 3, 540)); return; }
     const so = e.target.closest('[data-story-open]'); if (so) { S.storyOpen = so.dataset.storyOpen; renderGeo(); return; }
     const el = e.target.closest('.geo-card'); if (!el) return;
     el.classList.toggle('expanded');
@@ -1505,7 +1544,11 @@ function updatePinCard() {
     near.sort((a, b) => a[0] - b[0]);
     const top = near.slice(0, 3);
     if (top.length) html += `<div class="pc-near">${top[0][0] < 2000 ? 'Lived nearby' : 'Nearest fossils from this moment'}: ${top.map(([d, c]) => `<span data-key="${c.key}">${c.emoji} ${esc(c.name)}</span> (${years(Math.round(d / 10) * 10)} km)`).join(', ')}</div>`;
-    html += '<div class="pc-note">The dotted line is its whole journey. Coastlines are today\'s, so it may have been under a shallow sea.</div>';
+    const w = WorldMap.seaAt(P.lat, P.lon, S.t);
+    if (w === 'sea') html += '<div class="pc-sea">🌊 <b>Then it lay under the sea</b> — over the drowned edge of a continent, where sea creatures lived. (The maps show the sea at its highest, so at times this may have been the shore.)</div>';
+    else if (w === 'land') html += '<div class="pc-sea">🏝 <b>Then it was dry land</b>, on the maps of ancient seas.</div>';
+    else if (w === 'none') html += '<div class="pc-sea">🌊 The maps of ancient seas have no continent here at this time — it may have been deep ocean, or ground that had not formed yet.</div>';
+    html += '<div class="pc-note">The dotted line is its whole journey.' + (w ? '' : ' Coastlines here are today\'s.') + '</div>';
   }
   card.innerHTML = html; card.classList.add('show');
 }
@@ -1702,6 +1745,7 @@ function readHash() {
 
 function init() {
   WorldMap.init($('mapCanvas'), $('mapFx'));
+  WorldMap.onSeas = () => { updateClock(); updatePinCard(); };          // the sea maps unpack after the page opens
   WorldMap.setLayers({
     labels: LABELS.map(([text, lat, lon, from, to, size]) => ({ text, from, to, size, at: WorldMap.attach(lat, lon, from) })),
     oceans: OCEANS.map(([text, a, b, from, to, min, k]) => ({ text, from, to, min, k, a: WorldMap.attach(a[0], a[1], from), b: WorldMap.attach(b[0], b[1], from) })),
@@ -1739,7 +1783,7 @@ function init() {
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
-  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:seas', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:seas': 'Seas over the continents', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
   // on a phone the title box is one slim line; a tap opens it in full for a few seconds
   let ctTimer = 0;
   $('cartouche').addEventListener('click', () => { const c = $('cartouche'); c.classList.toggle('open'); clearTimeout(ctTimer); if (c.classList.contains('open')) ctTimer = setTimeout(() => c.classList.remove('open'), 6000); });
