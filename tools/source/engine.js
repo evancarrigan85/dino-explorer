@@ -1395,7 +1395,10 @@ const WorldMap = (() => {
     redraw() { dirty = true; schedule(); },
     resize,
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
-    _draw: draw, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,
+    _draw: draw, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
+    /* Which land pieces cover a present-day point (for checks): 'index:family[from..to]' list. */
+    _cover(lat, lon) { const D = Math.PI / 180, c = Math.cos(lat * D), P = [c * Math.cos(lon * D), c * Math.sin(lon * D), Math.sin(lat * D)], o = [];
+      polys.forEach((q, i) => { if (q.c[0] * P[0] + q.c[1] * P[1] + q.c[2] * P[2] < q.cosr - 0.02) return; if (ringContains(q.rings[0], P)) o.push(i + ':f' + q.f + '[' + q.hi + '..' + q.lo + ']'); }); return o.join(' '); },
   });
   // Object.assign copies a getter's value once; these must stay live (the globe button reads `mode`)
   Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true } });

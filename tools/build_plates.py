@@ -142,8 +142,35 @@ def rings_xyz(pg, fr):
 # ── 1. today's land, pre-cut into tiles so every piece is local ───────
 ne = json.load(open(NE_FILE))
 tiles = []                                   # (ext_xyz, [hole_xyz], cap frame, cap radius)
+def unwrap(rings):
+    """Natural Earth draws Eurasia across the date line: its outline jumps from -180 to +180 at about 65 and
+    69 degrees north (Chukotka). Read as a flat polygon that is invalid, and cleaning it removed a band of
+    Siberia and Scandinavia between those two latitudes — drawn as open sea in every era until Nov 2026.
+    So make each ring continuous first (longitudes may run past 180; the sphere does not mind), then shift
+    it so most of it lies within -180..180. Rings that only touch the date line at the poles (Antarctica)
+    are left alone."""
+    def jumps(r): return [i for i in range(len(r) - 1) if abs(r[i][0] - r[i + 1][0]) > 180 and abs(r[i][1]) < 85 and abs(r[i + 1][1]) < 85]
+    if not jumps(rings[0]):
+        return rings
+    out = []
+    for r in rings:
+        off, nr = 0.0, [list(r[0])]
+        for i in range(1, len(r)):
+            d = r[i][0] - r[i - 1][0]
+            if d > 180: off -= 360
+            elif d < -180: off += 360
+            nr.append([r[i][0] + off, r[i][1]])
+        out.append(nr)
+    mid = sorted(p[0] for p in out[0])[len(out[0]) // 2]
+    k = -360 * round(mid / 360)
+    return [[[x + k, y] for x, y in r] for r in out]
+
+n_unwrapped = 0
 for rings in ne:
     try:
+        r2 = unwrap(rings)
+        if r2 is not rings: n_unwrapped += 1
+        rings = r2
         pg0 = Polygon(rings[0], rings[1:])
     except Exception:
         continue
@@ -162,12 +189,13 @@ for rings in ne:
                     holes = [ll2xyz(np.array(h.coords)[:-1]) for h in piece.interiors]
                     fr, r = cap_of(ext)
                     tiles.append((ext, holes, fr, r))
-log('natural earth tiles', len(tiles))
+log('natural earth tiles', len(tiles), ' outlines joined across the date line', n_unwrapped)
 tile_c = np.array([t[2][0] for t in tiles])
 tile_r = np.array([t[3] for t in tiles])
 
 # ── 2. cut today's land along the model's plate boundaries ───────────
 statics = []                                 # (pid, begin, end, ext, holes, centre, radius)
+statics_geom = []                            # the same polygons as pygplates objects, for point-in-polygon on the sphere
 for f in static:
     pid = f.get_reconstruction_plate_id()
     b, e = f.get_valid_time()
@@ -189,10 +217,11 @@ for f in static:
         if r > 2.6:                           # a polygon covering most of the globe: unusable here
             continue
         statics.append((pid, b, e, ext, holes, fr[0], r))
+        statics_geom.append(g)
 st_c = np.array([x[5] for x in statics])
 st_r = np.array([x[6] for x in statics])
 assigned = collections.defaultdict(list)     # static index -> [(ext_xyz, holes_xyz)]
-n_left = 0
+n_left = 0; n_lost = 0
 for text, tholes, tfr, tr in tiles:
     T = poly_in(text, tholes, tfr)
     if T is None:
@@ -214,24 +243,35 @@ for text, tholes, tfr, tr in tiles:
                     assigned[si].append(rings_xyz(part, tfr))
         except Exception:
             pass
-    # Land the plate polygons leave uncovered (the model has real gaps along
-    # old rift zones) goes to whichever plate is nearest, so no false lakes.
-    if here:
-        try:
-            rest = T.difference(unary_union([S for _, S in here]))
-        except Exception:
-            rest = None
-        for part in parts(rest):
-            if part.area < 1e-9:
-                continue
+    # Land the plate polygons leave uncovered goes to a plate, so it is never dropped. Gaps come from two
+    # things: real gaps in the model along old rift zones, and big plate polygons skipped above because they
+    # reach almost to the far side of the globe (they cannot be drawn in this tile's flat projection). For
+    # each leftover piece, first ask the sphere itself which plate polygon contains it — that needs no
+    # projection, so it finds the skipped ones too — and only then fall back to the nearest drawn plate.
+    # (Before Nov 2026 the leftovers were dropped when no plate was drawn here, which left a band of
+    # northern Siberia and Scandinavia as open sea for the last 410 million years.)
+    try:
+        rest = T.difference(unary_union([S for _, S in here])) if here else T
+    except Exception:
+        rest = None
+    for part in parts(rest):
+        if part.area < 1e-9:
+            continue
+        rp = part.representative_point()
+        pt = pygplates.PointOnSphere(*[float(v) for v in inv_xyz(np.array([[rp.x, rp.y]]), tfr)[0]])
+        si = next((j for j in near if statics_geom[j].is_point_in_polygon(pt)), None)
+        if si is None and here:
             si = min(here, key=lambda x: x[1].distance(part))[0]
-            assigned[si].append(rings_xyz(part.buffer(SEAM * 0.5), tfr))
-            n_left += 1
+        if si is None:
+            n_lost += 1
+            continue
+        assigned[si].append(rings_xyz(part.buffer(SEAM * 0.5), tfr))
+        n_left += 1
 feats = []                                   # (pid, begin, end, [(ext, holes)], is_old)
 for si, polys in assigned.items():
     pid, b, e = statics[si][:3]
     feats.append((pid, b, e, polys, False))
-log('static polygons carrying land', len(feats), ' gap pieces reassigned', n_left)
+log('static polygons carrying land', len(feats), ' gap pieces reassigned', n_left, ' land pieces with no plate at all', n_lost)
 
 # ── 3. the model's own continental blocks, for times before SWITCH ────
 n_old = 0

@@ -23,7 +23,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 159 passing |
+| Checks | 160 passing |
 | Page | about 1.47 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -448,6 +448,14 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — A missing band of Siberia.** Evan saw a thin strip floating over the top of the
+  map (108.7 Ma, zoomed in). Cause: Natural Earth's Eurasia outline crosses the date line at Chukotka,
+  which made it an invalid flat polygon, and cleaning it dropped a band of land from Scandinavia to
+  eastern Siberia between about 65° and 69°N — drawn as sea in every era for the last 410 million
+  years, leaving the Arctic coast as a loose strip. `tools/build_plates.py` now joins outlines across
+  the date line before cutting them, and gives any leftover land to the plate polygon that contains it
+  on the sphere; plate data rebuilt. A check now tests inland points across the band. 160 checks.
 
 - **17 Nov 2026 — Close-up detail; the Nile and the Indus.** Evan: zooming in showed "just flat
   texture". Today's terrain now appears as light and shadow at three levels of detail

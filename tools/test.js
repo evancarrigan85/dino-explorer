@@ -294,6 +294,8 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#pane-humans [data-old="canopic"]'); await p.waitForTimeout(3200);
   ok('Nile: the lost Canopic branch is drawn, and its card cites the delta studies', await p.evaluate(() => S.sel === 'old:canopic' && /Stanley/.test(document.querySelector('#pane-humans .profile').innerText) && histRoutes().some(l => l.key === 'old:canopic' && S.t <= l.from && S.t >= l.to)));
   await p.evaluate(() => { S.sel = null; WorldMap.select(null); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(200);
+  // no land missing from today's outline (a band of Siberia and Scandinavia was, until Nov 2026)
+  ok('land: northern Siberia and Scandinavia are covered by today’s land in every era since 410 million years ago', await p.evaluate(() => [[67, 90], [68, 100], [66, 120], [66, 80], [66, 60], [67, 28], [68, 20], [69, 125], [65, 105]].every(([la, lo]) => WorldMap._cover(la, lo).split(' ').some(x => /\.\.-0\.1\]/.test(x)))));
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));
