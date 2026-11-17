@@ -404,6 +404,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('seas: no dotted coast before 410 Ma (the land there is the model’s own blocks)', await p.evaluate(() => /Pale blue/.test(document.getElementById('mnLong').textContent) && !/dotted/.test(document.getElementById('mnLong').textContent)));
   await p.evaluate(() => setTime(1)); await p.waitForTimeout(150);
   ok('seas: none in the Ice Age — title and note go back to today’s coasts', await p.evaluate(() => document.getElementById('ctSea').textContent === '' && /Continents move/.test(document.getElementById('mnLong').textContent)));
+  ok('terrain: map notes explain heights and depths, say they are estimates, and cite the atlas', await p.evaluate(() => { const t = document.getElementById('mapAbout').innerText; return /Heights and depths/.test(t) && /estimates/.test(t) && /Scotese and Wright, 2018/.test(t) && /WebGL/.test(t) && /Atlas of Phanerozoic Paleogeographic Maps/.test(t); }));
   ok('seas: map notes explain the seas, their limits, and cite Kocsis', await p.evaluate(() => { const t = document.getElementById('mapAbout').innerText; return /Seas over the land/.test(t) && /highest/.test(t) && /540 million/.test(t) && /Kocsis/.test(t) && /different plate model/.test(t); }));
   await p.evaluate(() => { setTime(250); switchTab('geo'); }); await p.waitForTimeout(250);
   ok('seas: the Geology tab charts the seas through time, with a cursor at now', await p.evaluate(() => { const c = document.getElementById('seasCur'); return !!c && Math.abs(+c.getAttribute('x1') - seaX(250)) < 0.2 && /250 MYA: 15%/.test(document.getElementById('seasNow').textContent); }));
@@ -441,6 +442,30 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('phone: no sideways overflow', await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1 && document.getElementById('main').scrollWidth <= window.innerWidth + 1), String(await p.evaluate(() => document.getElementById('main').scrollWidth)));
   ok('phone: map has height', await p.evaluate(() => document.getElementById('mapCanvas').getBoundingClientRect().height > 200));
   await p.close();
+  // ancient relief and sea depth (WebGL, from tiles/dem): needs the page served over http, as on GitHub Pages
+  {
+    const fs = require('fs'), path = require('path'), root = path.join(__dirname, '..');
+    ok('terrain: a mesh and one elevation map per 5 million years sit beside the page', fs.existsSync(path.join(root, 'tiles/dem/mesh.bin')) && Array.from({ length: 109 }, (_, i) => 'tiles/dem/s' + String(i * 5).padStart(3, '0') + '.bin').every(f => fs.existsSync(path.join(root, f))));
+    const types = { '.html': 'text/html', '.bin': 'application/octet-stream', '.jpg': 'image/jpeg', '.txt': 'text/plain' };
+    const srv = require('http').createServer((q, r) => { const f = path.join(root, decodeURIComponent(q.url.split('?')[0])); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { r.writeHead(404); r.end(); return; } r.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(r); });
+    await new Promise(res => srv.listen(0, '127.0.0.1', res));
+    const ctx = await b.newContext({ viewport: { width: 1400, height: 900 } }); p = await ctx.newPage();
+    p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+    await p.goto('http://127.0.0.1:' + srv.address().port + '/dino-explorer.html#90mya'); await p.waitForTimeout(900);
+    await p.evaluate(() => closeDoor());
+    await p.waitForFunction(() => WorldMap.terrain && WorldMap._ter().maps.length >= 2, null, { timeout: 15000 }).catch(() => {});
+    await p.waitForTimeout(300);
+    const ter = await p.evaluate(() => WorldMap._ter());
+    ok('terrain: WebGL draws the ancient relief from the elevation maps, served over http', ter.st === 'ready' && ter.gl && ter.drawn > 0 && ter.maps.includes(18), JSON.stringify(ter));
+    const tp = await p.evaluate(() => [WorldMap._terPx('sea', 39, -98.4), WorldMap._terPx('land', -29, 25), WorldMap._terPx('land', 39, -98.4)]);
+    ok('terrain: sea depth where the seaway was (Kansas), relief on dry land (South Africa)', tp[0] > 200 && tp[1] > 200, JSON.stringify(tp));
+    const shelf = await p.evaluate(() => { WorldMap._draw(); const a = WorldMap._px(39, -98.4).rgb; WorldMap.setTerrain(false); WorldMap._draw(); const b = WorldMap._px(39, -98.4).rgb; WorldMap.setTerrain(true); WorldMap._draw(); return [a, b]; });
+    ok('terrain: switching it off gives the plain map back, and on draws something different', shelf[0].join() !== shelf[1].join(), JSON.stringify(shelf));
+    await p.evaluate(() => setTime(600)); await p.waitForTimeout(200);
+    ok('terrain: nothing before the elevation maps begin (540 Ma)', await p.evaluate(() => { const d = WorldMap._ter().drawn; WorldMap._draw(); return WorldMap._ter().drawn === d; }));
+    await ctx.close(); srv.close();
+  }
+  ok('terrain: off when the page is opened from a file (browsers will not load its data there)', await (async () => { const q = await open({ width: 900, height: 700 }, '#90mya'); await q.waitForTimeout(1500); const r = await q.evaluate(() => !WorldMap.terrain && WorldMap._ter().drawn === 0); await q.close(); return r; })());
   ok('no console errors', errs.length === 0, '\n    ' + errs.slice(0, 8).join('\n    '));
   await b.close();
   console.log(`${pass} passed, ${fail} failed`);

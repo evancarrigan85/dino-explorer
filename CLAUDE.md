@@ -90,7 +90,11 @@ builds, passes the checks and has been looked at.
   our plates and traced into outlines in the page. There the land is the mapped land, not today's
   coast, and the coast ink is the edge of the land as drawn; a dotted line shows today's coast (after
   410 Ma). `WorldMap.seaAt()` and `seaShare()` answer “was this place under the sea?” and “how much
-  of the continents was?”. The Geology tab charts it.
+  of the continents was?”. The Geology tab charts it. Over the same span a **WebGL terrain layer**
+  (`TER` in `engine.js`, data in `tiles/dem` from `build_dem.py`, Scotese & Wright 2018 PaleoDEMs)
+  adds light and shadow on the land and the depth of the shallow seas; it only decorates (land and sea
+  still come from the traced coasts), needs http (off on `file:`), and `WorldMap.setTerrain(false)`
+  turns it off. `tools/test.js` serves the page over a local http server to check it.
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
   Life, Humans, Insights, Extinctions, Finds, Quiz, Geology. Map pins for a tab are built in
   `updatePlaces()`.
@@ -115,12 +119,12 @@ builds, passes the checks and has been looked at.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `s:` story id, `k:` empire id, `b:` belief id,
   `r:` trade route id, `w:` great work id, `m:` map layer
-  (`plates|seas|sealevel|climate|rocks|landcover|history|time`).
+  (`plates|seas|terrain|sealevel|climate|rocks|landcover|history|time`).
 
 ## Network
 
-This environment reaches GitHub, npm, PyPI, Crossref and `api.pixellab.ai`. It does **not** reach
-`zenodo.org`, `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
+This environment reaches GitHub, npm, PyPI, Crossref, `zenodo.org` (allowed 17 Nov 2026) and
+`api.pixellab.ai`. It does **not** reach `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
 so, and the host has to be approved by Evan first. Public GitHub repositories can be cloned with
 `git clone` even though the GitHub API is scoped to this project — search them with
 `gh api -X GET search/repositories` first: that is how the ancient-coast data was found when the

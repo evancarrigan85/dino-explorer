@@ -16,15 +16,15 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Animals | 689 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
 | Family trees | Four, linked to each other and to every animal card: the road to mammals, the dinosaur tree, from fish to four legs, the reptile tree |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
-| Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
+| Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 396, every one a published work confirmed in Crossref |
+| References | 397, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 191 passing |
-| Page | about 1.70 MB, one file (plus close-up tiles loaded on demand) |
+| Checks | 198 passing |
+| Page | about 1.71 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -52,8 +52,9 @@ What is missing, most important first:
    Scotese (2021). What remains: their coast is the sea at its *highest* in each 5-Myr stage, the dots
    are ~1° (about 100 km), they were made on another plate model (PALEOMAP), and nothing exists before
    540 Ma. All four are said in "How this map is made".
-2. **No ancient mountains.** The Appalachians were once Himalaya-sized; the map shows flat land.
-   Also Release 2 (the same dataset has mountain belts).
+2. ~~No ancient mountains.~~ **Fixed 17 Nov 2026**: light and shadow from the PaleoDEMs, 540 → 3 Ma,
+   and the depth of the shallow seas. Limits: 1° points, estimates of heights long worn away, WebGL
+   and http needed (a saved copy shows the map without them).
 3. **Land colour is a latitude sketch**, not reconstructed climate. Release 3 adds the rock evidence
    (coal, salt, glacial deposits) as a layer, which is both more honest and more interesting.
 4. **Ice sheets are drawn shapes**, not the published reconstructions of their edges. Release 4.
@@ -165,9 +166,13 @@ taken from the maps; a “Watch the Earth being made” story for the Western In
 marine fossil sites that fall in water before vs after (report it); a cross-fade between neighbouring
 maps instead of a jump.
 
-**Still to do: the mountains (needs one host approved).** The plan below stands for mountain belts.
-Do **not** use the PALEOMAP PaleoDEMs (in the Kocsis repository and on Zenodo): their licence is
-CC-BY-NC-ND, which forbids derived layers. Cao et al. 2017 (CC-BY) is the route.
+**Shipped (17 Nov 2026): the mountains and the depths.** An earlier note here said the PaleoDEMs were
+CC-BY-NC-ND; that came from a 2019 mirror's label and was wrong — the authors' own Zenodo record
+(10.5281/zenodo.5460860, now reachable) is **CC BY 4.0**, and so is the licence file in the download.
+`tools/build_dem.py` turns them back to today's positions and `engine.js` draws them with WebGL.
+**Next for the terrain:** sharper close-ups from the 0.1° PaleoDEMs (207 MB on Zenodo; cut into tiles
+by region and age like `tiles/relief`), a gentle tint for high ground, and ocean-floor depth beyond
+the continents (needs seafloor ages — not on disk).
 
 **Goal (original).** For 400 Ma → 2 Ma, draw where the sea actually covered the continents and where the
 mountain belts stood, on top of the moving plates.
@@ -488,6 +493,15 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — Ancient mountains and sea depths.** Evan sent a reconstruction of the Gulf of
+  Mexico 160 million years ago drawn from the PALEOMAP PaleoDEMs and said “look at that”. It also
+  showed the licence was CC BY 4.0, not the no-derivatives label the session had read from a mirror
+  — Zenodo confirmed it. The map now has light and shadow on the land and paler-to-deeper blue in the
+  shallow seas from Scotese & Wright's 109 elevation maps (540 Ma → 3 Ma), carried on our plates and
+  drawn with WebGL, blending smoothly between maps. Data beside the page in `tiles/dem` (1.2 MB,
+  loaded two maps at a time). One new verified source (Scotese 2021 atlas, 397). 198 checks, including
+  terrain served over http in the suite.
 
 - **17 Nov 2026 — Seas over the continents, 540 million years ago to the Ice Age.** Evan: “no
   indication of the shallow seas, even way back in the Ordovician”. The map now draws, from Kocsis &

@@ -221,7 +221,8 @@ const WorldMap = (() => {
     new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer().then(buf => {
       const b = new Uint8Array(buf), n = P.n, S = P.stages; let pos = 0, id = 0;
       const total = P.rows.reduce((a, r) => a + (r >> 1), 0), where = new Int32Array(total).fill(-1);
-      for (let i = 0; i < n; i++) { let v = 0, sh = 0, c; do { c = b[pos++]; v += (c & 127) * 2 ** sh; sh += 7; } while (c & 128); id += v; where[id] = i; }
+      const ids = new Int32Array(n);
+      for (let i = 0; i < n; i++) { let v = 0, sh = 0, c; do { c = b[pos++]; v += (c & 127) * 2 ** sh; sh += 7; } while (c & 128); id += v; where[id] = i; ids[i] = id; }
       const fam = new Int16Array(n); for (let i = 0; i < n; i++) fam[i] = b[pos++] - 1;
       const val = new Uint8Array(n * S); for (let i = 0; i < n * S; i++) val[i] = (b[pos + (i >> 2)] >> ((i & 3) * 2)) & 3;
       // the pixel under each grid point: rings every degree from the north pole, points every degree from -179.5°
@@ -231,7 +232,7 @@ const WorldMap = (() => {
         for (let j = 0; j < GW; j++) cell[i * GW + j] = where[first + ((Math.round((j + 0.5) / w - off) % nn) + nn) % nn];
         first += nn;
       });
-      Object.assign(SEA, { S, fam, val, cell, where, st: 'ready' });
+      Object.assign(SEA, { S, fam, val, cell, where, ids, st: 'ready' });
       dirty = true; schedule();
       if (api.onSeas) api.onSeas();
     }).catch(() => { SEA.st = 'none'; });
@@ -342,6 +343,217 @@ const WorldMap = (() => {
      start of the Ice Age, when today's coasts and the Ice Age shorelines take over. */
   const seaFade = t => t <= 3 ? 0 : t < 5 ? (t - 3) / 2 : t <= 540 ? 1 : t < 545 ? (545 - t) / 5 : 0;
   const seaStep = t => SEA.P ? Math.max(0, Math.min(SEA.P.stages - 1, Math.round(t / SEA.P.step))) : -1;
+
+  // ── terrain: the height of the land and the depth of the shallow seas, 540 Ma to the Ice Age ──
+  // Scotese & Wright (2018) PaleoDEMs, one map every 5 million years, turned back to today's positions
+  // on the same pixels as the seas (tools/build_dem.py) and loaded from tiles/dem as needed. WebGL draws
+  // them: each point rides its own plate, the light falls from the north-west, and the picture blends
+  // from one map to the next. It only adds light, shadow and water depth — where land and sea are
+  // still comes from the traced coasts — so with no WebGL or no files the map is simply as before.
+  let terOn = true;
+  const TER = { have: typeof DEM_HAVE === 'undefined' ? null : DEM_HAVE, st: 'idle', maps: new Map(), busy: new Set(), pair: '', drawn: 0 };
+  const TEX_W = 256, EXAG = 90;
+  const inflate = buf => new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer();
+  function terPixelLL(i) {                             // present-day [lat, lon] of the i-th listed pixel
+    const id = SEA.ids[i], R = SEA.P.rows; let first = 0, r = 0;
+    while (first + (R[r] >> 1) <= id) { first += R[r] >> 1; r++; }
+    const nn = R[r] >> 1, off = (R[r] & 1) / 2;
+    return [90 - r, -180 + (id - first + off) * 360 / nn];
+  }
+  const TER_VS = `#version 300 es
+precision highp float; precision highp int;
+in vec3 aPos; in vec3 aCen; in float aFam; in float aPix;
+uniform sampler2D uFam, uA, uB; uniform float uMix, uShift; uniform int uMode;
+uniform vec2 uRot, uTr, uSize; uniform float uScale;
+out float vE, vShade, vVis, vLam, vW;
+const float PI = 3.14159265358979;
+float wrapPi(float a) { return a - 6.28318530718 * floor((a + PI) / 6.28318530718); }
+vec3 rot(vec4 r0, vec4 r1, vec4 r2, vec3 p) { return vec3(dot(r0.xyz, p), dot(r1.xyz, p), dot(r2.xyz, p)); }
+void main() {
+  int f = int(aFam + 0.5), px = int(aPix + 0.5);
+  vec4 r0 = texelFetch(uFam, ivec2(f, 0), 0), r1 = texelFetch(uFam, ivec2(f, 1), 0), r2 = texelFetch(uFam, ivec2(f, 2), 0);
+  ivec2 tc = ivec2(px % ${TEX_W}, px / ${TEX_W});
+  vec4 A = texelFetch(uA, tc, 0), B = texelFetch(uB, tc, 0);
+  bool hA = A.x > -90000.0, hB = B.x > -90000.0;
+  float m = hA && hB ? uMix : (hA ? 0.0 : 1.0);
+  vE = mix(A.x, B.x, m);
+  vec3 n0 = mix(hA ? A.yzw : B.yzw, hB ? B.yzw : A.yzw, m), n = normalize(n0);
+  vW = clamp(length(n0) * 2.0 - 1.0, 0.0, 1.0);
+  vVis = (r0.w > 0.5 && (hA || hB)) ? 1.0 : -1.0;
+  vec3 q = rot(r0, r1, r2, aPos), c = rot(r0, r1, r2, aCen), nw = rot(r0, r1, r2, n);
+  // light from the north-west, high in the sky, in the ground's own frame at this time
+  vec3 up = normalize(q), east = normalize(vec3(-q.y, q.x, 0.0) + vec3(1e-6, 0.0, 0.0)), north = cross(up, east);
+  vec3 nl = vec3(dot(nw, east), dot(nw, north), dot(nw, up)), L = normalize(vec3(-0.55, 0.55, 0.62));
+  vShade = dot(nl, L) / L.z;
+  float lam = atan(q.y, q.x), phi = asin(clamp(q.z, -1.0, 1.0));
+  vec2 s;
+  if (uMode == 0) {                                   // Equal Earth, the same formula d3 uses
+    float lc = wrapPi(atan(c.y, c.x) + uRot.x);
+    lam = lc + wrapPi(lam + uRot.x - lc) + uShift; vLam = lam;
+    float l = asin(0.8660254 * sin(phi)), l2 = l * l, l6 = l2 * l2 * l2;
+    float x = lam * cos(l) / (0.8660254 * (1.340264 + 3.0 * -0.081106 * l2 + l6 * (7.0 * 0.000893 + 9.0 * 0.003796 * l2)));
+    float y = l * (1.340264 + -0.081106 * l2 + l6 * (0.000893 + 0.003796 * l2));
+    s = uTr + uScale * vec2(x, -y);
+  } else {                                            // the globe: d3's rotation, then orthographic
+    lam += uRot.x; vec3 p = vec3(cos(lam) * cos(phi), sin(lam) * cos(phi), sin(phi));
+    float cp = cos(uRot.y), sp = sin(uRot.y);
+    float X = p.x * cp - p.z * sp, Z = p.z * cp + p.x * sp;
+    vLam = 0.0; if (X < 0.0) vVis = min(vVis, X * 50.0);
+    s = uTr + uScale * vec2(p.y, -Z);
+  }
+  gl_Position = vec4(s.x / uSize.x * 2.0 - 1.0, 1.0 - s.y / uSize.y * 2.0, 0.0, 1.0);
+}`;
+  const TER_FS = `#version 300 es
+precision highp float; precision highp int;
+in float vE, vShade, vVis, vLam, vW;
+uniform int uLayer, uMode; uniform vec3 uDeep; uniform float uAlpha;
+out vec4 o;
+void main() {
+  if (vVis < 0.0 || (uMode == 0 && abs(vLam) > 3.14159265)) discard;
+  if (uLayer == 1) {                                  // land: light and shadow, and high ground a little paler
+    float e = max(vE, 0.0), g = clamp(0.5 + (vShade - 1.0) * 1.25, 0.1, 0.8) + 0.05 * smoothstep(800.0, 4000.0, e);
+    float a = uAlpha * vW; o = vec4(vec3(g) * a, a);
+  } else {                                            // shallow seas: paler where shallow, deepening to the ocean's own blue
+    float d = max(-vE, 4.0);
+    vec3 c = mix(vec3(0.74, 0.95, 0.90), vec3(0.47, 0.84, 0.86), smoothstep(0.0, 80.0, d));
+    c = mix(c, vec3(0.30, 0.66, 0.79), smoothstep(80.0, 400.0, d));
+    c = mix(c, uDeep, smoothstep(400.0, 2200.0, d));
+    c *= clamp(0.85 + (vShade - 1.0) * 0.6, 0.7, 1.15);
+    float a = uAlpha * vW; o = vec4(c * a, a);        // the page clips this to the traced sea, so its edge is the smooth one
+  }
+}`;
+  function terGL() {                                   // set up WebGL once; null if this browser cannot
+    if (TER.gl !== undefined) return TER.gl;
+    TER.gl = null;
+    try {
+      if (!TER.have || typeof DecompressionStream === 'undefined' || location.protocol === 'file:') return null;
+      const cv = document.createElement('canvas'), gl = cv.getContext('webgl2', { premultipliedAlpha: true, antialias: true, alpha: true });
+      if (!gl) return null;
+      const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+      const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, TER_VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, TER_FS)); gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+      const U = {}; for (const k of ['uFam', 'uA', 'uB', 'uMix', 'uShift', 'uMode', 'uRot', 'uTr', 'uSize', 'uScale', 'uLayer', 'uDeep', 'uAlpha']) U[k] = gl.getUniformLocation(pr, k);
+      const tex = (w, h, fmt, ifmt, type) => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST); gl.texImage2D(gl.TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, null); return t; };
+      const th = Math.ceil(TER.have.n / TEX_W);
+      Object.assign(TER, { cv, pr, U, th,
+        tFam: tex(256, 3, gl.RGBA, gl.RGBA32F, gl.FLOAT), tA: tex(TEX_W, th, gl.RGBA, gl.RGBA32F, gl.FLOAT), tB: tex(TEX_W, th, gl.RGBA, gl.RGBA32F, gl.FLOAT),
+        famBuf: new Float32Array(256 * 3 * 4) });
+      TER.gl = gl;
+    } catch (e) { TER.gl = null; TER.err = String(e && e.message || e); }
+    return TER.gl;
+  }
+  function terLoadMesh() {
+    if (TER.st !== 'idle') return; TER.st = 'loading';
+    fetch('tiles/dem/mesh.bin').then(r => { if (!r.ok) throw new Error('mesh ' + r.status); return r.arrayBuffer(); }).then(inflate).then(buf => {
+      const dv = new DataView(buf), nV = dv.getUint32(0, true), nT = dv.getUint32(4, true);
+      const vp = new Uint16Array(nV), vf = new Uint8Array(nV);
+      for (let i = 0; i < nV; i++) { vp[i] = dv.getUint16(8 + i * 3, true); vf[i] = dv.getUint8(10 + i * 3); }
+      const t0 = 8 + nV * 3, tri = new Uint16Array(nT * 3); for (let i = 0; i < nT * 3; i++) tri[i] = dv.getUint16(t0 + i * 2, true);
+      // one entry per corner of every triangle (no shared corners: each knows its triangle's middle)
+      const P3 = new Float32Array(SEA.P.n * 3);
+      for (let i = 0; i < SEA.P.n; i++) { const [la, lo] = terPixelLL(i), c = Math.cos(la * D2R); P3[i * 3] = c * Math.cos(lo * D2R); P3[i * 3 + 1] = c * Math.sin(lo * D2R); P3[i * 3 + 2] = Math.sin(la * D2R); }
+      const data = new Float32Array(nT * 3 * 8);
+      for (let t = 0; t < nT; t++) {
+        let cx = 0, cy = 0, cz = 0;
+        for (let k = 0; k < 3; k++) { const p = vp[tri[t * 3 + k]]; cx += P3[p * 3]; cy += P3[p * 3 + 1]; cz += P3[p * 3 + 2]; }
+        const L = Math.hypot(cx, cy, cz) || 1;
+        for (let k = 0; k < 3; k++) {
+          const v = tri[t * 3 + k], p = vp[v], o = (t * 3 + k) * 8;
+          data[o] = P3[p * 3]; data[o + 1] = P3[p * 3 + 1]; data[o + 2] = P3[p * 3 + 2];
+          data[o + 3] = cx / L; data[o + 4] = cy / L; data[o + 5] = cz / L; data[o + 6] = vf[v] - 1; data[o + 7] = p;
+        }
+      }
+      const gl = TER.gl; TER.vao = gl.createVertexArray(); gl.bindVertexArray(TER.vao);
+      const buf2 = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf2); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+      [['aPos', 3, 0], ['aCen', 3, 12], ['aFam', 1, 24], ['aPix', 1, 28]].forEach(([nm, sz, off]) => { const l = gl.getAttribLocation(TER.pr, nm); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, sz, gl.FLOAT, false, 32, off); });
+      gl.bindVertexArray(null);
+      // pixels at the mesh's edge (an edge used by one triangle only): the picture fades out there
+      const ec = new Map(), uniq = new Set(), edge = new Uint8Array(SEA.P.n);
+      for (let t = 0; t < nT; t++) {
+        const a = [vp[tri[t * 3]], vp[tri[t * 3 + 1]], vp[tri[t * 3 + 2]]].sort((x, y) => x - y), key = a.join(',');
+        if (uniq.has(key)) continue; uniq.add(key);
+        for (const [x, y] of [[a[0], a[1]], [a[1], a[2]], [a[0], a[2]]]) { const k = x * 65536 + y; ec.set(k, (ec.get(k) || 0) + 1); }
+      }
+      for (const [k, n] of ec) if (n === 1) { edge[Math.floor(k / 65536)] = 1; edge[k % 65536] = 1; }
+      Object.assign(TER, { nVert: nT * 3, tri, vp, P3, edge, st: 'ready' });
+      dirty = true; schedule();
+    }).catch(e => { TER.st = 'none'; TER.err = String(e && e.message || e); });
+  }
+  /* One map: elevation per pixel, and the direction its ground faces (from the triangles around it). */
+  function terLoadMap(s) {
+    if (TER.maps.has(s) || TER.busy.has(s) || TER.st !== 'ready') return;
+    TER.busy.add(s);
+    fetch('tiles/dem/s' + String(s * TER.have.step).padStart(3, '0') + '.bin').then(r => { if (!r.ok) throw new Error('map ' + r.status); return r.arrayBuffer(); }).then(inflate).then(buf => {
+      const code = new Uint8Array(buf), n = SEA.P.n, E = new Float32Array(n), out = new Float32Array(TEX_W * TER.th * 4).fill(-99999);
+      for (let i = 0; i < n; i++) { const c = code[i]; E[i] = c === 0 ? NaN : c <= 100 ? -6000 * ((100 - c) / 99) ** 2 : 7000 * ((c - 101) / 154) ** 2; }
+      const N = new Float32Array(n * 3), P3 = TER.P3, tri = TER.tri, vp = TER.vp, k = EXAG / 6371000;
+      for (let t = 0; t < tri.length; t += 3) {
+        const a = vp[tri[t]], b = vp[tri[t + 1]], c = vp[tri[t + 2]];
+        if (a === b || b === c || a === c) continue;
+        const ea = 1 + (E[a] || 0) * k, eb = 1 + (E[b] || 0) * k, ec = 1 + (E[c] || 0) * k;
+        const ax = P3[a * 3] * ea, ay = P3[a * 3 + 1] * ea, az = P3[a * 3 + 2] * ea;
+        const ux = P3[b * 3] * eb - ax, uy = P3[b * 3 + 1] * eb - ay, uz = P3[b * 3 + 2] * eb - az, wx = P3[c * 3] * ec - ax, wy = P3[c * 3 + 1] * ec - ay, wz = P3[c * 3 + 2] * ec - az;
+        let nx = uy * wz - uz * wy, ny = uz * wx - ux * wz, nz = ux * wy - uy * wx;
+        if (nx * ax + ny * ay + nz * az < 0) { nx = -nx; ny = -ny; nz = -nz; }     // outward
+        for (const v of [a, b, c]) { N[v * 3] += nx; N[v * 3 + 1] += ny; N[v * 3 + 2] += nz; }
+      }
+      // a pixel next to missing ground, or at the mesh's edge, gets weight 0, so the picture fades out
+      // over one triangle instead of stopping in steps; the weight rides in the normal's length (0.5–1)
+      const wgt = new Uint8Array(n).fill(1);
+      for (let i = 0; i < n; i++) if (TER.edge[i] || E[i] !== E[i]) wgt[i] = 0;
+      for (let t = 0; t < tri.length; t += 3) { const a = vp[tri[t]], b = vp[tri[t + 1]], c = vp[tri[t + 2]]; if (E[a] !== E[a] || E[b] !== E[b] || E[c] !== E[c]) wgt[a] = wgt[b] = wgt[c] = 0; }
+      for (let i = 0; i < n; i++) {
+        if (E[i] !== E[i]) continue;
+        const L = (Math.hypot(N[i * 3], N[i * 3 + 1], N[i * 3 + 2]) || 1) / (wgt[i] ? 1 : 0.5);
+        out[i * 4] = E[i]; out[i * 4 + 1] = N[i * 3] / L; out[i * 4 + 2] = N[i * 3 + 1] / L; out[i * 4 + 3] = N[i * 3 + 2] / L;
+      }
+      TER.maps.set(s, out); TER.busy.delete(s);
+      if (TER.maps.size > 14) for (const key of TER.maps.keys()) { if (TER.maps.size <= 14) break; if (!TER.pair.split(',').includes(String(key))) TER.maps.delete(key); }
+      dirty = true; schedule();
+    }).catch(() => { TER.busy.delete(s); TER.maps.set(s, null); });
+  }
+  /* Draw one layer ('sea' or 'land') of the terrain for time t into TER.cv, the size of the map.
+     Returns the canvas, or null when there is nothing to draw (yet). */
+  function terDraw(t, layer, alpha) {
+    if (!terOn) return null;
+    const gl = terGL(); if (!gl || TER.have.n !== (SEA.P && SEA.P.n) || SEA.st !== 'ready') return null;
+    if (TER.st === 'idle') terLoadMesh();
+    if (TER.st !== 'ready') return null;
+    const step = TER.have.step, x = Math.max(0, Math.min(TER.have.stages - 1.0001, t / step)), sA = Math.floor(x), sB = Math.min(TER.have.stages - 1, sA + 1), f = x - sA;
+    terLoadMap(sA); terLoadMap(sB);
+    const mA = TER.maps.get(sA), mB = TER.maps.get(sB);
+    if (!mA && !mB) return null;
+    const cv = TER.cv;
+    const tw = Math.ceil(canvas.width / 2), th2 = Math.ceil(canvas.height / 2);      // half size: the maps are 1° — the coasts' own outlines keep the edges sharp
+    if (cv.width !== tw || cv.height !== th2) { cv.width = tw; cv.height = th2; }
+    const pk = sA + ',' + sB;
+    if (TER.pair !== pk) {                             // the two maps either side of t
+      TER.pair = pk;
+      gl.bindTexture(gl.TEXTURE_2D, TER.tA); gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, TEX_W, TER.th, gl.RGBA, gl.FLOAT, mA || mB);
+      gl.bindTexture(gl.TEXTURE_2D, TER.tB); gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, TEX_W, TER.th, gl.RGBA, gl.FLOAT, mB || mA);
+      // prefetch the next map along
+      if (f > 0.5 && sB + 1 < TER.have.stages) terLoadMap(sB + 1); else if (sA > 0) terLoadMap(sA - 1);
+    }
+    const FB = TER.famBuf;                             // every plate's rotation now
+    for (let i = 0; i < fams.length && i < 256; i++) {
+      const m = famRot(i, t);
+      for (let r = 0; r < 3; r++) { const o = (r * 256 + i) * 4; if (m) { FB[o] = m[r * 3]; FB[o + 1] = m[r * 3 + 1]; FB[o + 2] = m[r * 3 + 2]; FB[o + 3] = 1; } else FB[o + 3] = 0; }
+    }
+    gl.bindTexture(gl.TEXTURE_2D, TER.tFam); gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 256, 3, gl.RGBA, gl.FLOAT, FB);
+    gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(TER.pr); gl.bindVertexArray(TER.vao);
+    gl.disable(gl.BLEND);                              // pieces overlap along their seams: the last one drawn wins, nothing doubles
+    const U = TER.U, r = proj.rotate(), tr = proj.translate();
+    [[TER.tFam, 'uFam'], [TER.tA, 'uA'], [TER.tB, 'uB']].forEach(([tx, nm], i) => { gl.activeTexture(gl.TEXTURE0 + i); gl.bindTexture(gl.TEXTURE_2D, tx); gl.uniform1i(U[nm], i); });
+    gl.uniform1f(U.uMix, mA && mB ? f : 0); gl.uniform1i(U.uMode, mode === 'flat' ? 0 : 1);
+    gl.uniform2f(U.uRot, r[0] * D2R, r[1] * D2R); gl.uniform2f(U.uTr, tr[0], tr[1]); gl.uniform2f(U.uSize, W, H); gl.uniform1f(U.uScale, proj.scale());
+    gl.uniform1i(U.uLayer, layer === 'land' ? 1 : 0); gl.uniform1f(U.uAlpha, alpha);
+    const deep = hex(mix(pal.o2, '#123a5c', 0.35)).map(v => v / 255); gl.uniform3f(U.uDeep, deep[0], deep[1], deep[2]);
+    gl.uniform1f(U.uShift, 0); gl.drawArrays(gl.TRIANGLES, 0, TER.nVert);    // (a triangle across the map's edge loses a sliver under 1° wide)
+    gl.bindVertexArray(null);
+    TER.drawn++;
+    return cv;
+  }
 
   // ── view state ─────────────────────────────────────────────────────
   let canvas, ctx, fx, fctx, W = 0, H = 0, dpr = 1;
@@ -727,7 +939,7 @@ const WorldMap = (() => {
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
   let fxHook = null, scn = null, scx = null, glide = 0;
-  let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false, hideBox = null, inkCv = null, ictx = null, todayCv = null, tdx = null, dotPat = null;
+  let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false, hideBox = null, inkCv = null, ictx = null, todayCv = null, tdx = null, dotPat = null, terMask = null, tmx = null;
   const inHide = p => { if (!hideBox) return false; const lo = Math.atan2(p.c[1], p.c[0]) * R2D, la = Math.asin(p.c[2]) * R2D; return lo >= hideBox[0] && lo <= hideBox[2] && la >= hideBox[1] && la <= hideBox[3]; };
   const fxHelp = {
     get W() { return W; }, get H() { return H; }, get zoom() { return zoom; },
@@ -946,10 +1158,12 @@ const WorldMap = (() => {
     // deep time: the sea over the continents and their edges, paler than the deep ocean
     const sea = seaNow(t);
     if (sea) {
-      c.globalAlpha = 0.16 * sea.k; c.fillStyle = '#123a5c'; c.fillRect(0, 0, W, H);         // the deep ocean a shade deeper
+      c.globalAlpha = 0.3 * sea.k; c.fillStyle = '#0f3358'; c.fillRect(0, 0, W, H);          // the deep ocean deeper, so the shallow seas stand out
       c.globalAlpha = 0.86 * sea.k; c.fillStyle = mix(pal.o1, '#d6f2e6', 0.55); c.fill(sea.M);
       c.globalAlpha = 0.55 * sea.k; c.strokeStyle = mix(pal.o1, '#f4fbf6', 0.65); c.lineWidth = 1; c.stroke(sea.M);
       c.globalAlpha = 1;
+      const tc = terDraw(t, 'sea', 0.95 * sea.k);       // how deep the shallow seas were, inside the traced sea
+      if (tc) { c.save(); c.clip(sea.M); c.setTransform(1, 0, 0, 1, 0, 0); c.imageSmoothingEnabled = true; c.drawImage(tc, 0, 0, canvas.width, canvas.height); c.restore(); }
     }
 
     // Ice Age: the continental shelves come out of the sea as the water drops
@@ -1053,6 +1267,16 @@ const WorldMap = (() => {
     // today's terrain as light and shadow — only while the land is where it is today (last ~2 million years)
     const hf = t <= 1 ? 1 : t >= 2 ? 0 : 2 - t;
     if (hf > 0) drawHill(L, 0.85 * hf);
+    // deep time: light and shadow from the ancient elevation maps, kept to the land
+    if (sea) {
+      const tc = terDraw(t, 'land', 0.9 * sea.k);
+      if (tc) {
+        if (!terMask) { terMask = document.createElement('canvas'); tmx = terMask.getContext('2d'); }
+        if (terMask.width !== land.width || terMask.height !== land.height) { terMask.width = land.width; terMask.height = land.height; }
+        tmx.imageSmoothingEnabled = true; tmx.globalCompositeOperation = 'copy'; tmx.drawImage(tc, 0, 0, land.width, land.height); tmx.globalCompositeOperation = 'destination-in'; tmx.drawImage(land, 0, 0); tmx.globalCompositeOperation = 'source-over';
+        L.save(); L.setTransform(1, 0, 0, 1, 0, 0); L.globalAlpha = 1; L.globalCompositeOperation = 'overlay'; L.drawImage(terMask, 0, 0); L.restore();
+      }
+    }
     // the great rivers and lakes, after the Ice Age
     const rvf = t <= 0.0095 ? 1 : t >= 0.0125 ? 0 : (0.0125 - t) / 0.003;
     if (rvf > 0 && RIVERS) {
@@ -1681,6 +1905,17 @@ const WorldMap = (() => {
       }
       return { maps: out, open: SEA.open || 0, badFam };
     },
+    /* the ancient relief and sea depth (WebGL): on by default; off draws the map as it was without them */
+    setTerrain(on) { terOn = !!on; dirty = true; schedule(); },
+    /* how solid one terrain layer is where a present-day place sits now, 0–255 (tests) */
+    _terPx(layer, lat, lon) {
+      const cv = terDraw(time, layer, 1); if (!cv) return null;
+      const ll = locate(attach(lat, lon, time), time), p = ll && project(ll); if (!p) return null;
+      const gl = TER.gl, x = Math.round(p[0] * dpr / 2), y = cv.height - 1 - Math.round(p[1] * dpr / 2), px = new Uint8Array(4);
+      gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); return px[3];
+    },
+    _terShot(layer) { const cv = terDraw(time, layer, 1); return cv ? cv.toDataURL('image/png') : null; },
+    _ter() { return { st: TER.st, gl: !!TER.gl, err: TER.err || '', maps: [...TER.maps.keys()].filter(k => TER.maps.get(k)), drawn: TER.drawn, n: TER.nVert || 0 }; },
     _sea() {
       const s0 = SEA.st === 'ready' ? seaStage(seaStep(time)) : null, s = s0 && { M: s0.M[0], L: s0.L[0] };
       if (!s) return { st: SEA.st, fade: seaFade(time) };
@@ -1697,6 +1932,6 @@ const WorldMap = (() => {
       polys.forEach((q, i) => { if (q.c[0] * P[0] + q.c[1] * P[1] + q.c[2] * P[2] < q.cosr - 0.02) return; if (ringContains(q.rings[0], P)) o.push(i + ':f' + q.f + '[' + q.hi + '..' + q.lo + ']'); }); return o.join(' '); },
   });
   // Object.assign copies a getter's value once; these must stay live (the globe button reads `mode`)
-  Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true } });
+  Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true }, terrain: { get: () => terOn && !!TER.gl && TER.st === 'ready', configurable: true } });
   return api;
 })();

@@ -1783,7 +1783,7 @@ function init() {
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
   $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
-  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:seas', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:seas': 'Seas over the continents', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:seas', 'm:terrain', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time'].map(t => srcHTML(t, { 'm:plates': 'Plate model', 'm:seas': 'Seas over the continents', 'm:terrain': 'Ancient heights and depths', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
   // on a phone the title box is one slim line; a tap opens it in full for a few seconds
   let ctTimer = 0;
   $('cartouche').addEventListener('click', () => { const c = $('cartouche'); c.classList.toggle('open'); clearTimeout(ctTimer); if (c.classList.contains('open')) ctTimer = setTimeout(() => c.classList.remove('open'), 6000); });

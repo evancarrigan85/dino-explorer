@@ -7009,5 +7009,21 @@
 ],
 "first": "",
 "title_expected": "Improving global paleogeography since the late Paleozoic using paleobiology"
+},
+"scotese2021atlas": {
+"doi": "10.1146/annurev-earth-081320-064052",
+"title": "An Atlas of Phanerozoic Paleogeographic Maps: The Seas Come In and the Seas Go Out",
+"journal": "Annual Review of Earth and Planetary Sciences",
+"year": 2021,
+"authors": [
+"Scotese"
+],
+"type": "journal-article",
+"targets": [
+"m:terrain",
+"m:seas"
+],
+"first": "",
+"title_expected": "An Atlas of Phanerozoic Paleogeographic Maps: The Seas Come In and the Seas Go Out"
 }
 }

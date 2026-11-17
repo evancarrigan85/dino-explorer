@@ -1,6 +1,6 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry) | optional: the surname to SHOW,
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  s:<earth story id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  s:<earth story id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -412,3 +412,4 @@ haq2014 | Haq | 2014 | Cretaceous eustasy revisited | m:seas
 kocsis2021 | Kocsis | 2021 | Mapping paleocoastlines and continental flooding during the Phanerozoic | m:seas
 ronov1994 | Ronov | 1994 | Phanerozoic transgressions and regressions on the continents; a quantitative approach based on areas flooded by the sea and areas of marine and continental deposition | m:seas
 cao2017 | Cao | 2017 | Improving global paleogeography since the late Paleozoic using paleobiology | m:seas
+scotese2021atlas | Scotese | 2021 | An Atlas of Phanerozoic Paleogeographic Maps: The Seas Come In and the Seas Go Out | m:terrain, m:seas

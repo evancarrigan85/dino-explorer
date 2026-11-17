@@ -44,6 +44,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `LANDCOVER_PACKED` (today's landscapes, from measured climate) | `build_landcover.py` |
 | `ROCKS` (deep-time climate from dated rocks) | `build_rocks.py` |
 | `SEAS_PACKED` (seas over the continents, 540 Ma → today, one map every 5 Myr) | `build_seas.py` (rebuild it whenever `PLATE_DATA` changes) |
+| `DEM_HAVE` + `tiles/dem/` (ancient heights and depths: a mesh and 109 maps, about 1.2 MB) | `build_dem.py` (rebuild after `build_seas.py`) |
 | `RIVERS_PACKED` (today's great rivers and lakes) | `build_rivers.py` |
 | `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
@@ -71,6 +72,27 @@ smooth outlines plate by plate (marching squares on a softened grid), and draws 
 continents under the land and the mapped land into the land layer. The coast ink there is the edge of
 whatever land is drawn; the dotted line is today's coast. Do not use the PALEOMAP PaleoDEMs for
 mountains instead: their licence (CC-BY-NC-ND) forbids derived layers.
+
+## Rebuilding the ancient heights and depths
+
+```
+pip install numpy scipy netCDF4 pygplates
+# 1° PaleoDEMs, CC BY 4.0: Scotese_Wright_2018_Maps_1-88_1degX1deg_PaleoDEMS_nc.zip from
+#   https://zenodo.org/records/5460860 (the environment allows zenodo.org)
+# PALEOMAP v19o_r1c rotations and plate polygons: Data/paleomap_model_v19o_r1c inside
+#   PaleoCoastlines_v7.1.zip in https://github.com/adamkocsis/2019-07-04_paleoCoastlines (data/PaleoMAP/2020-08-10_v7)
+python3 -I tools/build_dem.py gml-kocsis <netCDF dir> <paleomap_model_v19o_r1c dir>
+```
+
+The PaleoDEMs are in ancient (PALEOMAP) positions. `build_dem.py` gives every seas pixel its PALEOMAP
+plate, carries it to each map's age with the rotations Kocsis & Scotese used, and reads the height
+there — so heights ride the same pixels, families and plates as the seas. It agrees with their coast
+and shelf-edge maps for 92–98% of pixels. In the page, `engine.js` (the `TER` block) draws the mesh
+with WebGL2: each vertex is rotated by its plate's matrix (a small float texture updated every frame)
+and projected with the same Equal Earth / orthographic formulas d3 uses; two maps are blended by
+time. Two passes: sea depth (clipped to the traced sea, so the coast stays the traced one) and land
+light-and-shadow (laid on the land layer with `overlay`). Data loads with `fetch`, so it needs http —
+from `file:` and without WebGL the map is drawn as before. `WorldMap.setTerrain(false)` turns it off.
 
 ## Rebuilding the plate data
 
