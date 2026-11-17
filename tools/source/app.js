@@ -1022,6 +1022,7 @@ const trdNow = (r, y = yearAt(S.t)) => y >= r.from && y <= r.to;
 const wrkNow = (w, y = yearAt(S.t)) => y >= w.year && (w.end == null || y <= w.end);
 const HIST_LAYERS = [['emp', '🏛 Empires'], ['old', '🌾 First cities'], ['bel', '🕊 Beliefs'], ['rt', '🐪 Trade routes'], ['wk', '🏗 Great works']];
 const OLDP = Object.fromEntries(OLD.map(o => [o.id, o]));
+const OLD_AREAS = [['sumer', 'Sumer — between the Tigris and Euphrates', 'today’s Iraq'], ['nile', 'Egypt — the Nile and its lost branches', 'today’s Egypt'], ['indus', 'The Indus cities and the river that dried up', 'today’s Pakistan and north-west India']];
 const oldNow = (o, y = yearAt(S.t)) => y >= o.from && y <= o.to;
 const histOn = k => !S.histOff || !S.histOff[k];
 const selBelief = () => S.sel && S.sel.startsWith('bel:') ? BEL[S.sel.slice(4)] : null;
@@ -1066,7 +1067,7 @@ function histListsHTML() {
       <div class="hist-layers"><span>On the map:</span>${HIST_LAYERS.map(([k, l]) => `<button class="chip${histOn(k) ? ' on' : ''}" data-hl="${k}" aria-pressed="${histOn(k)}">${l}</button>`).join('')}</div>
       ${hist ? '' : `<div class="hf-note" style="margin:2px 2px 0">You are at ${esc(fmtAgo(S.t))} — before any of this. <button class="linkbtn" data-hist-go="1">Go to recorded history</button></div>`}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Empires and kingdoms <small>tap one to go to its height; its lands are sketched on the map, and for the biggest the border shifts as time moves</small></div>${emp}</div>
-    <div class="ms"><div class="list-h" style="padding-left:2px">The first cities <small>Sumer, where cities, writing and watered fields began — with the river where it ran then</small></div>${OLD.map(o => `<div class="ms-item hist-item${hist && oldNow(o, y) ? ' now' : ''}${S.sel === 'old:' + o.id ? ' sel' : ''}" data-old="${o.id}"><span class="when">${fmtYear(o.from).replace(' CE', '')}</span><span>${o.icon}</span><div><b>${esc(o.name)}</b><span>${o.kind === 'city' ? 'city' : o.kind === 'river' ? 'the river then (sketch)' : 'farmland (sketch)'}</span></div></div>`).join('')}</div>
+    <div class="ms"><div class="list-h" style="padding-left:2px">The first cities <small>where cities and watered fields began — with the rivers where they ran then</small></div>${OLD_AREAS.map(([ar, an]) => `<div class="fam-h area-h"><b>${esc(an)}</b></div>` + OLD.filter(o => o.area === ar).map(o => `<div class="ms-item hist-item${hist && oldNow(o, y) ? ' now' : ''}${S.sel === 'old:' + o.id ? ' sel' : ''}" data-old="${o.id}"><span class="when">${fmtYear(o.from).replace(' CE', '')}</span><span>${o.icon}</span><div><b>${esc(o.name)}</b><span>${o.kind === 'city' ? 'city' : o.kind === 'river' ? 'the river then (sketch)' : 'farmland (sketch)'}</span></div></div>`).join('')).join('')}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Trade routes <small>the roads and sea lanes that tied the world together</small></div>${rts}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Great works <small>things people built, or did, together</small></div>${wks}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Beliefs <small>where each began and how far it travelled</small></div>
@@ -1098,9 +1099,9 @@ function workHTML(w) {
 }
 function oldHTML(o) {
   return `<div class="profile culture hist" data-key="old:${o.id}" style="border-color:${o.kind === 'fields' ? '#5f8f3a' : o.kind === 'river' ? '#346c9e' : '#c9824a'}"><h3 style="font-style:normal">${o.icon} ${esc(o.name)}</h3>
-    <dl class="facts"><dt>When</dt><dd>${fmtYear(o.from)} → ${o.to >= NOW_YEAR ? 'today' : fmtYear(o.to)}</dd>${o.kind === 'city' ? `<dt>Where</dt><dd>today’s southern Iraq</dd>` : ''}</dl>
+    <dl class="facts"><dt>When</dt><dd>${fmtYear(o.from)} → ${o.to >= NOW_YEAR ? 'today' : fmtYear(o.to)}</dd><dt>Where</dt><dd>${esc((OLD_AREAS.find(a => a[0] === o.area) || [])[2] || '')}</dd></dl>
     <div class="creature-fact">${esc(o.note)}</div>
-    <div class="found">📍 <b>On the map:</b> ${o.kind === 'city' ? 'the excavated site.' : o.kind === 'river' ? 'a simplified sketch of the main course, drawn from studies of old river channels. Today’s Euphrates is drawn too, so you can see how far it has moved.' : 'a rough sketch of the irrigated plain between the rivers, not a survey of fields.'} The marshes and the sea also came closer to Ur and Eridu than they do now; how much closer is still argued over.</div>${srcHTML('o:' + o.id)}${srcHTML('o:sumer', 'Sources for Sumer’s rivers and fields')}</div>`;
+    <div class="found">📍 <b>On the map:</b> ${o.kind === 'city' ? 'the excavated site.' : o.kind === 'river' ? 'a simplified sketch of the main course, drawn from studies of old river channels. Today’s rivers are drawn too, so you can see how far they have moved.' : 'a rough sketch of the irrigated plain between the rivers, not a survey of fields.'}${o.area === 'sumer' ? ' The marshes and the sea also came closer to Ur and Eridu than they do now; how much closer is still argued over.' : ''}</div>${srcHTML('o:' + o.id)}${srcHTML('o:' + o.area, 'Sources for this region’s rivers and fields')}</div>`;
 }
 function selectHist(kind, id, fromMap) {
   if (kind === 'old') {

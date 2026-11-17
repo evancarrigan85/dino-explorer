@@ -43,6 +43,14 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `LANDCOVER_PACKED` (today's landscapes, from measured climate) | `build_landcover.py` |
 | `ROCKS` (deep-time climate from dated rocks) | `build_rocks.py` |
 | `RIVERS_PACKED` (today's great rivers and lakes) | `build_rivers.py` |
+| `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
+| `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
+
+**Tiles beside the page.** `tiles/relief/` (about 3.3 MB of grey JPEGs) and `tiles/coast/` (about 1 MB of
+packed text) are the only files the page loads besides itself, and only when you zoom in. They are
+served by GitHub Pages next to the page. Opened straight from disk the page still works: the terrain
+images load, but the detailed coast does not (browsers will not `fetch` local files), so the plate
+coastline is used.
 
 ## Rebuilding the plate data
 

@@ -382,3 +382,9 @@ hritz2010 | Hritz | 2010 | Tracing Settlement Patterns and Channel Systems in So
 wilkinson2015 | Wilkinson | 2015 | Hydraulic landscapes in Mesopotamia: the role of human niche construction | o:sumer, o:sumer-fields
 lambeck1996 | Lambeck | 1996 | Shoreline reconstructions for the Persian Gulf since the last glacial maximum | o:sumer
 jacobsen1958 | Jacobsen | 1958 | Salt and Silt in Ancient Mesopotamian Agriculture | o:sumer-fields
+# ── the Nile and the Indus ──
+stanley1993 | Stanley | 1993 | Nile Delta: Recent Geological Evolution and Human Impact | o:nile, o:canopic, o:pelusiac
+macklin2015 | Macklin | 2015 | A new model of river dynamics, hydroclimatic change and human settlement in the Nile Valley derived from meta-analysis of the Holocene fluvial archive | o:nile, o:nile-fields
+giosan2012 | Giosan | 2012 | Fluvial landscapes of the Harappan civilization | o:indus, o:ghaggar
+singh2017 | Singh | 2017 | Counter-intuitive influence of Himalayan river morphodynamics on Indus Civilisation urban settlements | o:indus, o:ghaggar
+shinde2019 | Shinde | 2019 | An Ancient Harappan Genome Lacks Ancestry from Steppe Pastoralists or Iranian Farmers | o:rakhigarhi

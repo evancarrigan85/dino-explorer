@@ -78,6 +78,11 @@ builds, passes the checks and has been looked at.
   engine, the app and the quiz.
 - **A tap on the map never moves the map or the time.** Selections made from the map set `noLook`,
   and `lookAt()` in `app.js` honours it; only choices made from a list turn the map, and they glide.
+- **Close-up detail lives in `tiles/`** beside the page (terrain light and shadow; detailed modern coast),
+  loaded on demand and indexed by `HILL_HAVE` / `COAST_HAVE` in the page. They show today's land, so
+  they fade out before about 2 million years (terrain) and are used only in the last ~7,000 years
+  (coast). Everything else stays inside the one file. While the flat map is dragged or zoomed it moves
+  the last finished frame (`drawQuick`) and redraws properly 140 ms after the hand stops.
 - `engine.js` is `WorldMap`: a canvas map that carries today's coastlines back in time on their
   tectonic plates (Merdith et al. 2021), with Ice Age shorelines, ice, relief, labels, markers and a
   pin. It knows nothing about animals.

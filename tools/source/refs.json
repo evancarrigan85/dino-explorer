@@ -6562,5 +6562,98 @@
 ],
 "first": "",
 "title_expected": "Salt and Silt in Ancient Mesopotamian Agriculture"
+},
+"stanley1993": {
+"doi": "10.1126/science.260.5108.628",
+"title": "Nile Delta: Recent Geological Evolution and Human Impact",
+"journal": "Science",
+"year": 1993,
+"authors": [
+"Stanley",
+"Warne"
+],
+"type": "journal-article",
+"targets": [
+"o:nile",
+"o:canopic",
+"o:pelusiac"
+],
+"first": "",
+"title_expected": "Nile Delta: Recent Geological Evolution and Human Impact"
+},
+"macklin2015": {
+"doi": "10.1016/j.quascirev.2015.09.024",
+"title": "A new model of river dynamics, hydroclimatic change and human settlement in the Nile Valley derived from meta-analysis of the Holocene fluvial archive",
+"journal": "Quaternary Science Reviews",
+"year": 2015,
+"authors": [
+"Macklin",
+"Toonen",
+"Woodward",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"o:nile",
+"o:nile-fields"
+],
+"first": "",
+"title_expected": "A new model of river dynamics, hydroclimatic change and human settlement in the Nile Valley derived from meta-analysis of the Holocene fluvial archive"
+},
+"giosan2012": {
+"doi": "10.1073/pnas.1112743109",
+"title": "Fluvial landscapes of the Harappan civilization",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2012,
+"authors": [
+"Giosan",
+"Clift",
+"Macklin",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"o:indus",
+"o:ghaggar"
+],
+"first": "",
+"title_expected": "Fluvial landscapes of the Harappan civilization"
+},
+"singh2017": {
+"doi": "10.1038/s41467-017-01643-9",
+"title": "Counter-intuitive influence of Himalayan river morphodynamics on Indus Civilisation urban settlements",
+"journal": "Nature Communications",
+"year": 2017,
+"authors": [
+"Singh",
+"Thomsen",
+"Sinha",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"o:indus",
+"o:ghaggar"
+],
+"first": "",
+"title_expected": "Counter-intuitive influence of Himalayan river morphodynamics on Indus Civilisation urban settlements"
+},
+"shinde2019": {
+"doi": "10.1016/j.cell.2019.08.048",
+"title": "An Ancient Harappan Genome Lacks Ancestry from Steppe Pastoralists or Iranian Farmers",
+"journal": "Cell",
+"year": 2019,
+"authors": [
+"Shinde",
+"Narasimhan",
+"Rohland",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"o:rakhigarhi"
+],
+"first": "",
+"title_expected": "An Ancient Harappan Genome Lacks Ancestry from Steppe Pastoralists or Iranian Farmers"
 }
 }

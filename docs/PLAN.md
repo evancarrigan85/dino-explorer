@@ -18,12 +18,12 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 370, every one a published work confirmed in Crossref |
+| References | 375, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 152 passing |
+| Checks | 159 passing |
 | Page | about 1.47 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -448,6 +448,18 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — Close-up detail; the Nile and the Indus.** Evan: zooming in showed "just flat
+  texture". Today's terrain now appears as light and shadow at three levels of detail
+  (`tools/build_hillshade.py`, `tiles/relief/`); zoomed in on the last ~7,000 years the coastline
+  switches to Natural Earth 1:10m (`tools/build_coast.py`, `tiles/coast/`); the coarse climate-zone
+  colours fade as you come close; dragging the zoomed flat map runs at full frame rate. The first-cities
+  layer gains the Nile (its lost Canopic and Pelusiac branches, Memphis, Bubastis, Tanis, Naukratis,
+  Alexandria, the flood fields) and the Indus (Mohenjo-daro, Harappa, Dholavira, Lothal, Rakhigarhi,
+  Kalibangan, and the dried-up Ghaggar–Hakra). 5 new verified sources. 159 checks.
+  **Next:** a finer terrain source (the 4 km image is the limit here — SRTM or GEBCO at ~500 m would
+  need a host approved); rebuild the plate coastlines from 1:10m so deep-time coasts are crisp too;
+  the old head of the Gulf as a dated sketch.
 
 - **17 Nov 2026 — Rivers as they were.** Evan, looking for Ur: today's rivers were stored to only
   11 km and showed where the rivers run now. Rivers are now stored to about 1 km; Sumer gets its own

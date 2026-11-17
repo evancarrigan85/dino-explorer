@@ -245,7 +245,11 @@ const WorldMap = (() => {
     }
     // a one-finger swipe scrolls the page unless the map itself can be dragged
     if (canvas) canvas.style.touchAction = (mode === 'flat' && zoom <= 1.001) ? 'pan-y' : 'none';
-    dirty = true; schedule();
+    // On the flat map, a pan or zoom first moves the last finished picture (cheap), then redraws it
+    // properly once the hand stops. The globe turns, so it always redraws.
+    if (mode === 'flat' && snap && snap.mode === 'flat' && !dirty) { viewDirty = true; clearTimeout(settle); settle = setTimeout(() => { dirty = true; schedule(); }, 140); }
+    else dirty = true;
+    schedule();
     if (api.onView) api.onView();
   }
 
@@ -426,6 +430,115 @@ const WorldMap = (() => {
     return { lines: byRank.map(ls => ({ type: 'MultiLineString', coordinates: ls })), lakes: { type: 'MultiPolygon', coordinates: lakes.map(r => [r]) } };
   })();
   let riverP = null;
+  // Detailed modern land and coastline (build_coast.py), swapped in when zoomed in on the last few thousand
+  // years — while the sea stands where it stands now and the plates have not moved enough to matter.
+  // (browsers will not fetch files for a page opened straight from disk: then the plate coastline is used)
+  const coastHas = typeof COAST_HAVE === 'undefined' || location.protocol === 'file:' ? null : new Set(COAST_HAVE.split(','));
+  const coastTiles = {}; let coastKey = '', coastPaths = null;
+  function coastTile(x, y) {
+    const k = x + '_' + y; let c = coastTiles[k];
+    if (c) return c;
+    c = coastTiles[k] = { ok: false };
+    if (!coastHas || !coastHas.has(k)) { c.ok = true; c.empty = true; return c; }
+    fetch('tiles/coast/' + k + '.txt').then(r => r.ok ? r.text() : Promise.reject(r.status)).then(txt => {
+      const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', lut = new Int8Array(128);
+      for (let i = 0; i < 64; i++) lut[A.charCodeAt(i)] = i;
+      let pos = 0;
+      const u = () => { let r = 0, sh = 0, ch; do { ch = lut[txt.charCodeAt(pos++)]; r += (ch & 31) * Math.pow(2, sh); sh += 5; } while (ch & 32); return r; };
+      const z = () => { const v = u(); return v % 2 ? -(v + 1) / 2 : v / 2; };
+      const pts = () => { const n = u(), o = []; let x = 0, y = 0; for (let i = 0; i < n; i++) { x += z(); y += z(); o.push([x / 100, y / 100]); } return o; };
+      const polys = [], np = u();
+      for (let i = 0; i < np; i++) { const nr = u(), rings = []; for (let r = 0; r < nr; r++) { const ring = pts(); ring.push(ring[0]); rings.push(ring); } if (d3.geoArea({ type: 'Polygon', coordinates: rings }) > 2 * Math.PI) rings.forEach(r => r.reverse()); polys.push(rings); }
+      const lines = [], nl = u(); for (let i = 0; i < nl; i++) lines.push(pts());
+      c.land = { type: 'MultiPolygon', coordinates: polys }; c.coast = { type: 'MultiLineString', coordinates: lines }; c.ok = true;
+      coastKey = ''; dirty = true; schedule();
+    }).catch(() => { c.ok = true; c.empty = true; c.failed = true; });
+    return c;
+  }
+  // the detailed land for the view, or null to use the plate model (not zoomed in, too long ago, or still loading)
+  function detailedLand(t, vk) {
+    if (!coastHas || zoom < 3 || t > 0.0065 || seaLevel(t) < -2) return null;
+    let lo0 = 999, lo1 = -999, la0 = 999, la1 = -999;
+    for (let i = 0; i <= 6; i++) for (let j = 0; j <= 6; j++) {
+      const ll = proj.invert && proj.invert([W * i / 6, H * j / 6]); if (!ll || !isFinite(ll[0])) continue;
+      if (mode === 'globe') { const r = proj.rotate(); if (d3.geoDistance(ll, [-r[0], -r[1]]) > Math.PI / 2) continue; }
+      lo0 = Math.min(lo0, ll[0]); lo1 = Math.max(lo1, ll[0]); la0 = Math.min(la0, ll[1]); la1 = Math.max(la1, ll[1]);
+    }
+    if (lo0 > lo1 || lo1 - lo0 > 120) return null;
+    const T = COAST_TILE, tiles = [];
+    for (let tx = Math.floor((lo0 - 2 + 180) / T); tx <= Math.floor((lo1 + 2 + 180) / T); tx++) for (let ty = Math.floor((90 - la1 - 2) / T); ty <= Math.floor((90 - la0 + 2) / T); ty++) {
+      if (tx < 0 || tx >= 360 / T || ty < 0 || ty >= 180 / T) continue;
+      tiles.push(coastTile(tx, ty));
+    }
+    if (tiles.some(c => !c.ok) || tiles.some(c => c.failed) || tiles.length > 40) return null;
+    const key = vk + '|' + tiles.length;
+    if (key !== coastKey) {
+      const fill = new Path2D(), ink = new Path2D();
+      for (const c of tiles) if (!c.empty) { fill.addPath(geoP(c.land)); ink.addPath(geoP(c.coast)); }
+      coastKey = key; coastPaths = { fill, ink };
+    }
+    return coastPaths;
+  }
+  // Terrain texture (build_hillshade.py): grey tiles of today's light and shadow beside the page, laid
+  // over the land so zooming in shows ridges and valleys. Fetched only for what is in view; if the tiles
+  // are missing (the page saved on its own) the map simply has none.
+  const HILL = [[0, 360, 900], [1, 45, 450], [2, 15, 450]];          // level, tile size (degrees), tile pixels
+  const hillImg = {}; let hillCv = null, hillCx = null, hillFail = 0;
+  const hillHas = typeof HILL_HAVE === 'undefined' ? null : Object.fromEntries(Object.entries(HILL_HAVE).map(([z, v]) => [z, new Set(v.split(','))]));
+  function hillTile(z, x, y) {
+    const k = z + '/' + x + '_' + y; let h = hillImg[k];
+    if (!h && hillHas && !hillHas[z].has(x + '_' + y)) h = hillImg[k] = { ok: false, bad: true, img: null };   // open sea: no file
+    if (!h) {
+      h = hillImg[k] = { ok: false, img: new Image() };
+      h.img.onload = () => { h.ok = true; dirty = true; schedule(); };
+      h.img.onerror = () => { h.bad = true; if (z === 0) hillFail = 1; };
+      h.img.src = 'tiles/relief/z' + z + '/' + x + '_' + y + '.jpg';
+    }
+    return h;
+  }
+  function drawHill(L, alpha) {
+    if (hillFail) return;
+    if (!hillCv) { hillCv = document.createElement('canvas'); hillCx = hillCv.getContext('2d'); }
+    if (hillCv.width !== land.width || hillCv.height !== land.height) { hillCv.width = land.width; hillCv.height = land.height; }
+    const X = hillCx; X.setTransform(1, 0, 0, 1, 0, 0); X.globalCompositeOperation = 'source-over'; X.globalAlpha = 1; X.clearRect(0, 0, hillCv.width, hillCv.height);
+    // screen pixels per degree, roughly, to pick the level of detail
+    const c0 = proj.invert ? proj.invert([W / 2, H / 2]) : null, a0 = c0 && proj(c0), b0 = c0 && proj([c0[0] + 1, c0[1]]);
+    const ppd = a0 && b0 && isFinite(b0[0]) ? Math.abs(b0[0] - a0[0]) * dpr : 3;
+    const z = ppd < 4 ? 0 : ppd < 14 ? 1 : 2, deg = HILL[z][1], px = HILL[z][2];
+    const n = Math.max(1, Math.min(30, Math.ceil(deg * ppd / dpr / 70)));   // cells per tile side, ~70 screen px each
+    const pr = (lo, la) => project([lo, la]);
+    let drawn = 0;
+    for (let ty = 0; ty < (z ? 180 / deg : 1); ty++) for (let tx = 0; tx < 360 / deg; tx++) {
+      const lo0 = -180 + tx * deg, la0 = 90 - ty * deg, dg = Math.min(deg, 180), lo1 = lo0 + deg, la1 = la0 - dg;
+      // skip tiles plainly out of view: test a 3x3 grid of points
+      let seen = false;
+      for (let i = 0; i <= 2 && !seen; i++) for (let j = 0; j <= 2 && !seen; j++) { const q = pr(lo0 + deg * i / 2, la0 - dg * j / 2); if (q && q[0] > -W && q[0] < 2 * W && q[1] > -H && q[1] < 2 * H) seen = true; }
+      if (!seen && z) continue;
+      let h = hillTile(z, tx, ty), img = h.img, sx0 = 0, sy0 = 0, sw = px, sh = z ? px : 450;
+      if (h.bad && z) continue;                     // open sea
+      if (!h.ok) {                                   // not loaded yet: borrow the coarser level
+        if (z === 2) { const p1 = hillTile(1, Math.floor(tx / 3), Math.floor(ty / 3)); if (p1.ok) { img = p1.img; sx0 = (tx % 3) * 150; sy0 = (ty % 3) * 150; sw = sh = 150; } else continue; }
+        else if (z === 1) { const p0 = hillTile(0, 0, 0); if (p0.ok) { img = p0.img; sx0 = tx * 112.5; sy0 = ty * 112.5; sw = sh = 112.5; } else continue; }
+        else continue;
+        if (h.bad && z) { /* a sea tile: nothing to draw, and the coarser one is flat there too */ continue; }
+      }
+      const nc = z ? n : Math.max(8, n), nr = z ? n : Math.max(4, Math.round(n / 2));
+      for (let i = 0; i < nc; i++) for (let j = 0; j < nr; j++) {
+        const la = la0 - dg * j / nr, lb = la0 - dg * (j + 1) / nr, oa = lo0 + deg * i / nc, ob = lo0 + deg * (i + 1) / nc;
+        const p00 = pr(oa, la), p10 = pr(ob, la), p01 = pr(oa, lb); if (!p00 || !p10 || !p01) continue;
+        if (Math.abs(p10[0] - p00[0]) > W / 3) continue;                        // straddles the map's edge
+        const mx = Math.min(p00[0], p10[0], p01[0]), Mx = Math.max(p00[0], p10[0], p01[0]), my = Math.min(p00[1], p10[1], p01[1]), My = Math.max(p00[1], p10[1], p01[1]);
+        if (Mx < -80 || mx > W + 80 || My < -80 || my > H + 80) continue;
+        const cw = sw / nc, ch = sh / nr, cx = sx0 + i * cw, cy = sy0 + j * ch;
+        const A = (p10[0] - p00[0]) / cw, B = (p10[1] - p00[1]) / cw, C = (p01[0] - p00[0]) / ch, D = (p01[1] - p00[1]) / ch;
+        X.setTransform(A * dpr, B * dpr, C * dpr, D * dpr, (p00[0] - A * cx - C * cy) * dpr, (p00[1] - B * cx - D * cy) * dpr);
+        X.drawImage(img, cx, cy, cw + 0.8, ch + 0.8, cx, cy, cw + 0.8, ch + 0.8); drawn++;
+      }
+    }
+    if (!drawn) return;
+    X.setTransform(1, 0, 0, 1, 0, 0); X.globalCompositeOperation = 'destination-in'; X.drawImage(land, 0, 0);   // land only
+    L.save(); L.setTransform(1, 0, 0, 1, 0, 0); L.globalCompositeOperation = 'overlay'; L.globalAlpha = alpha; L.drawImage(hillCv, 0, 0); L.restore();
+  }
   // Deep time: climate read from the rocks (build_rocks.py). Each dated rock site paints a soft patch of the
   // land around it — coal green, salt and desert crust sandy, bauxite and kaolin deep green, glacial rubble white —
   // carried on its plate. Land with no patch has no rock evidence in the dataset, and stays plain.
@@ -476,6 +589,7 @@ const WorldMap = (() => {
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
   let fxHook = null, scn = null, scx = null, glide = 0;
+  let snap = null, snapCv = null, viewDirty = false, settle = 0;
   const fxHelp = {
     get W() { return W; }, get H() { return H; }, get zoom() { return zoom; },
     pt: at => project(locate(at, time)),
@@ -594,8 +708,9 @@ const WorldMap = (() => {
   }
 
   let lastMs = 0;
+  let fullDraws = 0;
   function draw() {
-    dirty = false; stamp++;
+    dirty = false; stamp++; fullDraws++;
     const t0 = performance.now();
     const t = time, c = ctx;
     pal = palette(t);
@@ -689,7 +804,8 @@ const WorldMap = (() => {
     }
 
     // ── land, built on its own layer so overlapping blocks merge ──
-    const lp = landPath(t);
+    const det = detailedLand(t, [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|'));
+    const lp = det ? det.fill : landPath(t);
     const L = lctx;
     L.setTransform(1, 0, 0, 1, 0, 0); L.globalCompositeOperation = 'source-over'; L.globalAlpha = 1;
     L.clearRect(0, 0, land.width, land.height);
@@ -728,11 +844,15 @@ const WorldMap = (() => {
       for (const lv of COVER_LV) {
         const [tint, grain, ink] = COVER[lv.m] || []; if (!tint) continue;
         const pth = coverP[lv.m] || (coverP[lv.m] = geoP(lv.geo));
-        L.globalAlpha = 0.66 * cf; L.fillStyle = tint; L.fill(pth);
-        if (grain) { L.globalAlpha = 0.5 * cf; L.fillStyle = coverTile(grain, ink); L.fill(pth); }
+        const zc = Math.max(0.4, Math.min(1, 1.25 - zoom / 16));          // coarse zones fade a little as you come close
+        L.globalAlpha = 0.66 * cf * zc; L.fillStyle = tint; L.fill(pth);
+        if (grain) { L.globalAlpha = 0.5 * cf * zc; L.fillStyle = coverTile(grain, ink); L.fill(pth); }
       }
       L.globalAlpha = 1;
     }
+    // today's terrain as light and shadow — only while the land is where it is today (last ~2 million years)
+    const hf = t <= 1 ? 1 : t >= 2 ? 0 : 2 - t;
+    if (hf > 0) drawHill(L, 0.85 * hf);
     // the great rivers and lakes, after the Ice Age
     const rvf = t <= 0.0095 ? 1 : t >= 0.0125 ? 0 : (0.0125 - t) / 0.003;
     if (rvf > 0 && RIVERS) {
@@ -796,7 +916,7 @@ const WorldMap = (() => {
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     // Plate pieces overlap along their seams, so stroking every piece and
     // then laying the merged land on top leaves ink only on true coasts.
-    c.strokeStyle = 'rgba(52,30,10,0.95)'; c.lineWidth = 2.6; c.lineJoin = 'round'; c.stroke(lp);
+    c.strokeStyle = 'rgba(52,30,10,0.95)'; c.lineWidth = det ? 2.2 : 2.6; c.lineJoin = 'round'; c.stroke(det ? det.ink : lp);
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.drawImage(land, 0, 0);
     c.drawImage(q[2], 0, 0, land.width, land.height);
@@ -828,8 +948,24 @@ const WorldMap = (() => {
     // one sheet of grain over everything
     if (grain) { c.fillStyle = grain; c.fillRect(0, 0, W, H); }
     lastMs = performance.now() - t0;
+    // keep this frame, and the view it was drawn in, for quick moves
+    if (!snapCv) snapCv = document.createElement('canvas');
+    if (snapCv.width !== canvas.width || snapCv.height !== canvas.height) { snapCv.width = canvas.width; snapCv.height = canvas.height; }
+    const sx = snapCv.getContext('2d'); sx.setTransform(1, 0, 0, 1, 0, 0); sx.globalAlpha = 1; sx.globalCompositeOperation = 'copy'; sx.drawImage(canvas, 0, 0);
+    snap = { mode, scale: proj.scale(), tx: proj.translate()[0], ty: proj.translate()[1] }; viewDirty = false;
     drawFx();
     if (api.onDraw) api.onDraw();
+  }
+  function drawQuick() {
+    viewDirty = false;
+    const k = proj.scale() / snap.scale, [tx, ty] = proj.translate(), c = ctx;
+    c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+    c.drawImage(sheet, 0, 0);                                       // paper behind whatever the old frame does not cover
+    c.setTransform(k, 0, 0, k, dpr * (tx - snap.tx * k), dpr * (ty - snap.ty * k));
+    c.imageSmoothingEnabled = true; c.drawImage(snapCv, 0, 0);
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    hits = []; rings = [];                                          // positions are stale until the proper redraw
+    drawFx();
   }
 
   // ── labels and markers ─────────────────────────────────────────────
@@ -1107,7 +1243,7 @@ const WorldMap = (() => {
   function schedule() { if (!raf) raf = requestAnimationFrame(tick); }
   function tick() {
     raf = 0;
-    if (dirty) draw(); else drawFx();
+    if (dirty) { clearTimeout(settle); draw(); } else if (viewDirty && snap) drawQuick(); else drawFx();
     if (document.hidden) return;
     if ((trailLife > 0 || performance.now() < animUntil) && !dirty) dirty = true;                       // keep fading the wake after the land stops
     if (rings.length || trailLife > 0 || fxHook || performance.now() < animUntil || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
@@ -1259,7 +1395,7 @@ const WorldMap = (() => {
     redraw() { dirty = true; schedule(); },
     resize,
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
-    _draw: draw, _ctx: () => ctx,
+    _draw: draw, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,
   });
   // Object.assign copies a getter's value once; these must stay live (the globe button reads `mode`)
   Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true } });
