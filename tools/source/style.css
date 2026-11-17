@@ -571,3 +571,9 @@ header .logo,header h1{cursor:pointer}
 @media (max-width:767px){.door-grid{grid-template-columns:1fr 1fr;gap:8px}.door-card{padding:14px 12px 10px}.door-h h2{font-size:1.35rem}.door-globe{font-size:2rem}.door-b{padding:10px}.door-b span:last-child{font-size:.68rem}}
 @media (prefers-reduced-motion:reduce){#door.show{animation:none}.door-b{transition:none}}
 .tn-link{font-size:.72rem;color:#b9c5da;padding:2px 4px 6px;line-height:1.4}.tn-link .linkbtn{margin-top:3px}
+
+/* stories: the Earth being made */
+.stories{padding:6px 8px 4px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.story{background:rgba(120,180,230,.06);border:1px solid rgba(120,180,230,.35);border-radius:10px;padding:10px 11px;margin:4px 0 8px}
+.story-top{display:flex;gap:10px;align-items:flex-start}.story-i{font-size:1.5rem}.story-top b{display:block;color:#fff;font-size:.88rem}.story-top span{font-size:.72rem;color:#9fb0c8;line-height:1.35}
+.story .watch{border-color:#6fa8dc;background:linear-gradient(180deg,rgba(111,168,220,.28),rgba(111,168,220,.1));color:#e3f0ff}

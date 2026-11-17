@@ -589,12 +589,14 @@ const WorldMap = (() => {
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
   let fxHook = null, scn = null, scx = null, glide = 0;
-  let snap = null, snapCv = null, viewDirty = false, settle = 0;
+  let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false;
   const fxHelp = {
     get W() { return W; }, get H() { return H; }, get zoom() { return zoom; },
     pt: at => project(locate(at, time)),
     circle(at, deg) { const ll = locate(at, time); return ll ? geoP(d3.geoCircle().center(ll).radius(Math.max(0.2, Math.min(179.5, deg))).precision(2.5)()) : null; },
     cap: (south, deg) => capPath(south, deg),
+    /* a present-day [lon, lat] on screen, for scenes of the last few thousand years (plates have barely moved) */
+    ll: (lon, lat) => project([lon, lat]),
     /* Draw one layer of the scene, clipped to the globe, and keep only the part over 'sea', over 'land', or 'all'. */
     layer(mask, draw) {
       if (!scn) { scn = document.createElement('canvas'); scx = scn.getContext('2d'); }
@@ -927,7 +929,7 @@ const WorldMap = (() => {
     if (t <= 2.7) {
       const full = t > 0.0125;                // after the Ice Age only Greenland keeps its sheet
       const k = Math.min(1, (2.7 - t) / 0.2);
-      for (const name of full ? ['laurentide', 'eurasian', 'patagonian', 'greenland'] : ['greenland']) {
+      for (const name of full ? ['laurentide', 'eurasian', 'patagonian', 'greenland'].filter(n => !(iceOff && n === 'laurentide')) : ['greenland']) {
         const p = geoP(SHEET_GEO[name]);
         c.globalAlpha = (name === 'greenland' ? 0.92 : 0.8) * k; c.fillStyle = '#f3f8fb'; c.fill(p);
         c.globalAlpha = 0.7 * k; c.strokeStyle = 'rgba(110,145,180,0.9)'; c.lineWidth = 0.9; c.setLineDash([3, 3]); c.stroke(p); c.setLineDash([]);
@@ -1340,6 +1342,8 @@ const WorldMap = (() => {
     setTime(t) { t = Math.max(0, Math.min(MAXT, t)); if (t !== time) { time = t; dirty = true; wake(); schedule(); } },
     /* A scene to draw over the map every frame, or null to stop. Called as fn(ctx, helpers, now). */
     setFx(fn) { fxHook = fn || null; schedule(); },
+    /* hide the drawn North American ice sheet while a story draws its own, retreating one */
+    setIceOff(on) { iceOff = !!on; dirty = true; schedule(); },
     /* Decorative motion on or off (tests and screenshots turn it off; so does the reader's reduced-motion setting). */
     setMotion(on) { motion = !!on; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
     motion,

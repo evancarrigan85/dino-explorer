@@ -18,12 +18,12 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 375, every one a published work confirmed in Crossref |
+| References | 379, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 161 passing |
+| Checks | 165 passing |
 | Page | about 1.47 MB, one file |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -448,6 +448,15 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **17 Nov 2026 — How the Great Lakes were made.** Evan: the glaciers scraping them out "should be an
+  event". A new “Watch the Earth being made” section in the Geology tab plays it on the map over 26
+  seconds: the ice sheet at its height, scraping; the edge melting back north (a dated sketch after
+  Dalton et al. 2020); meltwater lakes at the ice front; Niagara Falls beginning; Lake Agassiz and its
+  flood into Hudson Bay 8,200 years ago; the land still rising. Four verified sources. 165 checks.
+  **Next stories, same machinery:** the Himalayas rising as India hits Asia; the Mediterranean
+  drying out and refilling (the Zanclean flood); Hawaii's islands on the conveyor belt; the
+  Grand Canyon; the Channeled Scablands floods; the Sahara turning green and back.
 
 - **17 Nov 2026 — The Great Lakes.** Evan: "the Great Lakes aren't doing great". `build_rivers.py`
   treated Natural Earth's rank 0 (most important) as "no rank" and dropped every top-ranked lake and

@@ -303,6 +303,16 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     const nl = u(); for (let i = 0; i < nl; i++) { u(); pts(); } const nk = u(), lakes = []; for (let i = 0; i < nk; i++) { const r = pts(); r.push(r[0]); lakes.push({ type: 'Polygon', coordinates: [d3.geoArea({ type: 'Polygon', coordinates: [r] }) > 2 * Math.PI ? r.slice().reverse() : r] }); }
     const wet = (lon, lat) => lakes.some(g => d3.geoContains(g, [lon, lat]));
     return nk >= 100 && [[-87.5, 47.6], [-87.0, 43.5], [-82.4, 44.8], [-81.2, 42.2], [-77.8, 43.6], [33, -1], [108, 53.5]].every(([lo, la]) => wet(lo, la)); }));
+  // stories: the Earth being made (Geology tab)
+  await p.evaluate(() => { switchTab('geo'); }); await p.waitForTimeout(200);
+  ok('stories: the Geology tab offers “How the Great Lakes were made”, with its sources', await p.evaluate(() => /How the Great Lakes were made/.test(document.getElementById('pane-geo').innerText) && (SRCMAP['s:greatlakes'] || []).length >= 4));
+  await p.click('#pane-geo [data-story="greatlakes"]'); await p.waitForTimeout(800);
+  ok('stories: Watch starts at the height of the Ice Age, hides the animals, and draws its own ice', await p.evaluate(() => !!S.story && S.t > 0.02 && document.getElementById('sceneCap').classList.contains('show') && /26,000 years ago/.test(document.getElementById('sceneCap').innerText) && WorldMap.motion));
+  await p.waitForTimeout(13000);
+  ok('stories: halfway through, the ice has melted back and time has moved on to the meltwater lakes', await p.evaluate(() => { const e = iceEdge(STORY_BY.greatlakes.margin, S.t * 1000), at = lo => e.find(x => x[0] === lo)[1]; const m = STORY_BY.greatlakes.margin, start = iceEdge(m, 26).find(x => x[0] === -84)[1], end = iceEdge(m, 8).find(x => x[0] === -84)[1]; return S.story && S.t < 0.0145 && S.t > 0.0105 && at(-84) > start + 4 && start < 40 && end > 55 && S.story.step >= 3; }));
+  await p.click('#sceneCap [data-story]'); await p.waitForTimeout(200);
+  ok('stories: Stop ends it and gives the map back', await p.evaluate(() => !S.story && !document.getElementById('sceneCap').classList.contains('show')));
+  await p.evaluate(() => { WorldMap.resetView(); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(200);
   // extinctions: their own view, each with a map scene
   await p.click('#tab-ext'); await p.waitForTimeout(300);
   ok('extinctions: the view lists seven events and charts the five great dyings', await p.evaluate(() => document.querySelectorAll('#pane-ext .ext-item').length === 7 && document.querySelectorAll('#pane-ext .ext-bar').length === 5));

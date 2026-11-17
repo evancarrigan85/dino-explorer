@@ -6655,5 +6655,73 @@
 ],
 "first": "",
 "title_expected": "An Ancient Harappan Genome Lacks Ancestry from Steppe Pastoralists or Iranian Farmers"
+},
+"larson2001": {
+"doi": "10.1016/s0380-1330(01)70665-x",
+"title": "Origin and Evolution of the Great Lakes",
+"journal": "Journal of Great Lakes Research",
+"year": 2001,
+"authors": [
+"Larson",
+"Schaetzl"
+],
+"type": "journal-article",
+"targets": [
+"s:greatlakes"
+],
+"first": "",
+"title_expected": "Origin and Evolution of the Great Lakes"
+},
+"teller2004": {
+"doi": "10.1130/b25316.1",
+"title": "Glacial Lake Agassiz: A 5000 yr history of change and its relationship to the δ18O record of Greenland",
+"journal": "Geological Society of America Bulletin",
+"year": 2004,
+"authors": [
+"Teller",
+"Leverington"
+],
+"type": "journal-article",
+"targets": [
+"s:greatlakes"
+],
+"first": "",
+"title_expected": "Glacial Lake Agassiz: A 5000 yr history of change and its relationship to the δ18O record of Greenland"
+},
+"barber1999": {
+"doi": "10.1038/22504",
+"title": "Forcing of the cold event of 8,200 years ago by catastrophic drainage of Laurentide lakes",
+"journal": "Nature",
+"year": 1999,
+"authors": [
+"Barber",
+"Dyke",
+"Hillaire-Marcel",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:greatlakes"
+],
+"first": "",
+"title_expected": "Forcing of the cold event of 8,200 years ago by catastrophic drainage of Laurentide lakes"
+},
+"dalton2020": {
+"doi": "10.1016/j.quascirev.2020.106223",
+"title": "An updated radiocarbon-based ice margin chronology for the last deglaciation of the North American Ice Sheet Complex",
+"journal": "Quaternary Science Reviews",
+"year": 2020,
+"authors": [
+"Dalton",
+"Margold",
+"Stokes",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:greatlakes"
+],
+"first": "",
+"title_expected": "An updated radiocarbon-based ice margin chronology for the last deglaciation of the North American Ice Sheet Complex"
 }
 }

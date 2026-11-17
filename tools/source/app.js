@@ -159,6 +159,7 @@ function renderPeriod() {
 const typeOK = c => (S.type === 'all' || c.g === S.type) && (S.branch === 'all' || c.path[1] === S.branch) && (!S.weird || c.weird);
 function updateMarkers(now) {
   now = now || ALL.filter(c => alive(c, S.t));
+  if (S.story) now = [];                                                 // a story has the map to itself
   if (S.tab === 'humans' && inHistory()) now = now.filter(c => c.hom);   // recorded history: the map is for empires and beliefs
   if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
   WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c) })) });
@@ -388,6 +389,7 @@ function renderPanel() {
 }
 function switchTab(tab) {
   if (S.scene && tab !== 'ext') stopScene();
+  if (S.story && tab !== 'geo') stopStory();
   S.tab = tab; closeFact();
   document.querySelectorAll('.tab-btn').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + tab));
@@ -1004,6 +1006,120 @@ function bindExt() {
     const x = e.target.closest('[data-ext]'); if (x) selectExt(x.dataset.ext);
   });
   document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) playScene(b.dataset.play); });
+  document.addEventListener('click', e => { const b = e.target.closest('[data-story]'); if (b) { S.storyOpen = b.dataset.story; playStory(b.dataset.story); } });
+}
+
+// --- Stories: the Earth being made, played out on the map (Geology tab) ---
+const STORY_BY = Object.fromEntries(STORIES.map(st => [st.id, st]));
+const kaAt = (st, k) => { const a = st.ka; let i = 0; while (i < a.length - 2 && a[i + 1][0] <= k) i++; const [k0, y0] = a[i], [k1, y1] = a[i + 1]; return y0 + (y1 - y0) * clamp((k - k0) / (k1 - k0), 0, 1); };
+// the sketched ice edge at a moment: one latitude per longitude, blended between the dated edges
+function iceEdge(m, ka) {
+  const E = m.edges; let i = 0; while (i < E.length - 2 && E[i + 1][0] >= ka) i++;
+  const [a0, l0] = E[i], [a1, l1] = E[i + 1], f = clamp((a0 - ka) / (a0 - a1), 0, 1);
+  return m.lons.map((lo, j) => [lo, l0[j] + (l1[j] - l0[j]) * f]);
+}
+const STORY_SCENES = {
+  greatlakes(g, k, st, now) {
+    const ka = S.t * 1000, edge = iceEdge(st.margin, ka), pts = []; let ok = true;
+    // the ice edge, densified so it bends with the map
+    for (let j = 0; j < edge.length - 1; j++) for (let q = 0; q < 6; q++) { const u = q / 6, lo = edge[j][0] + (edge[j + 1][0] - edge[j][0]) * u, la = edge[j][1] + (edge[j + 1][1] - edge[j][1]) * u; const p = g.ll(lo, la); if (p) pts.push(p); }
+    { const p = g.ll(edge[edge.length - 1][0], edge[edge.length - 1][1]); if (p) pts.push(p); }
+    const top = []; for (let lo = -55; lo >= -150; lo -= 5) { const p = g.ll(lo, 82); if (p) top.push(p); }
+    const edgeLat = lo => { const L = st.margin.lons; let j = 0; while (j < L.length - 2 && L[j + 1] <= lo) j++; const u = clamp((lo - L[j]) / (L[j + 1] - L[j]), 0, 1); return edge[j][1] + (edge[j + 1][1] - edge[j][1]) * u; };
+    const poly = (c, ring, fill, stroke, w) => { const P = ring.map(([la, lo]) => g.ll(lo, la)); if (P.some(x => !x)) return; c.beginPath(); P.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); if (fill) { c.fillStyle = fill; c.fill(); } if (stroke) { c.strokeStyle = stroke; c.lineWidth = w || 1.5; c.stroke(); } };
+    const want = [], label = (c, txt, lo, la, size, col, italic, pri = 5) => want.push([pri, txt, lo, la, size, col, italic]);
+    const drawLabel = (c, placed, [, txt, lo, la, size, col, italic]) => { const p = g.ll(lo, la); if (!p) return; c.font = `${italic ? 'italic ' : ''}700 ${size}px Inter,system-ui,sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = 3.5; c.strokeStyle = 'rgba(255,255,255,0.85)'; const w = c.measureText(txt).width + 8, h = size + 6, box = [p[0] - w / 2, p[1] - h / 2, w, h]; if (placed.some(b => box[0] < b[0] + b[2] && box[0] + box[2] > b[0] && box[1] < b[1] + b[3] && box[1] + box[3] > b[1])) return; placed.push(box); c.strokeText(txt, p[0], p[1]); c.fillStyle = col; c.fillText(txt, p[0], p[1]); };
+    // meltwater pooled along the ice front over the lake basins (16,000–9,000 years ago)
+    const melt = clamp((16 - ka) / 1.5, 0, 1) * clamp((ka - 8.6) / 1.2, 0, 1);
+    if (melt > 0) g.layer('land', c => {
+      const band = []; for (let lo = -93; lo <= -75; lo += 1.5) band.push([edgeLat(lo) - 0.05, lo]);
+      for (let lo = -75; lo >= -93; lo -= 1.5) band.push([edgeLat(lo) - 1.9 - 0.5 * Math.sin((lo + 93) / 3), lo]);
+      poly(c, band, `rgba(88,140,186,${0.75 * melt})`);
+    });
+    // Lake Agassiz, against the ice to its north
+    const A = st.agassiz, ag = clamp((A.from - ka) / 0.8, 0, 1) * (ka > A.to ? 1 : clamp(1 - (A.to - ka) / 0.25, 0, 1));
+    if (ag > 0) g.layer('land', c => { poly(c, A.poly, `rgba(78,132,180,${0.8 * ag})`, `rgba(40,80,120,${0.8 * ag})`, 1.2); });
+    // the flood: Agassiz pours into Hudson Bay
+    const fl = clamp(1 - Math.abs(ka - 8.2) / 0.35, 0, 1);
+    if (fl > 0) g.layer('all', c => { const a = g.ll(-92, 54.5), b = g.ll(-84, 58.5); if (!a || !b) return; c.lineCap = 'round'; c.setLineDash([10, 7]); c.lineDashOffset = -now / 25; c.strokeStyle = `rgba(60,120,190,${fl})`; c.lineWidth = 5; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke(); c.setLineDash([]); label(c, 'the flood', -86, 57.2, 12, '#1f4f80', true, 1); });
+    // the ice sheet: white over the land north of the edge, following the coasts — and over Hudson Bay while the bay is under it
+    const north = c => { c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); top.forEach(p => c.lineTo(p[0], p[1])); c.closePath(); };
+    if (pts.length > 1 && top.length > 1) {
+      g.layer('land', c => { north(c); c.fillStyle = 'rgba(244,249,252,0.95)'; c.fill(); c.save(); c.clip(); c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.strokeStyle = 'rgba(110,150,185,0.95)'; c.lineWidth = 4; c.stroke(); c.restore(); });
+      g.layer('sea', c => { const H = st.hudson.map(([la, lo]) => g.ll(lo, la)); if (H.some(x => !x)) return; c.beginPath(); H.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.clip(); north(c); c.fillStyle = 'rgba(240,247,251,0.93)'; c.fill(); });
+    }
+    g.layer('all', c => {
+      if (pts.length < 2 || top.length < 2) return;
+      // the ice flowing out from its centre, scraping as it goes (strongest early on)
+      const sc = clamp(1 - (k - 0.08) / 0.3, 0, 1) * (k > 0.02 ? 1 : k / 0.02);
+      if (sc > 0) { c.setLineDash([3, 9]); c.lineDashOffset = -now / 40; c.lineCap = 'round'; c.strokeStyle = `rgba(90,130,170,${0.75 * sc})`; c.lineWidth = 2;
+        for (const [la, lo] of [[41, -88], [42, -84], [41.5, -80.5], [42, -76], [46, -92], [44, -96]]) { const a = g.ll(-85, 60), b = g.ll(lo, Math.min(la + 1, edgeLat(lo) + 0.3)); if (a && b) { c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke(); } }
+        c.setLineDash([]); }
+      if (ka > 7) label(c, 'Laurentide Ice Sheet', -88, Math.min(62, edgeLat(-88) + 5), 13, '#3d6f94', false, 4);
+      label(c, 'ice edge (sketch)', -104, edgeLat(-104) + 0.9, 10, '#5b85a6', true, 6);
+    });
+    g.layer('all', c => {
+      if (melt > 0.3) label(c, 'meltwater lakes', -84, edgeLat(-84) - 2.8, 11, '#2b5d86', true, 3);
+      if (ag > 0.3) label(c, 'Lake Agassiz', -97, 51.6, 12, '#1f4f80', true, 2);
+      // Niagara Falls begins
+      const ng = clamp((12.7 - ka) / 0.4, 0, 1);
+      if (ng > 0) { const p = g.ll(st.niagara[1], st.niagara[0]); if (p) { const u = (now / 1600) % 1; c.beginPath(); c.arc(p[0], p[1], 4 + u * 14, 0, 7); c.strokeStyle = `rgba(40,110,180,${0.8 * (1 - u) * ng})`; c.lineWidth = 2; c.stroke(); c.beginPath(); c.arc(p[0], p[1], 3.5, 0, 7); c.fillStyle = `rgba(40,110,180,${ng})`; c.fill(); label(c, 'Niagara Falls', st.niagara[1] + 2.6, st.niagara[0] - 0.9, 11, '#1f4f80', false, ka > 11.5 ? 1 : 5); } }
+      // the land rising back, freed of the ice
+      const rb = clamp((k - 0.86) / 0.06, 0, 1);
+      if (rb > 0) { c.globalAlpha = rb; for (const [la, lo] of [[56, -82], [59, -90], [53, -78], [62, -84]]) { const p = g.ll(lo, la), b = Math.sin(now / 400 + lo) * 3; if (!p) continue; c.fillStyle = '#7a4a1a'; c.beginPath(); c.moveTo(p[0], p[1] - 12 + b); c.lineTo(p[0] - 6, p[1] - 2 + b); c.lineTo(p[0] + 6, p[1] - 2 + b); c.closePath(); c.fill(); } label(c, 'the land is still rising', -84, 64, 11, '#7a4a1a', true, 1); c.globalAlpha = 1; }
+    });
+    // all the names, most important first, none on top of another
+    g.layer('all', c => { const placed = []; want.sort((a, b) => a[0] - b[0]).forEach(L => drawLabel(c, placed, L)); });
+  },
+};
+let storyRaf = 0;
+function stopStory(done) {
+  cancelAnimationFrame(storyRaf); const was = S.story; S.story = null;
+  if (!was) return;
+  WorldMap.setFx(null); WorldMap.setIceOff(false); updateMarkers();
+  $('sceneCap').classList.remove('show'); document.body.classList.remove('scening');
+  if (S.tab === 'geo') renderGeo();
+  if (done) { const st = STORY_BY[was.id]; showFact(st.icon, '<b>' + esc(st.title) + '.</b> ' + esc(st.steps[st.steps.length - 1][1]) + '<br><small><button class="linkbtn" data-story="' + st.id + '">↻ Watch again</button></small>', 14000); }
+}
+function playStory(id) {
+  const st = STORY_BY[id]; if (!st) return;
+  if (S.story) { const same = S.story.id === id; stopStory(); if (same) return; }
+  if (S.scene) stopScene();
+  stopPlay(); cancelTween(); closeFact(); if (S.jr) endJourney();
+  const t0 = st.ka[0][1] / 1000, t1 = st.ka[st.ka.length - 1][1] / 1000;
+  setWindow(t0 * 1.15, 0, true); setTime(t0);
+  WorldMap.resetView(); if (WorldMap.mode === 'flat') WorldMap.zoomBy(st.view[2]); WorldMap.lookAt(WorldMap.attach(st.view[0], st.view[1], t0));
+  if (!WorldMap.motion) { setTime(t1); showFact(st.icon, '<b>' + esc(st.title) + '.</b> ' + st.steps.map(x => esc(x[1])).join(' '), 24000); return; }
+  const dur = 26000;
+  S.story = { id, step: -1, t0: performance.now() }; updateMarkers();
+  WorldMap.setIceOff(true); document.body.classList.add('scening');
+  if (window.innerWidth < 768) $('mapArea').scrollIntoView({ block: 'center', behavior: 'smooth' });
+  WorldMap.setFx((c, g, now) => { const sc = S.story; if (!sc) return; STORY_SCENES[id](g, clamp((now - sc.t0) / dur, 0, 1), st, now); });
+  const tick = now => {
+    const sc = S.story; if (!sc || sc.id !== id) return;
+    const k = clamp((now - sc.t0) / dur, 0, 1);
+    setTime(kaAt(st, k) / 1000, { fast: true });
+    let i = 0; while (i + 1 < st.steps.length && st.steps[i + 1][0] <= k) i++;
+    if (i !== sc.step) {
+      sc.step = i;
+      $('sceneCap').innerHTML = `<div class="sc-top"><span>${st.icon} ${esc(st.short)}</span><span class="sc-n">${i + 1} / ${st.steps.length}</span><button data-story="${id}" aria-label="Stop">■</button></div><div class="sc-text">${esc(st.steps[i][1])}</div><div class="jr-bar"><i id="scBar"></i></div>`;
+      $('sceneCap').classList.add('show');
+      document.querySelectorAll('#pane-geo .story-steps li').forEach((li, n) => li.classList.toggle('on', n === i));
+    }
+    const bar = $('scBar'); if (bar) bar.style.width = (k * 100).toFixed(1) + '%';
+    if (k >= 1) { setTime(t1); setTimeout(() => { if (S.story === sc) stopStory(true); }, 1600); return; }
+    storyRaf = requestAnimationFrame(tick);
+  };
+  if (S.tab === 'geo') renderGeo();
+  storyRaf = requestAnimationFrame(tick);
+}
+function storiesHTML() {
+  return `<div class="stories"><div class="list-h" style="padding:2px 4px 6px">🎬 Watch the Earth being made</div>${STORIES.map(st => { const on = S.story && S.story.id === st.id, open = S.storyOpen === st.id || on;
+    return `<div class="story${open ? ' open' : ''}"><div class="story-top"><span class="story-i">${st.icon}</span><div><b>${esc(st.title)}</b><span>${esc(st.blurb)}</span></div></div>
+      <button class="watch" data-story="${st.id}">${on ? '■ Stop' : '▶ Watch it happen on the map'}</button>
+      ${open ? `<div class="label-sec"><h5>🎬 Step by step</h5><ol class="ext-steps story-steps">${st.steps.map((x, i) => `<li${on && S.story.step === i ? ' class="on"' : ''}>${esc(x[1])}</li>`).join('')}</ol></div>
+        <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(st.know)}</div><div class="label-sec"><h5>❓ Still debated</h5>${esc(st.debate)}</div>
+        <div class="found">📍 <b>On the map:</b> the ice edge, the meltwater lakes and Lake Agassiz are rough sketches after published maps of the ice sheet’s retreat. Today’s lakes appear once the ice has gone.</div>${srcHTML('s:' + st.id)}` : `<button class="linkbtn" data-story-open="${st.id}">Read the steps and the evidence</button>`}</div>`; }).join('')}</div>`;
 }
 
 // --- History: empires, kingdoms and beliefs of the last 5,500 years ---
@@ -1227,7 +1343,7 @@ function bindInsights() {
 // --- Geology ---
 function renderGeo() {
   const p = S.period, fs = GEO_FEATURES.filter(f => f.periods && f.periods.includes(p.id));
-  $('pane-geo').innerHTML = `<div class="geo-list"><div class="list-h" style="padding:2px 4px 8px">Geology of the ${esc(p.name)}</div>` + (fs.length ? fs.map(f => `
+  $('pane-geo').innerHTML = storiesHTML() + `<div class="geo-list"><div class="list-h" style="padding:2px 4px 8px">Geology of the ${esc(p.name)}</div>` + (fs.length ? fs.map(f => `
     <div class="geo-card${S.sel === 'geo:' + f.id ? ' sel expanded' : ''}" data-key="geo:${f.id}">
       <div class="geo-card-top"><div class="geo-icon">${f.icon}</div><div class="geo-info"><div class="geo-name">${esc(f.name)}</div><div class="geo-short">${esc(f.shortDesc || '')}</div></div></div>
       <div class="geo-full">${f.fullDesc ? `<div style="margin-bottom:5px">${esc(f.fullDesc)}</div>` : ''}${f.funFact ? `<div class="geo-fun">💡 ${esc(f.funFact)}</div>` : ''}</div>
@@ -1236,6 +1352,7 @@ function renderGeo() {
 }
 function bindGeo() {
   $('pane-geo').addEventListener('click', e => {
+    const so = e.target.closest('[data-story-open]'); if (so) { S.storyOpen = so.dataset.storyOpen; renderGeo(); return; }
     const el = e.target.closest('.geo-card'); if (!el) return;
     el.classList.toggle('expanded');
     const f = GEO_FEATURES.find(x => 'geo:' + x.id === el.dataset.key), pl = placeCache['g' + f.id + S.period.id];

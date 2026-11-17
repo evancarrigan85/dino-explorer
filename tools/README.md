@@ -25,6 +25,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_gaps.js` | Animals added to fill regions and periods the map had nothing in |
 | `data_roots.js` | Proto-mammals, early mammals and dinosaurs added with the family trees |
 | `data_you.js` | The reader's own line through time, eruptions and impacts on the map, the drift journey |
+| `data_stories.js` | “Watch the Earth being made” stories in the Geology tab (the Great Lakes so far) |
 | `data_history.js` | Empires, kingdoms and beliefs of the last 5,500 years (Humans tab) |
 | `data_extinctions.js` | The Extinctions view: one entry per event, with its scene and its steps |
 | `data_trees.js` | The family trees: branches, the feature each one added, and which lineage paths hang on it |
