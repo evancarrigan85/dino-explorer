@@ -86,7 +86,8 @@ builds, passes the checks and has been looked at.
 - `engine.js` is `WorldMap`: a canvas map that carries today's coastlines back in time on their
   tectonic plates (Merdith et al. 2021), with Ice Age shorelines, ice, relief, labels, markers and a
   pin. It knows nothing about animals. From 540 Ma to 3 Ma it also draws **seas over the continents**
-  (`seas-data.js`, Kocsis & Scotese 2021): published ancient-coast maps, one every 5 Myr, carried on
+  (`seas-data.js`, from the Scotese & Wright 2018 PaleoDEMs — coast and shelf edge — and Kocsis &
+  Scotese 2021 — blue stripes for land the sea reached at its highest), one map every 5 Myr, carried on
   our plates and traced into outlines in the page. There the land is the mapped land, not today's
   coast, and the coast ink is the edge of the land as drawn; a dotted line shows today's coast (after
   410 Ma). `WorldMap.seaAt()` and `seaShare()` answer “was this place under the sea?” and “how much

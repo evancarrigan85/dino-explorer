@@ -11,6 +11,9 @@ order) is given its PALEOMAP plate, carried to the map's age with the PALEOMAP r
 Kocsis & Scotese (2021) used, and the elevation read there. Checked: the result agrees with their
 coast and shelf-edge maps for 92–98% of pixels at every age tried.
 
+The pixels, their order and their plate families are read from tools/source/seas-data.js, so run
+build_seas.py first.
+
 Writes, beside the page (loaded on demand, like the close-up tiles):
     tiles/dem/mesh.bin       raw deflate: u32 nV, u32 nT; nV × (u16 pixel, u8 family+1); nT × 3 u16
                              — triangles between neighbouring pixels, one copy per plate where a
@@ -44,24 +47,18 @@ ids = {}
 for line in open(os.path.join(KZ, 'pixel-ids-360.tab')):
     if line[0] in '#p': continue
     a = line.split('\t'); ids[int(a[0])] = (float(a[1]), float(a[2]))
-listed = set()
-for line in open(os.path.join(KZ, 'kocsis-landscape-unrot-360-5.tab')):
-    if line[0] == '#' or line.startswith('equator'): continue
-    listed.add(int(line.split('\t')[2]))
-pix = sorted(listed)
-idx = {p: i for i, p in enumerate(pix)}
 
 # the plate family of each pixel, read back from the page's own seas block
 txt = open(os.path.join(HERE, 'source', 'seas-data.js')).read()
 P = json.loads(re.sub(r'(\w+):', r'"\1":', txt[txt.index('{', txt.index('SEAS_PACKED')):txt.rindex('}') + 1]))
-assert P['n'] == len(pix), 'seas-data.js was built from different pixels: rebuild it first'
-blob = zlib.decompress(base64.b64decode(P['z']), -15); pos = 0; pid = 0
-for i in range(len(pix)):
+blob = zlib.decompress(base64.b64decode(P['z']), -15); pos = 0; pid = 0; pix = []
+for i in range(P['n']):                    # the seas block's own pixels, in its order: the page pairs them by index
     v = sh = 0
     while True:
         c = blob[pos]; pos += 1; v |= (c & 127) << sh; sh += 7
         if not c & 128: break
-    pid += v; assert pid == pix[i]
+    pid += v; pix.append(pid)
+idx = {p: i for i, p in enumerate(pix)}
 fam = [blob[pos + i] - 1 for i in range(len(pix))]
 log(f'{len(pix)} pixels, families from seas-data.js')
 

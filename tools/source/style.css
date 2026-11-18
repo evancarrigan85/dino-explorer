@@ -587,6 +587,7 @@ header .logo,header h1{cursor:pointer}
 .seas .seas-now b{color:#8fd8e8}
 .seas svg{display:block;width:100%;height:auto;cursor:pointer;border-radius:6px;background:rgba(20,40,70,.35)}
 .seas p{font-size:.74rem;line-height:1.45;margin:6px 0 0;color:var(--text,#dde3ee)}
+.seas .seas-key{font-size:.68rem;color:var(--muted,#9aa3b8);margin-top:4px}
 .seas details{font-size:.72rem;margin-top:6px;color:var(--muted,#9aa3b8)}
 .seas details summary{cursor:pointer;color:#8fd8e8}
 

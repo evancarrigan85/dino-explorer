@@ -23,8 +23,8 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 198 passing |
-| Page | about 1.71 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
+| Checks | 201 passing |
+| Page | about 1.78 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -159,6 +159,15 @@ J. Salvador Arias, are in a public GitHub repository (`js-arias/gml-kocsis`) tha
 itself, plate by plate. See `tools/README.md`. A check on every one of the 109 maps makes sure each
 outline closes and no plate's outline reads as most of the globe (one did, before a fix: the whole
 Atlantic turned to land at 65 Ma in a zoomed view).
+
+**Found in the 18 Nov review, not yet fixed:**
+- *Long-lived animals show their famous sites at every age they lived* — the Dorset and Seppenrade
+  ammonites appear in the Devonian. Give sites of long-ranging groups their own ages (from the papers
+  that describe each site) and show a marker only inside its site's age.
+- *Coasts change in one step every 5 million years* (e.g. 250→245 Ma drains much of Pangaea's shelf at
+  once). A short dissolve between neighbouring maps would soften it without drawing an in-between shape.
+- *Up to a tenth of the land drawn at 400–280 Ma is today's outline with no sea map under it* (terranes
+  the two plate models place differently). Consider fading such pieces.
 
 **Next for the seas, in order:** name the great seaways on the map (Western Interior Seaway, the
 Trans-Saharan seaway, the Turgai Strait, the Zechstein Sea), each with a verified source and dates
@@ -493,6 +502,23 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
 - Translations.
 
 ## Shipped
+
+- **18 Nov 2026 — A review of the geometry through the whole timeline, and what it fixed.** Evan:
+  “review geometry through the timeline, in depth”. Measured, not just looked at:
+  *Plate motion* — every family's rotation against the Merdith model in pygplates at 525 ages: median
+  0.19° (≈20 km), within the keyframe tolerance; the worst (2.9°) only where the model itself jumps
+  instantly (≈100, 115, 250 and 410 Ma — joins between its parts), which the map slides over a million
+  years (now said on the page). *Land* — every half-million years 720→0, flat and globe: no streaks or
+  inverted shapes; thin gaps like today's straits, except seams between Rodinia's blocks (under Snowball
+  ice). *Terrain* — the WebGL layer sits on the traced coasts to within a pixel in eight views, desktop
+  and phone. *Seas* — the big finding: the ready-made pixel version behaved like the elevation maps'
+  coast while the page credited Kocsis & Scotese's sea-at-its-highest coast, and pygplates had silently
+  read nothing from eight of their coast maps. Rebuilt from the published sources: coast from the
+  PaleoDEMs, plus **blue-striped land the sea reached at its highest** from the original PaleoCoastlines.
+  Sea creatures' fossils in the sea or stripes: 58% → 84%; dinosaurs' on land or stripes: 93%. Fixed too:
+  muddy half-faded land at 545→540 and 5→3 Ma; the ocean's tone jumping at 540 Ma; Kazakhstania's name
+  on open ocean and the Tethys, Iapetus and Rheic names on land. The Geology chart now shows the sea at
+  its highest as a dashed line. 201 checks.
 
 - **17 Nov 2026 — Ancient mountains and sea depths.** Evan sent a reconstruction of the Gulf of
   Mexico 160 million years ago drawn from the PALEOMAP PaleoDEMs and said “look at that”. It also

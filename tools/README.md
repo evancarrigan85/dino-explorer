@@ -58,20 +58,37 @@ coastline is used.
 ## Rebuilding the seas over the continents
 
 ```
-git clone --depth 1 https://github.com/js-arias/gml-kocsis     # Kocsis & Scotese 2021 paleocoastlines as pixels, CC-BY 4.0
-python3 -I tools/build_seas.py gml-kocsis                         # writes tools/source/seas-data.js (about 125 KB)
+pip install numpy netCDF4 pygplates pyshp
+git clone --depth 1 https://github.com/js-arias/gml-kocsis                         # only its equal-area pixel grid is used
+# PaleoDEMs (1°, CC BY 4.0): Scotese_Wright_2018_Maps_1-88_1degX1deg_PaleoDEMS_nc.zip from https://zenodo.org/records/5460860
+# PaleoCoastlines v7.1 (CC BY 4.0) and the PALEOMAP v19o_r1c model: in
+#   https://github.com/adamkocsis/2019-07-04_paleoCoastlines → data/PaleoMAP/2020-08-10_v7 (CS/, CM/, PaleoCoastlines_v7.1.zip)
+python3 -I tools/build_seas.py gml-kocsis <netCDF dir> <paleomap_model_v19o_r1c dir> <2020-08-10_v7 dir>
+python3 -I tools/build_dem.py  gml-kocsis <netCDF dir> <paleomap_model_v19o_r1c dir>     # always after build_seas.py
 ```
 
-The source maps (Kocsis & Scotese 2021, *Earth-Science Reviews* 213, 103463) mark the coast at the
-sea's highest in each stage and the continents' edge at −1,400 m, on the PALEOMAP plate model.
-J. Salvador Arias turned them back to present-day positions as equal-area pixels about 1° across.
-`build_seas.py` ties each pixel to one of *our* plate families with the same rule as `attach()` in
-`engine.js`, so the families come from `plates-data.js` — rebuild the seas after the plates. In the
-page, `engine.js` unpacks the block with the browser's `DecompressionStream`, traces each map into
-smooth outlines plate by plate (marching squares on a softened grid), and draws the sea over the
-continents under the land and the mapped land into the land layer. The coast ink there is the edge of
-whatever land is drawn; the dotted line is today's coast. Do not use the PALEOMAP PaleoDEMs for
-mountains instead: their licence (CC-BY-NC-ND) forbids derived layers.
+Every pixel of the grid gets its PALEOMAP plate, is carried to each 5-Myr age with the PALEOMAP v19o_r1c
+rotations (the model both sources were made on), and is read there: the **elevation map** gives the
+coast (0 m) and the continent's edge (−1,400 m); the **coast map** of Kocsis & Scotese (2021), nearest
+in age, gives the sea at its highest (pushed out to every sea creature's fossil). Classes: 0 deep ocean
+or no ground, 1 sea over the continent, 2 land, 3 land the sea reached at its highest (drawn striped).
+`build_seas.py` then ties each pixel to one of *our* plate families with the same rule as `attach()` in
+`engine.js` — so rebuild the seas after the plates, and `build_dem.py` after the seas (it takes the
+pixels, their order and families from `seas-data.js`).
+
+Two things that cost time in the review of 18 Nov 2026:
+- **pygplates silently reads nothing** from eight of the 162 PaleoCoastlines shapefiles (CS 155, 160,
+  165, 170, 185, 195, 250, 325 Ma). `build_seas.py` reads them with pyshp instead (it agrees with
+  pygplates exactly on the files pygplates can read) and stops if any file yields no outlines.
+- **The ready-made pixel version** in `gml-kocsis` (`kocsis-landscape-unrot-*.tab`) behaves like the
+  elevation maps' coast, not like Kocsis & Scotese's sea-at-its-highest coast, and disagrees with their
+  original polygons for about a fifth of pixels (badly in the Triassic). Its values are no longer used.
+
+In the page, `engine.js` unpacks the block with the browser's `DecompressionStream`, traces each map
+into smooth outlines plate by plate (marching squares on a softened grid), and draws the sea over the
+continents under the land, the maps' land into the land layer, and blue stripes over class 3. The land's
+shape switches at the middle of a fade (545→540 and 5→3 Ma) so it is never half see-through; the coast
+ink there is the edge of whatever land is drawn; the dotted line is today's coast.
 
 ## Rebuilding the ancient heights and depths
 

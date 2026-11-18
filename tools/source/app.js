@@ -131,8 +131,8 @@ function updateClock(fromSlider) {
   $('ctMini').textContent = T == null ? '' : ' · ' + Math.round(T) + ' °C';
   const sea = WorldMap.seaShare(t);
   $('ctSea').textContent = sea ? '🌊 sea over ' + Math.round(sea.pct) + '% of the continents · today ' + Math.round(sea.today) + '%' : '';
-  $('ctSea').title = sea ? 'How much of the continents (with their drowned edges, down to about 1,400 m) lay under the sea, at its highest around ' + sea.map + ' million years ago — measured on the maps of Kocsis and Scotese (2021)' : '';
-  $('mnLong').textContent = sea ? 'Pale blue: sea over the continents' + (t < 405 ? ' · dotted: today’s coast' : '') + ' · tap for how this map is made' : 'Continents move with their plates · tap for how this map is made';
+  $('ctSea').title = sea ? 'How much of the continents (with their drowned edges, down to about 1,400 m) lay under the sea around ' + sea.map + ' million years ago, on the elevation maps of Scotese and Wright (2018); ' + Math.round(sea.high) + '% when the sea rose highest (Kocsis and Scotese, 2021)' : '';
+  $('mnLong').textContent = sea ? 'Pale blue: shallow sea · blue stripes: land the sea reached at its highest' + (t < 405 ? ' · dotted: today’s coast' : '') + ' · tap for how this map is made' : 'Continents move with their plates · tap for how this map is made';
   if (S.tab === 'geo') seasMark();
   $('ctDate').title = sl <= -10 ? 'Sea level about ' + (-sl) + ' m lower than today — the paler land around today’s coasts was dry ground' : '';
   if (!fromSlider) $('timeSlider').value = Math.round(posOf(t) * 10000);
@@ -1472,11 +1472,13 @@ function seasHTML() {
   if (typeof SEAS_PACKED === 'undefined') return '';
   const P = SEAS_PACKED, pts = P.share.map((v, i) => [seaX(i * P.step), seaY(v / 10)]);
   const line = pts.map(([x, y]) => x.toFixed(1) + ',' + y.toFixed(1)).join(' ');
+  const hiLine = P.high.map((v, i) => seaX(i * P.step).toFixed(1) + ',' + seaY(v / 10).toFixed(1)).join(' ');
   const today = seaY(P.share[0] / 10), ticks = [[485, 'Ord'], [419, 'Dev'], [299, 'Perm'], [201, 'Jur'], [145, 'Cret']];
   return `<div class="seas" id="seasCard"><h4>🌊 How much of the continents was under the sea</h4>
     <div class="seas-now" id="seasNow"></div>
     <svg viewBox="0 0 ${SEA_W} ${SEA_H}" id="seasSvg" role="img" aria-label="Chart: share of the continents under the sea, from 540 million years ago to today. Tap to go to a time.">
       <polygon points="${SEA_W},${SEA_H} ${line} 0,${SEA_H}" fill="rgba(143,216,232,.35)"/>
+      <polyline points="${hiLine}" fill="none" stroke="#8fd8e8" stroke-width="1" stroke-dasharray="2.5 2" stroke-linejoin="round" opacity=".85"/>
       <polyline points="${line}" fill="none" stroke="#8fd8e8" stroke-width="1.4" stroke-linejoin="round"/>
       <line x1="0" x2="${SEA_W}" y1="${today.toFixed(1)}" y2="${today.toFixed(1)}" stroke="#f0d9a0" stroke-width=".7" stroke-dasharray="3 3"/>
       <text x="${SEA_W - 3}" y="${(today - 3).toFixed(1)}" text-anchor="end" font-size="7" fill="#f0d9a0">today</text>
@@ -1484,9 +1486,10 @@ function seasHTML() {
       <text x="3" y="9" font-size="6.5" fill="#9aa3b8">half</text><line x1="0" x2="6" y1="${seaY(50).toFixed(1)}" y2="${seaY(50).toFixed(1)}" stroke="#9aa3b8" stroke-width=".6"/>
       <line id="seasCur" x1="0" x2="0" y1="0" y2="${SEA_H}" stroke="#f0c060" stroke-width="1.4"/>
     </svg>
-    <p>Pale blue on the map is sea lying over the continents. When the ocean stood high it spread far inland: through the Ordovician, Silurian and Devonian about <b>half</b> of the continents’ area was under water, and in the Late Cretaceous a seaway split North America in two. When Pangaea stood together in the Triassic, less than a tenth was. Today about 30% is — the drowned edges of the continents around every coast.</p>
+    <p>Pale blue on the map is sea lying over the continents. When the ocean stood high it spread far inland: through the Ordovician, Silurian and Devonian about <b>two-fifths</b> of the continents’ area was under water, and in the Late Cretaceous a seaway split North America in two. When Pangaea stood together in the Triassic, hardly any was — though when the sea rose highest it still reached a quarter of the land. Today about a quarter is — the drowned edges of the continents around every coast.</p>
+    <p class="seas-key">Solid line: on the elevation maps. Dashed line: with the sea at its highest, which the map shows as blue stripes.</p>
     <details><summary>How do we know? How high was the sea?</summary>
-      <p>Rocks laid down in the sea, and the fossils of sea creatures in them, show where the sea reached at each time; geologists have mapped them across every continent. These maps mark the coast at the sea’s highest in each stretch of time, so the share is a “most”, not an average.</p>
+      <p>Rocks laid down in the sea, and the fossils of sea creatures in them, show where the sea reached at each time; geologists have mapped them across every continent. Two kinds of map are drawn here. The elevation maps (Scotese and Wright, 2018) give the coast and the height of the land. The coast maps (Kocsis and Scotese, 2021) push the coast out to every sea creature’s fossil of each age, so they show the sea at its <i>highest</i> — the blue stripes are land the first calls dry and the second puts under water. Checked against the fossil sites in this atlas, about 84% of sea creatures sit in the sea or the stripes, and about 93% of dinosaurs on land or the stripes; the rest are mostly within a pixel (about 100 km) of the coast.</p>
       <p>How high the sea stood in metres is still argued over. For the Cretaceous, one study of rock layers worldwide puts the highest sea about 250 m above today’s (Haq, 2014); another, built from cores drilled near New Jersey, about 100 m, give or take 50 (Miller and others, 2005). In the Paleozoic the sea rose through the Cambrian and stood highest in the Late Ordovician, then fell sharply, for a short while, as ice grew at the South Pole (Haq and Schutter, 2008) — the time of the first great extinction.</p>
       ${srcHTML('m:seas', 'Sources')}
     </details></div>`;
@@ -1495,7 +1498,7 @@ function seasMark() {
   const c = $('seasCur'); if (!c) return;
   const on = S.t <= 540, x = seaX(Math.min(540, S.t)).toFixed(1), sea = WorldMap.seaShare(S.t);
   c.setAttribute('x1', x); c.setAttribute('x2', x); c.style.display = on ? '' : 'none';
-  $('seasNow').innerHTML = sea ? `${esc(fmtAgo(S.t))}: <b>${Math.round(sea.pct)}%</b> of the continents under the sea (today ${Math.round(sea.today)}%).` : S.t > 540 ? 'The maps of ancient seas start 540 million years ago.' : 'In the last 3 million years the map shows today’s coasts and the Ice Age shorelines instead.';
+  $('seasNow').innerHTML = sea ? `${esc(fmtAgo(S.t))}: <b>${Math.round(sea.pct)}%</b> of the continents under the sea, ${Math.round(sea.high)}% when it rose highest (today ${Math.round(sea.today)}%).` : S.t > 540 ? 'The maps of ancient seas start 540 million years ago.' : 'In the last 3 million years the map shows today’s coasts and the Ice Age shorelines instead.';
 }
 function bindGeo() {
   $('pane-geo').addEventListener('click', e => {
@@ -1545,8 +1548,9 @@ function updatePinCard() {
     const top = near.slice(0, 3);
     if (top.length) html += `<div class="pc-near">${top[0][0] < 2000 ? 'Lived nearby' : 'Nearest fossils from this moment'}: ${top.map(([d, c]) => `<span data-key="${c.key}">${c.emoji} ${esc(c.name)}</span> (${years(Math.round(d / 10) * 10)} km)`).join(', ')}</div>`;
     const w = WorldMap.seaAt(P.lat, P.lon, S.t);
-    if (w === 'sea') html += '<div class="pc-sea">🌊 <b>Then it lay under the sea</b> — over the drowned edge of a continent, where sea creatures lived. (The maps show the sea at its highest, so at times this may have been the shore.)</div>';
+    if (w === 'sea') html += '<div class="pc-sea">🌊 <b>Then it lay under the sea</b> — over the drowned edge of a continent, where sea creatures lived.</div>';
     else if (w === 'land') html += '<div class="pc-sea">🏝 <b>Then it was dry land</b>, on the maps of ancient seas.</div>';
+    else if (w === 'reached') html += '<div class="pc-sea">🌊🏝 <b>Then it was near the shore</b> — dry land most of the time, but when the sea rose highest it came over this place.</div>';
     else if (w === 'none') html += '<div class="pc-sea">🌊 The maps of ancient seas have no continent here at this time — it may have been deep ocean, or ground that had not formed yet.</div>';
     html += '<div class="pc-note">The dotted line is its whole journey.' + (w ? '' : ' Coastlines here are today\'s.') + '</div>';
   }
