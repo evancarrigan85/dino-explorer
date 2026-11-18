@@ -222,7 +222,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += vsrc.slice(vsrc.indexOf('// ===='), vsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), i: id => INSPIRATIONS.some(x => x.id === id), v: id => require('./data_survival.js').SURVIVAL.some(x => x.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks', 'sound'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), i: id => INSPIRATIONS.some(x => x.id === id), v: id => require('./data_survival.js').SURVIVAL.some(x => x.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks', 'sound', 'ice', 'rivers'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'edited-book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
@@ -262,6 +262,7 @@ const rocks = fs.readFileSync(SRC + 'rocks-data.js', 'utf8').trim();
 const seas = fs.readFileSync(SRC + 'seas-data.js', 'utf8').trim();
 const demIndex = fs.readFileSync(SRC + 'dem-index.js', 'utf8').trim();
 const rivers = fs.readFileSync(SRC + 'rivers-data.js', 'utf8').trim();
+const quat = fs.readFileSync(SRC + 'quaternary-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'shelf-rivers-data.js', 'utf8').trim();
 const hillIndex = fs.readFileSync(SRC + 'hill-index.js', 'utf8').trim();
 const coastIndex = fs.readFileSync(SRC + 'coast-index.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }
@@ -330,6 +331,10 @@ ${demIndex}
 <!-- ─── GENERATED: today's great rivers and lakes. Rebuild with tools/build_rivers.py — do not edit ─── -->
 <script>
 ${rivers}
+</script>
+<!-- ─── GENERATED: the last 3.6 million years — sea level, ice sheets, rivers on the dry sea floor. Rebuild with tools/build_quaternary.py, then tools/build_shelf_rivers.py — do not edit ─── -->
+<script>
+${quat}
 </script>
 <!-- ─── GENERATED: which terrain tiles exist (tiles/relief). Rebuild with tools/build_hillshade.py — do not edit ─── -->
 <script>

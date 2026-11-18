@@ -47,6 +47,8 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `SEAS_PACKED` (seas over the continents, 540 Ma → today, one map every 5 Myr) | `build_seas.py` (rebuild it whenever `PLATE_DATA` changes) |
 | `DEM_HAVE` + `tiles/dem/` (ancient heights and depths: a mesh and 109 maps, about 1.2 MB) | `build_dem.py` (rebuild after `build_seas.py`) |
 | `RIVERS_PACKED` (today's great rivers and lakes) | `build_rivers.py` |
+| `QUAT_SL`, `ICE_SLICES`, `ICE_PACKED` (sea level and ice sheets of the last 3.6 Ma) | `build_quaternary.py` |
+| `SHELF_RIVERS` (rivers across the dry sea floor, per ice outline) | `build_shelf_rivers.py` (after `build_quaternary.py` and `build_rivers.py`) |
 | `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
 
@@ -155,3 +157,19 @@ node tools/test.js
 - Present-day coastlines: Natural Earth (public domain), via the `world-atlas` package.
 - Period boundaries: International Chronostratigraphic Chart, ICS 2024/12 (rounded).
 - Hominin sizes and dates follow the Smithsonian Human Origins Program where it gives them.
+
+## Rebuilding the last 3.6 million years (sea level, ice, rivers on the sea floor)
+
+```
+pip install numpy shapely pillow
+git clone --depth 1 https://github.com/benmarwick/gsloid          # data-raw/spratt2016.txt: Spratt & Lisiecki 2016 (NOAA, public domain)
+git clone --depth 1 https://github.com/evangowan/icesheet         # global/<region>/margins/*.gmt: PaleoMIST 1.0 (Gowan et al. 2021; CC BY 4.0 on PANGAEA)
+# Berends et al. 2021 (CC BY 4.0): Berends_etal_2020_CP_supplement.dat from https://zenodo.org/records/3793592
+# Batchelor et al. 2019 outlines (CC BY 4.0): ice_outlines.geojson from https://zenodo.org/records/24136563
+python3 -I tools/build_quaternary.py gsloid/data-raw/spratt2016.txt Berends_etal_2020_CP_supplement.dat ice_outlines.geojson icesheet tools/source/quaternary-data.js
+# ETOPO 20' (public domain): etopo20data.gz, etopo20lats.gz, etopo20lons.gz from github.com/matplotlib/basemap at v1.2.2rel/examples
+python3 -I tools/build_shelf_rivers.py etopo20data.gz etopo20lats.gz etopo20lons.gz tools/source/rivers-data.js tools/source/quaternary-data.js tools/source/shelf-rivers-data.js
+```
+
+The shelf rivers take about a minute and a half: one priority-flood routing of the 20' grid per ice outline,
+with the ice as a wall and, for outlines older than 450 ka, a chalk ridge across the Strait of Dover.

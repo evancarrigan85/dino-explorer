@@ -380,7 +380,7 @@ sprain2019 | Sprain | 2019 | The eruptive tempo of Deccan volcanism in relation 
 jotheri2016 | Jotheri | 2016 | Holocene Avulsions of the Euphrates River in the Najaf Area of Western Mesopotamia: Impacts on Human Settlement | o:sumer, o:euphrates-old
 hritz2010 | Hritz | 2010 | Tracing Settlement Patterns and Channel Systems in Southern Mesopotamia Using Remote Sensing | o:sumer, o:euphrates-old
 wilkinson2015 | Wilkinson | 2015 | Hydraulic landscapes in Mesopotamia: the role of human niche construction | o:sumer, o:sumer-fields
-lambeck1996 | Lambeck | 1996 | Shoreline reconstructions for the Persian Gulf since the last glacial maximum | o:sumer
+lambeck1996 | Lambeck | 1996 | Shoreline reconstructions for the Persian Gulf since the last glacial maximum | o:sumer, m:rivers
 jacobsen1958 | Jacobsen | 1958 | Salt and Silt in Ancient Mesopotamian Agriculture | o:sumer-fields, v:salt
 # ── the Nile and the Indus ──
 stanley1993 | Stanley | 1993 | Nile Delta: Recent Geological Evolution and Human Impact | o:nile, o:canopic, o:pelusiac
@@ -450,3 +450,12 @@ ambrose1998 | Ambrose | 1998 | Late Pleistocene human population bottlenecks, vo
 lane2013 | Lane | 2013 | Ash from the Toba supereruption in Lake Malawi shows no volcanic winter in East Africa at 75 ka | v:toba
 larsen2006 | Larsen | 2006 | The agricultural revolution as environmental catastrophe: Implications for health and lifestyle in the Holocene | v:crowds
 bos2011 | Bos | 2011 | A draft genome of Yersinia pestis from victims of the Black Death | v:plague
+# ── the last 3 million years: sea level, ice sheets, rivers on the dry sea floor ──
+berends2021 | Berends | 2021 | Reconstructing the evolution of ice sheets, sea level, and atmospheric CO2 during the past 3.6 million years | m:sealevel | 10.5194/cp-17-361-2021
+batchelor2019 | Batchelor | 2019 | The configuration of Northern Hemisphere ice sheets through the Quaternary | m:ice
+gowan2021 | Gowan | 2021 | A new global ice sheet reconstruction for the past 80 000 years | m:ice
+gupta2017 | Gupta | 2017 | Two-stage opening of the Dover Strait and the origin of island Britain | m:rivers
+toucanne2009 | Toucanne | 2009 | Timing of massive ‘Fleuve Manche’ discharges over the last 350kyr: insights into the European ice-sheet oscillations and the European drainage network from MIS 10 to 2 | m:rivers
+voris2000 | Voris | 2000 | Maps of Pleistocene sea levels in Southeast Asia: shorelines, river systems and time durations | m:rivers
+gibbard1977 | Gibbard | 1977 | Pleistocene history of the Vale of St. Albans | m:rivers
+dutton2012 | Dutton | 2012 | Ice Volume and Sea Level During the Last Interglacial | m:sealevel

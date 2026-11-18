@@ -769,40 +769,31 @@ void main() {
     const L = j => a[j] + (b[j] - a[j]) * k;
     return { s: L(1), n: L(2), ss: L(3), sn: L(4) };
   }
-  // Northern ice sheets at their greatest Ice Age extent (present-day coords, approximate).
-  const SHEETS = {
-    laurentide: [[48,-124.5],[47,-122.5],[47.5,-117],[47.5,-112],[47.2,-106],[47,-101],[45,-99.5],[43,-97.5],[41.7,-93.6],[43,-91],[40,-89.5],[39.5,-86.5],[39.5,-84],[40.5,-81.5],[41.2,-79.5],[41,-76],[40.6,-74.2],[41,-71.5],[41.3,-70],[42.5,-66.5],[44.5,-60],[46.5,-53],[52,-52.5],[56,-58.5],[61,-62.5],[66,-60],[72,-70],[76,-76],[81,-70],[83,-78],[81.5,-95],[79,-108],[76,-122],[71,-128],[69.5,-135],[68.5,-138],[65,-134],[62,-137],[61,-141],[60,-147],[59,-153],[57,-156],[56,-152],[58.5,-143],[57,-137.5],[54,-134],[50,-129.5]],
-    greenland: [[60.5,-45],[63,-50.5],[67,-52.5],[70,-53.5],[74,-56.5],[77,-65],[79.5,-65],[81.5,-55],[82.5,-38],[81.5,-22],[78,-20],[74,-21],[70.5,-24],[68.5,-28],[66,-37.5],[63,-41.5]],
-    eurasian: [[51.4,-10.5],[50.9,-6.5],[51.6,-3.2],[52.6,-1.5],[53,0.5],[53.8,3],[53.6,7],[53.2,10],[52.3,13.5],[52,16.5],[53,20],[54.2,24],[55.3,28],[56.5,32.5],[59,38],[61.5,43.5],[64.5,46],[67.5,48.5],[69.5,56],[71,62],[74,70],[77.5,80],[80.5,85],[82,70],[82,40],[81.5,15],[79.5,7],[75,13],[72,15],[69.5,13.5],[66.5,8.5],[63,3.5],[61.5,0.5],[60.5,-3.5],[58.5,-9.5],[55.5,-10.5],[53.5,-12]],
-    patagonian: [[-38.5,-71.5],[-42,-71],[-46,-71],[-50,-71.5],[-52,-69.5],[-53.5,-68.5],[-55.3,-67],[-55.8,-70],[-53,-74.5],[-49,-75.8],[-45,-75],[-41.5,-74],[-39,-72.6]],
-  };
-  function sheetGeo(name) {
-    const r = SHEETS[name].map(([la, lo]) => [lo, la]); r.push(r[0]);
-    const g = { type: 'Polygon', coordinates: [r] };
-    if (d3.geoArea(g) > 2 * Math.PI) g.coordinates[0].reverse();
-    return g;
-  }
-  const SHEET_GEO = {}; for (const k in SHEETS) SHEET_GEO[k] = sheetGeo(k);
 
   // ── Ice Age sea level ──────────────────────────────────────────────
-  // Global average ("eustatic") sea level in metres relative to today. The
-  // last 30,000 years follow Lambeck et al. (2014, PNAS), including the fast
-  // rise of meltwater pulse 1A about 14,500 years ago; older values are
-  // simplified from published reconstructions of the last 800,000 years (100,000-year cycles, about
-  // 120–130 m lower at each glacial peak). Before 800,000 years ago the
-  // cycles were shorter (41,000 years) and shallower; that part is drawn as
-  // a smooth 41,000-year wave. Before 2.6 million years ago: no lowstands.
-  const SL = [[0, 0], [2, 0], [4, -1], [6, -3], [7, -6], [8, -15], [8.5, -20], [9, -28], [10, -40], [11.5, -55], [12.5, -65], [14.2, -80], [14.7, -100], [16.5, -110], [19, -125], [21, -130], [26, -130], [30, -90], [45, -75], [60, -85], [70, -80], [80, -25], [90, -50],
-    [100, -25], [110, -45], [118, -10], [125, 6], [130, -30], [135, -110], [150, -120], [160, -110], [190, -80], [200, -30], [215, -10], [230, -60], [240, -5], [255, -80],
-    [270, -110], [290, -60], [325, 0], [340, -60], [360, -105], [380, -40], [405, 5], [420, -60], [435, -125], [460, -70], [480, -40], [500, -70], [530, -30], [560, -80],
-    [600, -60], [630, -120], [660, -60], [690, -30], [720, -70], [760, -50], [790, -100], [800, -60]];
+  // Global average ("eustatic") sea level in metres relative to today. The last 30,000 years follow
+  // Lambeck et al. (2014, PNAS), with the fast rise of meltwater pulse 1A about 14,500 years ago. Before
+  // that, QUAT_SL (tools/build_quaternary.py): the Spratt & Lisiecki (2016) stack of seven deep-sea
+  // records to 798,000 years ago, then the Berends et al. (2021) reconstruction to 3.6 million years,
+  // one value per 1,000 years, about ±10 m. The two blend between 26 and 32 ka.
+  const SL = [[0, 0], [2, 0], [4, -1], [6, -3], [7, -6], [8, -15], [8.5, -20], [9, -28], [10, -40], [11.5, -55], [12.5, -65], [14.2, -80], [14.7, -100], [16.5, -110], [19, -125], [21, -130], [26, -130], [30, -90], [32, -85]];
+  const QSL = (() => {
+    if (typeof QUAT_SL === 'undefined') return null;
+    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', lut = new Int8Array(128);
+    for (let i = 0; i < 64; i++) lut[A.charCodeAt(i)] = i;
+    const d = QUAT_SL, out = new Int16Array(3601); let pos = 0, v = 0;
+    for (let i = 0; i < 3601; i++) { let r = 0, sh = 0, c; do { c = lut[d.charCodeAt(pos++)]; r += (c & 31) * Math.pow(2, sh); sh += 5; } while (c & 32); v += r % 2 ? -(r + 1) / 2 : r / 2; out[i] = v; }
+    return out;
+  })();
   function seaLevel(t) {
     const ka = t * 1000;
-    if (ka > 2580) return 0;
-    if (ka > 800) return Math.round(-45 + 30 * Math.cos(2 * Math.PI * (ka - 800) / 41));
+    if (ka > 3600) return 0;
+    const q = () => { if (!QSL) return 0; const i = Math.min(3599, Math.floor(ka)), k = ka - i; return QSL[i] * (1 - k) + QSL[i + 1] * k; };
+    if (ka >= 32) return Math.round(q());
     let i = 0; while (i < SL.length - 2 && SL[i + 1][0] < ka) i++;
-    const [a0, b0] = SL[i], [a1, b1] = SL[i + 1], k = Math.max(0, Math.min(1, (ka - a0) / (a1 - a0)));
-    return Math.round(b0 + (b1 - b0) * k);
+    const [a0, b0] = SL[i], [a1, b1] = SL[i + 1], k = Math.max(0, Math.min(1, (ka - a0) / (a1 - a0))), tab = b0 + (b1 - b0) * k;
+    if (ka <= 26) return Math.round(tab);
+    const w = (ka - 26) / 6; return Math.round(tab * (1 - w) + q() * w);
   }
   // Shorelines at each sea-level drop (metres below today): decode the packed levels.
   const unpackLevels = d => {
@@ -826,6 +817,40 @@ void main() {
     return out;
   };
   const SHELF_LV = typeof SHELF_PACKED === 'undefined' ? [] : unpackLevels(SHELF_PACKED);
+  // ── the ice sheets of the last 3.6 million years (tools/build_quaternary.py) ──
+  // To 80,000 years ago: PaleoMIST 1.0 (Gowan et al. 2021), a reconstruction every 2,500 years; the map fades
+  // from one to the next and never draws an edge moving, because nothing here knows where it stood in between.
+  // Before that: Batchelor et al. (2019), the northern ice at 12 moments, each drawn only while the sea level
+  // says the ice was near that size (the sea falls as the ice grows). Where nobody mapped an outline — for
+  // example 1.78 to 0.93 million years ago — the nearest one in time stands in, paler, as does Patagonia's.
+  // Today's ice (Greenland, the Arctic islands) is there from 2.7 million years ago, when the northern ice began.
+  const ICE_LV = typeof ICE_PACKED === 'undefined' ? [] : unpackLevels(ICE_PACKED);
+  const ICE_S = typeof ICE_SLICES === 'undefined' ? [] : ICE_SLICES.map((s, i) => ({ key: s[0], label: s[1], from: s[2], to: s[3], src: s[4], low: s[5], geo: ICE_LV[i] && ICE_LV[i].geo, i }));
+  const ICE_PM = ICE_S.filter(s => /^pm\d/.test(s.key)).sort((a, b) => a.from - b.from);
+  const ICE_BAT = ICE_S.filter(s => s.src === 'batchelor2019'), ICE_PAT = ICE_S.find(s => s.key === 'patlgm');
+  const smooth = (a, b, x) => { const k = Math.max(0, Math.min(1, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
+  function iceAt(t) {                              // what to draw: [{ s: outline, w: weight 0–1, stand: a stand-in }]
+    const ka = t * 1000, out = [];
+    if (!ICE_PM.length || ka > 3600) return out;
+    if (ka <= 80) {
+      let i = 0; while (i < ICE_PM.length - 2 && ICE_PM[i + 1].from < ka) i++;
+      const a = ICE_PM[i], b = ICE_PM[i + 1], k = Math.max(0, Math.min(1, (ka - a.from) / (b.from - a.from)));
+      if (k < 0.98) out.push({ s: a, w: 1 - k }); if (k > 0.02) out.push({ s: b, w: k });
+      return out;
+    }
+    const sl = seaLevel(t), m = ka < 84 ? (ka - 80) / 4 : 1;      // from 84 down to 80 ka, hand over to PaleoMIST's 80,000-year map
+    const g = smooth(2900, 2700, ka);
+    if (g * m > 0.02) out.push({ s: ICE_PM[0], w: g * m });
+    let s = ICE_BAT.find(b => ka <= b.from && ka >= b.to); const stand = !s;
+    if (!s) s = ICE_BAT.reduce((best, b) => { const d = Math.min(Math.abs(ka - b.from), Math.abs(ka - b.to)); return !best || d < best.d ? { b, d } : best; }, null).b;
+    const w = smooth(0.35, 0.9, sl < 0 && s.low < 0 ? sl / s.low : 0) * (stand ? 0.6 : 1) * m;
+    if (w > 0.02) out.push({ s, w, stand });
+    const wp = ICE_PAT ? smooth(0.35, 0.9, sl < 0 ? sl / ICE_PAT.low : 0) * 0.6 * m : 0;
+    if (wp > 0.02) out.push({ s: ICE_PAT, w: wp, stand: true });
+    if (m < 1) out.push({ s: ICE_PM[ICE_PM.length - 1], w: 1 - m });
+    return out;
+  }
+  let iceP = {};
   // Today's high ground (metres above the sea). Mountains are young, so it is only drawn for the Ice Age and after.
   const RELIEF_LV = typeof RELIEF_PACKED === 'undefined' ? [] : unpackLevels(RELIEF_PACKED);
   // Today's landscapes from measured climate (build_landcover.py). Only drawn for recorded history: further
@@ -849,7 +874,41 @@ void main() {
     for (let i = 0; i < nk; i++) { const ring = pts(); ring.push(ring[0]); const g = { type: 'Polygon', coordinates: [ring] }; if (d3.geoArea(g) > 2 * Math.PI) ring.reverse(); lakes.push(ring); }
     return { lines: byRank.map(ls => ({ type: 'MultiLineString', coordinates: ls })), lakes: { type: 'MultiPolygon', coordinates: lakes.map(r => [r]) } };
   })();
-  let riverP = null;
+  let riverP = null, rvCv = null, rvx = null;
+  // Rivers across the dry sea floor (build_shelf_rivers.py): from each river mouth, the way water runs over
+  // today's sea floor to deep water, traced again for every ice outline with the ice as a wall. Each point
+  // carries the depth of the sea floor there, so a trace is drawn only as far as the sea of the moment leaves dry.
+  const SHELF_RV = (() => {
+    if (typeof SHELF_RIVERS === 'undefined') return null;
+    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', lut = new Int8Array(128);
+    for (let i = 0; i < 64; i++) lut[A.charCodeAt(i)] = i;
+    const d = SHELF_RIVERS.paths; let pos = 0;
+    const u = () => { let r = 0, sh = 0, c; do { c = lut[d.charCodeAt(pos++)]; r += (c & 31) * Math.pow(2, sh); sh += 5; } while (c & 32); return r; };
+    const z = () => { const v = u(); return v % 2 ? -(v + 1) / 2 : v / 2; };
+    const paths = [], np = u();
+    for (let i = 0; i < np; i++) { const n = u(), p = []; let x = 0, y = 0, q = 0; for (let j = 0; j < n; j++) { x += z(); y += z(); q += z(); p.push([x / 100, y / 100, q]); } paths.push(p); }
+    return { paths, rank: SHELF_RIVERS.rank, open: SHELF_RIVERS.open, old: SHELF_RIVERS.old, ice: SHELF_RIVERS.ice };
+  })();
+  let shelfRvKey = '', shelfRvP = null;
+  const lakeFade = t => t <= 0.0095 ? 1 : t >= 0.0125 ? 0 : (0.0125 - t) / 0.003, riverFade = t => t <= 3 ? 1 : t >= 3.3 ? 0 : (3.3 - t) / 0.3;
+  function shelfRivers(t, sl, ice) {           // [MultiLineString per width class] for this moment
+    if (!SHELF_RV || sl > -5) return null;
+    const ka = t * 1000, ids = (ka > 450 ? SHELF_RV.old : SHELF_RV.open).slice();
+    const top = ice.filter(x => x.s.key !== 'pm0' && x.s.key !== 'patlgm').sort((a, b) => b.w - a.w)[0];
+    const key = top && top.w >= 0.5 ? top.s.key : '';
+    for (const [m, g] of (key && SHELF_RV.ice[key]) || []) ids[m] = g;
+    const out = [[], [], []];
+    ids.forEach((g, m) => {
+      if (g < 0) return;
+      const p = SHELF_RV.paths[g], line = [[p[0][0], p[0][1]]];
+      for (let j = 1; j < p.length; j++) {
+        if (p[j][2] <= sl) { const a = p[j - 1], b = p[j], k = (a[2] - sl) / Math.max(1e-6, a[2] - b[2]); line.push([a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]); break; }
+        line.push([p[j][0], p[j][1]]);
+      }
+      if (line.length > 1) out[SHELF_RV.rank[m]].push(line);
+    });
+    return { key: key + '|' + (ka > 450 ? 'old' : 'open') + '|' + sl, lines: out.map(ls => ({ type: 'MultiLineString', coordinates: ls })) };
+  }
   // Detailed modern land and coastline (build_coast.py), swapped in when zoomed in on the last few thousand
   // years — while the sea stands where it stands now and the plates have not moved enough to matter.
   // (browsers will not fetch files for a page opened straight from disk: then the plate coastline is used)
@@ -1241,9 +1300,9 @@ void main() {
     }
 
     // Ice Age: the continental shelves come out of the sea as the water drops
-    const sl = seaLevel(t);
+    const sl = seaLevel(t), iceNow = iceAt(t);
     const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|');
-    if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; coverP = {}; riverP = null; }
+    if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; coverP = {}; riverP = null; iceP = {}; shelfRvP = null; }
     if (sl < -1 && SHELF_LV.length && !hideBox) {
       const lv = i => shelfP[i] || (shelfP[i] = geoP(SHELF_LV[i].geo));
       // the deepest level already reached is drawn in full; the next one fades in
@@ -1258,6 +1317,13 @@ void main() {
         seabed = c.createPattern(sb, 'repeat'); seabed.setTransform && seabed.setTransform(new DOMMatrix([1 / dpr, 0, 0, 1 / dpr, 0, 0]));
       }
       for (const [i, a] of layersToDraw) { c.globalAlpha = 0.65 * a; c.fillStyle = seabed; c.fill(lv(i)); }
+      const sr = t <= 3.3 ? shelfRivers(t, sl, iceNow) : null;            // the rivers ran on across the dry sea floor
+      if (sr) {
+        if (sr.key !== shelfRvKey || !shelfRvP) { shelfRvKey = sr.key; shelfRvP = sr.lines.map(g => geoP(g)); }
+        const zw = Math.min(2.2, 0.75 + zoom * 0.25);
+        c.lineCap = c.lineJoin = 'round'; c.strokeStyle = '#5f8fae';
+        [[1.5, 0.85], [1.0, 0.75], [0.65, zoom > 1.6 ? 0.6 : 0.45]].forEach(([w, a], i) => { c.globalAlpha = a; c.lineWidth = w * zw; c.stroke(shelfRvP[i]); });
+      }
       c.globalAlpha = 1;
     }
 
@@ -1360,15 +1426,26 @@ void main() {
       L.globalAlpha = 0.16 * sea.k; L.fillStyle = '#5aa9c9'; L.fill(sea.R);
       L.globalAlpha = 0.55 * sea.k; L.fillStyle = reachPat; L.fill(sea.R); L.restore();
     }
-    // the great rivers and lakes, after the Ice Age
-    const rvf = t <= 0.0095 ? 1 : t >= 0.0125 ? 0 : (0.0125 - t) / 0.003;
+    // Today's great rivers, back to 3 million years ago: most of them already ran where they run now (the
+    // exceptions are in "How this map is made"); where the ice lay they are hidden under it. Today's lakes only
+    // after the Ice Age: before that the ice covered or scoured many of them, and others dried out.
+    const lkf = lakeFade(t), rvf = riverFade(t);
     if (rvf > 0 && RIVERS) {
       if (!riverP) riverP = { lines: RIVERS.lines.map(g => geoP(g)), lakes: geoP(RIVERS.lakes) };
-      L.globalAlpha = 0.95 * rvf; L.fillStyle = pal.o2; L.fill(riverP.lakes);
-      if (zoom > 2.5) { L.globalAlpha = Math.min(1, (zoom - 2.5) / 3) * 0.7 * rvf; L.lineWidth = 1.1; L.strokeStyle = '#2f5c78'; L.lineJoin = 'round'; L.stroke(riverP.lakes); }   // a fine shore line when close
-      L.lineCap = L.lineJoin = 'round'; L.strokeStyle = '#5f8fae';
+      if (lkf > 0) {
+        L.globalAlpha = 0.95 * lkf; L.fillStyle = pal.o2; L.fill(riverP.lakes);
+        if (zoom > 2.5) { L.globalAlpha = Math.min(1, (zoom - 2.5) / 3) * 0.7 * lkf; L.lineWidth = 1.1; L.strokeStyle = '#2f5c78'; L.lineJoin = 'round'; L.stroke(riverP.lakes); }   // a fine shore line when close
+      }
+      if (!rvCv) { rvCv = document.createElement('canvas'); rvx = rvCv.getContext('2d'); }
+      if (rvCv.width !== land.width || rvCv.height !== land.height) { rvCv.width = land.width; rvCv.height = land.height; }
+      rvx.setTransform(1, 0, 0, 1, 0, 0); rvx.globalCompositeOperation = 'source-over'; rvx.globalAlpha = 1; rvx.clearRect(0, 0, rvCv.width, rvCv.height);
+      rvx.setTransform(dpr, 0, 0, dpr, 0, 0); rvx.lineCap = rvx.lineJoin = 'round'; rvx.strokeStyle = '#5f8fae';
       const zw = Math.min(2.2, 0.75 + zoom * 0.25);
-      [[1.5, 0.85], [1.0, 0.7], [0.65, zoom > 1.6 ? 0.6 : 0]].forEach(([w, a], i) => { if (!a) return; L.globalAlpha = a * rvf; L.lineWidth = w * zw; L.stroke(riverP.lines[i]); });
+      [[1.5, 0.85], [1.0, 0.7], [0.65, zoom > 1.6 ? 0.6 : 0]].forEach(([w, a], i) => { if (!a) return; rvx.globalAlpha = a; rvx.lineWidth = w * zw; rvx.stroke(riverP.lines[i]); });
+      rvx.globalCompositeOperation = 'destination-out';                // no river runs on top of the ice
+      for (const it of iceNow) { if (iceOff && it.s !== ICE_PM[0]) continue; rvx.globalAlpha = Math.min(1, it.w * 1.25); rvx.fill(iceP[it.s.i] || (iceP[it.s.i] = geoP(it.s.geo))); }
+      rvx.globalCompositeOperation = 'source-over';
+      L.setTransform(1, 0, 0, 1, 0, 0); L.globalAlpha = rvf; L.drawImage(rvCv, 0, 0); L.setTransform(dpr, 0, 0, dpr, 0, 0);
       L.globalAlpha = 1;
     }
     // today's mountains, tinted darker the higher they stand — only while the ranges were where they are now
@@ -1451,17 +1528,14 @@ void main() {
     c.drawImage(q[2], 0, 0, land.width, land.height);
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // northern ice sheets of the last 2.6 million years
-    if (t <= 2.7) {
-      const full = t > 0.0125;                // after the Ice Age only Greenland keeps its sheet
-      const k = Math.min(1, (2.7 - t) / 0.2);
-      for (const name of full ? ['laurentide', 'eurasian', 'patagonian', 'greenland'].filter(n => !(iceOff && n === 'laurentide')) : ['greenland']) {
-        const p = geoP(SHEET_GEO[name]);
-        c.globalAlpha = (name === 'greenland' ? 0.92 : 0.8) * k; c.fillStyle = '#f3f8fb'; c.fill(p);
-        c.globalAlpha = 0.7 * k; c.strokeStyle = 'rgba(110,145,180,0.9)'; c.lineWidth = 0.9; c.setLineDash([3, 3]); c.stroke(p); c.setLineDash([]);
-      }
-      c.globalAlpha = 1;
+    // the ice sheets, from the published reconstructions (iceAt above)
+    for (const it of iceNow) {
+      if (iceOff && it.s !== ICE_PM[0]) continue;           // a story draws its own ice; Greenland stays
+      const p = iceP[it.s.i] || (iceP[it.s.i] = geoP(it.s.geo));
+      c.globalAlpha = 0.85 * it.w; c.fillStyle = '#f3f8fb'; c.fill(p);
+      c.globalAlpha = 0.7 * it.w; c.strokeStyle = 'rgba(110,145,180,0.9)'; c.lineWidth = 0.9; c.setLineDash(it.stand ? [1.5, 3.5] : [3, 3]); c.stroke(p); c.setLineDash([]);
     }
+    c.globalAlpha = 1;
     c.restore();                                   // un-clip from the sphere
 
     // globe shading and rim
@@ -1570,7 +1644,7 @@ void main() {
     }
     // notes: things today's coastline cannot show (Ice Age land bridges)
     for (const N of layers.notes) {
-      if (t > N.from || t < N.to || seaLevel(t) > -40) continue;
+      if (t > N.from || t < N.to || seaLevel(t) > -(N.drop || 40) || (N.zoom && zoom < N.zoom)) continue;
       const p = project([N.lon, N.lat]); if (!p || !inView(p[0], p[1], 10)) continue;
       const size = 9.5 * zs;
       c.beginPath(); c.arc(p[0], p[1], 2.2, 0, 7); c.fillStyle = 'rgba(40,70,60,0.85)'; c.fill();
@@ -1878,6 +1952,10 @@ void main() {
   // ── public API ─────────────────────────────────────────────────────
   Object.assign(api, {
     MAXT, attach, locate, seaLevel,
+    ice: t => iceAt(t).map(x => ({ key: x.s.key, label: x.s.label, w: +x.w.toFixed(3), stand: !!x.stand, src: x.s.src })),
+    _rivers: t => ({ rivers: riverFade(t), lakes: lakeFade(t) }),
+    shelfRivers: t => { const r = shelfRivers(t, seaLevel(t), iceAt(t)); return r && r.lines.map(g => g.coordinates); },
+    underIce: (lat, lon, t) => iceAt(t).reduce((m, x) => Math.max(m, d3.geoContains(x.s.geo, [lon, lat]) ? x.w : 0), 0),
     /* The present-day place under a tap at the current time: find the plate
        piece under the point, then undo that plate's rotation. Null over sea. */
     pickPresent(x, y) {

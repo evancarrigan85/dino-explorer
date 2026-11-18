@@ -104,6 +104,10 @@ builds, passes the checks and has been looked at.
   adds light and shadow on the land and the depth of the shallow seas; it only decorates (land and sea
   still come from the traced coasts), needs http (off on `file:`), and `WorldMap.setTerrain(false)`
   turns it off. `tools/test.js` serves the page over a local http server to check it.
+  For the last 3.6 Ma, **sea level, ice sheets and rivers come from published records**
+  (`quaternary-data.js` from `build_quaternary.py`; `shelf-rivers-data.js` from `build_shelf_rivers.py`):
+  `seaLevel()`, `iceAt()` (PaleoMIST to 80 ka, Batchelor et al. 2019 before, faded by sea level),
+  `WorldMap.underIce()`, and rivers traced across the dry sea floor with the ice as a wall.
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
   Life, Humans, Insights, Extinctions, Finds, Quiz, Geology. Map pins for a tab are built in
   `updatePlaces()`.
@@ -130,7 +134,7 @@ builds, passes the checks and has been looked at.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `s:` story id, `k:` empire id, `b:` belief id,
   `r:` trade route id, `w:` great work id, `v:` help or threat id (`data_survival.js`), `i:` inspiration id, `m:` map layer
-  (`plates|seas|terrain|sealevel|climate|rocks|landcover|history|time|checks|sound`).
+  (`plates|seas|terrain|sealevel|ice|rivers|climate|rocks|landcover|history|time|checks|sound`).
 
 ## Network
 

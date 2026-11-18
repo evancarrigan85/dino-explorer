@@ -6560,7 +6560,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"o:sumer"
+"o:sumer",
+"m:rivers"
 ],
 "first": "",
 "title_expected": "Shoreline reconstructions for the Persian Gulf since the last glacial maximum"
@@ -7579,5 +7580,140 @@
 ],
 "first": "",
 "title_expected": "A draft genome of Yersinia pestis from victims of the Black Death"
+},
+"berends2021": {
+"doi": "10.5194/cp-17-361-2021",
+"title": "Reconstructing the evolution of ice sheets, sea level, and atmospheric CO 2 during the past 3.6 million years",
+"journal": "Climate of the Past",
+"year": 2021,
+"authors": [
+"Berends",
+"de Boer",
+"van de Wal"
+],
+"type": "journal-article",
+"targets": [
+"m:sealevel"
+],
+"first": "",
+"title_expected": "Reconstructing the evolution of ice sheets, sea level, and atmospheric CO2 during the past 3.6 million years"
+},
+"batchelor2019": {
+"doi": "10.1038/s41467-019-11601-2",
+"title": "The configuration of Northern Hemisphere ice sheets through the Quaternary",
+"journal": "Nature Communications",
+"year": 2019,
+"authors": [
+"Batchelor",
+"Margold",
+"Krapp",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:ice"
+],
+"first": "",
+"title_expected": "The configuration of Northern Hemisphere ice sheets through the Quaternary"
+},
+"gowan2021": {
+"doi": "10.1038/s41467-021-21469-w",
+"title": "A new global ice sheet reconstruction for the past 80 000 years",
+"journal": "Nature Communications",
+"year": 2021,
+"authors": [
+"Gowan",
+"Zhang",
+"Khosravi",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:ice"
+],
+"first": "",
+"title_expected": "A new global ice sheet reconstruction for the past 80 000 years"
+},
+"gupta2017": {
+"doi": "10.1038/ncomms15101",
+"title": "Two-stage opening of the Dover Strait and the origin of island Britain",
+"journal": "Nature Communications",
+"year": 2017,
+"authors": [
+"Gupta",
+"Collier",
+"Garcia-Moreno",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:rivers"
+],
+"first": "",
+"title_expected": "Two-stage opening of the Dover Strait and the origin of island Britain"
+},
+"toucanne2009": {
+"doi": "10.1016/j.quascirev.2009.01.006",
+"title": "Timing of massive ‘Fleuve Manche’ discharges over the last 350kyr: insights into the European ice-sheet oscillations and the European drainage network from MIS 10 to 2",
+"journal": "Quaternary Science Reviews",
+"year": 2009,
+"authors": [
+"Toucanne",
+"Zaragosi",
+"Bourillet",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:rivers"
+],
+"first": "",
+"title_expected": "Timing of massive ‘Fleuve Manche’ discharges over the last 350kyr: insights into the European ice-sheet oscillations and the European drainage network from MIS 10 to 2"
+},
+"voris2000": {
+"doi": "10.1046/j.1365-2699.2000.00489.x",
+"title": "Maps of Pleistocene sea levels in Southeast Asia: shorelines, river systems and time durations",
+"journal": "Journal of Biogeography",
+"year": 2000,
+"authors": [
+"Voris"
+],
+"type": "journal-article",
+"targets": [
+"m:rivers"
+],
+"first": "",
+"title_expected": "Maps of Pleistocene sea levels in Southeast Asia: shorelines, river systems and time durations"
+},
+"gibbard1977": {
+"doi": "10.1098/rstb.1977.0118",
+"title": "Pleistocene history of the Vale of St. Albans",
+"journal": "Philosophical Transactions of the Royal Society of London. B, Biological Sciences",
+"year": 1977,
+"authors": [
+"Gibbard"
+],
+"type": "journal-article",
+"targets": [
+"m:rivers"
+],
+"first": "",
+"title_expected": "Pleistocene history of the Vale of St. Albans"
+},
+"dutton2012": {
+"doi": "10.1126/science.1205749",
+"title": "Ice Volume and Sea Level During the Last Interglacial",
+"journal": "Science",
+"year": 2012,
+"authors": [
+"Dutton",
+"Lambeck"
+],
+"type": "journal-article",
+"targets": [
+"m:sealevel"
+],
+"first": "",
+"title_expected": "Ice Volume and Sea Level During the Last Interglacial"
 }
 }

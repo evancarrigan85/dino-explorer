@@ -339,6 +339,9 @@ const SUPEROCEAN = [['Panthalassa', 720, 175], ['Pacific Ocean', 175, 0]];
 // Ice Age annotations (present-day positions)
 const ICE_AGE_NOTES = [
   ['Beringia', 65.5, -169, 'land bridge'], ['Doggerland', 54.5, 3, 'land bridge'], ['Sundaland', 2, 107, 'dry land'], ['Sahul', -9.5, 135.5, 'land bridge'],
+  // rivers on the dry sea floor, named where the papers name them (drawn by build_shelf_rivers.py): only when the sea was low enough
+  ['Channel River', 49.9, -3.2, 'a river on the dry sea floor', { drop: 70, zoom: 2.2 }], ['Ur-Schatt', 26.9, 52.3, 'a river down the dry Gulf', { drop: 60, zoom: 2.2 }],
+  ['North Sunda River', 4.2, 108.6, 'a river across Sundaland', { drop: 60, zoom: 2.2 }],
 ];
 // Existing geology cards: where to pin them on the map (present-day lat/lon), or null for none.
 const GEO_FIX = { camp: [32, -7], tethys_sea: null, iapetus_ocean: null, rheic_ocean: null, panthalassa: null, snowball_earth: null };

@@ -16,9 +16,9 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Animals | 689 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
 | Family trees | Four, linked to each other and to every animal card: the road to mammals, the dinosaur tree, from fish to four legs, the reptile tree |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
-| Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
+| Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 430, every one a published work confirmed in Crossref |
+| References | 438, every one a published work confirmed in Crossref |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
@@ -58,7 +58,9 @@ What is missing, most important first:
    and http needed (a saved copy shows the map without them).
 3. **Land colour is a latitude sketch**, not reconstructed climate. Release 3 adds the rock evidence
    (coal, salt, glacial deposits) as a layer, which is both more honest and more interesting.
-4. **Ice sheets are drawn shapes**, not the published reconstructions of their edges. Release 4.
+4. ~~Ice sheets are drawn shapes.~~ **Fixed 18 Nov 2026**: PaleoMIST 1.0 (every 2,500 years, 80 ka → today) and
+   Batchelor et al. 2019 (12 moments to 3.6 Ma), each shown only while the sea level says the ice was that big.
+   Limits: unmapped glacials (1.8–0.9 Ma) use the nearest outline, paler; Patagonia before 80 ka is a stand-in.
 5. **Ice Age coasts are coarse** — a 37 km depth grid. Fine for the world view, blurry when zoomed in
    on Doggerland or Beringia. No rivers, no Ice Age lakes. Release 4.
 6. **Markers are emoji and pile up** where many animals share a fossil site (Morrison, Hell Creek,
@@ -256,13 +258,12 @@ the globe button, a legend, and one paragraph in Insights ("How do we know?") th
    global level when the map is zoomed past a threshold. Source: ETOPO 2022 or GEBCO. Check which
    host is reachable (`www.ngdc.noaa.gov`, `download.gebco.net`); if neither, **ask Evan**.
    Extend `tools/build_shelf.py` with a `--region` mode.
-2. **Published ice-sheet edges.** Replace the drawn sheets with reconstructions at a few moments
-   (for example 20, 15, 12, 10, 8 thousand years ago): Dalton et al. 2020 for North America and
-   Hughes et al. 2016 (DATED-1) for Eurasia. Verify both in Crossref and find where the shapefiles
-   are hosted before promising this.
-3. **Ice Age lakes and rivers.** Lake Agassiz, Lake Bonneville, Mega-Chad, the Channel River, the
-   Black Sea lake, as simple polygons with a date range, each with a verified source; today's major
-   rivers from Natural Earth (public domain, on GitHub) for the last 5 Ma only.
+2. ~~Published ice-sheet edges.~~ **Shipped 18 Nov 2026** (PaleoMIST 1.0 and Batchelor et al. 2019; see Shipped).
+   Dalton et al. 2020 (North America, finer steps) is still better for the deglaciation if its files can be reached.
+3. **Ice Age lakes.** Rivers are done (today’s back to 3 Ma; traced across the dry sea floor, 18 Nov 2026).
+   Still to do: Lake Agassiz (an outline traced from Teller et al. 2005 is in github.com/evangowan/glacial_lakes,
+   LGPL — check the licence), Lake Bonneville and Lahontan, Mega-Chad, the Black Sea lake, Lake Carpentaria —
+   as polygons with a date range, each with a verified source; the ice-dammed lakes of Siberia (Mangerud et al. 2004).
 4. **More drowned and early sites**, sourced as they are added: Yonaguni is *not* one (natural
    rock — say so if Evan asks); candidates with real literature include the Sunda and Sahul shelf
    finds, the North Sea's Brown Bank, Hoyo Negro (Mexico), Lake Huron's caribou drives (already in),
@@ -517,6 +518,22 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **18 Nov 2026 — The last 3 million years, from the evidence.** Evan: “the rivers shouldn’t just
+  disappear — we need more fact-based detail from 3 million years to now.” Three things were sketches
+  and are now published data. **Sea level**: the dated shorelines for the last 30,000 years (Lambeck
+  2014), the Spratt & Lisiecki (2016) stack of seven deep-sea records to 800,000 years (it replaced a
+  hand-simplified curve), and Berends et al. (2021) to 3.6 Ma (it replaced a made-up 41,000-year wave).
+  **Ice sheets**: the old map drew the full last-glacial ice for 2.6 million years without a break and
+  removed it at 12,500 years ago; now PaleoMIST 1.0 (Gowan et al. 2021) every 2,500 years to 80 ka and
+  Batchelor et al. (2019) for 12 moments to 3.6 Ma, each shown only while the sea level says the ice was
+  that big — so the warm spells (the Eemian, MIS 11) have only Greenland’s ice. **Rivers**: today’s rivers
+  are drawn back to 3 Ma, hidden under the ice; and when the sea was low they run on across the dry sea
+  floor, traced downhill over today’s sea floor with the ice as a wall (`tools/build_shelf_rivers.py`):
+  the Channel River (the Rhine joins it only when ice fills the northern North Sea, and only after the
+  Strait of Dover was cut, ~450 ka), the Ur-Schatt down the Gulf, the rivers of Sundaland. The page says
+  they are traced routes, not mapped channels. Nine new references (438). 229 checks.
+  Next: Ice Age lakes (Release 4, item 3); Dalton et al. 2020 for the deglaciation of North America.
 
 - **18 Nov 2026 — What helped people, and what threatened them.** Evan: “what would be a resource for
   humans at any given time and what would be a threat”. The Humans tab has a new panel, “At this time”,
