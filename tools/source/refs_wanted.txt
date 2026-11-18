@@ -1,6 +1,6 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry) | optional: the surname to SHOW,
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain|checks  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  s:<earth story id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain|checks  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  i:<inspiration id>  s:<earth story id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -247,7 +247,7 @@ tamm2007 | Tamm | 2007 | Beringian standstill and spread of Native American foun
 mayor1993 | Mayor | 1993 | Griffins and Arimaspeans | x:griffin
 witton2024 | Witton | 2024 | Did the horned dinosaur Protoceratops inspire the griffin? | x:griffin
 mayor2007 | Mayor | 2007 | Place names describing fossils in oral traditions | x:firstamericans
-baucon2010 | Baucon | 2010 | Leonardo da Vinci, the founding father of ichnology | x:leonardo
+baucon2010 | Baucon | 2010 | Leonardo da Vinci, the founding father of ichnology | x:leonardo, i:leonardo
 delair2002 | Delair | 2002 | The earliest discoveries of dinosaurs: the records re-examined | x:plot
 torrens1995 | Torrens | 1995 | Mary Anning (1799–1847) of Lyme; 'the greatest fossilist the world ever knew' | x:anning
 buckland1824 | Buckland | 1824 | Notice on the Megalosaurus or great Fossil Lizard of Stonesfield | x:buckland, a:Megalosaurus
@@ -416,3 +416,25 @@ scotese2021atlas | Scotese | 2021 | An Atlas of Phanerozoic Paleogeographic Maps
 # ── checking the map against independent evidence (the benchmark) ──
 torsvik2012 | Torsvik | 2012 | Phanerozoic polar wander, palaeogeography and dynamics | m:checks
 cao2019 | Cao | 2019 | Palaeolatitudinal distribution of lithologic indicators of climate in a palaeogeographic framework | m:checks
+# ── before modern science, and the works this atlas draws on (18 Nov 2026) ──
+mcnamara2007 | McNamara | 2007 | Shepherds' crowns, fairy loaves and thunderstones: the mythology of fossil echinoids in England | x:echinoids
+oakley1965a | Oakley | 1965 | Folklore of Fossils Part I | x:echinoids
+oakley1965b | Oakley | 1965 | Folklore of Fossils Part II | x:echinoids
+gessner1565 | Gessner | 1565 | Conradi Gesneri De rerum fossilium, lapidum et gemmarum maximè, figuris & similitudinibus liber : non solùm medicis, sed omnibus rerum naturae ac philologiae studiosis, vtilis & iucundus futurus | x:gessner, i:gessner | 10.5962/bhl.title.107413
+roos2018 | Roos | 2018 | Lives and Afterlives of the Lithophylacii Britannici ichnographia (1699), the First Illustrated Field Guide to English Fossils | x:lhwyd, i:lhwyd
+leibniz2008 | Leibniz | 2008 | Protogaea | x:unicorn | 10.7208/chicago/9780226112978.001.0001
+krafft2015 | Krafft | 2015 | Gottfried Wilhelm Leibniz oder Otto von Guericke? — Protogaea oder Experimenta nova Magdeburgica | x:unicorn | 10.25162/sudhoff-2015-0016
+sharpe2022 | Sharpe | 2022 | Henry De la Beche's 1829–1830 lithograph, Duria Antiquior | x:duria, i:duria
+wigley2016 | Wigley | 2016 | The development and evolution of the William Smith 1815 geological map from a digital perspective | x:smithmap, i:smithmap
+hawley2016 | Hawley | 2016 | William Smith's 1815 geological map: 'A delineation of the strata of England and Wales with part of Scotland' | x:smithmap | 10.1080/00167487.2016.12093981
+hales2017 | Hales | 2017 | Dinosaurs Don't Die: the Crystal Palace monsters in children's literature, 1854–2001 | x:crystalpalace, i:crystalpalace
+thackray1986 | Thackray | 1986 | Nicolaus Steno and the origin of tongue-stones | x:steno
+yamada2024 | Yamada | 2024 | Borrowed illustrations of glossopetrae with shark's head: Steno and the Vatican collection of Mercati | x:steno, i:steno
+mayor2013 | Mayor | 2013 | Fossil Legends of the First Americans | x:firstamericans
+mayor2011 | Mayor | 2011 | The First Fossil Hunters | x:griffin, x:cyclops
+oguri2017 | Oguri | 2017 | Taxonomic examination of longgu (Fossilia Ossis Mastodi, “dragon bone”) and a related crude drug, longchi (Dens Draconis, “dragon tooth”), from Japanese and Chinese crude drug markets | x:dragonbones | 10.1007/s11418-016-1062-5
+berman2003 | Berman | 2003 | A Note on the Paintings of Prehistoric Ancestors by Charles R. Knight | i:knight
+blakey2008 | Blakey | 2008 | Gondwana paleogeography from assembly to breakup—A 500 m.y. odyssey | i:blakey
+schulp2024 | Schulp | 2024 | A nomenclatural note on Mosasaurus hoffmanni (Squamata, Mosasauroidea) | x:maastricht
+pinero1988 | Piero | 1988 | Juan Bautista Bru (1740?1799) and the description of the genus Megatherium | x:megatherium | 10.1007/bf00125797 | López Piñero
+cuvier1806 | Cuvier | 1806 | XXVII. Memoir upon living and fossil elephants | x:cuvier | 10.1080/14786440608563652

@@ -104,7 +104,7 @@ data += dsrc.slice(dsrc.indexOf('// ===='), dsrc.indexOf("if (typeof module")).t
 // ── peer-reviewed sources (verified against Crossref by tools/verify_refs.py) ──
 const RAW = JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8'));
 const { CULTURES } = require('./data_cultures.js'), { DROWNED } = require('./data_drowned.js');
-const { FINDS, FIND_ERAS, FIND_THEMES } = require('./data_finds.js');
+const { FINDS, FIND_ERAS, FIND_THEMES, INSPIRATIONS } = require('./data_finds.js');
 const { TREES } = require('./data_trees.js');
 const { EXTINCTIONS } = require('./data_extinctions.js');
 { const { STORIES } = require('./data_stories.js');
@@ -209,7 +209,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), i: id => INSPIRATIONS.some(x => x.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'edited-book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');

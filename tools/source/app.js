@@ -805,6 +805,8 @@ function renderFinds() {
     <div class="hf-note">Each dot is a find. ${n1800} come from before 1800 — what people knew before fossil science began.</div>
     ${sel ? findHTML(sel) : '<div class="empty">Tap a dot or a row — the map jumps to the world that fossil lived in.</div>'}
     ${FIND_ERAS.map(([id, name, sub]) => { const fs = FINDS.filter(f => f.era === id && show(f)).sort((a, b) => a.year - b.year); return fs.length ? `<div class="ms"><div class="list-h" style="padding-left:2px">${esc(name)} <small>${esc(sub)}</small></div>${fs.map(f => `<div class="ms-item cul-item find-item now${sel === f ? ' sel' : ''}" data-find="${f.id}"><span class="when">${esc(f.when)}</span><span>${f.icon}</span><div><b>${esc(f.title)}</b><span>${esc(f.who.split(/;|, with| \(/)[0])} · ${esc(f.where.split(/,| \(/)[0])}</span></div></div>`).join('')}</div>` : ''; }).join('')}
+    <div class="ms insp"><div class="list-h" style="padding-left:2px">What this atlas borrows <small>the drawings, maps and pictures it follows</small></div>
+      ${INSPIRATIONS.map(x => `<div class="insp-row"${x.find ? ` data-find="${x.find}"` : ''}><div class="insp-h"><b>${esc(x.who)}</b> · ${esc(x.when)}${x.find ? ' <span class="insp-go">›</span>' : ''}</div><div class="insp-w">${esc(x.what)}</div><div class="insp-b">We borrowed: ${esc(x.borrowed)}</div>${x.find ? '' : srcHTML('i:' + x.id, 'Source')}</div>`).join('')}</div>
     <div class="src">Dates are when a fossil was found or first described. Where a story is a later legend or still argued over, the card says so.</div></div>`;
 }
 function selectFind(id, fromMap) {

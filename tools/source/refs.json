@@ -4356,7 +4356,8 @@
 "BAUCON"
 ],
 "targets": [
-"x:leonardo"
+"x:leonardo",
+"i:leonardo"
 ],
 "title_expected": "Leonardo da Vinci, the founding father of ichnology",
 "type": "journal-article",
@@ -7061,5 +7062,338 @@
 ],
 "first": "",
 "title_expected": "Palaeolatitudinal distribution of lithologic indicators of climate in a palaeogeographic framework"
+},
+"mcnamara2007": {
+"doi": "10.1144/gsl.sp.2007.273.01.22",
+"title": "Shepherds' crowns, fairy loaves and thunderstones: the mythology of fossil echinoids in England",
+"journal": "Geological Society, London, Special Publications",
+"year": 2007,
+"authors": [
+"McNamara"
+],
+"type": "journal-article",
+"targets": [
+"x:echinoids"
+],
+"first": "",
+"title_expected": "Shepherds' crowns, fairy loaves and thunderstones: the mythology of fossil echinoids in England"
+},
+"oakley1965a": {
+"doi": "10.1017/s0003598x00031367",
+"title": "Folklore of Fossils Part I",
+"journal": "Antiquity",
+"year": 1965,
+"authors": [
+"Oakley"
+],
+"type": "journal-article",
+"targets": [
+"x:echinoids"
+],
+"first": "",
+"title_expected": "Folklore of Fossils Part I"
+},
+"oakley1965b": {
+"doi": "10.1017/s0003598x00031641",
+"title": "Folklore of Fossils Part II",
+"journal": "Antiquity",
+"year": 1965,
+"authors": [
+"Oakley"
+],
+"type": "journal-article",
+"targets": [
+"x:echinoids"
+],
+"first": "",
+"title_expected": "Folklore of Fossils Part II"
+},
+"roos2018": {
+"doi": "10.1163/18253911-03303005",
+"title": "Lives and Afterlives of the Lithophylacii Britannici ichnographia (1699), the First Illustrated Field Guide to English Fossils",
+"journal": "Nuncius",
+"year": 2018,
+"authors": [
+"Roos",
+"Rose"
+],
+"type": "journal-article",
+"targets": [
+"x:lhwyd",
+"i:lhwyd"
+],
+"first": "",
+"title_expected": "Lives and Afterlives of the Lithophylacii Britannici ichnographia (1699), the First Illustrated Field Guide to English Fossils"
+},
+"leibniz2008": {
+"doi": "10.7208/chicago/9780226112978.001.0001",
+"title": "Protogaea",
+"journal": "University of Chicago Press",
+"year": 2008,
+"authors": [
+"Leibniz",
+"Cohen",
+"Wakefield"
+],
+"type": "monograph",
+"targets": [
+"x:unicorn"
+],
+"first": "",
+"title_expected": "Protogaea"
+},
+"krafft2015": {
+"doi": "10.25162/sudhoff-2015-0016",
+"title": "Gottfried Wilhelm Leibniz oder Otto von Guericke? — Protogaea oder Experimenta nova Magdeburgica? Die Rekonstruktion des vermeintlichen Einhorns von Quedlinburg",
+"journal": "Sudhoffs Archiv",
+"year": 2015,
+"authors": [
+"Krafft"
+],
+"type": "journal-article",
+"targets": [
+"x:unicorn"
+],
+"first": "",
+"title_expected": "Gottfried Wilhelm Leibniz oder Otto von Guericke? — Protogaea oder Experimenta nova Magdeburgica"
+},
+"sharpe2022": {
+"doi": "10.17704/1944-6187-41.1.47",
+"title": "Henry De La Beche’s 1829–1830 Lithograph, Duria Antiquior",
+"journal": "Earth Sciences History",
+"year": 2022,
+"authors": [
+"SHARPE"
+],
+"type": "journal-article",
+"targets": [
+"x:duria",
+"i:duria"
+],
+"first": "",
+"title_expected": "Henry De la Beche's 1829–1830 lithograph, Duria Antiquior"
+},
+"wigley2016": {
+"doi": "10.1130/gsatg279a.1",
+"title": "The development and evolution of the William Smith 1815 geological map from a digital perspective",
+"journal": "GSA Today",
+"year": 2016,
+"authors": [
+"Wigley"
+],
+"type": "journal-article",
+"targets": [
+"x:smithmap",
+"i:smithmap"
+],
+"first": "",
+"title_expected": "The development and evolution of the William Smith 1815 geological map from a digital perspective"
+},
+"hawley2016": {
+"doi": "10.1080/00167487.2016.12093981",
+"title": "William Smith's 1815 geological map: ‘A delineation of the strata of England and Wales with part of Scotland …’",
+"journal": "Geography",
+"year": 2016,
+"authors": [
+"Hawley"
+],
+"type": "journal-article",
+"targets": [
+"x:smithmap"
+],
+"first": "",
+"title_expected": "William Smith's 1815 geological map: 'A delineation of the strata of England and Wales with part of Scotland'"
+},
+"hales2017": {
+"doi": "10.7228/manchester/9780719096495.003.0008",
+"title": "Dinosaurs Don’t Die: the Crystal Palace monsters in children’s literature, 1854–2001",
+"journal": "After 1851",
+"year": 2017,
+"authors": [
+"Hales",
+"Earle"
+],
+"type": "book-chapter",
+"targets": [
+"x:crystalpalace",
+"i:crystalpalace"
+],
+"first": "",
+"title_expected": "Dinosaurs Don't Die: the Crystal Palace monsters in children's literature, 1854–2001"
+},
+"thackray1986": {
+"doi": "10.1111/j.1365-2451.1986.tb01046.x",
+"title": "Nicolaus Steno and the origin of tongue‐stones",
+"journal": "Geology Today",
+"year": 1986,
+"authors": [
+"THACKRAY"
+],
+"type": "journal-article",
+"targets": [
+"x:steno"
+],
+"first": "",
+"title_expected": "Nicolaus Steno and the origin of tongue-stones"
+},
+"yamada2024": {
+"doi": "10.17704/1944-6187-43.2.207",
+"title": "Borrowed Illustrations of Glossopetrae with Shark’s Head: Steno and the Vatican Collection of Mercati",
+"journal": "Earth Sciences History",
+"year": 2024,
+"authors": [
+"YAMADA"
+],
+"type": "journal-article",
+"targets": [
+"x:steno",
+"i:steno"
+],
+"first": "",
+"title_expected": "Borrowed illustrations of glossopetrae with shark's head: Steno and the Vatican collection of Mercati"
+},
+"mayor2013": {
+"doi": "10.1515/9781400849314",
+"title": "Fossil Legends of the First Americans",
+"journal": "Princeton University Press",
+"year": 2013,
+"authors": [
+"Mayor"
+],
+"type": "edited-book",
+"targets": [
+"x:firstamericans"
+],
+"first": "",
+"title_expected": "Fossil Legends of the First Americans"
+},
+"mayor2011": {
+"doi": "10.1515/9781400838448",
+"title": "The First Fossil Hunters",
+"journal": "Princeton University Press",
+"year": 2011,
+"authors": [
+"Mayor"
+],
+"type": "monograph",
+"targets": [
+"x:griffin",
+"x:cyclops"
+],
+"first": "",
+"title_expected": "The First Fossil Hunters"
+},
+"berman2003": {
+"doi": "10.1525/aa.2003.105.1.143",
+"title": "A Note on the Paintings of Prehistoric Ancestors by Charles R. Knight",
+"journal": "American Anthropologist",
+"year": 2003,
+"authors": [
+"Berman"
+],
+"type": "journal-article",
+"targets": [
+"i:knight"
+],
+"first": "",
+"title_expected": "A Note on the Paintings of Prehistoric Ancestors by Charles R. Knight"
+},
+"blakey2008": {
+"doi": "10.1130/2008.2441(01)",
+"title": "Gondwana paleogeography from assembly to breakup—A 500 m.y. odyssey",
+"journal": "Special Paper 441: Resolving the Late Paleozoic Ice Age in Time and Space",
+"year": 2008,
+"authors": [
+"Blakey"
+],
+"type": "book-chapter",
+"targets": [
+"i:blakey"
+],
+"first": "",
+"title_expected": "Gondwana paleogeography from assembly to breakup—A 500 m.y. odyssey"
+},
+"gessner1565": {
+"doi": "10.5962/bhl.title.107413",
+"title": "Conradi Gesneri De rerum fossilium, lapidum et gemmarum maximè, figuris &amp; similitudinibus liber: non solùm medicis, sed omnibus rerum naturae ac philologiae studiosis, vtilis &amp; iucundus futurus",
+"journal": "[excudebat Iacobus Gesnerus],",
+"year": 1565,
+"authors": [
+"Gessner",
+"Gessner"
+],
+"type": "monograph",
+"targets": [
+"x:gessner",
+"i:gessner"
+],
+"first": "",
+"title_expected": "Conradi Gesneri De rerum fossilium, lapidum et gemmarum maximè, figuris & similitudinibus liber : non solùm medicis, sed omnibus rerum naturae ac philologiae studiosis, vtilis & iucundus futurus"
+},
+"oguri2017": {
+"doi": "10.1007/s11418-016-1062-5",
+"title": "Taxonomic examination of longgu (Fossilia Ossis Mastodi, “dragon bone”) and a related crude drug, longchi (Dens Draconis, “dragon tooth”), from Japanese and Chinese crude drug markets",
+"journal": "Journal of Natural Medicines",
+"year": 2017,
+"authors": [
+"Oguri",
+"Nishioka",
+"Kobayashi",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"x:dragonbones"
+],
+"first": "",
+"title_expected": "Taxonomic examination of longgu (Fossilia Ossis Mastodi, “dragon bone”) and a related crude drug, longchi (Dens Draconis, “dragon tooth”), from Japanese and Chinese crude drug markets"
+},
+"schulp2024": {
+"doi": "10.1017/njg.2023.13",
+"title": "A nomenclatural note on Mosasaurus hoffmanni (Squamata, Mosasauroidea)",
+"journal": "Netherlands Journal of Geosciences",
+"year": 2024,
+"authors": [
+"Schulp",
+"Slootjes",
+"Jagt",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"x:maastricht"
+],
+"first": "",
+"title_expected": "A nomenclatural note on Mosasaurus hoffmanni (Squamata, Mosasauroidea)"
+},
+"cuvier1806": {
+"doi": "10.1080/14786440608563652",
+"title": "Memoir upon living and fossil elephants",
+"journal": "The Philosophical Magazine",
+"year": 1806,
+"authors": [
+"Cuvier"
+],
+"type": "journal-article",
+"targets": [
+"x:cuvier"
+],
+"first": "",
+"title_expected": "XXVII. Memoir upon living and fossil elephants"
+},
+"pinero1988": {
+"doi": "10.1007/bf00125797",
+"title": "Juan Bautista Bru (1740?1799) and the description of the genus Megatherium",
+"journal": "Journal of the History of Biology",
+"year": 1988,
+"authors": [
+"Pi�ero"
+],
+"type": "journal-article",
+"targets": [
+"x:megatherium"
+],
+"first": "López Piñero",
+"title_expected": "Juan Bautista Bru (1740?1799) and the description of the genus Megatherium"
 }
 }

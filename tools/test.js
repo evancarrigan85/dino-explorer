@@ -133,6 +133,12 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('finds: choosing one moves time to the fossil’s age and opens its story', await p.evaluate(() => Math.abs(S.t - 166) < 0.5 && S.sel === 'find:buckland' && /great lizard/i.test(document.querySelector('#pane-finds .profile').innerText) && /WHAT THEY GOT WRONG/i.test(document.querySelector('#pane-finds .profile').innerText)));
   ok('finds: the story cites its paper', await p.evaluate(() => !!document.querySelector('#pane-finds .profile .sources a[href="https://doi.org/10.1144/transgslb.1.2.390"]')));
   ok('finds: its pin is placed on the moving map', await p.evaluate(() => { const pl = placeCache['fbuckland']; return !!pl && !!WorldMap.locate(pl.at, S.t); }));
+  ok('finds: before modern science grows — 15+ finds from before 1800, and every one from 1500–1800 cites a source', await p.evaluate(() => FINDS.filter(f => f.year < 1800).length >= 15 && FINDS.filter(f => f.year >= 1500 && f.year < 1800).every(f => (SRCMAP['x:' + f.id] || []).length > 0)));
+  ok('finds: the fairy-loaf sea urchins cite the archaeology and folklore papers, and take the map to the Chalk sea', await p.evaluate(() => { selectFind('echinoids'); return ['mcnamara2007', 'oakley1965b'].every(k => (SRCMAP['x:echinoids'] || []).includes(k)) && /thunderstones/.test(FIND.echinoids.story); }));
+  await p.waitForTimeout(2200);
+  ok('finds: …and the map moves to 80 Ma, where the urchins lived', await p.evaluate(() => Math.abs(S.t - 80) < 1));
+  ok('finds: “What this atlas borrows” lists the drawings and maps it follows, each linked to its story or source', await p.evaluate(() => { const rows = [...document.querySelectorAll('#pane-finds .insp-row')]; return rows.length === INSPIRATIONS.length && rows.length >= 9 && rows.every(r => r.dataset.find || r.querySelector('.sources')) && /field-book look/.test(document.querySelector('#pane-finds .insp').innerText); }));
+  await p.evaluate(() => selectFind('buckland')); await p.waitForTimeout(2600);
   await p.click('#pane-finds [data-meet="megalosaurus"]'); await p.waitForTimeout(1200);
   ok('finds: “Meet” opens the animal’s card, which links back to the find', await p.evaluate(() => S.tab === 'life' && S.sel === 'megalosaurus' && !!document.querySelector('#lifeList .creature-card.active [data-find="buckland"]')));
   await p.click('#lifeList .creature-card.active [data-find="plot"]'); await p.waitForTimeout(1500);
