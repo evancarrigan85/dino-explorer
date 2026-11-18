@@ -124,6 +124,23 @@ node tools/encode_plates.mjs plates_stage1.json plates-data.js
 
 Paste `plates-data.js` into the plate-data block of the page.
 
+## The benchmark (`tools/bench`)
+
+`bench.js` scores the map against evidence it was not built from, and `tools/test.js` refuses any
+change that makes a score worse or breaks a fact that held:
+
+| Score | What it checks | Source |
+|---|---|---|
+| poles | 367 paleomagnetic poles, carried by our plates to their age, land within their error + 10° of a pole | Torsvik et al. 2012 (`vgp.json`, from `build_vgp.py`) |
+| ice / salt / tropics | glacial deposits poleward of 40°, salt within 45°, tropical clays within 40° at their age | Boucot et al. 2013 (the rocks layer); method of Cao et al. 2019 |
+| seaLife / landLife | fossil sites of sea creatures in sea or striped land; dinosaurs and synapsids on land or stripes | the page's own animals |
+| facts | named facts in `facts.js`, each with verified sources | events, stories, fossil sites |
+
+`node tools/bench/bench.js` prints every score and fact; `--update` raises `baseline.json` after an
+improvement and appends the run to `history.jsonl`. The page shows the current scores in "How this map
+is made" (`BENCH`, inlined by `assemble.mjs`). To climb: pick a miss, find why (data, resolution or
+model), fix it, add a fact for what you learned.
+
 ## Checks
 
 ```

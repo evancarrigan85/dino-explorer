@@ -18,12 +18,12 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 52 discovery stories, 12 from before 1800 |
-| References | 397, every one a published work confirmed in Crossref |
+| References | 399, every one a published work confirmed in Crossref |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 201 passing |
+| Checks | 204 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 1.78 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -501,7 +501,29 @@ exists, its sprites. It must not copy any existing game's name, characters, leve
   rewards.
 - Translations.
 
+## Climbing the benchmark (`tools/bench`) — the standing to-do list
+
+The baseline (18 Nov 2026): poles 88.3% · ice 90.0% · salt 93.3% · tropics 70.5% · seaLife 84.6% ·
+landLife 93.6% · facts 23/26. Next moves, best first:
+1. **tropics (70%)** — which bauxites, laterites and kaolins land above 40°? Separate real greenhouse
+   cases (Paleocene–Eocene high-latitude laterites are known) from plate or dating errors; add a fact
+   for each understood case.
+2. **The three missing facts** — Gogo reef, Isotelus at Churchill, the Kem Kem rivers: all lost to the
+   1° coast. Try the 0.1° PaleoDEMs near fossil sites before anything else.
+3. **poles (88%)** — list the worst-fitting poles by plate and age; the Merdith model's reference frame
+   changes near 250 and 410 Ma (see the jumps in the geometry review).
+4. **More facts.** Every story, extinction scene and journey stop makes claims about where things were:
+   turn each into a fact with its sources. Aim for 60+.
+
 ## Shipped
+
+- **18 Nov 2026 — The benchmark.** Evan: “anchor your review on known discoveries, locations, events,
+  features … to bootstrap and hill-climb … build systems to ensure this keeps getting better.”
+  `tools/bench` scores the map against evidence it was not built from — 367 paleomagnetic poles
+  (Torsvik et al. 2012), 3,390 climate rocks (Boucot et al. 2013, method of Cao et al. 2019), every
+  fossil site's environment, and 26 named facts with sources — and the test suite refuses any change
+  that makes a score worse or breaks a fact that held. The page shows the scores in “How this map is
+  made”. `tools/review_geometry.js` walks the timeline for jumps, gaps, labels and terrain fit.
 
 - **18 Nov 2026 — A review of the geometry through the whole timeline, and what it fixed.** Evan:
   “review geometry through the timeline, in depth”. Measured, not just looked at:

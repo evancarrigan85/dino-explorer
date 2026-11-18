@@ -209,7 +209,7 @@ const { YOU_LINE } = require('./data_you.js');
   data += fsrc.slice(fsrc.indexOf('// ===='), fsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain'].includes(id) };
+  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'edited-book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');
@@ -224,6 +224,11 @@ for (const [k, r] of Object.entries(RAW)) {
 }
 for (const t in SRCMAP) SRCMAP[t].sort((x, y) => REFS[x].y - REFS[y].y);
 data += `// ── peer-reviewed sources: every entry verified against the Crossref DOI registry (tools/verify_refs.py) ──\nconst REFS = ${J(REFS)};\nconst SRCMAP = ${J(SRCMAP)};\n`;
+{ // the benchmark's current scores (tools/bench), shown in "How this map is made"
+  const base = JSON.parse(fs.readFileSync(SRC + '../bench/baseline.json', 'utf8'));
+  const hist = fs.readFileSync(SRC + '../bench/history.jsonl', 'utf8').trim().split('\n').map(l => JSON.parse(l)), last = hist[hist.length - 1];
+  data += `const BENCH = ${J({ scores: base.scores, facts: base.passing.length, of: last.of, date: last.date, runs: hist.length })};\n`;
+}
 const csrc = fs.readFileSync(SRC + 'data_cultures.js', 'utf8');
 data += csrc.slice(0, csrc.indexOf("if (typeof module")).trim() + '\n';
 data += `const HOMININ_LINEAGE = ${J(C.HOMININ_LINEAGE)};\n\n`;

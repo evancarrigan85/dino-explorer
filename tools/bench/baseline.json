@@ -1,0 +1,36 @@
+{
+ "scores": {
+  "poles": 0.8828337874659401,
+  "ice": 0.900497512437811,
+  "salt": 0.9326107445805843,
+  "tropics": 0.7047797563261481,
+  "seaLife": 0.8457142857142858,
+  "landLife": 0.9355828220858896,
+  "facts": 0.8846153846153846
+ },
+ "passing": [
+  "chicxulub-shallow-sea",
+  "deccan-on-land",
+  "siberian-traps-on-land",
+  "camp-neighbours",
+  "pangaea-no-atlantic",
+  "south-atlantic-closed",
+  "south-atlantic-open",
+  "india-south-of-equator",
+  "india-far-from-asia",
+  "india-races-north",
+  "ordovician-sahara-at-pole",
+  "laurentia-tropics",
+  "antarctica-polar",
+  "tiktaalik-tropics",
+  "burgess-in-sea",
+  "dunkleosteus-sea",
+  "elasmosaurus-seaway",
+  "borealopelta-at-sea",
+  "hell-creek-land",
+  "liaoning-land",
+  "messel-land",
+  "tendaguru-land",
+  "maiasaura-land"
+ ]
+}

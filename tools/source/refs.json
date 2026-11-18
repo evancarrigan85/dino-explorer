@@ -7025,5 +7025,41 @@
 ],
 "first": "",
 "title_expected": "An Atlas of Phanerozoic Paleogeographic Maps: The Seas Come In and the Seas Go Out"
+},
+"torsvik2012": {
+"doi": "10.1016/j.earscirev.2012.06.007",
+"title": "Phanerozoic polar wander, palaeogeography and dynamics",
+"journal": "Earth-Science Reviews",
+"year": 2012,
+"authors": [
+"Torsvik",
+"Van der Voo",
+"Preeden",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:checks"
+],
+"first": "",
+"title_expected": "Phanerozoic polar wander, palaeogeography and dynamics"
+},
+"cao2019": {
+"doi": "10.1017/s0016756818000110",
+"title": "Palaeolatitudinal distribution of lithologic indicators of climate in a palaeogeographic framework",
+"journal": "Geological Magazine",
+"year": 2019,
+"authors": [
+"CAO",
+"WILLIAMS",
+"FLAMENT",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:checks"
+],
+"first": "",
+"title_expected": "Palaeolatitudinal distribution of lithologic indicators of climate in a palaeogeographic framework"
 }
 }

@@ -430,6 +430,11 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('seas: no half-see-through land while the sea maps fade in or out (only coast edges are soft; a half-faded map was over 0.5)', fade.every(f => f < 0.2), JSON.stringify(fade));
   const lab = await p.evaluate(() => { const bad = []; for (let t = 500; t >= 230; t -= 2.5) { setTime(t); WorldMap._draw(); for (const L of WorldMap._labelsAt()) { if (!L.shown || L.land == null) continue; if (L.kind === 'ocean' && L.land > 200) bad.push(t + ' ' + L.text); if (L.kind === 'land' && L.land < 40 && L.sea === 'none') bad.push(t + ' ' + L.text); } } setTime(150); return bad; });
   ok('labels: a continent’s name never floats on open ocean, an ocean’s never sits on land (500–230 Ma)', lab.length === 0, lab.slice(0, 8).join(', '));
+  // the benchmark: the map against independent evidence, never worse than the recorded baseline
+  { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
+    ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));
+    ok('benchmark: every named fact names a verified source and a real place', run.facts.every(f => !f.invalid));
+    ok('benchmark: “How this map is made” shows the scores and cites the poles and the rocks method', await p.evaluate(() => { const t = document.getElementById('mapAbout').textContent; return /How we check this map/.test(t) && /\d+% of 367 directions of ancient magnetism/.test(t) && /Torsvik/.test(t) && /Cao/.test(t); })); }
   // data QA: every fossil site can be placed on the map at the animal's time
   const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
   ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));

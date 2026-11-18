@@ -45,7 +45,13 @@ and where something is a guess, a sketch or still argued over, the page says so.
    sentences, no jargon without a gloss. Use `’` not `'` inside single-quoted JS strings.
 7. **Never put a secret in a file or in chat.** API keys go through the environment's network secrets.
    Outside requests carry no personal details (the Crossref User-Agent is generic on purpose).
-8. **Original work only.** The planned game is an original take on an evolution side-scroller; it does
+8. **The benchmark only goes up.** `tools/bench` scores the map against evidence it was not built from
+   (paleomagnetic poles, climate rocks, fossil environments, named facts with sources). `tools/test.js`
+   fails if any score drops below `tools/bench/baseline.json` or a fact that held now fails. After an
+   improvement run `node tools/bench/bench.js --update` (it refuses if anything got worse). Never edit the
+   baseline down to ship; add new facts (with verified sources) when you learn something the map should
+   get right — a failing fact is a target, not a problem.
+9. **Original work only.** The planned game is an original take on an evolution side-scroller; it does
    not copy the name, characters, levels or art of any existing game.
 
 ## Commands
@@ -56,6 +62,8 @@ node tools/test.js                                    # Playwright checks; must 
 python3 -I tools/verify_refs.py                       # verify new/changed lines in refs_wanted.txt
 python3 -I tools/verify_refs.py --only key1,key2      # re-check particular references
 python3 -I tools/verify_refs.py --audit               # re-fetch every stored DOI; fails on preprints
+node tools/bench/bench.js [--update]                  # score the map against independent evidence
+node tools/review_geometry.js                         # walk the timeline: jumps, gaps, labels, terrain fit
 ```
 
 One-time setup in a fresh container: `npm i -D playwright` is not needed in Claude cloud sessions
