@@ -446,6 +446,15 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     ok('backdrops: the 🎨 button cycles all five and back, and the choice is remembered', new Set(r.seen).size === 5 && r.seen[0] === r.seen[5] && r.kept != null, JSON.stringify(r));
     ok('backdrops: space is dark around the map, the atlas is paper', r.space < 60 && r.atlas > 400, JSON.stringify(r)); }
   ok('backdrops: “How this map is made” names the field book’s inspiration and says the moving water is decoration', await p.evaluate(() => { const t = document.getElementById('mapAbout').textContent; return /Lhwyd/.test(t) && /decoration/.test(t) && /less motion/.test(t); }));
+  // sounds of the time: off by default, and only what there is evidence for
+  ok('sound: off until asked for', await p.evaluate(() => !SoundOfTime.on && document.getElementById('soundBtn').getAttribute('aria-pressed') === 'false'));
+  ok('sound: wind and waves only before 165 Ma; insect song from 165 Ma; bird calls from 67 Ma; only wind in a Snowball Earth', await p.evaluate(() => {
+    const L = t => SoundOfTime.layers(t);
+    return !L(300).insects && !L(300).birds && L(300).surf === 1 && L(160).insects && !L(160).birds && L(60).birds && L(60).insects && L(700).surf === 0 && L(700).wind === 1 && L(20).wind < L(0.02).wind; }));
+  await p.click('#soundBtn'); await p.waitForTimeout(400);
+  ok('sound: the button starts it, says what you are hearing, and cites the katydid and the voice box', await p.evaluate(() => { const t = document.getElementById('mapAbout').textContent, src = (SRCMAP['m:sound'] || []).join(); return SoundOfTime.on && !!SoundOfTime.running && document.getElementById('soundBtn').getAttribute('aria-pressed') === 'true' && /Archaboilus/.test(t) && /Vegavis/.test(t) && /gu2012/.test(src) && /clarke2016/.test(src); }));
+  await p.click('#soundBtn'); await p.waitForTimeout(200);
+  ok('sound: …and stops it again', await p.evaluate(() => !SoundOfTime.on));
   // the benchmark: the map against independent evidence, never worse than the recorded baseline
   { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
     ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));

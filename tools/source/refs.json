@@ -1866,7 +1866,8 @@
 "et al."
 ],
 "targets": [
-"a:Vegavis"
+"a:Vegavis",
+"m:sound"
 ],
 "title_expected": "Fossil evidence of the avian vocal organ from the Mesozoic",
 "type": "journal-article",
@@ -7395,5 +7396,23 @@
 ],
 "first": "López Piñero",
 "title_expected": "Juan Bautista Bru (1740?1799) and the description of the genus Megatherium"
+},
+"gu2012": {
+"doi": "10.1073/pnas.1118372109",
+"title": "Wing stridulation in a Jurassic katydid (Insecta, Orthoptera) produced low-pitched musical calls to attract females",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2012,
+"authors": [
+"Gu",
+"Montealegre-Z",
+"Robert",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:sound"
+],
+"first": "",
+"title_expected": "Wing stridulation in a Jurassic katydid (Insecta, Orthoptera) produced low-pitched musical calls to attract females"
 }
 }

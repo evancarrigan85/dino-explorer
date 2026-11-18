@@ -121,7 +121,74 @@ function setTime(t, o = {}) {
   }
   clearTimeout(hashTimer); hashTimer = setTimeout(writeHash, 350);
 }
+// ── sounds of the time: made in the browser, and only what there is evidence for ──
+// Wind and sea always (louder wind in a colder world; only wind in a Snowball Earth). Insect song from
+// 165 Ma: a ~6.4 kHz pure note in short pulses, as rebuilt for Archaboilus musicus (Gu et al. 2012).
+// Bird calls from 67 Ma: Vegavis has the oldest fossil syrinx (Clarke et al. 2016). Off by default;
+// the noise comes from a fixed seed, so the soundscape is the same every time.
+const SoundOfTime = (() => {
+  let an = null, ac = null, on = false, master = null, surfG = null, windG = null, windF = null, beat = 0, n = 0, lastKey = '';
+  const snowball = t => (t <= 716 && t >= 661) || (t <= 649 && t >= 636);
+  function layers(t) {
+    const T = globalTemp(t), cold = T == null ? 0.3 : clamp((18 - T) / 12, 0, 1);
+    return { surf: snowball(t) ? 0 : 1, wind: snowball(t) ? 1 : 0.25 + 0.55 * cold, insects: t <= 165, birds: t <= 67 };
+  }
+  function noise(len) {                                   // a fixed-seed noise buffer (mulberry32)
+    const b = ac.createBuffer(1, ac.sampleRate * len, ac.sampleRate), d = b.getChannelData(0); let s = 0x9e3779b9;
+    for (let i = 0; i < d.length; i++) { s |= 0; s = s + 0x6D2B79F5 | 0; let x = Math.imul(s ^ s >>> 15, 1 | s); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; d[i] = ((x ^ x >>> 14) >>> 0) / 2147483648 - 1; }
+    return b;
+  }
+  function start() {
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    master = ac.createGain(); master.gain.value = 1.0; master.connect(ac.destination);
+    an = ac.createAnalyser(); an.fftSize = 2048; master.connect(an);
+    const buf = noise(4);
+    const src = () => { const s = ac.createBufferSource(); s.buffer = buf; s.loop = true; s.start(); return s; };
+    // the sea: low noise rising and falling like waves on a shore
+    const sf = ac.createBiquadFilter(); sf.type = 'lowpass'; sf.frequency.value = 520; surfG = ac.createGain(); surfG.gain.value = 0;
+    const sw = ac.createGain(); sw.gain.value = 0.5; const lfo = ac.createOscillator(); lfo.frequency.value = 0.11; const lg = ac.createGain(); lg.gain.value = 0.42; lfo.connect(lg).connect(sw.gain); lfo.start();
+    src().connect(sf).connect(sw).connect(surfG).connect(master);
+    // the wind: a band of noise whose pitch wanders slowly
+    windF = ac.createBiquadFilter(); windF.type = 'bandpass'; windF.frequency.value = 520; windF.Q.value = 0.9; windG = ac.createGain(); windG.gain.value = 0;
+    const wl = ac.createOscillator(); wl.frequency.value = 0.07; const wlg = ac.createGain(); wlg.gain.value = 260; wl.connect(wlg).connect(windF.frequency); wl.start();
+    src().connect(windF).connect(windG).connect(master);
+    beat = setInterval(tick, 400);
+  }
+  function blip(f0, f1, at, dur, vol) {                   // one short note, gliding from f0 to f1
+    const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine';
+    o.frequency.setValueAtTime(f0, at); o.frequency.linearRampToValueAtTime(f1, at + dur);
+    g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(vol, at + Math.min(0.005, dur / 4)); g.gain.linearRampToValueAtTime(0, at + dur);
+    o.connect(g).connect(master); o.start(at); o.stop(at + dur + 0.02);
+  }
+  function tick() {                                       // insect pulses and bird calls on a fixed rhythm
+    if (!on || !ac) return; n++;
+    const L = layers(S.t), now = ac.currentTime + 0.05;
+    if (L.insects && n % 3 === 0) for (let k = 0; k < 3; k++) blip(6400, 6400, now + k * 0.06, 0.016, 0.035);   // the katydid: a pure ~6.4 kHz note, 16 ms pulses
+    if (L.birds && n % 11 === 4) { const m = 2 + (n % 3); for (let k = 0; k < m; k++) blip(2600 + (n * 37 % 500), 4100 + (n * 53 % 700), now + k * 0.13, 0.09, 0.05); }
+  }
+  function update() {
+    if (!on || !ac) return;
+    const L = layers(S.t), at = ac.currentTime;
+    surfG.gain.setTargetAtTime(0.5 * L.surf, at, 0.6); windG.gain.setTargetAtTime(0.55 * L.wind, at, 0.6);
+    const key = [L.surf, L.insects, L.birds].join();
+    if (key !== lastKey) { lastKey = key; $('soundBtn').title = describe(L); }
+  }
+  function describe(L) {
+    return L.surf ? ('Wind and waves' + (L.insects ? ', insect song' : '') + (L.birds ? ' and bird calls' : '') + '.' + (!L.insects ? ' No animal song is known from this far back — the oldest rebuilt is a katydid’s, 165 million years ago.' : '')) : 'Only wind, over a frozen world.';
+  }
+  return {
+    toggle() {
+      on = !on; $('soundBtn').setAttribute('aria-pressed', String(on)); $('soundBtn').textContent = on ? '🔊 Sound' : '🔈 Sound';
+      if (on) { if (!ac) start(); else ac.resume(); lastKey = ''; update(); showFact('🔊', esc(describe(layers(S.t))) + ' <small>Made in your browser; only sounds there is evidence for. See “How this map is made”.</small>', 5000); }
+      else if (ac) ac.suspend();
+    },
+    update, layers, get on() { return on; }, get running() { return !!ac && ac.state; },
+    _level() { if (!an) return null; const d = new Float32Array(an.fftSize); an.getFloatTimeDomainData(d); let r = 0, pk = 0; for (const v of d) { r += v * v; pk = Math.max(pk, Math.abs(v)); } return { rms: +Math.sqrt(r / d.length).toFixed(4), peak: +pk.toFixed(3) }; },
+  };
+})();
+
 function updateClock(fromSlider) {
+  SoundOfTime.update();
   const t = S.t, p = S.period;
   $('myaDisplay').textContent = fmtAgo(t);
   const sl = WorldMap.seaLevel(t);
@@ -1752,6 +1819,7 @@ function readHash() {
 function init() {
   WorldMap.init($('mapCanvas'), $('mapFx'));
   WorldMap.onSeas = () => { updateClock(); updatePinCard(); };
+  $('soundBtn').onclick = () => SoundOfTime.toggle();
   // backdrops: remembered on this device only
   const BD_INFO = { atlas: ['🗺', 'Atlas', 'an old atlas page'], fieldbook: ['📒', 'Field book', 'after Edward Lhwyd’s 1699 field guide and the first woodcuts of fossils'], workshop: ['📐', 'Workshop', 'a map spread on the work table'], planetarium: ['🌌', 'Planetarium', 'a dome of stars'], space: ['🛰', 'Space', 'the Earth seen from far away'] };
   try { const b = localStorage.getItem('beforeus.backdrop'); if (b && BD_INFO[b]) WorldMap.setBackdrop(b); } catch (e) {}
@@ -1799,7 +1867,7 @@ function init() {
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
   if (typeof BENCH !== 'undefined') { const s = BENCH.scores, pc = v => Math.round(v * 100) + '%';
     $('benchNote').innerHTML = `<b>How we check this map.</b> Every change is tested against evidence the map was not built from, and is not allowed to make any score worse. Today: <b>${pc(s.poles)}</b> of 367 directions of ancient magnetism frozen in rocks (which show where each continent lay) agree with where our plates put it; <b>${pc(s.ice)}</b> of glacial deposits sit in cold high latitudes, <b>${pc(s.salt)}</b> of salt and desert crusts in the dry belts and <b>${pc(s.tropics)}</b> of the clays that form in hot, wet weather within 40° of the equator; <b>${pc(s.seaLife)}</b> of sea creatures’ fossil sites are in the sea and <b>${pc(s.landLife)}</b> of dinosaurs’ on land; and ${BENCH.facts} of ${BENCH.of} known facts hold — from the asteroid falling into a shallow sea to India racing north. The misses are the next things to fix. (Checked ${esc(BENCH.date)}.)`; }
-  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:seas', 'm:terrain', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time', 'm:checks'].map(t => srcHTML(t, { 'm:checks': 'How we check this map', 'm:plates': 'Plate model', 'm:seas': 'Seas over the continents', 'm:terrain': 'Ancient heights and depths', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:seas', 'm:terrain', 'm:sealevel', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time', 'm:sound', 'm:checks'].map(t => srcHTML(t, { 'm:sound': 'Sounds of the time', 'm:checks': 'How we check this map', 'm:plates': 'Plate model', 'm:seas': 'Seas over the continents', 'm:terrain': 'Ancient heights and depths', 'm:sealevel': 'Sea level', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
   // on a phone the title box is one slim line; a tap opens it in full for a few seconds
   let ctTimer = 0;
   $('cartouche').addEventListener('click', () => { const c = $('cartouche'); c.classList.toggle('open'); clearTimeout(ctTimer); if (c.classList.contains('open')) ctTimer = setTimeout(() => c.classList.remove('open'), 6000); });

@@ -494,6 +494,9 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 #youBar .yb-v b{color:#fff}
 #youBar .yb-go{color:var(--accent);font-size:1rem}
 /* journeys */
+#soundBtn{border:1px solid var(--border);background:rgba(160,230,190,.08);color:#a8e6c4;border-radius:5px;padding:4px 10px;font:inherit;font-size:.74rem;font-weight:700;cursor:pointer;white-space:nowrap}
+#soundBtn[aria-pressed="true"]{background:rgba(160,230,190,.22);border-color:#7fcfa3}
+@media (max-width:767px){#soundBtn{padding:4px 8px}}
 #journeyBtn{border:1px solid var(--border);background:rgba(120,190,255,.1);color:#9fd0ff;border-radius:5px;padding:4px 10px;font:inherit;font-size:.74rem;font-weight:700;cursor:pointer;white-space:nowrap}
 #journeyBtn:hover{border-color:#9fd0ff}
 .tl-bottom{position:relative}

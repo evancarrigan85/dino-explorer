@@ -1,6 +1,6 @@
 # key | first author surname | year | title | targets (comma-separated) | optional DOI (still checked against the registry) | optional: the surname to SHOW,
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
-# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain|checks  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  i:<inspiration id>  s:<earth story id>
+# targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain|checks|sound  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  i:<inspiration id>  s:<earth story id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
@@ -110,7 +110,7 @@ rogers2003 | Rogers | 2003 | Cannibalism in the Madagascan dinosaur Majungatholu
 fisher2000 | Fisher | 2000 | Cardiovascular evidence for an intermediate or higher metabolic rate in an ornithischian dinosaur | a:Thescelosaurus
 cleland2011 | Cleland | 2011 | Histological, chemical, and morphological reexamination of the 'heart' of a small Late Cretaceous Thescelosaurus | a:Thescelosaurus
 field2018 | Field | 2018 | Complete Ichthyornis skull illuminates mosaic assembly of the avian head | a:Ichthyornis
-clarke2016 | Clarke | 2016 | Fossil evidence of the avian vocal organ from the Mesozoic | a:Vegavis
+clarke2016 | Clarke | 2016 | Fossil evidence of the avian vocal organ from the Mesozoic | a:Vegavis, m:sound
 wilson2016 | Wilson | 2016 | A large carnivorous mammal from the Late Cretaceous and the North American origin of marsupials | a:Didelphodon
 field2020 | Field | 2020 | Late Cretaceous neornithine from Europe illuminates the origins of crown birds | a:Asteriornis
 alvarez1980 | Alvarez | 1980 | Extraterrestrial cause for the Cretaceous-Tertiary extinction | p:cretaceous, x:asteroid, j:extinctions, e:cretaceous
@@ -438,3 +438,5 @@ blakey2008 | Blakey | 2008 | Gondwana paleogeography from assembly to breakup—
 schulp2024 | Schulp | 2024 | A nomenclatural note on Mosasaurus hoffmanni (Squamata, Mosasauroidea) | x:maastricht
 pinero1988 | Piero | 1988 | Juan Bautista Bru (1740?1799) and the description of the genus Megatherium | x:megatherium | 10.1007/bf00125797 | López Piñero
 cuvier1806 | Cuvier | 1806 | XXVII. Memoir upon living and fossil elephants | x:cuvier | 10.1080/14786440608563652
+# ── sounds of the time ──
+gu2012 | Gu | 2012 | Wing stridulation in a Jurassic katydid (Insecta, Orthoptera) produced low-pitched musical calls to attract females | m:sound
