@@ -450,7 +450,8 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
   .tl-zoom span,#timelineHint{display:none}
   .compass{display:none}
   #cartouche{padding:3px 9px}#cartouche .ct-title{font-size:.66rem}#cartouche .ct-date{font-size:.6rem}
-  .map-btn{width:32px;height:32px}
+  .map-btn{width:30px;height:30px;font-size:.85rem}
+  .map-ctl{gap:4px;right:7px;top:7px}
   .tab-btn{font-size:.72rem;padding:10px 2px}
   #pinCard{bottom:26px;padding:6px 26px 6px 9px;font-size:.66rem;line-height:1.35;width:calc(100% - 64px)}
   #pinCard .pc-near,#pinCard .pc-note{display:none}
@@ -697,6 +698,7 @@ header .logo,header h1{cursor:pointer}
         <button class="map-btn" id="mapOut" title="Zoom out" aria-label="Zoom map out">−</button>
         <button class="map-btn" id="mapPin" title="Where was my town?" aria-label="Where was my town?">📍</button>
         <button class="map-btn" id="mapReset" title="Reset the view" aria-label="Reset map view">⟲</button>
+        <button class="map-btn" id="mapStyle" title="Change what the map sits on" aria-label="Change the map’s backdrop">🎨</button>
       </div>
       <svg class="compass" viewBox="-46 -46 92 92" aria-hidden="true">
         <circle r="30" fill="rgba(242,222,170,0.9)" stroke="rgba(90,52,14,0.7)" stroke-width="1.3"/>
@@ -725,6 +727,7 @@ header .logo,header h1{cursor:pointer}
         <p><b>Mountains.</b> For the Ice Age and after, the darker ground is today's high country (above 600, 1,500 and 3,000 m). Mountain ranges are much younger than continents, so further back than about 5 million years they are not drawn — nobody should read the Himalayas into a world that had none.</p>
         <p><b>Temperature.</b> The 🌡 line and the coloured stripe under the timeline show Earth's average surface temperature, from a published reconstruction covering the last 540 million years (one value per million years). Inside the Ice Age the swings were much faster than that, so there the figure is scaled from sea level — about 6 °C colder than today at the coldest. Treat every value as “about”.</p>
         <p><b>Empires and kingdoms.</b> In the Humans tab, for the last 5,500 years, the coloured washes are rough hand sketches of each state's greatest reach, drawn from standard historical atlases. Real borders were fuzzy, shifting and often disputed, and every state was smaller before and after its height — read them as “about here”, not as surveyed lines. Sizes and peak dates follow published tables.</p>
+        <p><b>Backdrops and moving water.</b> The 🎨 button changes what the map sits on: an old atlas page; a field book, after Edward Lhwyd’s 1699 guide to fossils and the first woodcuts of them, with an engraver’s lined sea; a workshop table; a planetarium dome; or space. While you explore, light plays on the water, glints flash and clouds drift — westward in the tropics and eastward further out, the way the great wind belts blow today. They are decoration: they are not the weather of that day, and they stop if your device asks for less motion.</p>
         <p><b>Fossil markers</b> sit where each fossil was found, moved to where that spot was when the animal was alive.</p>
         <p id="benchNote"><b>How we check this map.</b> Every change is tested against evidence the map was not built from.</p>
       </div>
@@ -4431,9 +4434,70 @@ void main() {
 
   // ── paper: the sheet the map is drawn on ───────────────────────────
   function rnd(i, s = 1) { const h = Math.sin(i * 127.1 + s * 311.7) * 43758.5453; return h - Math.floor(h); }
+  // ── backdrops: what the map sits on. Atlas (old paper), Field book (after Lhwyd’s 1699 field guide and
+  //    Gessner’s woodcuts), Workshop (a cutting mat under a lamp), Planetarium (a dome of stars), Space ──
+  let backdrop = 'atlas';
+  const BD = {
+    atlas: { shadow: 'rgba(60,34,8,0.6)', blur: 20, rim: 'rgba(58,34,10,0.9)', grain: 1, sea: 'waves', dark: false },
+    fieldbook: { shadow: 'rgba(60,44,24,0.35)', blur: 8, rim: 'rgba(38,30,22,0.9)', grain: 0.55, sea: 'hatch', dark: false },
+    workshop: { shadow: 'rgba(0,0,0,0.75)', blur: 26, rim: 'rgba(16,14,10,0.95)', grain: 0, sea: 'waves', dark: true },
+    planetarium: { shadow: 'rgba(120,170,255,0.5)', blur: 34, rim: 'rgba(170,200,255,0.55)', grain: 0, sea: 'waves', dark: true },
+    space: { shadow: 'rgba(110,175,255,0.75)', blur: 42, rim: 'rgba(170,215,255,0.5)', grain: 0, sea: 'none', dark: true },
+  };
+  const bd = () => BD[backdrop] || BD.atlas;
+  function stars(c, w, h, n, seed, band) {               // fixed stars: the same sky on every visit
+    for (let i = 0; i < n; i++) {
+      let x = rnd(i, seed) * w, y = rnd(i, seed + 1) * h;
+      if (band && i % 3 === 0) { const u = rnd(i, seed + 2); x = u * w; y = h * (0.85 - 0.7 * u) + (rnd(i, seed + 3) - 0.5) * h * 0.18; }   // the Milky Way: a crowded band
+      const r = (0.35 + rnd(i, seed + 4) ** 3 * 1.3) * dpr, a = 0.25 + rnd(i, seed + 5) * 0.7, warm = rnd(i, seed + 6);
+      c.fillStyle = warm > 0.85 ? `rgba(255,214,170,${a})` : warm < 0.12 ? `rgba(170,200,255,${a})` : `rgba(255,255,255,${a})`;
+      c.beginPath(); c.arc(x, y, r, 0, 7); c.fill();
+    }
+  }
   function makePaper() {
     paper = document.createElement('canvas'); paper.width = canvas.width; paper.height = canvas.height;
     const c = paper.getContext('2d'), w = paper.width, h = paper.height;
+    if (backdrop === 'fieldbook') {
+      c.fillStyle = '#f2e9d0'; c.fillRect(0, 0, w, h);
+      const v = c.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.3, w / 2, h / 2, Math.hypot(w, h) * 0.62);
+      v.addColorStop(0, 'rgba(255,250,235,0)'); v.addColorStop(1, 'rgba(150,118,70,0.28)'); c.fillStyle = v; c.fillRect(0, 0, w, h);
+      const step = 18 * dpr;                              // a surveyor’s squared page
+      c.lineWidth = Math.max(1, 0.6 * dpr);
+      for (let x = step / 2; x < w; x += step) { c.strokeStyle = 'rgba(70,110,160,0.16)'; c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); }
+      for (let y = step / 2; y < h; y += step) { c.strokeStyle = 'rgba(70,110,160,0.16)'; c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); }
+      c.strokeStyle = 'rgba(190,60,50,0.4)'; c.lineWidth = 1.2 * dpr; c.beginPath(); c.moveTo(40 * dpr, 0); c.lineTo(40 * dpr, h); c.stroke();   // the margin rule
+      for (let i = 0; i < 18; i++) {                      // a few old stains
+        const x = rnd(i, 31) * w, y = rnd(i, 37) * h, r = (8 + rnd(i, 41) * 30) * dpr, f = c.createRadialGradient(x, y, 0, x, y, r);
+        f.addColorStop(0, `rgba(140,96,40,${0.04 + rnd(i, 43) * 0.05})`); f.addColorStop(1, 'rgba(140,96,40,0)'); c.fillStyle = f; c.fillRect(x - r, y - r, r * 2, r * 2);
+      }
+      sheetKey = ''; return;
+    }
+    if (backdrop === 'workshop') {
+      const g = c.createRadialGradient(w * 0.38, h * 0.3, Math.min(w, h) * 0.05, w * 0.5, h * 0.5, Math.hypot(w, h) * 0.7);
+      g.addColorStop(0, '#355a4c'); g.addColorStop(0.55, '#203d34'); g.addColorStop(1, '#0d1a16'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+      const step = 16 * dpr;                              // a cutting mat’s grid, every fifth line stronger
+      for (let i = 0, x = 0; x < w; x += step, i++) { c.strokeStyle = i % 5 ? 'rgba(210,235,220,0.07)' : 'rgba(210,235,220,0.16)'; c.lineWidth = Math.max(1, 0.6 * dpr); c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); }
+      for (let i = 0, y = 0; y < h; y += step, i++) { c.strokeStyle = i % 5 ? 'rgba(210,235,220,0.07)' : 'rgba(210,235,220,0.16)'; c.lineWidth = Math.max(1, 0.6 * dpr); c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); }
+      c.strokeStyle = 'rgba(235,225,190,0.5)'; c.lineWidth = Math.max(1, 0.8 * dpr);   // ruler ticks along the top and left edges
+      for (let i = 0, x = 0; x < w; x += step / 2, i++) { const l = (i % 10 === 0 ? 12 : i % 2 === 0 ? 7 : 4) * dpr; c.beginPath(); c.moveTo(x, 0); c.lineTo(x, l); c.stroke(); }
+      for (let i = 0, y = 0; y < h; y += step / 2, i++) { const l = (i % 10 === 0 ? 12 : i % 2 === 0 ? 7 : 4) * dpr; c.beginPath(); c.moveTo(0, y); c.lineTo(l, y); c.stroke(); }
+      sheetKey = ''; return;
+    }
+    if (backdrop === 'planetarium' || backdrop === 'space') {
+      const g = c.createRadialGradient(w * 0.5, h * 0.42, Math.min(w, h) * 0.05, w * 0.5, h * 0.5, Math.hypot(w, h) * 0.66);
+      if (backdrop === 'planetarium') { g.addColorStop(0, '#1a2c55'); g.addColorStop(0.6, '#0b1430'); g.addColorStop(1, '#02040c'); }
+      else { g.addColorStop(0, '#05070f'); g.addColorStop(1, '#000003'); }
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      if (backdrop === 'space') {                         // a faint band of the galaxy behind the stars
+        c.save(); c.translate(w / 2, h / 2); c.rotate(-0.6);
+        const b = c.createLinearGradient(0, -h * 0.22, 0, h * 0.22); b.addColorStop(0, 'rgba(120,130,170,0)'); b.addColorStop(0.5, 'rgba(150,150,190,0.12)'); b.addColorStop(1, 'rgba(120,130,170,0)');
+        c.fillStyle = b; c.fillRect(-w, -h * 0.22, w * 2, h * 0.44); c.restore();
+      } else {                                            // the dome’s horizon, lit from below
+        const hz = c.createLinearGradient(0, h * 0.72, 0, h); hz.addColorStop(0, 'rgba(40,90,120,0)'); hz.addColorStop(1, 'rgba(40,110,140,0.35)'); c.fillStyle = hz; c.fillRect(0, h * 0.72, w, h * 0.28);
+      }
+      stars(c, w, h, Math.round(w * h / (backdrop === 'space' ? 2600 : 4200) / dpr), backdrop === 'space' ? 101 : 211, backdrop === 'space');
+      sheetKey = ''; return;
+    }
     const g = c.createRadialGradient(w * 0.5, h * 0.48, Math.min(w, h) * 0.1, w * 0.5, h * 0.5, Math.hypot(w, h) * 0.62);
     g.addColorStop(0, '#f1dfb4'); g.addColorStop(0.6, '#e3c88f'); g.addColorStop(1, '#b98f52');
     c.fillStyle = g; c.fillRect(0, 0, w, h);
@@ -4465,12 +4529,19 @@ void main() {
       id.data[i * 4 + 3] = Math.floor(Math.abs(v - 0.5) * 2 * 15);
     }
     c.putImageData(id, 0, 0); grain = ctx.createPattern(n, 'repeat');
-    const wv = document.createElement('canvas'); wv.width = Math.round(56 * dpr); wv.height = Math.round(30 * dpr);
-    const wc = wv.getContext('2d'); wc.scale(dpr, dpr);
-    wc.strokeStyle = 'rgba(255,255,255,0.5)'; wc.lineWidth = 0.7; wc.lineCap = 'round';
-    wc.beginPath(); wc.moveTo(4, 9); wc.quadraticCurveTo(9, 6, 14, 9); wc.quadraticCurveTo(19, 12, 24, 9); wc.stroke();
-    wc.beginPath(); wc.moveTo(32, 23); wc.quadraticCurveTo(37, 20, 42, 23); wc.quadraticCurveTo(47, 26, 52, 23); wc.stroke();
-    wavePat = ctx.createPattern(wv, 'repeat');
+    const sea = bd().sea; wavePat = null;
+    if (sea === 'waves') {
+      const wv = document.createElement('canvas'); wv.width = Math.round(56 * dpr); wv.height = Math.round(30 * dpr);
+      const wc = wv.getContext('2d'); wc.scale(dpr, dpr);
+      wc.strokeStyle = 'rgba(255,255,255,0.5)'; wc.lineWidth = 0.7; wc.lineCap = 'round';
+      wc.beginPath(); wc.moveTo(4, 9); wc.quadraticCurveTo(9, 6, 14, 9); wc.quadraticCurveTo(19, 12, 24, 9); wc.stroke();
+      wc.beginPath(); wc.moveTo(32, 23); wc.quadraticCurveTo(37, 20, 42, 23); wc.quadraticCurveTo(47, 26, 52, 23); wc.stroke();
+      wavePat = ctx.createPattern(wv, 'repeat');
+    } else if (sea === 'hatch') {                        // the engraver’s sea: fine level lines, as in old copperplate maps
+      const wv = document.createElement('canvas'); wv.width = Math.round(40 * dpr); wv.height = Math.max(3, Math.round(4 * dpr));
+      const wc = wv.getContext('2d'); wc.fillStyle = 'rgba(28,40,60,0.55)'; wc.fillRect(0, 0, wv.width, Math.max(1, Math.round(0.6 * dpr)));
+      wavePat = ctx.createPattern(wv, 'repeat');
+    }
   }
 
   // ── palette: sea and land colours shift with the climate of the age ─
@@ -4944,7 +5015,7 @@ void main() {
       sheetKey = key;
       sctx.setTransform(1, 0, 0, 1, 0, 0); sctx.drawImage(paper, 0, 0);
       sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      sctx.save(); sctx.shadowColor = 'rgba(60,34,8,0.6)'; sctx.shadowBlur = 20 * dpr; sctx.shadowOffsetY = 3 * dpr;
+      sctx.save(); sctx.shadowColor = bd().shadow; sctx.shadowBlur = bd().blur * dpr; sctx.shadowOffsetY = bd().dark ? 0 : 3 * dpr;
       sctx.fillStyle = '#6a8ea0'; sctx.fill(sphere); sctx.restore();
     }
     c.setTransform(1, 0, 0, 1, 0, 0);
@@ -4956,7 +5027,8 @@ void main() {
     og.addColorStop(0, pal.o1); og.addColorStop(0.55, pal.o2); og.addColorStop(1, pal.o3);
     c.save(); c.clip(sphere);
     c.fillStyle = og; c.fillRect(0, 0, W, H);
-    if (wavePat) { c.globalAlpha = 0.3; c.fillStyle = wavePat; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
+    if (backdrop === 'space' || backdrop === 'planetarium') { c.globalAlpha = 0.42; c.fillStyle = '#05162e'; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }   // a planet’s sea, seen from far off
+    if (wavePat) { c.globalAlpha = bd().sea === 'hatch' ? 0.5 : 0.3; c.fillStyle = wavePat; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
 
     // sea ice: soft-edged, so it reads as pack ice rather than a hard line
     const I = ice(t);
@@ -5225,13 +5297,13 @@ void main() {
       sg.addColorStop(0, 'rgba(255,250,235,0.20)'); sg.addColorStop(0.6, 'rgba(255,250,235,0)'); sg.addColorStop(1, 'rgba(30,18,6,0.42)');
       c.fillStyle = sg; c.fill(sphere);
     }
-    c.lineWidth = 1.6; c.strokeStyle = 'rgba(58,34,10,0.9)'; c.stroke(sphere);
+    c.lineWidth = 1.6; c.strokeStyle = bd().rim; c.stroke(sphere);
 
     curSea = sea;
     drawOverlays(c, t, lp);
 
     // one sheet of grain over everything
-    if (grain) { c.fillStyle = grain; c.fillRect(0, 0, W, H); }
+    if (grain && bd().grain) { c.globalAlpha = bd().grain; c.fillStyle = grain; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
     lastMs = performance.now() - t0;
     // keep this frame, and the view it was drawn in, for quick moves
     if (!snapCv) snapCv = document.createElement('canvas');
@@ -5502,8 +5574,33 @@ void main() {
         pat.setTransform(new DOMMatrix([sc, 0, 0, sc, (sec * sx) % (220 * sc), (sec * sy) % (220 * sc)]));
         fctx.globalAlpha = a * live; fctx.fillStyle = pat; fctx.fillRect(0, 0, W, H);
       }
+      // glints: sun catching the waves — a fixed scatter of points, each flashing on its own beat
+      for (let i = 0; i < 150; i++) {
+        const lat = (rnd(i, 51) - 0.5) * 2 * (20 + 25 * rnd(i, 52)), lon = rnd(i, 53) * 360 - 180, p = project([lon, lat]); if (!p) continue;
+        const a = Math.pow(Math.max(0, Math.sin(sec * (0.5 + rnd(i, 59) * 0.9) + rnd(i, 57) * 6.28)), 10) * live; if (a < 0.02) continue;
+        const r = (2.2 + rnd(i, 61) * 3) * Math.min(1.6, 0.8 + zoom * 0.2);
+        fctx.globalAlpha = a * 0.9; fctx.strokeStyle = '#ffffff'; fctx.lineWidth = 0.9;
+        fctx.beginPath(); fctx.moveTo(p[0] - r, p[1]); fctx.lineTo(p[0] + r, p[1]); fctx.moveTo(p[0], p[1] - r * 0.7); fctx.lineTo(p[0], p[1] + r * 0.7); fctx.stroke();
+        fctx.globalAlpha = a * 0.5; fctx.fillStyle = '#fffbea'; fctx.beginPath(); fctx.arc(p[0], p[1], 1.3, 0, 7); fctx.fill();
+      }
+      fctx.globalAlpha = 1;
       fctx.restore();
       fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'destination-out'; fctx.drawImage(land, 0, 0); fctx.globalCompositeOperation = 'source-over';
+      // clouds drifting with today’s wind belts: westward in the tropics (the trade winds), eastward further out
+      fctx.save(); fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.clip(sphereP);
+      for (let i = 0; i < 28; i++) {
+        const trade = i % 2 === 0, sgn = rnd(i, 71) < 0.5 ? -1 : 1, lat = sgn * (trade ? 6 + rnd(i, 73) * 16 : 36 + rnd(i, 73) * 20);
+        const lon = ((rnd(i, 75) * 360 + sec * (trade ? -0.7 : 1.1) * (0.7 + rnd(i, 77) * 0.6)) % 360 + 540) % 360 - 180;
+        const wd = 9 + rnd(i, 79) * 13, p = project([lon, lat]), q = project([lon + wd / 2, lat]); if (!p || !q) continue;
+        const rx = Math.hypot(q[0] - p[0], q[1] - p[1]); if (rx < 2 || rx > W) continue;
+        for (let k = 0; k < 3; k++) {
+          const ox = (k - 1) * rx * 0.55, oy = (rnd(i * 3 + k, 81) - 0.5) * rx * 0.25, rr = rx * (0.55 + rnd(i * 3 + k, 83) * 0.3);
+          fctx.save(); fctx.translate(p[0] + ox, p[1] + oy); fctx.scale(1, 0.38);
+          const g = fctx.createRadialGradient(0, 0, 0, 0, 0, rr); g.addColorStop(0, `rgba(255,255,255,${0.24 * live})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+          fctx.fillStyle = g; fctx.beginPath(); fctx.arc(0, 0, rr, 0, 7); fctx.fill(); fctx.restore();
+        }
+      }
+      fctx.restore();
     }
     fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // eruptions glow and breathe; impacts send out rings
@@ -5756,6 +5853,9 @@ void main() {
     },
     /* the ancient relief and sea depth (WebGL): on by default; off draws the map as it was without them */
     setTerrain(on) { terOn = !!on; dirty = true; schedule(); },
+    /* what the map sits on: 'atlas', 'fieldbook', 'workshop', 'planetarium' or 'space' */
+    setBackdrop(name) { if (!BD[name] || name === backdrop) return; backdrop = name; if (canvas) { makePaper(); makePatterns(); sheetKey = ''; dirty = true; schedule(); } },
+    BACKDROPS: Object.keys(BD),
     /* how solid one terrain layer is where a present-day place sits now, 0–255 (tests) */
     _terPx(layer, lat, lon) {
       const cv = terDraw(time, layer, 1); if (!cv) return null;
@@ -5832,7 +5932,7 @@ void main() {
       polys.forEach((q, i) => { if (q.c[0] * P[0] + q.c[1] * P[1] + q.c[2] * P[2] < q.cosr - 0.02) return; if (ringContains(q.rings[0], P)) o.push(i + ':f' + q.f + '[' + q.hi + '..' + q.lo + ']'); }); return o.join(' '); },
   });
   // Object.assign copies a getter's value once; these must stay live (the globe button reads `mode`)
-  Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true }, terrain: { get: () => terOn && !!TER.gl && TER.st === 'ready', configurable: true } });
+  Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true }, backdrop: { get: () => backdrop, configurable: true }, terrain: { get: () => terOn && !!TER.gl && TER.st === 'ready', configurable: true } });
   return api;
 })();
 
@@ -7589,7 +7689,15 @@ function readHash() {
 
 function init() {
   WorldMap.init($('mapCanvas'), $('mapFx'));
-  WorldMap.onSeas = () => { updateClock(); updatePinCard(); };          // the sea maps unpack after the page opens
+  WorldMap.onSeas = () => { updateClock(); updatePinCard(); };
+  // backdrops: remembered on this device only
+  const BD_INFO = { atlas: ['🗺', 'Atlas', 'an old atlas page'], fieldbook: ['📒', 'Field book', 'after Edward Lhwyd’s 1699 field guide and the first woodcuts of fossils'], workshop: ['📐', 'Workshop', 'a map spread on the work table'], planetarium: ['🌌', 'Planetarium', 'a dome of stars'], space: ['🛰', 'Space', 'the Earth seen from far away'] };
+  try { const b = localStorage.getItem('beforeus.backdrop'); if (b && BD_INFO[b]) WorldMap.setBackdrop(b); } catch (e) {}
+  $('mapStyle').onclick = () => {
+    const L = WorldMap.BACKDROPS, next = L[(L.indexOf(WorldMap.backdrop) + 1) % L.length], [ic, nm, why] = BD_INFO[next];
+    WorldMap.setBackdrop(next); try { localStorage.setItem('beforeus.backdrop', next); } catch (e) {}
+    showFact(ic, `<b>${esc(nm)}</b> — ${esc(why)}. Tap 🎨 again for the next.`, 3500);
+  };          // the sea maps unpack after the page opens
   WorldMap.setLayers({
     labels: LABELS.map(([text, lat, lon, from, to, size]) => ({ text, from, to, size, at: WorldMap.attach(lat, lon, from) })),
     oceans: OCEANS.map(([text, a, b, from, to, min, k]) => ({ text, from, to, min, k, a: WorldMap.attach(a[0], a[1], from), b: WorldMap.attach(b[0], b[1], from) })),

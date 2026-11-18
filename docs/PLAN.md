@@ -23,7 +23,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 204 passing, plus the benchmark ratchet (`tools/bench`) |
+| Checks | 211 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 1.78 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -516,6 +516,16 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **18 Nov 2026 — Backdrops, and the water comes alive.** Evan: “options for a space backdrop or a more
+  tactical workshop backdrop and a planetarium backdrop … a field book that's come alive … sparkle over
+  water — weather or some effective and charming implementation?” A 🎨 button cycles five backdrops —
+  Atlas, Field book (squared page, margin rule and an engraver's lined sea, after Lhwyd and Gessner),
+  Workshop (a cutting mat under a lamp), Planetarium and Space (stars, a galaxy band, an atmosphere glow;
+  the oceans deepen as seen from far off) — remembered on the device. While someone explores, glints
+  flash on the water and clouds drift with today's wind belts (west in the tropics, east beyond); all
+  of it is decoration, said so on the page, and stops for reduced motion. Map buttons are a little
+  smaller on phones to fit the sixth. 211 checks.
 
 - **18 Nov 2026 — Before modern science, expanded; what this atlas borrows.** Evan: “love the before
   modern science stuff, expand on that” and “inspiration and homage … when the very first fossils were

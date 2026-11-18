@@ -435,7 +435,8 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
   .tl-zoom span,#timelineHint{display:none}
   .compass{display:none}
   #cartouche{padding:3px 9px}#cartouche .ct-title{font-size:.66rem}#cartouche .ct-date{font-size:.6rem}
-  .map-btn{width:32px;height:32px}
+  .map-btn{width:30px;height:30px;font-size:.85rem}
+  .map-ctl{gap:4px;right:7px;top:7px}
   .tab-btn{font-size:.72rem;padding:10px 2px}
   #pinCard{bottom:26px;padding:6px 26px 6px 9px;font-size:.66rem;line-height:1.35;width:calc(100% - 64px)}
   #pinCard .pc-near,#pinCard .pc-note{display:none}

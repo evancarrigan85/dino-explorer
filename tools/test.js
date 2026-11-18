@@ -436,6 +436,16 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('seas: no half-see-through land while the sea maps fade in or out (only coast edges are soft; a half-faded map was over 0.5)', fade.every(f => f < 0.2), JSON.stringify(fade));
   const lab = await p.evaluate(() => { const bad = []; for (let t = 500; t >= 230; t -= 2.5) { setTime(t); WorldMap._draw(); for (const L of WorldMap._labelsAt()) { if (!L.shown || L.land == null) continue; if (L.kind === 'ocean' && L.land > 200) bad.push(t + ' ' + L.text); if (L.kind === 'land' && L.land < 40 && L.sea === 'none') bad.push(t + ' ' + L.text); } } setTime(150); return bad; });
   ok('labels: a continent’s name never floats on open ocean, an ocean’s never sits on land (500–230 Ma)', lab.length === 0, lab.slice(0, 8).join(', '));
+  // backdrops: five, cycled by the 🎨 button and remembered on this device
+  { const corner = () => { const c = document.getElementById('mapCanvas'), d = c.getContext('2d').getImageData(4, 4, 1, 1).data; return d[0] + d[1] + d[2]; };
+    const r = await p.evaluate(async c => { const cf = eval(c); setTime(90); WorldMap._draw(); const atlas = cf(); const seen = [WorldMap.backdrop];
+      for (let i = 0; i < 5; i++) { document.getElementById('mapStyle').click(); seen.push(WorldMap.backdrop); }
+      WorldMap.setBackdrop('space'); WorldMap._draw(); const space = cf(); let kept = null; try { kept = localStorage.getItem('beforeus.backdrop'); } catch (e) {}
+      WorldMap.setBackdrop('atlas'); WorldMap._draw(); try { localStorage.removeItem('beforeus.backdrop'); } catch (e) {}
+      return { atlas, space, seen, kept }; }, corner.toString());
+    ok('backdrops: the 🎨 button cycles all five and back, and the choice is remembered', new Set(r.seen).size === 5 && r.seen[0] === r.seen[5] && r.kept != null, JSON.stringify(r));
+    ok('backdrops: space is dark around the map, the atlas is paper', r.space < 60 && r.atlas > 400, JSON.stringify(r)); }
+  ok('backdrops: “How this map is made” names the field book’s inspiration and says the moving water is decoration', await p.evaluate(() => { const t = document.getElementById('mapAbout').textContent; return /Lhwyd/.test(t) && /decoration/.test(t) && /less motion/.test(t); }));
   // the benchmark: the map against independent evidence, never worse than the recorded baseline
   { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
     ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));

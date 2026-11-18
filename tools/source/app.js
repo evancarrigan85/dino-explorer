@@ -1751,7 +1751,15 @@ function readHash() {
 
 function init() {
   WorldMap.init($('mapCanvas'), $('mapFx'));
-  WorldMap.onSeas = () => { updateClock(); updatePinCard(); };          // the sea maps unpack after the page opens
+  WorldMap.onSeas = () => { updateClock(); updatePinCard(); };
+  // backdrops: remembered on this device only
+  const BD_INFO = { atlas: ['🗺', 'Atlas', 'an old atlas page'], fieldbook: ['📒', 'Field book', 'after Edward Lhwyd’s 1699 field guide and the first woodcuts of fossils'], workshop: ['📐', 'Workshop', 'a map spread on the work table'], planetarium: ['🌌', 'Planetarium', 'a dome of stars'], space: ['🛰', 'Space', 'the Earth seen from far away'] };
+  try { const b = localStorage.getItem('beforeus.backdrop'); if (b && BD_INFO[b]) WorldMap.setBackdrop(b); } catch (e) {}
+  $('mapStyle').onclick = () => {
+    const L = WorldMap.BACKDROPS, next = L[(L.indexOf(WorldMap.backdrop) + 1) % L.length], [ic, nm, why] = BD_INFO[next];
+    WorldMap.setBackdrop(next); try { localStorage.setItem('beforeus.backdrop', next); } catch (e) {}
+    showFact(ic, `<b>${esc(nm)}</b> — ${esc(why)}. Tap 🎨 again for the next.`, 3500);
+  };          // the sea maps unpack after the page opens
   WorldMap.setLayers({
     labels: LABELS.map(([text, lat, lon, from, to, size]) => ({ text, from, to, size, at: WorldMap.attach(lat, lon, from) })),
     oceans: OCEANS.map(([text, a, b, from, to, min, k]) => ({ text, from, to, min, k, a: WorldMap.attach(a[0], a[1], from), b: WorldMap.attach(b[0], b[1], from) })),
