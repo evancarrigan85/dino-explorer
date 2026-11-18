@@ -18,7 +18,8 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today) |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 421, every one a published work confirmed in Crossref |
+| References | 430, every one a published work confirmed in Crossref |
+| What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
@@ -516,6 +517,19 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **18 Nov 2026 — What helped people, and what threatened them.** Evan: “what would be a resource for
+  humans at any given time and what would be a threat”. The Humans tab has a new panel, “At this time”,
+  that follows the clock: two columns, what helped (a sharp edge from 3.3 Ma, fire, spears, a clean bed,
+  clothes, food from the shore, boats and hooks, land bridges, tending wild grain, dogs, farming) and what
+  threatened (being hunted, weather that would not settle, Toba, losing the big game, the coldest part of
+  the Ice Age, the rising sea, living close together, salty fields, the 4.2 ka drought, the Black Death).
+  Each opens to say how we know, where the evidence is, what is argued over (Toba cites both the
+  volcanic-winter idea and the Lake Malawi core that found no winter), and its papers. Each starts at
+  its oldest evidence, and the page says most began earlier. Data in `data_survival.js`, source target
+  `v:`; nine new references (430). Next: pins on the map for where each one's evidence was found;
+  helps and threats for the recorded-history era beyond Mesopotamia (the Little Ice Age, the Columbian
+  exchange — both need sources first). 223 checks.
 
 - **18 Nov 2026 — Sounds of the time.** Evan: “what about sounds of the time?” A 🔈 Sound button (off by
   default) plays a soundscape synthesized in the browser — never a recording — of only what there is

@@ -116,6 +116,7 @@ function setTime(t, o = {}) {
   updateYou();
   if (S.tab === 'humans') {
     updateHumansCursor();
+    const vk = svKey(); if (vk !== lastSvKey) { lastSvKey = vk; const el = $('hfSurv'); if (el) el.innerHTML = survHTML(); }
     const ck = histKey() + '#' + CULTURES.filter(c => culActive(c)).map(c => c.id).join('|') + '#' + DROWNED.filter(d => drwShown(d)).map(d => d.id + (drwWet(d) ? 'w' : 'd')).join('|');
     if (ck !== lastCulKey) { lastCulKey = ck; updatePlaces(); document.querySelectorAll('.cul-item').forEach(el => el.classList.toggle('now', ck.split('|').includes(el.dataset.cul))); histMark(); }
   }
@@ -243,6 +244,26 @@ const CUL = Object.fromEntries(CULTURES.map(c => [c.id, c]));
 const culActive = (c, t = S.t) => t <= c.t[0] * 1.06 + Math.max(0.0002, slack(t)) && t >= c.t[1] * 0.94 - Math.max(0.0002, slack(t));
 const fmtYearsAgo = t => t <= 1e-9 ? 'today' : t >= 1 ? t + ' million years ago' : years(Math.round(t * 1e6 / 100) * 100) + ' years ago';
 let lastCulKey = '';
+// ── what helped people and what threatened them, where the timeline stands (data_survival.js) ──
+// A help or threat is shown from its oldest evidence to its end (or today); calendar-year ones are converted.
+// A little slack catches short windows on a zoomed-out timeline — never so much that the Black Death shows in 2200 BCE.
+const svWin = v => v.t || [tOfYear(v.y[0]), tOfYear(v.y[1])];
+const svActive = (v, t = S.t) => { const [a, b] = svWin(v), pad = Math.min(slack(t), t * 0.1) + 0.00002; return t <= a + pad && t >= b - pad; };
+const svWhen = v => v.y ? `${fmtYear(v.y[0])} – ${fmtYear(v.y[1])}` : v.t[1] === 0 ? 'from ' + fmtYearsAgo(v.t[0]) : `${fmtYearsAgo(v.t[0]).replace(' years ago', '')} – ${fmtYearsAgo(v.t[1])}`;
+const svKey = () => S.t > 7.05 ? 'none' : SURVIVAL.filter(v => svActive(v)).map(v => v.id).join('|');
+const svOpen = new Set();
+let lastSvKey = '';
+function survHTML() {
+  if (S.t > 7.05) return '';
+  const on = SURVIVAL.filter(v => svActive(v)), by = k => on.filter(v => v.kind === k).sort((a, b) => svWin(a)[0] - svWin(b)[0]);   // the newest first
+  const item = v => `<details class="sv-item"${svOpen.has(v.id) ? ' open' : ''} data-sv="${v.id}"><summary><span class="sv-i">${v.icon}</span><b>${esc(v.name)}</b><span class="sv-w">${svWhen(v)}</span></summary>
+    <div class="sv-body">${esc(v.text)}<div class="sv-where">📍 ${esc(v.where)}</div>${v.debate ? `<div class="sv-debate">⚖️ ${esc(v.debate)}</div>` : ''}${srcHTML('v:' + v.id)}</div></details>`;
+  const col = (k, h, none) => { const l = by(k); return `<div class="sv-col sv-${k}"><h5>${h}</h5>${l.length ? l.map(item).join('') : `<div class="sv-none">${none}</div>`}</div>`; };
+  return `<div class="list-h" style="padding-left:2px">At this time <small>what helped them, and what threatened them — tap one to read how we know</small></div>
+    <div class="sv-cols">${col('help', '🧰 What helped', 'No tools are known from this far back. The oldest stone tools yet found are 3.3 million years old.')}${col('threat', '⚠️ What threatened', 'Nothing in this list for this moment.')}</div>
+    <div class="sv-note">Each one starts at the oldest evidence found so far. Most began earlier than that, and new finds keep pushing the dates back.</div>`;
+}
+document.addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('sv-item')) d.open ? svOpen.add(d.dataset.sv) : svOpen.delete(d.dataset.sv); }, true);
 // drowned places: shown from when people lived there until today
 const DRW = Object.fromEntries(DROWNED.map(d => [d.id, d]));
 const drwShown = (d, t = S.t) => t <= d.lived[0] * 1.15 + 0.0005;
@@ -501,7 +522,7 @@ function allSourcesHTML() {
   const n = Object.keys(REFS).length, has = t => !!SRCMAP[t];
   const rate = (list, f) => { const k = list.filter(f).length; return `${k} of ${list.length}`; };
   const cov = [['animal entries', rate(ALL.filter(c => !c.hom), c => has('a:' + c.name))], ['human species', rate(HOMININS, h => has('h:' + h.id))], ['cultures', rate(CULTURES, c => has('c:' + c.id))],
-    ['drowned sites', rate(DROWNED, d => has('d:' + d.id))], ['periods', rate(PERIODS, p => has('p:' + p.id))], ['food webs', rate(Object.keys(FOODWEBS), id => has('f:' + id))], ['discovery stories', rate(FINDS, f => has('x:' + f.id))]];
+    ['drowned sites', rate(DROWNED, d => has('d:' + d.id))], ['periods', rate(PERIODS, p => has('p:' + p.id))], ['food webs', rate(Object.keys(FOODWEBS), id => has('f:' + id))], ['discovery stories', rate(FINDS, f => has('x:' + f.id))], ['helps and threats', rate(SURVIVAL, v => has('v:' + v.id))]];
   const keys = Object.keys(REFS).sort((x, y) => REFS[x].a.localeCompare(REFS[y].a) || REFS[x].y - REFS[y].y);
   return `<details class="fw-how all-src"><summary>📚 All ${n} peer-reviewed sources on this site</summary>
     <div class="src-note">Every reference is checked against the Crossref DOI registry — title, year and first author must match a registered paper before it can appear here. Coverage so far: ${cov.map(c => `${c[1]} ${c[0]}`).join(' · ')}. Entries without a listed source draw on standard references and museum summaries, and are being sourced one by one.</div>
@@ -677,11 +698,13 @@ function renderHumans() {
       <div class="hf-cursor" id="hfCursor"></div></div></div>
     <div class="hf-legend">${Object.keys(GROUPS).map(g => `<span><i class="g-${g}"></i>${GROUPS[g]}</span>`).join('')}</div>
     <div class="hf-note" id="hfNote"></div>
+    <div class="sv" id="hfSurv">${survHTML()}</div>
     ${S.sel && S.sel.startsWith('old:') && OLDP[S.sel.slice(4)] ? oldHTML(OLDP[S.sel.slice(4)]) : S.sel && S.sel.startsWith('rt:') && TRD[S.sel.slice(3)] ? routeHTML(TRD[S.sel.slice(3)]) : S.sel && S.sel.startsWith('wk:') && WRK[S.sel.slice(3)] ? workHTML(WRK[S.sel.slice(3)]) : S.sel && S.sel.startsWith('emp:') && EMP[S.sel.slice(4)] ? empireHTML(EMP[S.sel.slice(4)]) : S.sel && S.sel.startsWith('bel:') && BEL[S.sel.slice(4)] ? beliefHTML(BEL[S.sel.slice(4)]) : S.sel && S.sel.startsWith('drw:') && DRW[S.sel.slice(4)] ? drownedHTML(DRW[S.sel.slice(4)]) : S.sel && S.sel.startsWith('cul:') && CUL[S.sel.slice(4)] ? cultureHTML(CUL[S.sel.slice(4)]) : sel ? profileHTML(sel) : `<div class="empty">${S.t > 7.05 ? '' : nowList.length ? 'Tap a bar — or a marker on the map — to meet them.' : ''}</div>`}
     <div class="ms"><div class="list-h" style="padding-left:2px">Ways of life <small>homes, settlements and cultures — tap one, or a pin on the map</small></div>${CULTURES.map(c => `<div class="ms-item cul-item${culActive(c) ? ' now' : ''}${S.sel === 'cul:' + c.id ? ' sel' : ''}" data-cul="${c.id}"><span class="when">${c.t[0] >= 1 ? c.t[0] + ' MYA' : years(Math.round(c.t[0] * 1e6 / 100) * 100) + ' yrs'}</span><span>${c.icon}</span><div><b>${esc(c.name)}</b><span>${esc(c.where)}</span></div></div>`).join('')}</div>
     ${histListsHTML()}
     <div class="ms"><div class="list-h" style="padding-left:2px">Drowned worlds <small>places people lived that are now under water — 🌊 on the map once flooded</small></div>${DROWNED.map(d => `<div class="ms-item cul-item drw-item${drwShown(d) ? ' now' : ''}${S.sel === 'drw:' + d.id ? ' sel' : ''}" data-drw="${d.id}"><span class="when">${d.drowned >= 0.001 ? years(Math.round(d.drowned * 1e6 / 100) * 100) + ' yrs' : Math.round(d.drowned * 1e6) + ' yrs'}</span><span>${d.icon}</span><div><b>${esc(d.name)}</b><span>${esc(d.where)} · ${esc(d.depth)}</span></div></div>`).join('')}</div>
     <div class="ms"><div class="list-h" style="padding-left:2px">Turning points</div>${ms}</div></div>`;
+  lastSvKey = svKey();
   updateHumansCursor();
 }
 function updateHumansCursor() {

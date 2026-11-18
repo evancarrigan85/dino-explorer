@@ -3,7 +3,7 @@
 # targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain|checks|sound  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  i:<inspiration id>  s:<earth story id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
 merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
-lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia
+lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia, v:bridge, v:rising, v:cold
 spratt2016 | Spratt | 2016 | A Late Pleistocene sea level stack | m:sealevel | 10.5194/cp-12-1079-2016
 cohen2013 | Cohen | 2013 | The ICS International Chronostratigraphic Chart | m:time
 hoffman1998 | Hoffman | 1998 | A Neoproterozoic Snowball Earth | p:cryogenian
@@ -173,9 +173,9 @@ johanson1976 | Johanson | 1976 | Plio–Pleistocene hominid discoveries in Hadar
 leakey1979 | Leakey | 1979 | Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania | h:afarensis, x:laetoli 
 alemseged2006 | Alemseged | 2006 | A juvenile early hominin skeleton from Dikika, Ethiopia | h:afarensis
 leakey2001 | Leakey | 2001 | New hominin genus from eastern Africa shows diverse middle Pliocene lineages | h:kenyanthropus
-harmand2015 | Harmand | 2015 | 3.3-million-year-old stone tools from Lomekwi 3, West Turkana, Kenya | h:kenyanthropus, c:oldowan
+harmand2015 | Harmand | 2015 | 3.3-million-year-old stone tools from Lomekwi 3, West Turkana, Kenya | h:kenyanthropus, c:oldowan, v:stone
 dart1925 | Dart | 1925 | Australopithecus africanus: The man-ape of South Africa | h:africanus, x:taung 
-berger2006 | Berger | 2006 | Brief communication: Predatory bird damage to the Taung type-skull of Australopithecus africanus Dart 1925 | h:africanus, x:taung 
+berger2006 | Berger | 2006 | Brief communication: Predatory bird damage to the Taung type-skull of Australopithecus africanus Dart 1925 | h:africanus, x:taung, v:hunted
 asfaw1999 | Asfaw | 1999 | Australopithecus garhi: a new species of early hominid from Ethiopia | h:garhi
 deheinzelin1999 | de Heinzelin | 1999 | Environment and behavior of 2.5-million-year-old Bouri hominids | h:garhi
 walker1986 | Walker | 1986 | 2.5-Myr Australopithecus boisei from west of Lake Turkana, Kenya | h:aethiopicus
@@ -189,11 +189,11 @@ villmoare2015 | Villmoare | 2015 | Early Homo at 2.8 Ma from Ledi-Geraru, Afar, 
 leakey2012 | Leakey | 2012 | New fossils from Koobi Fora in northern Kenya confirm taxonomic diversity in early Homo | h:rudolfensis
 brown1985 | Brown | 1985 | Early Homo erectus skeleton from west Lake Turkana, Kenya | h:erectus, x:turkana
 lordkipanidze2013 | Lordkipanidze | 2013 | A complete skull from Dmanisi, Georgia, and the evolutionary biology of early Homo | h:erectus
-berna2012 | Berna | 2012 | Microstratigraphic evidence of in situ fire in the Acheulean strata of Wonderwerk Cave, Northern Cape province, South Africa | h:erectus, c:fire
+berna2012 | Berna | 2012 | Microstratigraphic evidence of in situ fire in the Acheulean strata of Wonderwerk Cave, Northern Cape province, South Africa | h:erectus, c:fire, v:fire
 bermudez1997 | Bermúdez de Castro | 1997 | A hominid from the Lower Pleistocene of Atapuerca, Spain: possible ancestor to Neandertals and modern humans | h:antecessor
 welker2020 | Welker | 2020 | The dental proteome of Homo antecessor | h:antecessor
 meyer2016 | Meyer | 2016 | Nuclear DNA sequences from the Middle Pleistocene Sima de los Huesos hominins | h:heidelbergensis
-thieme1997 | Thieme | 1997 | Lower Palaeolithic hunting spears from Germany | h:heidelbergensis
+thieme1997 | Thieme | 1997 | Lower Palaeolithic hunting spears from Germany | h:heidelbergensis, v:spears
 berger2015 | Berger | 2015 | Homo naledi, a new species of the genus Homo from the Dinaledi Chamber, South Africa | h:naledi, x:naledi 
 dirks2017 | Dirks | 2017 | The age of Homo naledi and associated sediments in the Rising Star Cave, South Africa | h:naledi
 green2010 | Green | 2010 | A draft sequence of the Neandertal genome | h:neanderthal | 10.1126/science.1188021
@@ -212,24 +212,24 @@ clarkson2017 | Clarkson | 2017 | Human occupation of northern Australia by 65,00
 plummer2023 | Plummer | 2023 | Expanded geographic distribution and dietary strategies of the earliest Oldowan hominins and Paranthropus | c:oldowan
 lepre2011 | Lepre | 2011 | An earlier origin for the Acheulian | c:acheulean
 barham2023 | Barham | 2023 | Evidence for the earliest structural use of wood at least 476,000 years ago | c:kalambo
-wadley2020 | Wadley | 2020 | Fire and grass-bedding construction 200 thousand years ago at Border Cave, South Africa | c:border-cave
+wadley2020 | Wadley | 2020 | Fire and grass-bedding construction 200 thousand years ago at Border Cave, South Africa | c:border-cave, v:bedding
 derrico2012 | d'Errico | 2012 | Early evidence of San material culture represented by organic artifacts from Border Cave, South Africa | c:border-cave
 henshilwood2011 | Henshilwood | 2011 | A 100,000-year-old ochre-processing workshop at Blombos Cave, South Africa | c:blombos
 henshilwood2018 | Henshilwood | 2018 | An abstract drawing from the 73,000-year-old levels at Blombos Cave, South Africa | c:blombos
-marean2007 | Marean | 2007 | Early human use of marine resources and pigment in South Africa during the Middle Pleistocene | c:blombos
+marean2007 | Marean | 2007 | Early human use of marine resources and pigment in South Africa during the Middle Pleistocene | c:blombos, v:shore
 bowler2003 | Bowler | 2003 | New ages for human occupation and climatic change at Lake Mungo, Australia | c:first-australians
 oktaviana2024 | Oktaviana | 2024 | Narrative cave art in Indonesia by 51,200 years ago | c:sulawesi
 trinkaus2018 | Trinkaus | 2018 | Diversity and differential disposal of the dead at Sunghir | c:sungir
 pryor2020 | Pryor | 2020 | The chronology and function of a new circular mammoth-bone structure at Kostenki 11 | c:mammoth-huts
 quiles2016 | Quiles | 2016 | A high-precision chronological model for the decorated Upper Paleolithic cave of Chauvet-Pont d'Arc, Ardèche, France | c:cave-painters
 nadel2004 | Nadel | 2004 | Stone Age hut in Israel yields world's oldest evidence of bedding | c:ohalo
-snir2015 | Snir | 2015 | The origin of cultivation and proto-weeds, long before Neolithic farming | c:ohalo
+snir2015 | Snir | 2015 | The origin of cultivation and proto-weeds, long before Neolithic farming | c:ohalo, v:grain
 wu2012 | Wu | 2012 | Early pottery at 20,000 years ago in Xianrendong Cave, China | c:xianrendong
 dillehay2008 | Dillehay | 2008 | Monte Verde: seaweed, food, medicine, and the peopling of South America | c:monte-verde
 arranz2018 | Arranz-Otaegui | 2018 | Archaeobotanical evidence reveals the origins of bread 14,400 years ago in northeastern Jordan | c:natufians
-davis1978 | Davis | 1978 | Evidence for domestication of the dog 12,000 years ago in the Natufian of Israel | c:natufians
+davis1978 | Davis | 1978 | Evidence for domestication of the dog 12,000 years ago in the Natufian of Israel | c:natufians, v:dogs
 dietrich2012 | Dietrich | 2012 | The role of cult and feasting in the emergence of Neolithic communities. New evidence from Göbekli Tepe, south-eastern Turkey | c:gobekli
-fuller2009 | Fuller | 2009 | The domestication process and domestication rate in rice: spikelet bases from the Lower Yangtze | c:hemudu
+fuller2009 | Fuller | 2009 | The domestication process and domestication rate in rice: spikelet bases from the Lower Yangtze | c:hemudu, v:rice
 demenocal2000 | deMenocal | 2000 | Abrupt onset and termination of the African Humid Period: rapid climate responses to gradual insolation forcing | c:green-sahara
 sereno2008 | Sereno | 2008 | Lakeside cemeteries in the Sahara: 5000 years of Holocene population and environmental change | c:green-sahara
 shady2001 | Shady Solis | 2001 | Dating Caral, a preceramic site in the Supe Valley on the central coast of Peru | c:caral
@@ -241,8 +241,8 @@ oshea2014 | O'Shea | 2014 | A 9,000-year-old caribou hunting structure beneath L
 hershkovitz2008 | Hershkovitz | 2008 | Detection and molecular characterization of 9000-year-old Mycobacterium tuberculosis from a Neolithic settlement in the Eastern Mediterranean | d:atlit-yam
 benjamin2020 | Benjamin | 2020 | Aboriginal artefacts on the continental shelf reveal ancient drowned cultural landscapes in northwest Australia | d:murujuga
 smith2015b | Smith | 2015 | Sedimentary DNA from a submerged site reveals wheat in the British Isles 8000 years ago | d:bouldnor
-weninger2008 | Weninger | 2008 | The catastrophic final flooding of Doggerland by the Storegga Slide tsunami | d:doggerland
-tamm2007 | Tamm | 2007 | Beringian standstill and spread of Native American founders | d:beringia
+weninger2008 | Weninger | 2008 | The catastrophic final flooding of Doggerland by the Storegga Slide tsunami | d:doggerland, v:rising
+tamm2007 | Tamm | 2007 | Beringian standstill and spread of Native American founders | d:beringia, v:bridge
 # ── finds: the history of discovery ──
 mayor1993 | Mayor | 1993 | Griffins and Arimaspeans | x:griffin
 witton2024 | Witton | 2024 | Did the horned dinosaur Protoceratops inspire the griffin? | x:griffin
@@ -321,13 +321,13 @@ loron2026 | Loron | 2026 | Prototaxites fossils are structurally and chemically 
 finnegan2011 | Finnegan | 2011 | The magnitude and duration of Late Ordovician–Early Silurian glaciation | e:ordovician
 penn2018 | Penn | 2018 | Temperature-dependent hypoxia explains biogeography and severity of end-Permian marine mass extinction | e:permian
 hull2020 | Hull | 2020 | On impact and volcanism across the Cretaceous-Paleogene boundary | e:cretaceous | 10.1126/science.aay5055
-sandom2014 | Sandom | 2014 | Global late Quaternary megafauna extinctions linked to humans, not climate change | e:quaternary
+sandom2014 | Sandom | 2014 | Global late Quaternary megafauna extinctions linked to humans, not climate change | e:quaternary, v:giants
 barnosky2011 | Barnosky | 2011 | Has the Earth's sixth mass extinction already arrived? | e:holocene
 mcghee2013 | McGhee | 2013 | A new ecological-severity ranking of major Phanerozoic biodiversity crises | e:devonian, e:ordovician
 # ── history: empires and beliefs ──
 taagepera1997 | Taagepera | 1997 | Expansion and Contraction Patterns of Large Polities: Context for Russia | m:history, k:persia, k:maurya, k:han, k:rome, k:tang, k:caliphate, k:mongol, k:inca, k:ottoman, k:mughal, k:qing, k:russia, k:spanish, k:british
 turchin2006 | Turchin | 2006 | East-West Orientation of Historical Empires and Modern States | m:history, k:egypt-kingdom, k:shang, k:assyria, k:gupta, k:aksum, k:carolingian, k:mali
-weiss1993 | Weiss | 1993 | The Genesis and Collapse of Third Millennium North Mesopotamian Civilization | k:akkad
+weiss1993 | Weiss | 1993 | The Genesis and Collapse of Third Millennium North Mesopotamian Civilization | k:akkad, v:drought
 kennett2012 | Kennett | 2012 | Development and Disintegration of Maya Political Systems in Response to Climate Change | k:maya
 spyrou2022 | Spyrou | 2022 | The source of the Black Death in fourteenth-century central Eurasia | k:mongol
 mann1997 | Mann | 1997 | A Sign in the Sky: Dating the League of the Haudenosaunee | k:haudenosaunee
@@ -381,7 +381,7 @@ jotheri2016 | Jotheri | 2016 | Holocene Avulsions of the Euphrates River in the 
 hritz2010 | Hritz | 2010 | Tracing Settlement Patterns and Channel Systems in Southern Mesopotamia Using Remote Sensing | o:sumer, o:euphrates-old
 wilkinson2015 | Wilkinson | 2015 | Hydraulic landscapes in Mesopotamia: the role of human niche construction | o:sumer, o:sumer-fields
 lambeck1996 | Lambeck | 1996 | Shoreline reconstructions for the Persian Gulf since the last glacial maximum | o:sumer
-jacobsen1958 | Jacobsen | 1958 | Salt and Silt in Ancient Mesopotamian Agriculture | o:sumer-fields
+jacobsen1958 | Jacobsen | 1958 | Salt and Silt in Ancient Mesopotamian Agriculture | o:sumer-fields, v:salt
 # ── the Nile and the Indus ──
 stanley1993 | Stanley | 1993 | Nile Delta: Recent Geological Evolution and Human Impact | o:nile, o:canopic, o:pelusiac
 macklin2015 | Macklin | 2015 | A new model of river dynamics, hydroclimatic change and human settlement in the Nile Valley derived from meta-analysis of the Holocene fluvial archive | o:nile, o:nile-fields
@@ -440,3 +440,13 @@ pinero1988 | Piero | 1988 | Juan Bautista Bru (1740?1799) and the description of
 cuvier1806 | Cuvier | 1806 | XXVII. Memoir upon living and fossil elephants | x:cuvier | 10.1080/14786440608563652
 # ── sounds of the time ──
 gu2012 | Gu | 2012 | Wing stridulation in a Jurassic katydid (Insecta, Orthoptera) produced low-pitched musical calls to attract females | m:sound
+# ── what helped people, and what threatened them (Humans tab, “At this time”) ──
+richter2015 | Richter | 2015 | The age of the Lower Paleolithic occupation at Schöningen | v:spears, h:heidelbergensis
+toups2010 | Toups | 2010 | Origin of Clothing Lice Indicates Early Clothing Use by Anatomically Modern Humans in Africa | v:clothes
+fujita2016 | Fujita | 2016 | Advanced maritime adaptation in the western Pacific coastal region extends back to 35,000–30,000 years before present | v:fishing
+brain1970 | Brain | 1970 | New Finds at the Swartkrans Australopithecine Site | v:hunted
+potts1998 | Potts | 1998 | Variability selection in hominid evolution | v:swings
+ambrose1998 | Ambrose | 1998 | Late Pleistocene human population bottlenecks, volcanic winter, and differentiation of modern humans | v:toba
+lane2013 | Lane | 2013 | Ash from the Toba supereruption in Lake Malawi shows no volcanic winter in East Africa at 75 ka | v:toba
+larsen2006 | Larsen | 2006 | The agricultural revolution as environmental catastrophe: Implications for health and lifestyle in the Holocene | v:crowds
+bos2011 | Bos | 2011 | A draft genome of Yersinia pestis from victims of the Black Death | v:plague

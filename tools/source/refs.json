@@ -32,7 +32,10 @@
 "targets": [
 "m:sealevel",
 "d:doggerland",
-"d:beringia"
+"d:beringia",
+"v:bridge",
+"v:rising",
+"v:cold"
 ],
 "title_expected": "Sea level and global ice volumes from the Last Glacial Maximum to the Holocene",
 "type": "journal-article",
@@ -2937,7 +2940,8 @@
 ],
 "targets": [
 "h:kenyanthropus",
-"c:oldowan"
+"c:oldowan",
+"v:stone"
 ],
 "title_expected": "3.3-million-year-old stone tools from Lomekwi 3, West Turkana, Kenya",
 "type": "journal-article",
@@ -2969,7 +2973,8 @@
 ],
 "targets": [
 "h:africanus",
-"x:taung"
+"x:taung",
+"v:hunted"
 ],
 "title_expected": "Brief communication: Predatory bird damage to the Taung type-skull of Australopithecus africanus Dart 1925",
 "type": "journal-article",
@@ -3220,7 +3225,8 @@
 ],
 "targets": [
 "h:erectus",
-"c:fire"
+"c:fire",
+"v:fire"
 ],
 "title_expected": "Microstratigraphic evidence of in situ fire in the Acheulean strata of Wonderwerk Cave, Northern Cape province, South Africa",
 "type": "journal-article",
@@ -3289,7 +3295,8 @@
 "Thieme"
 ],
 "targets": [
-"h:heidelbergensis"
+"h:heidelbergensis",
+"v:spears"
 ],
 "title_expected": "Lower Palaeolithic hunting spears from Germany",
 "type": "journal-article",
@@ -3604,7 +3611,8 @@
 "et al."
 ],
 "targets": [
-"c:border-cave"
+"c:border-cave",
+"v:bedding"
 ],
 "title_expected": "Fire and grass-bedding construction 200 thousand years ago at Border Cave, South Africa",
 "type": "journal-article",
@@ -3676,7 +3684,8 @@
 "et al."
 ],
 "targets": [
-"c:blombos"
+"c:blombos",
+"v:shore"
 ],
 "title_expected": "Early human use of marine resources and pigment in South Africa during the Middle Pleistocene",
 "type": "journal-article",
@@ -3800,7 +3809,8 @@
 "et al."
 ],
 "targets": [
-"c:ohalo"
+"c:ohalo",
+"v:grain"
 ],
 "title_expected": "The origin of cultivation and proto-weeds, long before Neolithic farming",
 "type": "journal-article",
@@ -3870,7 +3880,8 @@
 "VALLA"
 ],
 "targets": [
-"c:natufians"
+"c:natufians",
+"v:dogs"
 ],
 "title_expected": "Evidence for domestication of the dog 12,000 years ago in the Natufian of Israel",
 "type": "journal-article",
@@ -3906,7 +3917,8 @@
 "et al."
 ],
 "targets": [
-"c:hemudu"
+"c:hemudu",
+"v:rice"
 ],
 "title_expected": "The domestication process and domestication rate in rice: spikelet bases from the Lower Yangtze",
 "type": "journal-article",
@@ -4101,7 +4113,8 @@
 "et al."
 ],
 "targets": [
-"d:doggerland"
+"d:doggerland",
+"v:rising"
 ],
 "title_expected": "The catastrophic final flooding of Doggerland by the Storegga Slide tsunami",
 "type": "journal-article",
@@ -4119,7 +4132,8 @@
 "et al."
 ],
 "targets": [
-"d:beringia"
+"d:beringia",
+"v:bridge"
 ],
 "title_expected": "Beringian standstill and spread of Native American founders",
 "type": "journal-article",
@@ -5538,7 +5552,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"e:quaternary"
+"e:quaternary",
+"v:giants"
 ],
 "first": "",
 "title_expected": "Global late Quaternary megafauna extinctions linked to humans, not climate change"
@@ -5664,7 +5679,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"k:akkad"
+"k:akkad",
+"v:drought"
 ],
 "first": "",
 "title_expected": "The Genesis and Collapse of Third Millennium North Mesopotamian Civilization"
@@ -6560,7 +6576,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"o:sumer-fields"
+"o:sumer-fields",
+"v:salt"
 ],
 "first": "",
 "title_expected": "Salt and Silt in Ancient Mesopotamian Agriculture"
@@ -7414,5 +7431,153 @@
 ],
 "first": "",
 "title_expected": "Wing stridulation in a Jurassic katydid (Insecta, Orthoptera) produced low-pitched musical calls to attract females"
+},
+"richter2015": {
+"doi": "10.1016/j.jhevol.2015.06.003",
+"title": "The age of the Lower Paleolithic occupation at Schöningen",
+"journal": "Journal of Human Evolution",
+"year": 2015,
+"authors": [
+"Richter",
+"Krbetschek"
+],
+"type": "journal-article",
+"targets": [
+"v:spears",
+"h:heidelbergensis"
+],
+"first": "",
+"title_expected": "The age of the Lower Paleolithic occupation at Schöningen"
+},
+"toups2010": {
+"doi": "10.1093/molbev/msq234",
+"title": "Origin of Clothing Lice Indicates Early Clothing Use by Anatomically Modern Humans in Africa",
+"journal": "Molecular Biology and Evolution",
+"year": 2011,
+"authors": [
+"Toups",
+"Kitchen",
+"Light",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"v:clothes"
+],
+"first": "",
+"title_expected": "Origin of Clothing Lice Indicates Early Clothing Use by Anatomically Modern Humans in Africa"
+},
+"fujita2016": {
+"doi": "10.1073/pnas.1607857113",
+"title": "Advanced maritime adaptation in the western Pacific coastal region extends back to 35,000–30,000 years before present",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2016,
+"authors": [
+"Fujita",
+"Yamasaki",
+"Katagiri",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"v:fishing"
+],
+"first": "",
+"title_expected": "Advanced maritime adaptation in the western Pacific coastal region extends back to 35,000–30,000 years before present"
+},
+"brain1970": {
+"doi": "10.1038/2251112a0",
+"title": "New Finds at the Swartkrans Australopithecine Site",
+"journal": "Nature",
+"year": 1970,
+"authors": [
+"BRAIN"
+],
+"type": "journal-article",
+"targets": [
+"v:hunted"
+],
+"first": "",
+"title_expected": "New Finds at the Swartkrans Australopithecine Site"
+},
+"potts1998": {
+"doi": "10.1002/(sici)1520-6505(1998)7:3<81::aid-evan3>3.0.co;2-a",
+"title": "Variability selection in hominid evolution",
+"journal": "Evolutionary Anthropology: Issues, News, and Reviews",
+"year": 1998,
+"authors": [
+"Potts"
+],
+"type": "journal-article",
+"targets": [
+"v:swings"
+],
+"first": "",
+"title_expected": "Variability selection in hominid evolution"
+},
+"ambrose1998": {
+"doi": "10.1006/jhev.1998.0219",
+"title": "Late Pleistocene human population bottlenecks, volcanic winter, and differentiation of modern humans",
+"journal": "Journal of Human Evolution",
+"year": 1998,
+"authors": [
+"Ambrose"
+],
+"type": "journal-article",
+"targets": [
+"v:toba"
+],
+"first": "",
+"title_expected": "Late Pleistocene human population bottlenecks, volcanic winter, and differentiation of modern humans"
+},
+"lane2013": {
+"doi": "10.1073/pnas.1301474110",
+"title": "Ash from the Toba supereruption in Lake Malawi shows no volcanic winter in East Africa at 75 ka",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2013,
+"authors": [
+"Lane",
+"Chorn",
+"Johnson"
+],
+"type": "journal-article",
+"targets": [
+"v:toba"
+],
+"first": "",
+"title_expected": "Ash from the Toba supereruption in Lake Malawi shows no volcanic winter in East Africa at 75 ka"
+},
+"larsen2006": {
+"doi": "10.1016/j.quaint.2006.01.004",
+"title": "The agricultural revolution as environmental catastrophe: Implications for health and lifestyle in the Holocene",
+"journal": "Quaternary International",
+"year": 2006,
+"authors": [
+"Larsen"
+],
+"type": "journal-article",
+"targets": [
+"v:crowds"
+],
+"first": "",
+"title_expected": "The agricultural revolution as environmental catastrophe: Implications for health and lifestyle in the Holocene"
+},
+"bos2011": {
+"doi": "10.1038/nature10549",
+"title": "A draft genome of Yersinia pestis from victims of the Black Death",
+"journal": "Nature",
+"year": 2011,
+"authors": [
+"Bos",
+"Schuenemann",
+"Golding",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"v:plague"
+],
+"first": "",
+"title_expected": "A draft genome of Yersinia pestis from victims of the Black Death"
 }
 }

@@ -614,3 +614,22 @@ header .logo,header h1{cursor:pointer}
 }
 #mapNote .mn-short{display:none}
 @media (max-width:767px){#mapNote .mn-long{display:none}#mapNote .mn-short{display:inline}}
+/* what helped people, and what threatened them (Humans tab, “At this time”) */
+.sv{margin-top:12px}
+.sv-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.sv-col h5{font-size:.64rem;text-transform:uppercase;letter-spacing:.7px;font-weight:800;margin:0 0 4px 2px}
+.sv-help h5{color:#8fd19e}.sv-threat h5{color:#f0a37a}
+.sv-item{border:1px solid var(--border);border-radius:7px;margin-bottom:4px;background:rgba(255,255,255,.02)}
+.sv-help .sv-item{border-left:3px solid #4f9e62}.sv-threat .sv-item{border-left:3px solid #c46a3c}
+.sv-item summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:20px 1fr;gap:0 5px;padding:5px 7px;font-size:.73rem;align-items:start}
+.sv-item summary::-webkit-details-marker{display:none}
+.sv-item summary b{color:#e6ebf5;line-height:1.25}
+.sv-item .sv-w{grid-column:2;color:var(--muted);font-size:.64rem;font-variant-numeric:tabular-nums}
+.sv-item[open]{background:var(--card2)}
+.sv-body{padding:0 8px 7px;font-size:.73rem;color:#c9d3e4;line-height:1.45}
+.sv-where{margin-top:5px;color:#9fb0c8;font-size:.68rem}
+.sv-debate{margin-top:4px;color:#e8cf8a;font-size:.69rem}
+.sv-body .label-sec{font-size:.68rem}
+.sv-none{font-size:.7rem;color:var(--muted);padding:4px 2px;line-height:1.4}
+.sv-note{font-size:.64rem;color:var(--muted);margin:4px 2px 0;line-height:1.4}
+@media (max-width:420px){.sv-cols{grid-template-columns:1fr}}

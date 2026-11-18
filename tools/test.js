@@ -455,6 +455,24 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('sound: the button starts it, says what you are hearing, and cites the katydid and the voice box', await p.evaluate(() => { const t = document.getElementById('mapAbout').textContent, src = (SRCMAP['m:sound'] || []).join(); return SoundOfTime.on && !!SoundOfTime.running && document.getElementById('soundBtn').getAttribute('aria-pressed') === 'true' && /Archaboilus/.test(t) && /Vegavis/.test(t) && /gu2012/.test(src) && /clarke2016/.test(src); }));
   await p.click('#soundBtn'); await p.waitForTimeout(200);
   ok('sound: …and stops it again', await p.evaluate(() => !SoundOfTime.on));
+  // what helped people, and what threatened them (Humans tab, “At this time”, data_survival.js)
+  await p.evaluate(() => setTime(0.074)); await p.click('#tab-humans'); await p.waitForTimeout(300);
+  const svIds = () => p.evaluate(() => Object.fromEntries(['help', 'threat'].map(k => [k, [...document.querySelectorAll('#hfSurv .sv-' + k + ' .sv-item')].map(e => e.dataset.sv)])));
+  let sv = await svIds();
+  ok('humans: “At this time” lists what helped and what threatened — at 74,000 years ago fire, shellfish and the Toba eruption, not dogs or the plague', sv.threat.includes('toba') && sv.threat.includes('hunted') && sv.help.includes('fire') && sv.help.includes('shore') && !sv.help.includes('dogs') && !sv.threat.includes('plague'), JSON.stringify(sv));
+  ok('humans: every help and threat cites a verified paper; Toba cites both sides of the argument', await p.evaluate(() => SURVIVAL.length >= 20 && SURVIVAL.every(v => (SRCMAP['v:' + v.id] || []).length > 0) && ['ambrose1998', 'lane2013'].every(k => SRCMAP['v:toba'].includes(k))));
+  await p.click('#hfSurv .sv-item[data-sv="toba"] summary'); await p.click('#hfSurv .sv-item[data-sv="stone"] summary'); await p.waitForTimeout(150);
+  ok('humans: opening one shows how we know, where, what is argued over, and the papers', await p.evaluate(() => { const d = document.querySelector('#hfSurv .sv-item[data-sv="toba"]'); return d.open && /Lake Malawi/.test(d.innerText) && !!d.querySelector('.sv-debate') && !!d.querySelector('.sources a[href="https://doi.org/10.1073/pnas.1301474110"]'); }));
+  await p.evaluate(() => setTime(0.0042)); await p.waitForTimeout(200);
+  sv = await svIds();
+  ok('humans: it follows the clock — in 2200 BCE the great drought and salty fields; not the Black Death, not Toba', sv.threat.includes('drought') && sv.threat.includes('salt') && !sv.threat.includes('plague') && !sv.threat.includes('toba') && sv.help.includes('rice'), JSON.stringify(sv));
+  ok('humans: an entry opened stays open while the time moves', await p.evaluate(() => document.querySelector('#hfSurv .sv-item[data-sv="stone"]').open));
+  await p.evaluate(() => setTime(tOfYear(1350))); await p.waitForTimeout(200);
+  ok('humans: the Black Death shows in the 1350s', (await svIds()).threat.includes('plague'));
+  await p.evaluate(() => setTime(5)); await p.waitForTimeout(200);
+  ok('humans: before the oldest stone tools it says none are known, and still names the danger of being hunted', await p.evaluate(() => /oldest stone tools yet found are 3\.3 million/.test(document.querySelector('#hfSurv .sv-help').innerText) && !!document.querySelector('#hfSurv .sv-item[data-sv="hunted"]')));
+  await p.evaluate(() => setTime(20)); await p.waitForTimeout(200);
+  ok('humans: nothing before the human family', await p.evaluate(() => document.getElementById('hfSurv').innerHTML.trim() === ''));
   // the benchmark: the map against independent evidence, never worse than the recorded baseline
   { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
     ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));

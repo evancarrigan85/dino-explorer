@@ -117,6 +117,8 @@ builds, passes the checks and has been looked at.
   `data_stories.js` holds “Watch the Earth being made” in the Geology tab — the same idea for how land
   formed (first: the Great Lakes). `playStory()` runs the clock through `ka`, `STORY_SCENES` draws
   over the map, and while a story plays the map's own ice is hidden (`setIceOff`) and animals step aside.
+  `data_survival.js` holds what helped people and what threatened them (“At this time” in the Humans
+  tab): each entry has a window in Ma (`t`) or calendar years (`y`) and starts at its oldest evidence.
   `data_history.js` holds the empires, kingdoms and beliefs of the last 5,500 years, shown in the
   Humans tab, with trade routes (`TRADE`) and great works (`WORKS`). Years there are calendar years
   (negative = BCE); `tOfYear()`/`yearAt()` convert. Empire shapes are hand sketches and the page says
@@ -127,8 +129,8 @@ builds, passes the checks and has been looked at.
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `s:` story id, `k:` empire id, `b:` belief id,
-  `r:` trade route id, `w:` great work id, `m:` map layer
-  (`plates|seas|terrain|sealevel|climate|rocks|landcover|history|time`).
+  `r:` trade route id, `w:` great work id, `v:` help or threat id (`data_survival.js`), `i:` inspiration id, `m:` map layer
+  (`plates|seas|terrain|sealevel|climate|rocks|landcover|history|time|checks|sound`).
 
 ## Network
 
