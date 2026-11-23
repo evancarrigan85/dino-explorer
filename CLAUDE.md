@@ -121,6 +121,10 @@ builds, passes the checks and has been looked at.
   `data_stories.js` holds “Watch the Earth being made” in the Geology tab — the same idea for how land
   formed (first: the Great Lakes). `playStory()` runs the clock through `ka`, `STORY_SCENES` draws
   over the map, and while a story plays the map's own ice is hidden (`setIceOff`) and animals step aside.
+  `data_mammals.js` holds the Age of Mammals chapter by chapter: each epoch from the Paleocene to the
+  Pliocene has a chapter (`S.chapter`, `getChapter()`) that takes over the header, the map title and the
+  top of the Insights tab; sources under `p:<epoch id>`. `AMBIENT` in `app.js` draws a story's picture
+  on the map whenever the clock is inside it (the dry Mediterranean, 5.97–5.33 Ma).
   `data_survival.js` holds what helped people and what threatened them (“At this time” in the Humans
   tab): each entry has a window in Ma (`t`) or calendar years (`y`) and starts at its oldest evidence.
   `data_history.js` holds the empires, kingdoms and beliefs of the last 5,500 years, shown in the

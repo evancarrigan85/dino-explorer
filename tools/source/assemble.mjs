@@ -221,8 +221,20 @@ const { YOU_LINE } = require('./data_you.js');
   const vsrc = fs.readFileSync(SRC + 'data_survival.js', 'utf8');
   data += vsrc.slice(vsrc.indexOf('// ===='), vsrc.indexOf("if (typeof module")).trim() + '\n';
 }
+const { CHAPTERS } = require('./data_mammals.js');
+{ // the Age of Mammals, chapter by chapter: one per epoch, inside its period, in order
+  const seen = new Set();
+  for (const c of CHAPTERS) {
+    if (seen.has(c.id) || byId[c.id]) problems.push('chapter ' + c.id + ': duplicate id'); seen.add(c.id);
+    if (!(c.start > c.end) || !c.title || !c.desc || !c.mapTitle || !c.big || !c.know || !c.today || !Array.isArray(c.signs) || c.signs.length < 3) problems.push('chapter ' + c.id + ': missing a field');
+    if (/'/.test(JSON.stringify(c))) problems.push('chapter ' + c.id + ': use ’ not a straight quote');
+  }
+  for (let i = 1; i < CHAPTERS.length; i++) if (CHAPTERS[i].start !== CHAPTERS[i - 1].end) problems.push('chapter ' + CHAPTERS[i].id + ': does not start where ' + CHAPTERS[i - 1].id + ' ends');
+  const msrc = fs.readFileSync(SRC + 'data_mammals.js', 'utf8');
+  data += msrc.slice(msrc.indexOf('// ===='), msrc.indexOf("if (typeof module")).trim() + '\n';
+}
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
-  p: id => !!byId[id], f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), i: id => INSPIRATIONS.some(x => x.id === id), v: id => require('./data_survival.js').SURVIVAL.some(x => x.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks', 'sound', 'ice', 'rivers'].includes(id) };
+  p: id => !!byId[id] || CHAPTERS.some(c => c.id === id), f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), i: id => INSPIRATIONS.some(x => x.id === id), v: id => require('./data_survival.js').SURVIVAL.some(x => x.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks', 'sound', 'ice', 'rivers'].includes(id) };
 const REFS = {}, SRCMAP = {};
 for (const [k, r] of Object.entries(RAW)) {
   if (!['journal-article', 'book-chapter', 'book', 'edited-book', 'monograph', 'reference-entry'].includes(r.type)) problems.push('source ' + k + ': not a published paper (' + r.type + ') — run tools/verify_refs.py --audit');

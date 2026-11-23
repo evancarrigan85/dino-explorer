@@ -55,7 +55,7 @@ function storyPos(t) {
 }
 const tidy = t => { if (t <= 0) return 0; const m = Math.pow(10, 3 - Math.floor(Math.log10(t))); return Math.round(t * m) / m; };
 
-const S = { t: 150, view: 'list', weird: false, period: null, tab: 'life', sel: null, scope: 'now', type: 'all', branch: 'all', sort: 'old', q: '', win: [T_MAX, 0], playing: false };
+const S = { t: 150, view: 'list', weird: false, period: null, chapter: null, ambient: null, tab: 'life', sel: null, scope: 'now', type: 'all', branch: 'all', sort: 'old', q: '', win: [T_MAX, 0], playing: false };
 const isFull = () => S.win[0] >= T_MAX - 1e-6 && S.win[1] <= 1e-9;
 const span = () => S.win[0] - S.win[1];
 // position (0..1) across the detail timeline ⇄ time. Linear once zoomed in.
@@ -66,6 +66,8 @@ function getPeriod(t) {
   for (const p of PERIODS) if (t <= p.start && (t > p.end || p.end === 0)) return p;   // a boundary belongs to the younger period, as in the epoch rows
   return t > PERIODS[0].start ? PERIODS[0] : PERIODS[PERIODS.length - 1];
 }
+// the Age of Mammals is told epoch by epoch (data_mammals.js): the chapter, if any, at a moment
+const getChapter = t => CHAPTERS.find(c => t <= c.start && t > c.end) || null;
 function divAt(t, rank) { for (const d of DIVS) if (d[3] === rank && t <= d[1] && t > d[2]) return d[0]; return ''; }
 const years = n => n.toLocaleString('en-US');
 function fmtAgo(t) {
@@ -101,8 +103,8 @@ let lastAliveKey = '', panelTimer = 0, hashTimer = 0, tween = 0, lastSub = '';
 function setTime(t, o = {}) {
   t = clamp(tidy(t), 0, T_MAX); S.t = t;
   WorldMap.setTime(t);
-  const p = getPeriod(t), changed = p !== S.period;
-  if (changed) { S.period = p; renderPeriod(); }
+  const p = getPeriod(t), ch = getChapter(t), changed = p !== S.period || ch !== S.chapter;
+  if (changed) { S.period = p; S.chapter = ch; renderPeriod(); }
   updateClock(o.fromSlider);
   const now = ALL.filter(c => alive(c, t));
   const key = now.map(c => c.key).join('|');
@@ -189,7 +191,7 @@ const SoundOfTime = (() => {
 })();
 
 function updateClock(fromSlider) {
-  SoundOfTime.update();
+  SoundOfTime.update(); ambientFx();
   const t = S.t, p = S.period;
   $('myaDisplay').textContent = fmtAgo(t);
   const sl = WorldMap.seaLevel(t);
@@ -216,13 +218,14 @@ function updateClock(fromSlider) {
 function renderPeriod() {
   const p = S.period;
   $('eraBadge').textContent = p.era;
-  $('periodName').innerHTML = esc(p.title || p.name + ' Period') + (p.title ? '<small>' + esc(p.name) + '</small>' : '');
+  const ch = S.chapter;
+  $('periodName').innerHTML = ch ? esc(ch.title) + '<small>' + esc(ch.name) + ' · ' + esc(p.name) + '</small>' : esc(p.title || p.name + ' Period') + (p.title ? '<small>' + esc(p.name) + '</small>' : '');
   $('periodName').style.color = p.textColor;
   $('periodInfo').style.borderLeftColor = p.color;
-  $('periodYears').textContent = p.end === 0 ? fmtLong(p.start) + ' – today'
+  $('periodYears').textContent = ch ? ch.start + ' – ' + ch.end + ' million years ago' : p.end === 0 ? fmtLong(p.start) + ' – today'
     : p.end < 0.1 ? p.start + ' million – ' + fmtLong(p.end) : p.start + ' – ' + p.end + ' million years ago';
-  $('periodDesc').textContent = p.desc;
-  $('ctTitle').textContent = p.mapTitle || 'The ' + p.name + ' World';
+  $('periodDesc').textContent = ch ? ch.desc : p.desc;
+  $('ctTitle').textContent = ch ? ch.mapTitle : p.mapTitle || 'The ' + p.name + ' World';
   const rib = $('eventsRibbon');
   rib.classList.toggle('hidden', !p.event);
   if (p.event) { $('eventIcon').textContent = p.eventIcon || '💥'; $('eventText').textContent = p.event; }
@@ -1043,9 +1046,9 @@ const sceneTime = (e, k) => e.scene === 'impact' ? (k < 0.2 ? e.from - (e.from -
   : e.scene === 'people' ? e.from * Math.pow(e.to / e.from, k) : e.from + (e.to - e.from) * ramp(k, 0.04, 0.96);
 let sceneRaf = 0;
 function stopScene(done) {
-  cancelAnimationFrame(sceneRaf); WorldMap.setFx(null);
+  cancelAnimationFrame(sceneRaf); WorldMap.setFx(null); S.ambient = null;
   $('sceneCap').classList.remove('show'); document.body.classList.remove('scening');
-  const was = S.scene; S.scene = null;
+  const was = S.scene; S.scene = null; ambientFx();
   if (was && S.tab === 'ext') renderExt();
   if (was && done) { const e = EXT[was.id]; showFact(e.icon, '<b>' + esc(extInfo(e).name) + '.</b> ' + esc(e.winners) + '<br><small><button class="linkbtn" data-play="' + e.id + '">↻ Watch again</button></small>', 14000); }
 }
@@ -1278,10 +1281,21 @@ Object.assign(STORY_SCENES, {
   },
 });
 let storyRaf = 0;
+// The map's own record of what a story tells: while the clock is inside it, and no story or scene has the map,
+// the story's picture is drawn for that moment — so the Mediterranean is dry 5.6 million years ago whether or not
+// the story plays. The flood itself (5.33 Ma) belongs to the story: it lasted months, too short to land on.
+const AMBIENT = [{ id: 'mediterranean', from: 5.97, to: 5.335, k: 0.5 }];
+function ambientFx() {
+  if (S.story || S.scene) return;
+  const a = AMBIENT.find(x => S.t <= x.from && S.t >= x.to) || null, id = a ? a.id : null;
+  if (id === S.ambient) return;
+  S.ambient = id;
+  WorldMap.setFx(a ? (c, g, now) => STORY_SCENES[a.id](g, a.k, STORY_BY[a.id], now) : null, { still: true });
+}
 function stopStory(done) {
   cancelAnimationFrame(storyRaf); const was = S.story; S.story = null;
   if (!was) return;
-  WorldMap.setFx(null); WorldMap.setIceOff(false); WorldMap.setHideBox(null); updateMarkers();
+  WorldMap.setFx(null); WorldMap.setIceOff(false); WorldMap.setHideBox(null); updateMarkers(); S.ambient = null; ambientFx();
   $('sceneCap').classList.remove('show'); document.body.classList.remove('scening');
   if (S.tab === 'geo') renderGeo();
   if (done) { const st = STORY_BY[was.id]; showFact(st.icon, '<b>' + esc(st.title) + '.</b> ' + esc(st.steps[st.steps.length - 1][1]) + '<br><small><button class="linkbtn" data-story="' + st.id + '">↻ Watch again</button></small>', 14000); }
@@ -1485,8 +1499,15 @@ function selectBelief(id, fromMap) {
 
 // --- Insights ---
 function renderInsights() {
-  const p = S.period, I = p.insight, sites = SITES.filter(s => s[3].includes(p.id));
-  $('pane-insights').innerHTML = `<div class="ins">
+  const p = S.period, I = p.insight, sites = SITES.filter(s => s[3].includes(p.id)), ch = S.chapter;
+  const chHTML = ch ? `<div class="list-h" style="padding:2px 0 0">${esc(ch.name)}: ${esc(ch.title)} · ${ch.start}–${ch.end} million years ago</div>
+    <div class="ins-big">${esc(ch.big)}</div>
+    <div class="signs">${ch.signs.map(s => `<div class="sign"><div class="i">${s[0]}</div><div><b>${esc(s[1])}</b><span>${esc(s[2])}</span></div></div>`).join('')}</div>
+    <div class="ins-sec"><h4>🔎 How do we know?</h4>${esc(ch.know)}</div>
+    <div class="ins-sec"><h4>🌍 Why it matters today</h4>${esc(ch.today)}</div>
+    ${srcHTML('p:' + ch.id, 'Sources for the ' + ch.name)}
+    <div class="list-h ch-whole" style="padding:14px 0 0">The whole ${esc(p.name)}, ${p.start}–${p.end} million years ago</div>` : '';
+  $('pane-insights').innerHTML = `<div class="ins">${chHTML}
     <div class="list-h" style="padding:2px 0 0">${esc(p.title || p.name)} · the big picture</div>
     <div class="ins-big">${esc(I.big)}</div>
     <div class="signs">${I.signs.map(s => `<div class="sign"><div class="i">${s[0]}</div><div><b>${esc(s[1])}</b><span>${esc(s[2])}</span></div></div>`).join('')}</div>

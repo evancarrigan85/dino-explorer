@@ -1325,12 +1325,12 @@
 "Amiot",
 "et al."
 ],
+"type": "journal-article",
 "targets": [
 "a:Limusaurus"
 ],
-"title_expected": "Extreme ontogenetic changes in a ceratosaurian theropod",
-"type": "journal-article",
-"first": ""
+"first": "",
+"title_expected": "Extreme ontogenetic changes in a ceratosaurian theropod"
 },
 "sander2006": {
 "doi": "10.1038/nature04633",
@@ -1984,7 +1984,9 @@
 ],
 "targets": [
 "p:paleogene",
-"p:neogene"
+"p:neogene",
+"p:paleocene",
+"p:eocene"
 ],
 "title_expected": "An astronomically dated record of Earth's climate and its predictability over the last 66 million years",
 "type": "journal-article",
@@ -2000,7 +2002,8 @@
 "Pollard"
 ],
 "targets": [
-"p:paleogene"
+"p:paleogene",
+"p:oligocene"
 ],
 "title_expected": "Rapid Cenozoic glaciation of Antarctica induced by declining atmospheric CO2",
 "type": "journal-article",
@@ -2269,7 +2272,8 @@
 "et al."
 ],
 "targets": [
-"a:Danuvius"
+"a:Danuvius",
+"p:miocene"
 ],
 "title_expected": "A new Miocene ape and locomotion in the ancestor of great apes and humans",
 "type": "journal-article",
@@ -2885,7 +2889,8 @@
 ],
 "targets": [
 "h:afarensis",
-"x:laetoli"
+"x:laetoli",
+"p:pliocene"
 ],
 "title_expected": "Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania",
 "type": "journal-article",
@@ -6842,7 +6847,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"s:mediterranean"
+"s:mediterranean",
+"p:miocene"
 ],
 "first": "",
 "title_expected": "Chronology, causes and progression of the Messinian salinity crisis"
@@ -6860,7 +6866,9 @@
 ],
 "type": "journal-article",
 "targets": [
-"s:mediterranean"
+"s:mediterranean",
+"p:miocene",
+"p:pliocene"
 ],
 "first": "",
 "title_expected": "Catastrophic flood of the Mediterranean after the Messinian salinity crisis"
@@ -7715,5 +7723,597 @@
 ],
 "first": "",
 "title_expected": "Ice Volume and Sea Level During the Last Interglacial"
+},
+"lyson2019": {
+"doi": "10.1126/science.aay2268",
+"title": "Exceptional continental record of biotic recovery after the Cretaceous–Paleogene mass extinction",
+"journal": "Science",
+"year": 2019,
+"authors": [
+"Lyson",
+"Miller",
+"Bercovici",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:paleocene"
+],
+"first": "",
+"title_expected": "Exceptional continental record of biotic recovery after the Cretaceous–Paleogene mass extinction"
+},
+"wing2009": {
+"doi": "10.1073/pnas.0905130106",
+"title": "Late Paleocene fossils from the Cerrejón Formation, Colombia, are the earliest record of Neotropical rainforest",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2009,
+"authors": [
+"Wing",
+"Herrera",
+"Jaramillo",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:paleocene",
+"a:Titanoboa"
+],
+"first": "",
+"title_expected": "Late Paleocene fossils from the Cerrejón Formation, Colombia, are the earliest record of Neotropical rainforest"
+},
+"slack2006": {
+"doi": "10.1093/molbev/msj124",
+"title": "Early Penguin Fossils, Plus Mitochondrial Genomes, Calibrate Avian Evolution",
+"journal": "Molecular Biology and Evolution",
+"year": 2006,
+"authors": [
+"Slack",
+"Jones",
+"Ando",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:paleocene",
+"a:Waimanu"
+],
+"first": "",
+"title_expected": "Early Penguin Fossils, Plus Mitochondrial Genomes, Calibrate Avian Evolution"
+},
+"ksepka2017": {
+"doi": "10.1073/pnas.1700188114",
+"title": "Early Paleocene landbird supports rapid phylogenetic and morphological diversification of crown birds after the K–Pg mass extinction",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2017,
+"authors": [
+"Ksepka",
+"Stidham",
+"Williamson"
+],
+"type": "journal-article",
+"targets": [
+"p:paleocene",
+"a:Tsidiiyazhi"
+],
+"first": "",
+"title_expected": "Early Paleocene landbird supports rapid phylogenetic and morphological diversification of crown birds after the K–Pg mass extinction"
+},
+"chester2017": {
+"doi": "10.1098/rsos.170329",
+"title": "Oldest skeleton of a plesiadapiform provides additional evidence for an exclusively arboreal radiation of stem primates in the Palaeocene",
+"journal": "Royal Society Open Science",
+"year": 2017,
+"authors": [
+"Chester",
+"Williamson",
+"Bloch",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Torrejonia"
+],
+"first": "",
+"title_expected": "Oldest skeleton of a plesiadapiform provides additional evidence for an exclusively arboreal radiation of stem primates in the Palaeocene"
+},
+"hastings2015": {
+"doi": "10.1080/08912963.2014.918968",
+"title": "A new blunt-snouted dyrosaurid, Anthracosuchus balrogus gen. et sp. nov. (Crocodylomorpha, Mesoeucrocodylia), from the Palaeocene of Colombia",
+"journal": "Historical Biology",
+"year": 2015,
+"authors": [
+"Hastings",
+"Bloch",
+"Jaramillo"
+],
+"type": "journal-article",
+"targets": [
+"a:Anthracosuchus"
+],
+"first": "",
+"title_expected": "A new blunt-snouted dyrosaurid, Anthracosuchus balrogus gen. et sp. nov. (Crocodylomorpha, Mesoeucrocodylia), from the Palaeocene of Colombia"
+},
+"mcinerney2011": {
+"doi": "10.1146/annurev-earth-040610-133431",
+"title": "The Paleocene-Eocene Thermal Maximum: A Perturbation of Carbon Cycle, Climate, and Biosphere with Implications for the Future",
+"journal": "Annual Review of Earth and Planetary Sciences",
+"year": 2011,
+"authors": [
+"McInerney",
+"Wing"
+],
+"type": "journal-article",
+"targets": [
+"p:eocene"
+],
+"first": "",
+"title_expected": "The Paleocene-Eocene Thermal Maximum: A Perturbation of Carbon Cycle, Climate, and Biosphere with Implications for the Future"
+},
+"gingerich2006": {
+"doi": "10.1016/j.tree.2006.03.006",
+"title": "Environment and evolution through the Paleocene–Eocene thermal maximum",
+"journal": "Trends in Ecology &amp; Evolution",
+"year": 2006,
+"authors": [
+"Gingerich"
+],
+"type": "journal-article",
+"targets": [
+"p:eocene"
+],
+"first": "",
+"title_expected": "Environment and evolution through the Paleocene–Eocene thermal maximum"
+},
+"eberle2011": {
+"doi": "10.1130/b30571.1",
+"title": "Life at the top of the greenhouse Eocene world--A review of the Eocene flora and vertebrate fauna from Canada's High Arctic",
+"journal": "Geological Society of America Bulletin",
+"year": 2012,
+"authors": [
+"Eberle",
+"Greenwood"
+],
+"type": "journal-article",
+"targets": [
+"p:eocene"
+],
+"first": "",
+"title_expected": "Life at the top of the greenhouse Eocene world--A review of the Eocene flora and vertebrate fauna from Canada's High Arctic"
+},
+"brinkhuis2006": {
+"doi": "10.1038/nature04692",
+"title": "Episodic fresh surface waters in the Eocene Arctic Ocean",
+"journal": "Nature",
+"year": 2006,
+"authors": [
+"Brinkhuis",
+"Schouten",
+"Collinson",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:eocene"
+],
+"first": "",
+"title_expected": "Episodic fresh surface waters in the Eocene Arctic Ocean"
+},
+"zachos2001": {
+"doi": "10.1126/science.1059412",
+"title": "Trends, Rhythms, and Aberrations in Global Climate 65 Ma to Present",
+"journal": "Science",
+"year": 2001,
+"authors": [
+"Zachos",
+"Pagani",
+"Sloan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:eocene",
+"p:oligocene"
+],
+"first": "",
+"title_expected": "Trends, Rhythms, and Aberrations in Global Climate 65 Ma to Present"
+},
+"zeebe2016": {
+"doi": "10.1038/ngeo2681",
+"title": "Anthropogenic carbon release rate unprecedented during the past 66 million years",
+"journal": "Nature Geoscience",
+"year": 2016,
+"authors": [
+"Zeebe",
+"Ridgwell",
+"Zachos"
+],
+"type": "journal-article",
+"targets": [
+"p:eocene"
+],
+"first": "",
+"title_expected": "Anthropogenic carbon release rate unprecedented during the past 66 million years"
+},
+"thewissen1994": {
+"doi": "10.1126/science.263.5144.210",
+"title": "Fossil Evidence for the Origin of Aquatic Locomotion in Archaeocete Whales",
+"journal": "Science",
+"year": 1994,
+"authors": [
+"Thewissen",
+"Hussain",
+"Arif"
+],
+"type": "journal-article",
+"targets": [
+"p:eocene",
+"a:Ambulocetus (Walking Whale)"
+],
+"first": "",
+"title_expected": "Fossil Evidence for the Origin of Aquatic Locomotion in Archaeocete Whales"
+},
+"froehlich2002": {
+"doi": "10.1046/j.1096-3642.2002.00005.x",
+"title": "Quo vadis eohippus? The systematics and taxonomy of the early Eocene equids (Perissodactyla)",
+"journal": "Zoological Journal of the Linnean Society",
+"year": 2002,
+"authors": [
+"FROEHLICH"
+],
+"type": "journal-article",
+"targets": [
+"a:Eohippus (Dawn Horse)"
+],
+"first": "",
+"title_expected": "Quo vadis eohippus? The systematics and taxonomy of the early Eocene equids (Perissodactyla)"
+},
+"mcnamara2011": {
+"doi": "10.1371/journal.pbio.1001200",
+"title": "Fossilized Biophotonic Nanostructures Reveal the Original Colors of 47-Million-Year-Old Moths",
+"journal": "PLoS Biology",
+"year": 2011,
+"authors": [
+"McNamara",
+"Briggs",
+"Orr",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Messel moths"
+],
+"first": "",
+"title_expected": "Fossilized Biophotonic Nanostructures Reveal the Original Colors of 47-Million-Year-Old Moths"
+},
+"coxall2005": {
+"doi": "10.1038/nature03135",
+"title": "Rapid stepwise onset of Antarctic glaciation and deeper calcite compensation in the Pacific Ocean",
+"journal": "Nature",
+"year": 2005,
+"authors": [
+"Coxall",
+"Wilson",
+"Pälike",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:oligocene"
+],
+"first": "",
+"title_expected": "Rapid stepwise onset of Antarctic glaciation and deeper calcite compensation in the Pacific Ocean"
+},
+"hooker2004": {
+"doi": "10.1144/0016-764903-091",
+"title": "Eocene–Oligocene mammalian faunal turnover in the Hampshire Basin, UK: calibration to the global time scale and the major cooling event",
+"journal": "Journal of the Geological Society",
+"year": 2004,
+"authors": [
+"Hooker",
+"Collinson",
+"Sille"
+],
+"type": "journal-article",
+"targets": [
+"p:oligocene"
+],
+"first": "",
+"title_expected": "Eocene–Oligocene mammalian faunal turnover in the Hampshire Basin, UK: calibration to the global time scale and the major cooling event"
+},
+"scher2006": {
+"doi": "10.1126/science.1120044",
+"title": "Timing and Climatic Consequences of the Opening of Drake Passage",
+"journal": "Science",
+"year": 2006,
+"authors": [
+"Scher",
+"Martin"
+],
+"type": "journal-article",
+"targets": [
+"p:oligocene"
+],
+"first": "",
+"title_expected": "Timing and Climatic Consequences of the Opening of Drake Passage"
+},
+"seiffert2020": {
+"doi": "10.1126/science.aba1135",
+"title": "A parapithecid stem anthropoid of African origin in the Paleogene of South America",
+"journal": "Science",
+"year": 2020,
+"authors": [
+"Seiffert",
+"Tejedor",
+"Fleagle",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:oligocene",
+"a:Ucayalipithecus"
+],
+"first": "",
+"title_expected": "A parapithecid stem anthropoid of African origin in the Paleogene of South America"
+},
+"fordyce2018": {
+"doi": "10.1016/j.cub.2018.04.027",
+"title": "Gigantism Precedes Filter Feeding in Baleen Whale Evolution",
+"journal": "Current Biology",
+"year": 2018,
+"authors": [
+"Fordyce",
+"Marx"
+],
+"type": "journal-article",
+"targets": [
+"a:Llanocetus"
+],
+"first": "",
+"title_expected": "Gigantism Precedes Filter Feeding in Baleen Whale Evolution"
+},
+"zalmout2010": {
+"doi": "10.1038/nature09094",
+"title": "New Oligocene primate from Saudi Arabia and the divergence of apes and Old World monkeys",
+"journal": "Nature",
+"year": 2010,
+"authors": [
+"Zalmout",
+"Sanders",
+"MacLatchy",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Saadanius"
+],
+"first": "",
+"title_expected": "New Oligocene primate from Saudi Arabia and the divergence of apes and Old World monkeys"
+},
+"stevens2013": {
+"doi": "10.1038/nature12161",
+"title": "Palaeontological evidence for an Oligocene divergence between Old World monkeys and apes",
+"journal": "Nature",
+"year": 2013,
+"authors": [
+"Stevens",
+"Seiffert",
+"O’Connor",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Rukwapithecus"
+],
+"first": "",
+"title_expected": "Palaeontological evidence for an Oligocene divergence between Old World monkeys and apes"
+},
+"ksepka2012": {
+"doi": "10.1080/02724634.2012.652051",
+"title": "New fossil penguins (Aves, Sphenisciformes) from the Oligocene of New Zealand reveal the skeletal plan of stem penguins",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 2012,
+"authors": [
+"Ksepka",
+"Fordyce",
+"Ando",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Kairuku"
+],
+"first": "",
+"title_expected": "New fossil penguins (Aves, Sphenisciformes) from the Oligocene of New Zealand reveal the skeletal plan of stem penguins"
+},
+"harzhauser2007": {
+"doi": "10.1016/j.jcz.2007.05.001",
+"title": "Biogeographic responses to geodynamics: A key study all around the Oligo–Miocene Tethyan Seaway",
+"journal": "Zoologischer Anzeiger - A Journal of Comparative Zoology",
+"year": 2007,
+"authors": [
+"Harzhauser",
+"Kroh",
+"Mandic",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:miocene"
+],
+"first": "",
+"title_expected": "Biogeographic responses to geodynamics: A key study all around the Oligo–Miocene Tethyan Seaway"
+},
+"steinthorsdottir2021": {
+"doi": "10.1029/2020pa003900",
+"title": "Near‐Future pCO 2 During the Hot Miocene Climatic Optimum",
+"journal": "Paleoceanography and Paleoclimatology",
+"year": 2021,
+"authors": [
+"Steinthorsdottir",
+"Jardine",
+"Rember"
+],
+"type": "journal-article",
+"targets": [
+"p:miocene"
+],
+"first": "",
+"title_expected": "Near‐Future pCO2 During the Hot Miocene Climatic Optimum"
+},
+"cerling1997": {
+"doi": "10.1038/38229",
+"title": "Global vegetation change through the Miocene/Pliocene boundary",
+"journal": "Nature",
+"year": 1997,
+"authors": [
+"Cerling",
+"Harris",
+"MacFadden",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:miocene"
+],
+"first": "",
+"title_expected": "Global vegetation change through the Miocene/Pliocene boundary"
+},
+"nengo2017": {
+"doi": "10.1038/nature23456",
+"title": "New infant cranium from the African Miocene sheds light on ape evolution",
+"journal": "Nature",
+"year": 2017,
+"authors": [
+"Nengo",
+"Tafforeau",
+"Gilbert",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:miocene",
+"a:Nyanzapithecus (“Alesi”)"
+],
+"first": "",
+"title_expected": "New infant cranium from the African Miocene sheds light on ape evolution"
+},
+"sanchezvillagra2003": {
+"doi": "10.1126/science.1089332",
+"title": "The Anatomy of the World's Largest Extinct Rodent",
+"journal": "Science",
+"year": 2003,
+"authors": [
+"Sánchez-Villagra",
+"Aguilera",
+"Horovitz"
+],
+"type": "journal-article",
+"targets": [
+"a:Phoberomys"
+],
+"first": "",
+"title_expected": "The Anatomy of the World's Largest Extinct Rodent"
+},
+"rybczynski2013": {
+"doi": "10.1038/ncomms2516",
+"title": "Mid-Pliocene warm-period deposits in the High Arctic yield insight into camel evolution",
+"journal": "Nature Communications",
+"year": 2013,
+"authors": [
+"Rybczynski",
+"Gosse",
+"Richard Harington",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:pliocene",
+"a:Arctic camel (Paracamelus)"
+],
+"first": "",
+"title_expected": "Mid-Pliocene warm-period deposits in the High Arctic yield insight into camel evolution"
+},
+"tseng2019": {
+"doi": "10.5334/oq.64",
+"title": "First Fossils of Hyenas (&lt;i&gt;Chasmaporthetes&lt;/i&gt;, Hyaenidae, Carnivora) from North of the Arctic Circle",
+"journal": "Open Quaternary",
+"year": 2019,
+"authors": [
+"Tseng",
+"Zazula",
+"Werdelin"
+],
+"type": "journal-article",
+"targets": [
+"a:Chasmaporthetes (running hyena)"
+],
+"first": "",
+"title_expected": "First Fossils of Hyenas (Chasmaporthetes, Hyaenidae, Carnivora) from North of the Arctic Circle"
+},
+"dowsett2016": {
+"doi": "10.5194/cp-12-1519-2016",
+"title": "The PRISM4 (mid-Piacenzian) paleoenvironmental reconstruction",
+"journal": "Climate of the Past",
+"year": 2016,
+"authors": [
+"Dowsett",
+"Dolan",
+"Rowley",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:pliocene"
+],
+"first": "",
+"title_expected": "The PRISM4 (mid-Piacenzian) paleoenvironmental reconstruction"
+},
+"woodburne2010": {
+"doi": "10.1007/s10914-010-9144-8",
+"title": "The Great American Biotic Interchange: Dispersals, Tectonics, Climate, Sea Level and Holding Pens",
+"journal": "Journal of Mammalian Evolution",
+"year": 2010,
+"authors": [
+"Woodburne"
+],
+"type": "journal-article",
+"targets": [
+"p:pliocene"
+],
+"first": "",
+"title_expected": "The Great American Biotic Interchange: Dispersals, Tectonics, Climate, Sea Level and Holding Pens"
+},
+"wang2017b": {
+"doi": "10.1038/s41598-017-17657-8",
+"title": "A basal ursine bear (Protarctos abstrusus) from the Pliocene High Arctic reveals Eurasian affinities and a diet rich in fermentable sugars",
+"journal": "Scientific Reports",
+"year": 2017,
+"authors": [
+"Wang",
+"Rybczynski",
+"Harington",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Protarctos"
+],
+"first": "",
+"title_expected": "A basal ursine bear (Protarctos abstrusus) from the Pliocene High Arctic reveals Eurasian affinities and a diet rich in fermentable sugars"
+},
+"fitzgerald2009": {
+"doi": "10.1111/j.1096-3642.2009.00572.x",
+"title": "The morphology and systematics of Mammalodon colliveri (Cetacea: Mysticeti), a toothed mysticete from the Oligocene of Australia",
+"journal": "Zoological Journal of the Linnean Society",
+"year": 2010,
+"authors": [
+"FITZGERALD"
+],
+"type": "journal-article",
+"targets": [
+"a:Mammalodon"
+],
+"first": "",
+"title_expected": "The morphology and systematics of Mammalodon colliveri (Cetacea: Mysticeti), a toothed mysticete from the Oligocene of Australia"
 }
 }

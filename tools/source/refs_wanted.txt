@@ -117,8 +117,8 @@ alvarez1980 | Alvarez | 1980 | Extraterrestrial cause for the Cretaceous-Tertiar
 hildebrand1991 | Hildebrand | 1991 | Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico | p:cretaceous, x:asteroid, e:cretaceous
 schulte2010 | Schulte | 2010 | The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary | p:cretaceous, e:cretaceous | 10.1126/science.1177265
 head2009 | Head | 2009 | Giant boid snake from the Palaeocene neotropics reveals hotter past equatorial temperatures | a:Titanoboa
-westerhold2020 | Westerhold | 2020 | An astronomically dated record of Earth's climate and its predictability over the last 66 million years | p:paleogene, p:neogene
-deconto2003 | DeConto | 2003 | Rapid Cenozoic glaciation of Antarctica induced by declining atmospheric CO2 | p:paleogene
+westerhold2020 | Westerhold | 2020 | An astronomically dated record of Earth's climate and its predictability over the last 66 million years | p:paleogene, p:neogene, p:paleocene, p:eocene
+deconto2003 | DeConto | 2003 | Rapid Cenozoic glaciation of Antarctica induced by declining atmospheric CO2 | p:paleogene, p:oligocene
 chester2015 | Chester | 2015 | Oldest known euarchontan tarsals and affinities of Paleocene Purgatorius to Primates | a:Purgatorius
 franzen2009 | Franzen | 2009 | Complete primate skeleton from the Middle Eocene of Messel in Germany: morphology and paleobiology | a:Darwinius (“Ida”), f:paleogene
 simmons2008 | Simmons | 2008 | Primitive Early Eocene bat from Wyoming and the evolution of flight and echolocation | a:Onychonycteris
@@ -134,7 +134,7 @@ franzen2015 | Franzen | 2015 | Description of a well preserved fetus of the Euro
 ni2013 | Ni | 2013 | The oldest known primate skeleton and early haplorhine evolution | a:Archicebus
 clarke2010 | Clarke | 2010 | Fossil evidence for evolution of the shape and color of penguin feathers | a:Inkayacu
 archibald2011 | Archibald | 2011 | Intercontinental dispersal of giant thermophilic ants across the Arctic during early Eocene hyperthermals | a:Titanomyrma
-bohme2019 | Böhme | 2019 | A new Miocene ape and locomotion in the ancestor of great apes and humans | a:Danuvius
+bohme2019 | Böhme | 2019 | A new Miocene ape and locomotion in the ancestor of great apes and humans | a:Danuvius, p:miocene
 danowitz2015 | Danowitz | 2015 | Fossil evidence and stages of elongation of the Giraffa camelopardalis neck | a:Samotherium
 cadena2020 | Cadena | 2020 | The anatomy, paleobiology, and evolutionary relationships of the largest extinct side-necked turtle | a:Stupendemys
 ksepka2014 | Ksepka | 2014 | Flight performance of the largest volant bird | a:Pelagornis
@@ -170,7 +170,7 @@ haileselassie2001 | Haile-Selassie | 2001 | Late Miocene hominids from the Middl
 white2009 | White | 2009 | Ardipithecus ramidus and the paleobiology of early hominids | h:ramidus
 haileselassie2019 | Haile-Selassie | 2019 | A 3.8-million-year-old hominin cranium from Woranso-Mille, Ethiopia | h:anamensis
 johanson1976 | Johanson | 1976 | Plio–Pleistocene hominid discoveries in Hadar, Ethiopia | h:afarensis, x:lucy 
-leakey1979 | Leakey | 1979 | Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania | h:afarensis, x:laetoli 
+leakey1979 | Leakey | 1979 | Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania | h:afarensis, x:laetoli, p:pliocene
 alemseged2006 | Alemseged | 2006 | A juvenile early hominin skeleton from Dikika, Ethiopia | h:afarensis
 leakey2001 | Leakey | 2001 | New hominin genus from eastern Africa shows diverse middle Pliocene lineages | h:kenyanthropus
 harmand2015 | Harmand | 2015 | 3.3-million-year-old stone tools from Lomekwi 3, West Turkana, Kenya | h:kenyanthropus, c:oldowan, v:stone
@@ -399,8 +399,8 @@ patriat1984 | Patriat | 1984 | India–Eurasia collision chronology has implicat
 vanhinsbergen2012 | van Hinsbergen | 2012 | Greater India Basin hypothesis and a two-stage Cenozoic collision between India and Asia | s:himalaya
 hu2016 | Hu | 2016 | The timing of India-Asia collision onset – Facts, theories, controversies | s:himalaya
 hsu1973 | Hsü | 1973 | Late Miocene Desiccation of the Mediterranean | s:mediterranean
-krijgsman1999 | Krijgsman | 1999 | Chronology, causes and progression of the Messinian salinity crisis | s:mediterranean
-garciacastellanos2009 | Garcia-Castellanos | 2009 | Catastrophic flood of the Mediterranean after the Messinian salinity crisis | s:mediterranean
+krijgsman1999 | Krijgsman | 1999 | Chronology, causes and progression of the Messinian salinity crisis | s:mediterranean, p:miocene
+garciacastellanos2009 | Garcia-Castellanos | 2009 | Catastrophic flood of the Mediterranean after the Messinian salinity crisis | s:mediterranean, p:miocene, p:pliocene
 roveri2014 | Roveri | 2014 | The Messinian Salinity Crisis: Past and future of a great challenge for marine sciences | s:mediterranean
 wilson1963 | Wilson | 1963 | A possible origin of the Hawaiian Islands | s:hawaii
 tarduno2003 | Tarduno | 2003 | The Emperor Seamounts: Southward Motion of the Hawaiian Hotspot Plume in Earth's Mantle | s:hawaii
@@ -459,3 +459,38 @@ toucanne2009 | Toucanne | 2009 | Timing of massive ‘Fleuve Manche’ discharge
 voris2000 | Voris | 2000 | Maps of Pleistocene sea levels in Southeast Asia: shorelines, river systems and time durations | m:rivers
 gibbard1977 | Gibbard | 1977 | Pleistocene history of the Vale of St. Albans | m:rivers
 dutton2012 | Dutton | 2012 | Ice Volume and Sea Level During the Last Interglacial | m:sealevel
+# ── the Age of Mammals in detail: epoch chapters, new animals ──
+lyson2019 | Lyson | 2019 | Exceptional continental record of biotic recovery after the Cretaceous–Paleogene mass extinction | p:paleocene
+wing2009 | Wing | 2009 | Late Paleocene fossils from the Cerrejón Formation, Colombia, are the earliest record of Neotropical rainforest | p:paleocene, a:Titanoboa
+slack2006 | Slack | 2006 | Early Penguin Fossils, Plus Mitochondrial Genomes, Calibrate Avian Evolution | p:paleocene, a:Waimanu
+ksepka2017 | Ksepka | 2017 | Early Paleocene landbird supports rapid phylogenetic and morphological diversification of crown birds after the K–Pg mass extinction | p:paleocene, a:Tsidiiyazhi
+chester2017 | Chester | 2017 | Oldest skeleton of a plesiadapiform provides additional evidence for an exclusively arboreal radiation of stem primates in the Palaeocene | a:Torrejonia
+hastings2015 | Hastings | 2015 | A new blunt-snouted dyrosaurid, Anthracosuchus balrogus gen. et sp. nov. (Crocodylomorpha, Mesoeucrocodylia), from the Palaeocene of Colombia | a:Anthracosuchus | 10.1080/08912963.2014.918968
+mcinerney2011 | McInerney | 2011 | The Paleocene-Eocene Thermal Maximum: A Perturbation of Carbon Cycle, Climate, and Biosphere with Implications for the Future | p:eocene
+gingerich2006 | Gingerich | 2006 | Environment and evolution through the Paleocene–Eocene thermal maximum | p:eocene
+eberle2011 | Eberle | 2011 | Life at the top of the greenhouse Eocene world--A review of the Eocene flora and vertebrate fauna from Canada's High Arctic | p:eocene
+brinkhuis2006 | Brinkhuis | 2006 | Episodic fresh surface waters in the Eocene Arctic Ocean | p:eocene | 10.1038/nature04692
+zachos2001 | Zachos | 2001 | Trends, Rhythms, and Aberrations in Global Climate 65 Ma to Present | p:eocene, p:oligocene
+zeebe2016 | Zeebe | 2016 | Anthropogenic carbon release rate unprecedented during the past 66 million years | p:eocene
+thewissen1994 | Thewissen | 1994 | Fossil Evidence for the Origin of Aquatic Locomotion in Archaeocete Whales | p:eocene, a:Ambulocetus (Walking Whale)
+froehlich2002 | Froehlich | 2002 | Quo vadis eohippus? The systematics and taxonomy of the early Eocene equids (Perissodactyla) | a:Eohippus (Dawn Horse)
+mcnamara2011 | McNamara | 2011 | Fossilized Biophotonic Nanostructures Reveal the Original Colors of 47-Million-Year-Old Moths | a:Messel moths
+coxall2005 | Coxall | 2005 | Rapid stepwise onset of Antarctic glaciation and deeper calcite compensation in the Pacific Ocean | p:oligocene
+hooker2004 | Hooker | 2004 | Eocene–Oligocene mammalian faunal turnover in the Hampshire Basin, UK: calibration to the global time scale and the major cooling event | p:oligocene
+scher2006 | Scher | 2006 | Timing and Climatic Consequences of the Opening of Drake Passage | p:oligocene
+seiffert2020 | Seiffert | 2020 | A parapithecid stem anthropoid of African origin in the Paleogene of South America | p:oligocene, a:Ucayalipithecus
+fordyce2018 | Fordyce | 2018 | Gigantism Precedes Filter Feeding in Baleen Whale Evolution | a:Llanocetus | 10.1016/j.cub.2018.04.027
+zalmout2010 | Zalmout | 2010 | New Oligocene primate from Saudi Arabia and the divergence of apes and Old World monkeys | a:Saadanius
+stevens2013 | Stevens | 2013 | Palaeontological evidence for an Oligocene divergence between Old World monkeys and apes | a:Rukwapithecus
+ksepka2012 | Ksepka | 2012 | New fossil penguins (Aves, Sphenisciformes) from the Oligocene of New Zealand reveal the skeletal plan of stem penguins | a:Kairuku
+harzhauser2007 | Harzhauser | 2007 | Biogeographic responses to geodynamics: A key study all around the Oligo–Miocene Tethyan Seaway | p:miocene
+steinthorsdottir2021 | Steinthorsdottir | 2021 | Near‐Future pCO2 During the Hot Miocene Climatic Optimum | p:miocene | 10.1029/2020pa003900
+cerling1997 | Cerling | 1997 | Global vegetation change through the Miocene/Pliocene boundary | p:miocene
+nengo2017 | Nengo | 2017 | New infant cranium from the African Miocene sheds light on ape evolution | p:miocene, a:Nyanzapithecus (“Alesi”)
+sanchezvillagra2003 | Sánchez-Villagra | 2003 | The Anatomy of the World's Largest Extinct Rodent | a:Phoberomys
+rybczynski2013 | Rybczynski | 2013 | Mid-Pliocene warm-period deposits in the High Arctic yield insight into camel evolution | p:pliocene, a:Arctic camel (Paracamelus)
+tseng2019 | Tseng | 2019 | First Fossils of Hyenas (Chasmaporthetes, Hyaenidae, Carnivora) from North of the Arctic Circle | a:Chasmaporthetes (running hyena)
+dowsett2016 | Dowsett | 2016 | The PRISM4 (mid-Piacenzian) paleoenvironmental reconstruction | p:pliocene
+woodburne2010 | Woodburne | 2010 | The Great American Biotic Interchange: Dispersals, Tectonics, Climate, Sea Level and Holding Pens | p:pliocene
+wang2017b | Wang | 2017 | A basal ursine bear (Protarctos abstrusus) from the Pliocene High Arctic reveals Eurasian affinities and a diet rich in fermentable sugars | a:Protarctos | 10.1038/s41598-017-17657-8
+fitzgerald2009 | Fitzgerald | 2009 | The morphology and systematics of Mammalodon colliveri (Cetacea: Mysticeti), a toothed mysticete from the Oligocene of Australia | a:Mammalodon | 10.1111/j.1096-3642.2009.00572.x

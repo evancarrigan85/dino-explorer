@@ -13,12 +13,13 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 | | |
 |---|---|
-| Animals | 689 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
+| Animals | 705 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
 | Family trees | Four, linked to each other and to every animal card: the road to mammals, the dinosaur tree, from fish to four legs, the reptile tree |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 438, every one a published work confirmed in Crossref |
+| References | 472, every one a published work confirmed in Crossref |
+| Age of Mammals | Told epoch by epoch: Paleocene, Eocene, Oligocene, Miocene and Pliocene each have their own chapter (header, map title, Insights), with sources |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
@@ -480,6 +481,28 @@ tagline; if he meant something else it is one line in `body.html` and two in `as
 Not done: a trademark check on the name, and renaming the repository or `dino-explorer.html` — that
 changes the live address, so **ask Evan** first.
 
+## Release 10 — Kin through time, and life at the site (Evan, 19 Nov: “if you pick an elephant we should see a view option for all those types of animals through time … when we zoom you see the creatures there, herds, individuals, environment features … Spinosaurus chilling in the swamps”)
+
+1. **Kin through time** (buildable now). On every animal card, a button: “All elephants and their kin
+   through time”. It opens the range chart filtered to the card’s family branch (`c.path`), every member
+   a bar on one time axis, and puts every member’s fossil sites on the map at once, each pin marked
+   with its age. Tapping a bar goes to that animal and its time. Works for any branch with 3+ members.
+2. **Life at the site** (needs new data, and rules first). Zoomed in on a fossil site at its own time,
+   the map shows the animals found there in their setting. Rules, so it stays a museum and not a game:
+   - The setting comes from the rock: each site gets `rock` (river sandstone, lake shale, reef
+     limestone, beach sand, volcanic ash) and `setting` (river channel, swamp, lake, coast, dunes, forest),
+     each with a source. Plants only where fossil plants or pollen are known there.
+   - **A herd is drawn only where the evidence shows one** — a bonebed of one species, parallel
+     trackways, a nesting colony (Maiasaura, Centrosaurus, Ashfall’s Teleoceras). Otherwise one animal.
+     New field `social: [kind, evidence, ref]`.
+   - Who ate whom at the site from direct evidence first (stomach contents, bite marks, coprolites),
+     then from size and teeth — the second kind labelled as inferred. This also feeds the food webs.
+   - Sizes are drawn to scale against each other; every animal has a label; the scene is captioned
+     “a picture built from the finds at this site” and says what is guessed.
+   - First sites: the Kem Kem (Spinosaurus in the river channels, with sawfish, coelacanths and
+     crocodile relatives — Ibrahim et al. 2014, 2020), Hell Creek, the Morrison, Messel, Ashfall, La Brea.
+3. Pictures for the scenes come with Release 6 (custom sprites) — until then, the map’s own icons.
+
 ## Release 8 — Real fossil occurrences (needs one host approved)
 
 Show every recorded fossil of a selected animal or group as dots, from the Paleobiology Database
@@ -518,6 +541,19 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — The Age of Mammals, chapter by chapter.** Evan: “the age of mammals, 65 million years
+  to now, needs way more detail.” Two period cards covered 64 million years. Now the Paleocene (“The
+  World Starts Over”), Eocene (“The Hothouse”), Oligocene (“The Big Chill”), Miocene (“Grasslands and
+  Apes”) and Pliocene (“The Ape That Stood Up”) each have a chapter: the header, the map’s title and
+  the Insights tab change at each epoch, every chapter with its own signs, how we know, why it matters,
+  and sources (`data_mammals.js`). 16 new animals, each placed and sourced — the oldest primate-relative
+  skeleton, the first penguins, a Balrog-named crocodile relative, Messel’s coloured moths, an 8 m
+  toothed whale from Antarctica, the monkeys that rafted across the Atlantic, the oldest ape, Alesi,
+  a buffalo-sized rodent, camels and a sweet-toothed bear in the Pliocene Arctic, the only hyena that
+  reached the Americas (Paleocene 16 → 20, Oligocene 24 → 30). 9 more timeline events. The map now shows
+  the Mediterranean dried to salt whenever the clock is inside the salinity crisis, not only while its
+  story plays. 34 new references (472). 235 checks.
 
 - **18 Nov 2026 — The last 3 million years, from the evidence.** Evan: “the rivers shouldn’t just
   disappear — we need more fact-based detail from 3 million years to now.” Three things were sketches

@@ -1067,7 +1067,7 @@ void main() {
   const wake = () => { if (motion) { liveUntil = performance.now() + 14000; schedule(); } };
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
-  let fxHook = null, scn = null, scx = null, glide = 0;
+  let fxHook = null, fxStill = false, scn = null, scx = null, glide = 0;
   let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false, hideBox = null, inkCv = null, ictx = null, todayCv = null, tdx = null, dotPat = null, terMask = null, tmx = null, reachPat = null;
   const inHide = p => { if (!hideBox) return false; const lo = Math.atan2(p.c[1], p.c[0]) * R2D, la = Math.asin(p.c[2]) * R2D; return lo >= hideBox[0] && lo <= hideBox[2] && la >= hideBox[1] && la <= hideBox[3]; };
   const fxHelp = {
@@ -1884,7 +1884,7 @@ void main() {
     if (dirty) { clearTimeout(settle); draw(); } else if (viewDirty && snap) drawQuick(); else drawFx();
     if (document.hidden) return;
     if ((trailLife > 0 || performance.now() < animUntil) && !dirty) dirty = true;                       // keep fading the wake after the land stops
-    if (rings.length || trailLife > 0 || fxHook || performance.now() < animUntil || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
+    if (rings.length || trailLife > 0 || (fxHook && !fxStill) || performance.now() < animUntil || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
   }
   function resize() {
     const r = canvas.getBoundingClientRect();
@@ -1991,7 +1991,7 @@ void main() {
     get time() { return time; },
     setTime(t) { t = Math.max(0, Math.min(MAXT, t)); if (t !== time) { time = t; dirty = true; wake(); schedule(); } },
     /* A scene to draw over the map every frame, or null to stop. Called as fn(ctx, helpers, now). */
-    setFx(fn) { fxHook = fn || null; schedule(); },
+    setFx(fn, o) { fxHook = fn || null; fxStill = !!(o && o.still); schedule(); },
     /* hide the drawn North American ice sheet while a story draws its own, retreating one */
     setIceOff(on) { iceOff = !!on; dirty = true; schedule(); },
     /* hide today's land inside a [lon0, lat0, lon1, lat1] box while a story draws its own (null to stop) */
@@ -2183,6 +2183,6 @@ void main() {
       polys.forEach((q, i) => { if (q.c[0] * P[0] + q.c[1] * P[1] + q.c[2] * P[2] < q.cosr - 0.02) return; if (ringContains(q.rings[0], P)) o.push(i + ':f' + q.f + '[' + q.hi + '..' + q.lo + ']'); }); return o.join(' '); },
   });
   // Object.assign copies a getter's value once; these must stay live (the globe button reads `mode`)
-  Object.defineProperties(api, { time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true }, backdrop: { get: () => backdrop, configurable: true }, terrain: { get: () => terOn && !!TER.gl && TER.st === 'ready', configurable: true } });
+  Object.defineProperties(api, { fxOn: { get: () => !!fxHook, configurable: true }, time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true }, backdrop: { get: () => backdrop, configurable: true }, terrain: { get: () => terOn && !!TER.gl && TER.st === 'ready', configurable: true } });
   return api;
 })();

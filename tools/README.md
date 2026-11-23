@@ -26,6 +26,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_roots.js` | Proto-mammals, early mammals and dinosaurs added with the family trees |
 | `data_you.js` | The reader's own line through time, eruptions and impacts on the map, the drift journey |
 | `data_stories.js` | “Watch the Earth being made” stories in the Geology tab (the Great Lakes so far) |
+| `data_mammals.js` | The Age of Mammals, epoch by epoch: a chapter (title, map title, Insights) for each epoch from the Paleocene to the Pliocene; sources under `p:<epoch>` |
 | `data_history.js` | Empires, kingdoms and beliefs of the last 5,500 years (Humans tab) |
 | `data_survival.js` | What helped people and what threatened them, by time (Humans tab, “At this time”); sources under `v:` |
 | `data_extinctions.js` | The Extinctions view: one entry per event, with its scene and its steps |
