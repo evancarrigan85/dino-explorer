@@ -1708,6 +1708,7 @@ void main() {
       if (!q_) { const ck = Math.round(p[0] / (R0 * 5)) + ',' + Math.round(p[1] / (R0 * 5)), cr = crowd[ck] || (crowd[ck] = { x: p[0], y: p[1], n: 0 }); cr.n++; return; }   // no room: counted, and shown as "+N"
       const age = motion && born[m.key] ? (nowMs - born[m.key]) / 420 : 1, grow = age >= 1 ? 1 : 1 - Math.pow(1 - Math.max(0, age), 3);
       if (grow < 1) { c.save(); c.globalAlpha = grow; c.translate(q_[0], q_[1] + (1 - grow) * 9); c.scale(0.6 + 0.4 * grow, 0.6 + 0.4 * grow); c.translate(-q_[0], -q_[1]); }
+      if (m.dim && !strong) { c.save(); c.globalAlpha *= 0.55; }      // a relative that is not alive at this moment
       lastAt[m.key] = [q_[0], q_[1], r, m.emoji];
       if (q_ !== p && (q_[0] !== p[0] || q_[1] !== p[1])) {
         c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q_[0], q_[1]); c.strokeStyle = 'rgba(60,34,10,0.7)'; c.lineWidth = 1; c.stroke();
@@ -1718,6 +1719,8 @@ void main() {
       c.lineWidth = strong ? 2 : 1; c.strokeStyle = strong ? 'rgba(190,60,20,0.95)' : 'rgba(70,40,12,0.8)'; c.stroke();
       c.font = `${Math.round(r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
       c.fillText(m.emoji, q_[0], q_[1] + r * 0.08);
+      if (m.dim && !strong) c.restore();
+      if (m.tag) text(c, m.tag, q_[0], q_[1] + r + 6 * zs, 8.5 * zs, { align: 'center', spacing: 0.2, weight: 700, haloW: 3, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       if (grow < 1) c.restore();
       hits.push({ x: q_[0], y: q_[1], r: r + 3, marker: m });
       if (strong) rings.push([q_[0], q_[1], r]);
@@ -1954,6 +1957,7 @@ void main() {
     MAXT, attach, locate, seaLevel,
     ice: t => iceAt(t).map(x => ({ key: x.s.key, label: x.s.label, w: +x.w.toFixed(3), stand: !!x.stand, src: x.s.src })),
     _rivers: t => ({ rivers: riverFade(t), lakes: lakeFade(t) }),
+    _markers: () => layers.markers.map(m => ({ key: m.key, dim: !!m.dim, tag: m.tag || null, sites: m.sites.length })),
     shelfRivers: t => { const r = shelfRivers(t, seaLevel(t), iceAt(t)); return r && r.lines.map(g => g.coordinates); },
     underIce: (lat, lon, t) => iceAt(t).reduce((m, x) => Math.max(m, d3.geoContains(x.s.geo, [lon, lat]) ? x.w : 0), 0),
     /* The present-day place under a tap at the current time: find the plate

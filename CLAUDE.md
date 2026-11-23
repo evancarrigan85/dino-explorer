@@ -111,7 +111,9 @@ builds, passes the checks and has been looked at.
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
   Life, Humans, Insights, Extinctions, Finds, Quiz, Geology. Map pins for a tab are built in
   `updatePlaces()`.
-  The Life tab has three views: the list, the range chart and the family trees (`data_trees.js`).
+  The Life tab has four views: the list, the range chart, the family trees (`data_trees.js`) and kin through
+  time (`S.view = 'kin'`, `KIN`/`kinOf()`): one family branch on a time axis, with every member's site on the
+  map (`dim` and `tag` on a marker fade it and label its age).
   `data_you.js` holds the reader's own line (`YOU_LINE`, shown in the bar under the map), the eruptions
   and impacts drawn on the map (`SPARKS`), and feeds the guided journeys (`JOURNEYS` in `app.js`).
   `data_extinctions.js` holds the Extinctions view; each event names a scene in `SCENES` (`app.js`),

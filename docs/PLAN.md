@@ -483,7 +483,7 @@ changes the live address, so **ask Evan** first.
 
 ## Release 10 — Kin through time, and life at the site (Evan, 19 Nov: “if you pick an elephant we should see a view option for all those types of animals through time … when we zoom you see the creatures there, herds, individuals, environment features … Spinosaurus chilling in the swamps”)
 
-1. **Kin through time** (buildable now). On every animal card, a button: “All elephants and their kin
+1. ~~Kin through time~~ **Shipped 23 Nov 2026.** Was: (buildable now). On every animal card, a button: “All elephants and their kin
    through time”. It opens the range chart filtered to the card’s family branch (`c.path`), every member
    a bar on one time axis, and puts every member’s fossil sites on the map at once, each pin marked
    with its age. Tapping a bar goes to that animal and its time. Works for any branch with 3+ members.
@@ -541,6 +541,13 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — Kin through time.** Evan: “if you pick an elephant we should see a view option for all
+  those types of animals through time.” Every card now has “All 15 elephants & kin through time →” (or
+  its own family: the deepest branch of its lineage with three or more animals). It opens the family on one
+  time axis, oldest first, with the ones alive at this moment lit; on the map every relative’s fossil site
+  appears at once, each with its age, faded when not alive now. Tapping one takes the map to its time and
+  the view stays. 109 families qualify. 239 checks.
 
 - **23 Nov 2026 — The Age of Mammals, chapter by chapter.** Evan: “the age of mammals, 65 million years
   to now, needs way more detail.” Two period cards covered 64 million years. Now the Paleocene (“The

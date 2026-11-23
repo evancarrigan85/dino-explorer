@@ -490,6 +490,16 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('mammals: more of the Age of Mammals on the timeline — the first penguins, the Azolla fern, the Great Break, Africa meets Eurasia, camels in the Arctic', await p.evaluate(() => ['The first penguins', 'A fern covers the Arctic Ocean', 'The Great Break', 'Africa joins Eurasia', 'Camels in the Arctic'].every(n => EVENTS.some(e => e[3] === n)) && EVENTS.filter(e => e[0] < 66 && e[0] >= 2.58).length >= 25));
   await p.evaluate(() => setTime(5.6)); await p.waitForTimeout(150);
   ok('mammals: at 5.6 Ma the map shows the Mediterranean dried to salt, without playing the story; not before or after', await p.evaluate(() => { const on = S.ambient === 'mediterranean' && WorldMap.fxOn; setTime(6.2); const before = !WorldMap.fxOn; setTime(5.2); const after = !WorldMap.fxOn; setTime(5.6); return on && before && after && WorldMap.fxOn; }));
+  // kin through time: from any card, the whole family branch on one time axis and on the map
+  await p.click('#tab-life'); await p.evaluate(() => { setView('list'); setTime(0.02); select(ALL.find(c => c.name === 'Woolly Mammoth').key); }); await p.waitForTimeout(1500);
+  ok('kin: the mammoth’s card offers all its elephant kin through time', await p.evaluate(() => /All 1\d elephants & kin through time/.test((document.querySelector('#lifeList .creature-card.active [data-kin]') || {}).textContent || '')));
+  await p.click('#lifeList .creature-card.active [data-kin]'); await p.waitForTimeout(500);
+  const kin = await p.evaluate(() => { const rows = [...document.querySelectorAll('#lifeList .kin-row')], m = WorldMap._markers(), K = KIN[S.kin]; return { view: S.view, rows: rows.length, first: rows[0] && rows[0].querySelector('.kn').firstChild.textContent.trim(), now: document.querySelectorAll('#lifeList .kin-row.now').length, markers: m.length, members: K.filter(c => c.sites && c.sites.length).length, dimOk: m.every(x => x.dim === !alive(BY_KEY[x.key], S.t)), tags: m.every(x => !!x.tag) }; });
+  ok('kin: every elephant relative, oldest first, on one axis; on the map every one’s site, faded when not alive now, each with its age', kin.view === 'kin' && kin.rows >= 15 && kin.first === 'Eritherium' && kin.now >= 4 && kin.markers === kin.members && kin.dimOk && kin.tags, JSON.stringify(kin));
+  await p.click('#lifeList .kin-row[data-key="deinotherium"]'); await p.waitForTimeout(2600);
+  ok('kin: tapping one takes the map to its time, and the view stays', await p.evaluate(() => S.sel === 'deinotherium' && S.t <= 20 && S.t >= 1 && S.view === 'kin' && document.querySelector('#lifeList .kin-row.sel[data-key="deinotherium"]')));
+  await p.click('#lifeList [data-kin-back]'); await p.waitForTimeout(300);
+  ok('kin: back to the list, and the map shows only what is alive again', await p.evaluate(() => S.view === 'list' && WorldMap._markers().every(x => !x.dim && !x.tag)));
   // the benchmark: the map against independent evidence, never worse than the recorded baseline
   { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
     ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));

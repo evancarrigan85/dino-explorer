@@ -633,3 +633,20 @@ header .logo,header h1{cursor:pointer}
 .sv-none{font-size:.7rem;color:var(--muted);padding:4px 2px;line-height:1.4}
 .sv-note{font-size:.64rem;color:var(--muted);margin:4px 2px 0;line-height:1.4}
 @media (max-width:420px){.sv-cols{grid-template-columns:1fr}}
+/* kin through time: one family branch on one time axis (Life tab) */
+.kin{--kl:156px}
+.kin-head .list-h{margin-top:4px}
+.kin-axis{display:grid;grid-template-columns:var(--kl) 1fr;font-size:.6rem;color:var(--muted);height:16px;margin-top:6px}
+.kin-axis .kin-track{background:none;height:16px}
+.kin-axis i{position:absolute;transform:translateX(-50%);font-style:normal;white-space:nowrap}
+.kin-axis i:first-child{transform:none}.kin-axis i:last-child{transform:translateX(-100%)}
+.kin-body{position:relative}
+.kin-row{display:grid;grid-template-columns:22px calc(var(--kl) - 22px) 1fr;align-items:center;padding:3px 0;cursor:pointer;border-radius:6px;font-size:.72rem}
+.kin-row:hover{background:rgba(255,255,255,.04)}.kin-row.sel{background:rgba(240,192,64,.12)}
+.kin-row .kn{color:#dbe3f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:6px}
+.kin-row .kn small{display:block;color:var(--muted);font-size:.6rem}
+.kin-track{position:relative;height:10px;background:rgba(255,255,255,.04);border-radius:5px}
+.kin-bar{position:absolute;top:1px;bottom:1px;border-radius:4px;background:#c98d4b;opacity:.5}
+.kin-row.now .kin-bar{opacity:1;background:#f0c040}
+.kin-cur{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.7);z-index:1;pointer-events:none}
+@media (max-width:767px){.kin{--kl:124px}}

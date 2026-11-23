@@ -239,6 +239,10 @@ function updateMarkers(now) {
   if (S.story) now = [];                                                 // a story has the map to itself
   if (S.tab === 'humans' && inHistory()) now = now.filter(c => c.hom);   // recorded history: the map is for empires and beliefs
   if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
+  if (S.tab === 'life' && S.view === 'kin' && KIN[S.kin] && !S.story) {
+    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
+    return;
+  }
   WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c) })) });
 }
 const placeCache = {};
@@ -538,6 +542,7 @@ function cardHTML(c, open) {
     L.push(sizeHTML(c));
     L.push(findLinks(c));
     L.push(treeLink(c));
+    L.push(kinLink(c));
     L.push(srcHTML(c.hom ? 'h:' + c.key : 'a:' + c.name));
     L.push(sec('🔎 How do we know?', esc(c.know || '')));
     L.push(sec('❓ Still debated', esc(c.debate || '')));
@@ -590,7 +595,9 @@ function chartHTML() {
       <div class="rc-cur" style="left:calc(var(--lab) + (100% - var(--lab)) * ${x(S.t)} / 100)"></div>${rows}</div></div>
     <div class="hf-note">Bars span the animals on this site, so they show when each group appears here — not always its full history. Red lines are the five great mass extinctions; the white line is now on the timeline. Bars for groups alive at that moment are bright. Time is stretched toward the present so recent groups are visible.</div>`;
 }
+let lastKinView = false;
 function renderLife() {
+  if ((S.view === 'kin') !== lastKinView) { lastKinView = S.view === 'kin'; setTimeout(updateMarkers, 0); }   // the family's pins come and go with the view
   const scope = scopeItems().filter(c => !S.weird || c.weird);
   // chips: kinds present in this scope, then the branches of the chosen kind
   const counts = {}; scope.forEach(c => counts[c.g] = (counts[c.g] || 0) + 1);
@@ -604,6 +611,7 @@ function renderLife() {
   $('dtypeChips').innerHTML = bks.length > 1 ? `<button class="chip${S.branch === 'all' ? ' on' : ''}" data-branch="all">All ${esc(TYPES[S.type][1].toLowerCase())}</button>` + bks.map(b => `<button class="chip${S.branch === b ? ' on' : ''}" data-branch="${esc(b)}">${esc(b)}<small>${bc[b]}</small></button>`).join('') : '';
   if (S.view === 'chart') { $('lifeList').innerHTML = chartHTML(); $('lifeCount').textContent = ''; return; }
   if (S.view === 'tree') { $('lifeList').innerHTML = treeHTML(); $('lifeCount').textContent = ''; return; }
+  if (S.view === 'kin') { $('lifeList').innerHTML = kinHTML(); $('lifeCount').textContent = ''; return; }
   if (S.branch !== 'all') items = items.filter(c => c.path[1] === S.branch);
   const gi = c => TYPE_ORDER.indexOf(c.g);
   const cmp = { old: (a, b) => b.t[0] - a.t[0] || a.name.localeCompare(b.name), young: (a, b) => a.t[1] - b.t[1] || a.t[0] - b.t[0],
@@ -663,6 +671,8 @@ function bindLife() {
   });
   $('lifeList').addEventListener('click', e => {
     const hom = e.target.closest('[data-open-hom]'); if (hom) { switchTab('humans'); return; }
+    const kn = e.target.closest('[data-kin]'); if (kn) { e.stopPropagation(); S.kin = kn.dataset.kin; setView('kin'); updateMarkers(); return; }
+    const kb = e.target.closest('[data-kin-back]'); if (kb) { e.stopPropagation(); setView('list'); updateMarkers(); return; }
     const j = e.target.closest('[data-jump]'); if (j) { select(j.dataset.jump, { keep: true }); return; }
     const el = e.target.closest('[data-key]'); if (el) select(el.dataset.key);
   });
@@ -847,6 +857,27 @@ function treeHTML() {
 // which tree, and which branch, an animal hangs on (the first tree that has it)
 function treeOf(c) { for (const T of TREES) { const n = buildTree(T).nodes.find(n => n.own.includes(c)); if (n) return [T, n]; } return null; }
 const treeLink = c => { if (c.hom) return ''; const h = treeOf(c); return h ? `<div class="found">🌳 <b>Family tree:</b> <button class="linkbtn" data-tree-go="${h[0].id}" data-tk="${c.key}">${esc(h[1].n)} · ${esc(h[0].title)}</button></div>` : ''; };
+// ── kin through time: every member of an animal's family branch, on one time axis and on the map ──
+// The branch is the deepest part of the card's lineage with at least three animals on this site.
+const KIN = (() => { const g = {}; ALL.forEach(c => { if (c.hom) return; for (let i = 2; i <= c.path.length; i++) { const k = c.path.slice(0, i).join(' › '); (g[k] = g[k] || []).push(c); } }); return g; })();
+const kinOf = c => { if (c.hom) return null; for (let i = c.path.length; i >= 2; i--) { const k = c.path.slice(0, i).join(' › '); if (KIN[k] && KIN[k].length >= 3) return { key: k, label: c.path[i - 1], list: KIN[k] }; } return null; };
+const kinLink = c => { const k = kinOf(c); return k ? `<div class="found">🕰 <b>Through time:</b> <button class="linkbtn" data-kin="${esc(k.key)}">All ${k.list.length} ${esc(k.label.toLowerCase())} through time →</button></div>` : ''; };
+const ageTag = t => t >= 1 ? (t >= 10 ? Math.round(t) : +t.toFixed(1)) + ' M' : t >= 0.0117 ? Math.round(t * 1000) + 'k' : 'today';
+function kinHTML() {
+  const list = (KIN[S.kin] || []).slice().sort((a, b) => b.t[0] - a.t[0] || b.t[1] - a.t[1]); if (!list.length) return '';
+  const t0 = Math.max(...list.map(c => c.t[0])), x = t => (100 * (1 - Math.sqrt(clamp(t, 0, t0) / t0))).toFixed(2);
+  const ticks = [];   // the oldest, a few round numbers between, and now — never two labels on top of each other
+  for (const v of [t0, 500, 300, 200, 100, 66, 50, 30, 20, 10, 5, 2, 1, 0.5, 0.1, 0.01, 0]) if (v <= t0 && (!ticks.length || +x(v) - +x(ticks[ticks.length - 1][0]) >= (v ? 14 : 8))) ticks.push([v, v ? ageTag(v) : 'now']);
+  const name = S.kin.split(' › ').pop(), now = list.filter(c => alive(c, S.t));
+  const rows = list.map(c => `<div class="kin-row${alive(c, S.t) ? ' now' : ''}${S.sel === c.key ? ' sel' : ''}" data-key="${c.key}" title="${esc(c.name)} — ${esc(c.lived || '')}">
+    <span class="e">${c.emoji}</span><span class="kn">${esc(c.name)}<small>${esc(c.lived || '')}</small></span>
+    <div class="kin-track"><div class="kin-bar" style="left:${x(c.t[0])}%;width:${Math.max(1, x(c.t[1]) - x(c.t[0]))}%"></div></div></div>`).join('');
+  return `<div class="kin"><div class="kin-head"><button class="linkbtn" data-kin-back>← Back to the list</button>
+    <div class="list-h">${esc(name)} through time<small>${list.length} on this site, from ${esc(ageTag(t0))} to ${esc(ageTag(Math.min(...list.map(c => c.t[1]))))} ago · ${now.length ? now.length + ' alive at this moment' : 'none alive at this moment'}</small></div></div>
+    <div class="kin-axis"><span></span><div class="kin-track">${ticks.map(([t, l]) => `<i style="left:${x(t)}%">${l}</i>`).join('')}</div></div>
+    <div class="kin-body">${S.t <= t0 ? `<div class="kin-cur" style="left:calc(var(--kl) + (100% - var(--kl)) * ${x(S.t)} / 100)"></div>` : ''}${rows}</div>
+    <div class="hf-note">Oldest at the top. Tap one to go to its time. On the map, every relative’s fossil site is shown with its age; the faded ones were not alive at this moment.</div></div>`;
+}
 function openTreeAt(treeId, key) {
   if (S.tab !== 'life') switchTab('life');
   S.tree = treeId; S.treeOpen = {}; if (key && BY_KEY[key]) { S.sel = key; WorldMap.select(key); }
