@@ -2024,12 +2024,12 @@ function init() {
     superocean: SUPEROCEAN,
     notes: ICE_AGE_NOTES.map(([name, lat, lon, what, o]) => Object.assign({ text: name + ' · ' + what, lat, lon, from: 2.58, to: 0.0117 }, o || {})),
     rocks: (() => { const o = []; for (let i = 0; i < ROCKS.length; i += 5) o.push({ k: ROCKS[i], lat: ROCKS[i + 1] * ROCK_CELL, lon: ROCKS[i + 2] * ROCK_CELL, from: ROCKS[i + 3], to: ROCKS[i + 4] }); return o; })(),
-    sparks: SPARKS.map(([lat, lon, from, to, kind, r, name, note]) => ({ at: WorldMap.attach(lat, lon, (from + to) / 2), from, to, kind, r, name, note })),
+    sparks: SPARKS.map(([lat, lon, from, to, kind, r, name, note, ev]) => ({ at: WorldMap.attach(lat, lon, (from + to) / 2), from, to, kind, r, name, note, ev })),
   });
   WorldMap.onPick = (h, x, y) => {
     if (h) noLook = performance.now() + 2500;
     if (h && h.more) { WorldMap.zoomAt(x, y, 2.4); return; }
-    if (h && h.spark) { showFact(h.spark.kind === 'impact' ? '☄️' : '🌋', '<b>' + esc(h.spark.name) + '</b> — ' + esc(h.spark.note), 14000); return; }      // the "+N" badge: come closer to see them all
+    if (h && h.spark) { showFact(h.spark.kind === 'impact' ? '☄️' : '🌋', '<b>' + esc(h.spark.name) + '</b> — ' + esc(h.spark.note) + evSources(EVENTS.find(e => e[5] === h.spark.ev) || []), 15000); return; }      // the "+N" badge: come closer to see them all
     if (!h) {
       $('mapAbout').classList.remove('show');
       if ($('pinPanel').classList.contains('show')) { const q = WorldMap.pickPresent(x, y); if (q) setPin(+q.lat.toFixed(2), +q.lon.toFixed(2), null); else $('pinHint').textContent = 'That spot was open ocean then — tap land, or type a city.'; }

@@ -25,7 +25,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_early.js` | Life before the Cryogenian, from the birth of the Earth to 720 Ma, period by period; a span with no named fossil is empty on purpose, and its `lifeNote` in `data_periods.js` says why |
 | `data_gaps.js` | Animals added to fill regions and periods the map had nothing in |
 | `data_roots.js` | Proto-mammals, early mammals and dinosaurs added with the family trees |
-| `data_you.js` | The reader's own line through time, eruptions and impacts on the map, the drift journey |
+| `data_you.js` | The reader's own line through time, eruptions and impacts on the map (`SPARKS`; each names, as its ninth element, the timeline event that carries its sources), the drift journey |
 | `data_stories.js` | “Watch the Earth being made” stories in the Geology tab (the Great Lakes so far) |
 | `data_mammals.js` | The Age of Mammals, epoch by epoch: a chapter (title, map title, Insights) for each epoch from the Paleocene to the Pliocene; sources under `p:<epoch>` |
 | `data_history.js` | Empires, kingdoms and beliefs of the last 5,500 years (Humans tab) |

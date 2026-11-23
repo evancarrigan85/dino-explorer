@@ -58,7 +58,7 @@ frobisch2009 | Fröbisch | 2009 | The Late Permian herbivore Suminia and the ear
 burgess2014 | Burgess | 2014 | High-precision timeline for Earth's most severe extinction | p:permian, e:permian
 sun2012 | Sun | 2012 | Lethally hot temperatures during the Early Triassic greenhouse | p:triassic
 dalcorso2020 | Dal Corso | 2020 | Extinction and dawn of the modern world in the Carnian (Late Triassic) | p:triassic
-blackburn2013 | Blackburn | 2013 | Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province | p:triassic, e:triassic
+blackburn2013 | Blackburn | 2013 | Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province | p:triassic, e:triassic, n:endtriassic
 motani2014 | Motani | 2014 | Terrestrial origin of viviparity in Mesozoic marine reptiles indicated by Early Triassic embryonic fossils | a:Chaohusaurus
 fernandez2013 | Fernandez | 2013 | Synchrotron reveals Early Triassic odd couple: injured amphibian and aestivating therapsid share burrow | a:Thrinaxodon
 sander2021 | Sander | 2021 | Early giant reveals faster evolution of large body size in ichthyosaurs than in cetaceans | a:Cymbospondylus
@@ -114,8 +114,8 @@ clarke2016 | Clarke | 2016 | Fossil evidence of the avian vocal organ from the M
 wilson2016 | Wilson | 2016 | A large carnivorous mammal from the Late Cretaceous and the North American origin of marsupials | a:Didelphodon
 field2020 | Field | 2020 | Late Cretaceous neornithine from Europe illuminates the origins of crown birds | a:Asteriornis
 alvarez1980 | Alvarez | 1980 | Extraterrestrial cause for the Cretaceous-Tertiary extinction | p:cretaceous, x:asteroid, j:extinctions, e:cretaceous
-hildebrand1991 | Hildebrand | 1991 | Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico | p:cretaceous, x:asteroid, e:cretaceous
-schulte2010 | Schulte | 2010 | The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary | p:cretaceous, e:cretaceous | 10.1126/science.1177265
+hildebrand1991 | Hildebrand | 1991 | Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico | p:cretaceous, x:asteroid, e:cretaceous, n:chicxulub
+schulte2010 | Schulte | 2010 | The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary | p:cretaceous, e:cretaceous, n:chicxulub | 10.1126/science.1177265
 head2009 | Head | 2009 | Giant boid snake from the Palaeocene neotropics reveals hotter past equatorial temperatures | a:Titanoboa
 westerhold2020 | Westerhold | 2020 | An astronomically dated record of Earth's climate and its predictability over the last 66 million years | p:paleogene, p:neogene, p:paleocene, p:eocene
 deconto2003 | DeConto | 2003 | Rapid Cenozoic glaciation of Antarctica induced by declining atmospheric CO2 | p:paleogene, p:oligocene
@@ -373,9 +373,9 @@ rauhut2016 | Rauhut | 2016 | The theropod dinosaur Elaphrosaurus bambergi Janens
 kirkland2013 | Kirkland | 2013 | The Basal Nodosaurid Ankylosaur Europelta carbonensis n. gen., n. sp. from the Lower Cretaceous (Lower Albian) Escucha Formation of Northeastern Spain | a:Europelta
 weishampel2003 | Weishampel | 2003 | Osteology and phylogeny of Zalmoxes (n. g.), an unusual Euornithopod dinosaur from the latest Cretaceous of Romania | a:Zalmoxes
 larramendi2016 | Larramendi | 2016 | Proboscideans: Shoulder Height, Body Mass and Shape | a:Palaeoloxodon namadicus
-renne2015 | Renne | 2015 | State shift in Deccan volcanism at the Cretaceous-Paleogene boundary, possibly induced by impact | e:cretaceous
-schoene2019 | Schoene | 2019 | U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction | e:cretaceous
-sprain2019 | Sprain | 2019 | The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary | e:cretaceous
+renne2015 | Renne | 2015 | State shift in Deccan volcanism at the Cretaceous-Paleogene boundary, possibly induced by impact | e:cretaceous, n:deccan
+schoene2019 | Schoene | 2019 | U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction | e:cretaceous, n:deccan
+sprain2019 | Sprain | 2019 | The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary | e:cretaceous, n:deccan
 # ── Sumer: cities, rivers and fields ──
 jotheri2016 | Jotheri | 2016 | Holocene Avulsions of the Euphrates River in the Najaf Area of Western Mesopotamia: Impacts on Human Settlement | o:sumer, o:euphrates-old
 hritz2010 | Hritz | 2010 | Tracing Settlement Patterns and Channel Systems in Southern Mesopotamia Using Remote Sensing | o:sumer, o:euphrates-old
@@ -446,8 +446,8 @@ toups2010 | Toups | 2010 | Origin of Clothing Lice Indicates Early Clothing Use 
 fujita2016 | Fujita | 2016 | Advanced maritime adaptation in the western Pacific coastal region extends back to 35,000–30,000 years before present | v:fishing
 brain1970 | Brain | 1970 | New Finds at the Swartkrans Australopithecine Site | v:hunted
 potts1998 | Potts | 1998 | Variability selection in hominid evolution | v:swings
-ambrose1998 | Ambrose | 1998 | Late Pleistocene human population bottlenecks, volcanic winter, and differentiation of modern humans | v:toba
-lane2013 | Lane | 2013 | Ash from the Toba supereruption in Lake Malawi shows no volcanic winter in East Africa at 75 ka | v:toba
+ambrose1998 | Ambrose | 1998 | Late Pleistocene human population bottlenecks, volcanic winter, and differentiation of modern humans | v:toba, n:toba
+lane2013 | Lane | 2013 | Ash from the Toba supereruption in Lake Malawi shows no volcanic winter in East Africa at 75 ka | v:toba, n:toba
 larsen2006 | Larsen | 2006 | The agricultural revolution as environmental catastrophe: Implications for health and lifestyle in the Holocene | v:crowds
 bos2011 | Bos | 2011 | A draft genome of Yersinia pestis from victims of the Black Death | v:plague
 # ── the last 3 million years: sea level, ice sheets, rivers on the dry sea floor ──
@@ -572,3 +572,19 @@ day2015 | Day | 2015 | When and how did the terrestrial mid-Permian mass extinct
 wignall2009 | Wignall | 2009 | Volcanism, mass extinction, and carbon isotope fluctuations in the Middle Permian of China | n:capitanian
 frey1997 | Frey | 1997 | Gliding mechanism in the Late Permian reptile Coelurosauravus | n:gliders
 burgess2015 | Burgess | 2015 | High-precision geochronology confirms voluminous magmatism before, during, and after Earth's most severe extinction | n:siberia
+jourdan2014 | Jourdan | 2014 | High-precision dating of the Kalkarindji large igneous province, Australia, and synchrony with the Early-Middle Cambrian (Stage 4-5) extinction | n:kalkarindji
+ricci2013 | Ricci | 2013 | New 40Ar/39Ar and K-Ar ages of the Viluy traps (Eastern Siberia): Further evidence for a relationship with the Frasnian-Famennian mass extinction | n:viluy
+hodych1992 | Hodych | 1992 | Did the Manicouagan impact trigger end-of-Triassic mass extinction? | n:manicouagan
+svensen2007 | Svensen | 2007 | Hydrothermal venting of greenhouse gases triggering Early Jurassic global warming | n:toarcian
+thiede2010 | Thiede | 2010 | Paraná flood basalts: Rapid extrusion hypothesis confirmed by new 40Ar/39Ar results | n:parana
+tarduno1991 | Tarduno | 1991 | Rapid formation of Ontong Java Plateau by Aptian mantle plume volcanism | n:ontongjava
+storey2007 | Storey | 2007 | Paleocene-Eocene Thermal Maximum and the opening of the Northeast Atlantic | n:petm
+bottomley1997 | Bottomley | 1997 | The age of the Popigai impact event and its relation to events at the Eocene/Oligocene boundary | n:popigai
+kasbohm2018 | Kasbohm | 2018 | Rapid eruption of the Columbia River flood basalt and correlation with the mid-Miocene climate optimum | n:columbia
+buchner2010 | Buchner | 2010 | Establishing a 14.6 ± 0.2 Ma age for the Nördlinger Ries impact (Germany)-A prime example for concordant isotopic ages from various dating materials | n:ries | 10.1111/j.1945-5100.2010.01046.x
+schmieder2018 | Schmieder | 2018 | A high-precision 40Ar/39Ar age for the Nördlinger Ries impact crater, Germany, and implications for the accurate dating of terrestrial impact events | n:ries
+rivera2014 | Rivera | 2014 | Rapid magma evolution constrained by zircon petrochronology and 40Ar/39Ar sanidine ages for the Huckleberry Ridge Tuff, Yellowstone, USA | n:yellowstone
+zdanowicz1999 | Zdanowicz | 1999 | Mount Mazama eruption: Calendrical age verified and atmospheric impact assessed | n:mazama
+friedrich2006 | Friedrich | 2006 | Santorini eruption radiocarbon dated to 1627-1600 B.C. | n:thera
+sigurdsson1982 | Sigurdsson | 1982 | The eruption of Vesuvius in A.D. 79: reconstruction from historical and volcanological evidence | n:vesuvius
+oppenheimer2003 | Oppenheimer | 2003 | Climatic, environmental and human consequences of the largest known historic eruption: Tambora volcano (Indonesia) 1815 | n:tambora

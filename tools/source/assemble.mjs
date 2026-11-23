@@ -249,6 +249,8 @@ for (const [k, r] of Object.entries(RAW)) {
   }
 }
 for (const t in SRCMAP) SRCMAP[t].sort((x, y) => REFS[x].y - REFS[y].y);
+{ const Y = require('./data_you.js');
+  for (const sp of Y.SPARKS) { const ev = T.EVENTS.find(e => e[5] === sp[8]); if (!ev) problems.push('spark ' + sp[6] + ': belongs to no timeline event (its ninth element)'); else if (ev[0] > sp[2] + 2 || ev[0] < sp[3] - 2) problems.push('spark ' + sp[6] + ': its event ' + sp[8] + ' is at ' + ev[0] + ' Ma, outside its time'); } }
 { const ids = T.EVENTS.map(e => e[5]).filter(Boolean), seen = new Set();
   for (const id of ids) { if (seen.has(id)) problems.push('event id ' + id + ' is used twice'); seen.add(id); if (!SRCMAP['n:' + id]) problems.push('event ' + id + ' has an id but no verified source (n:' + id + ')'); } }
 data += `// ── peer-reviewed sources: every entry verified against the Crossref DOI registry (tools/verify_refs.py) ──\nconst REFS = ${J(REFS)};\nconst SRCMAP = ${J(SRCMAP)};\n`;

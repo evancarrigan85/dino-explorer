@@ -64,16 +64,30 @@ const YOU_LINE = [
 // Great eruptions and impacts, shown on the map while the timeline is inside their window.
 // Each is drawn with its name, so a lava glow is never mistaken for an asteroid strike.
 //   [lat, lon (today), from, to (million years ago), kind, size, name, what happened]
+// [lat, lon (today), from, to (Ma), volcano | impact, size, name, sentence, the timeline event it belongs to (its id, which carries the sources)]
 const SPARKS = [
-  [66.0, 96.0, 252.6, 251.2, 'volcano', 46, 'Siberian Traps', 'Lava floods across Siberia for hundreds of thousands of years. Its gases drove the Great Dying — the worst extinction in Earth’s history.'],
-  [26.5, 102.0, 260.6, 259.2, 'volcano', 26, 'Emeishan Traps', 'Lava floods across what is now south-west China, during a smaller extinction about 260 million years ago.'],
-  [32.0, -8.0, 201.9, 200.9, 'volcano', 30, 'Central Atlantic eruptions', 'Lava pours from the crack where Pangaea is tearing apart — where the Atlantic Ocean is today. Its gases drove the end-Triassic extinction.'],
-  [40.6, -74.2, 201.9, 200.9, 'volcano', 26, 'Central Atlantic eruptions', 'Lava pours from the crack where Pangaea is tearing apart — where the Atlantic Ocean is today. Its gases drove the end-Triassic extinction.'],
-  [51.4, -68.7, 214.4, 213.7, 'impact', 20, 'Manicouagan impact', 'An asteroid strikes what is now Quebec. Its crater is now a ring-shaped lake, about 70 km across, that you can see from space.'],
-  [19.0, 74.0, 66.5, 65.5, 'volcano', 30, 'Deccan Traps', 'Volcanic eruptions in India — not the asteroid, which struck Mexico, and not the Siberian Traps, which came 186 million years earlier. Lava had been pouring out for hundreds of thousands of years before the impact and kept going after it: a one-two punch, with the eruptions already stressing life when the asteroid hit. Whether the biggest pulse came just before or just after the impact is still argued over.'],
-  [21.4, -89.5, 66.04, 65.7, 'impact', 30, 'Chicxulub impact', 'The asteroid that ended the age of dinosaurs: about 10 km wide, striking a shallow sea where Mexico’s Yucatán Peninsula is today.'],
-  [68.0, -28.0, 56.4, 55.5, 'volcano', 28, 'North Atlantic eruptions', 'Lava pours out as Greenland pulls away from Europe. Its carbon may have helped cause a sudden warming 56 million years ago.'],
-  [2.6, 98.8, 0.0745, 0.0735, 'volcano', 22, 'Toba super-eruption', 'A super-eruption in Sumatra about 74,000 years ago, one of the largest of the last two million years. Its ash fell as far away as India.'],
+  [66.0, 96.0, 252.6, 251.2, 'volcano', 46, 'Siberian Traps', 'Lava floods across Siberia for hundreds of thousands of years. Its gases drove the Great Dying — the worst extinction in Earth’s history.', 'siberia'],
+  [26.5, 102.0, 260.6, 259.2, 'volcano', 26, 'Emeishan Traps', 'Lava floods across what is now south-west China, during a smaller extinction about 260 million years ago.', 'capitanian'],
+  [32.0, -8.0, 201.9, 200.9, 'volcano', 30, 'Central Atlantic eruptions', 'Lava pours from the crack where Pangaea is tearing apart — where the Atlantic Ocean is today. Its gases drove the end-Triassic extinction.', 'endtriassic'],
+  [40.6, -74.2, 201.9, 200.9, 'volcano', 26, 'Central Atlantic eruptions', 'Lava pours from the crack where Pangaea is tearing apart — where the Atlantic Ocean is today. Its gases drove the end-Triassic extinction.', 'endtriassic'],
+  [51.4, -68.7, 214.4, 213.7, 'impact', 20, 'Manicouagan impact', 'An asteroid strikes what is now Quebec. Its crater is now a ring-shaped lake, about 70 km across, that you can see from space.', 'manicouagan'],
+  [19.0, 74.0, 66.5, 65.5, 'volcano', 30, 'Deccan Traps', 'Volcanic eruptions in India — not the asteroid, which struck Mexico, and not the Siberian Traps, which came 186 million years earlier. Lava had been pouring out for hundreds of thousands of years before the impact and kept going after it: a one-two punch, with the eruptions already stressing life when the asteroid hit. Whether the biggest pulse came just before or just after the impact is still argued over.', 'deccan'],
+  [21.4, -89.5, 66.04, 65.7, 'impact', 30, 'Chicxulub impact', 'The asteroid that ended the age of dinosaurs: about 10 km wide, striking a shallow sea where Mexico’s Yucatán Peninsula is today.', 'chicxulub'],
+  [68.0, -28.0, 56.4, 55.5, 'volcano', 28, 'North Atlantic eruptions', 'Lava pours out as Greenland pulls away from Europe. Its carbon may have helped cause a sudden warming 56 million years ago.', 'petm'],
+  [2.6, 98.8, 0.0745, 0.0735, 'volcano', 22, 'Toba super-eruption', 'A super-eruption in Sumatra about 74,000 years ago, one of the largest of the last two million years. Its ash fell as far away as India.', 'toba'],
+  [-17.5, 130.8, 511.6, 510.2, 'volcano', 26, 'Kalkarindji eruptions', 'Lava floods across what is now northern Australia, at the time of the first big extinction of animals.', 'kalkarindji'],
+  [64.0, 116.0, 373.8, 371.6, 'volcano', 24, 'Viluy eruptions', 'Lava pours out in eastern Siberia, around the time of the Late Devonian extinction.', 'viluy'],
+  [-29.0, 28.5, 184, 182.5, 'volcano', 30, 'Karoo–Ferrar eruptions', 'Lava floods southern Africa — and Antarctica, then next door — as Gondwana begins to crack. Its gases warmed the world.', 'toarcian'],
+  [-77.5, 161.0, 184, 182.5, 'volcano', 22, 'Karoo–Ferrar eruptions', 'Lava floods southern Africa — and Antarctica, then next door — as Gondwana begins to crack. Its gases warmed the world.', 'toarcian'],
+  [-24.0, -50.0, 135, 133.8, 'volcano', 36, 'Paraná–Etendeka eruptions', 'Lava floods what is now southern Brazil and Namibia, still joined, before the South Atlantic opens between them.', 'parana'],
+  [71.65, 111.2, 35.9, 35.5, 'impact', 18, 'Popigai impact', 'An asteroid strikes northern Siberia, leaving a crater about 100 km across.', 'popigai'],
+  [46.5, -118.5, 16.8, 15.9, 'volcano', 24, 'Columbia River eruptions', 'Lava floods what is now Washington and Oregon, during the last great warm spell.', 'columbia'],
+  [48.88, 10.57, 14.9, 14.7, 'impact', 12, 'Ries impact', 'An asteroid strikes what is now southern Germany; the town of Nördlingen sits in its crater today.', 'ries'],
+  [44.4, -111.2, 2.1, 2.06, 'volcano', 18, 'Huckleberry Ridge eruption', 'Yellowstone’s biggest eruption: one of the largest of the last few million years.', 'yellowstone'],
+  [42.94, -122.1, 0.0078, 0.0076, 'volcano', 12, 'Mount Mazama', 'Mount Mazama blows apart; its collapsed top becomes Crater Lake.', 'mazama'],
+  [36.4, 25.4, 0.003665, 0.003605, 'volcano', 12, 'Thera (Santorini)', 'The volcano of Santorini explodes, around 1600 BCE.', 'thera'],
+  [40.82, 14.43, 0.00195, 0.00194, 'volcano', 10, 'Vesuvius', 'Vesuvius erupts and buries the Roman towns of Pompeii and Herculaneum.', 'vesuvius'],
+  [-8.25, 118.0, 0.000212, 0.000207, 'volcano', 14, 'Tambora', 'The largest eruption in recorded history. Its haze cooled the world: 1816 was “the year without a summer”.', 'tambora'],
 ];
 // Journeys: guided trips through time. "you", "extinctions" and "finds" are built from the data
 // above and elsewhere; this one is written out.

@@ -988,7 +988,8 @@
 ],
 "targets": [
 "p:triassic",
-"e:triassic"
+"e:triassic",
+"n:endtriassic"
 ],
 "title_expected": "Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province",
 "type": "journal-article",
@@ -1949,7 +1950,8 @@
 "targets": [
 "p:cretaceous",
 "x:asteroid",
-"e:cretaceous"
+"e:cretaceous",
+"n:chicxulub"
 ],
 "title_expected": "Chicxulub Crater: A possible Cretaceous/Tertiary boundary impact crater on the Yucatán Peninsula, Mexico",
 "type": "journal-article",
@@ -4212,7 +4214,8 @@
 ],
 "targets": [
 "p:cretaceous",
-"e:cretaceous"
+"e:cretaceous",
+"n:chicxulub"
 ],
 "title_expected": "The Chicxulub asteroid impact and mass extinction at the Cretaceous-Paleogene boundary",
 "type": "journal-article",
@@ -6465,7 +6468,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"e:cretaceous"
+"e:cretaceous",
+"n:deccan"
 ],
 "first": "",
 "title_expected": "State shift in Deccan volcanism at the Cretaceous-Paleogene boundary, possibly induced by impact"
@@ -6483,7 +6487,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"e:cretaceous"
+"e:cretaceous",
+"n:deccan"
 ],
 "first": "",
 "title_expected": "U-Pb constraints on pulsed eruption of the Deccan Traps across the end-Cretaceous mass extinction"
@@ -6501,7 +6506,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"e:cretaceous"
+"e:cretaceous",
+"n:deccan"
 ],
 "first": "",
 "title_expected": "The eruptive tempo of Deccan volcanism in relation to the Cretaceous-Paleogene boundary"
@@ -7537,7 +7543,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"v:toba"
+"v:toba",
+"n:toba"
 ],
 "first": "",
 "title_expected": "Late Pleistocene human population bottlenecks, volcanic winter, and differentiation of modern humans"
@@ -7554,7 +7561,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"v:toba"
+"v:toba",
+"n:toba"
 ],
 "first": "",
 "title_expected": "Ash from the Toba supereruption in Lake Malawi shows no volcanic winter in East Africa at 75 ka"
@@ -9654,5 +9662,281 @@
 ],
 "first": "",
 "title_expected": "High-precision geochronology confirms voluminous magmatism before, during, and after Earth's most severe extinction"
+},
+"jourdan2014": {
+"doi": "10.1130/g35434.1",
+"title": "High-precision dating of the Kalkarindji large igneous province, Australia, and synchrony with the Early–Middle Cambrian (Stage 4–5) extinction",
+"journal": "Geology",
+"year": 2014,
+"authors": [
+"Jourdan",
+"Hodges",
+"Sell",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:kalkarindji"
+],
+"first": "",
+"title_expected": "High-precision dating of the Kalkarindji large igneous province, Australia, and synchrony with the Early-Middle Cambrian (Stage 4-5) extinction"
+},
+"ricci2013": {
+"doi": "10.1016/j.palaeo.2013.06.020",
+"title": "New 40Ar/39Ar and K–Ar ages of the Viluy traps (Eastern Siberia): Further evidence for a relationship with the Frasnian–Famennian mass extinction",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2013,
+"authors": [
+"Ricci",
+"Quidelleur",
+"Pavlov",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:viluy"
+],
+"first": "",
+"title_expected": "New 40Ar/39Ar and K-Ar ages of the Viluy traps (Eastern Siberia): Further evidence for a relationship with the Frasnian-Famennian mass extinction"
+},
+"hodych1992": {
+"doi": "10.1130/0091-7613(1992)020<0051:dtmite>2.3.co;2",
+"title": "Did the Manicouagan impact trigger end-of-Triassic mass extinction?",
+"journal": "Geology",
+"year": 1992,
+"authors": [
+"Hodych",
+"Dunning"
+],
+"type": "journal-article",
+"targets": [
+"n:manicouagan"
+],
+"first": "",
+"title_expected": "Did the Manicouagan impact trigger end-of-Triassic mass extinction?"
+},
+"svensen2007": {
+"doi": "10.1016/j.epsl.2007.02.013",
+"title": "Hydrothermal venting of greenhouse gases triggering Early Jurassic global warming",
+"journal": "Earth and Planetary Science Letters",
+"year": 2007,
+"authors": [
+"Svensen",
+"Planke",
+"Chevallier",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:toarcian"
+],
+"first": "",
+"title_expected": "Hydrothermal venting of greenhouse gases triggering Early Jurassic global warming"
+},
+"thiede2010": {
+"doi": "10.1130/g30919.1",
+"title": "Paraná flood basalts: Rapid extrusion hypothesis confirmed by new 40Ar/39Ar results",
+"journal": "Geology",
+"year": 2010,
+"authors": [
+"Thiede",
+"Vasconcelos"
+],
+"type": "journal-article",
+"targets": [
+"n:parana"
+],
+"first": "",
+"title_expected": "Paraná flood basalts: Rapid extrusion hypothesis confirmed by new 40Ar/39Ar results"
+},
+"tarduno1991": {
+"doi": "10.1126/science.254.5030.399",
+"title": "Rapid Formation of Ontong Java Plateau by Aptian Mantle Plume Volcanism",
+"journal": "Science",
+"year": 1991,
+"authors": [
+"Tarduno",
+"Sliter",
+"Kroenke",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:ontongjava"
+],
+"first": "",
+"title_expected": "Rapid formation of Ontong Java Plateau by Aptian mantle plume volcanism"
+},
+"storey2007": {
+"doi": "10.1126/science.1135274",
+"title": "Paleocene-Eocene Thermal Maximum and the Opening of the Northeast Atlantic",
+"journal": "Science",
+"year": 2007,
+"authors": [
+"Storey",
+"Duncan",
+"Swisher"
+],
+"type": "journal-article",
+"targets": [
+"n:petm"
+],
+"first": "",
+"title_expected": "Paleocene-Eocene Thermal Maximum and the opening of the Northeast Atlantic"
+},
+"bottomley1997": {
+"doi": "10.1038/41073",
+"title": "The age of the Popigai impact event and its relation to events at the Eocene/Oligocene boundary",
+"journal": "Nature",
+"year": 1997,
+"authors": [
+"Bottomley",
+"Grieve",
+"York",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:popigai"
+],
+"first": "",
+"title_expected": "The age of the Popigai impact event and its relation to events at the Eocene/Oligocene boundary"
+},
+"kasbohm2018": {
+"doi": "10.1126/sciadv.aat8223",
+"title": "Rapid eruption of the Columbia River flood basalt and correlation with the mid-Miocene climate optimum",
+"journal": "Science Advances",
+"year": 2018,
+"authors": [
+"Kasbohm",
+"Schoene"
+],
+"type": "journal-article",
+"targets": [
+"n:columbia"
+],
+"first": "",
+"title_expected": "Rapid eruption of the Columbia River flood basalt and correlation with the mid-Miocene climate optimum"
+},
+"buchner2010": {
+"doi": "10.1111/j.1945-5100.2010.01046.x",
+"title": "Establishing a 14.6 ± 0.2 Ma age for the Nördlinger Ries impact (Germany)-A prime example for concordant isotopic ages from various dating materials",
+"journal": "Meteoritics &amp; Planetary Science",
+"year": 2010,
+"authors": [
+"BUCHNER",
+"SCHWARZ",
+"SCHMIEDER",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:ries"
+],
+"first": "",
+"title_expected": "Establishing a 14.6 ± 0.2 Ma age for the Nördlinger Ries impact (Germany)-A prime example for concordant isotopic ages from various dating materials"
+},
+"schmieder2018": {
+"doi": "10.1016/j.gca.2017.09.036",
+"title": "A high-precision 40Ar/39Ar age for the Nördlinger Ries impact crater, Germany, and implications for the accurate dating of terrestrial impact events",
+"journal": "Geochimica et Cosmochimica Acta",
+"year": 2018,
+"authors": [
+"Schmieder",
+"Kennedy",
+"Jourdan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:ries"
+],
+"first": "",
+"title_expected": "A high-precision 40Ar/39Ar age for the Nördlinger Ries impact crater, Germany, and implications for the accurate dating of terrestrial impact events"
+},
+"rivera2014": {
+"doi": "10.1130/g35808.1",
+"title": "Rapid magma evolution constrained by zircon petrochronology and 40Ar/39Ar sanidine ages for the Huckleberry Ridge Tuff, Yellowstone, USA",
+"journal": "Geology",
+"year": 2014,
+"authors": [
+"Rivera",
+"Schmitz",
+"Crowley",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:yellowstone"
+],
+"first": "",
+"title_expected": "Rapid magma evolution constrained by zircon petrochronology and 40Ar/39Ar sanidine ages for the Huckleberry Ridge Tuff, Yellowstone, USA"
+},
+"zdanowicz1999": {
+"doi": "10.1130/0091-7613(1999)027<0621:mmecav>2.3.co;2",
+"title": "Mount Mazama eruption: Calendrical age verified and atmospheric impact assessed",
+"journal": "Geology",
+"year": 1999,
+"authors": [
+"Zdanowicz",
+"Zielinski",
+"Germani"
+],
+"type": "journal-article",
+"targets": [
+"n:mazama"
+],
+"first": "",
+"title_expected": "Mount Mazama eruption: Calendrical age verified and atmospheric impact assessed"
+},
+"friedrich2006": {
+"doi": "10.1126/science.1125087",
+"title": "Santorini Eruption Radiocarbon Dated to 1627-1600 B.C.",
+"journal": "Science",
+"year": 2006,
+"authors": [
+"Friedrich",
+"Kromer",
+"Friedrich",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:thera"
+],
+"first": "",
+"title_expected": "Santorini eruption radiocarbon dated to 1627-1600 B.C."
+},
+"sigurdsson1982": {
+"doi": "10.2307/504292",
+"title": "The Eruption of Vesuvius in A.D. 79: Reconstruction from Historical and Volcanological Evidence",
+"journal": "American Journal of Archaeology",
+"year": 1982,
+"authors": [
+"Sigurdsson",
+"Cashdollar",
+"Sparks"
+],
+"type": "journal-article",
+"targets": [
+"n:vesuvius"
+],
+"first": "",
+"title_expected": "The eruption of Vesuvius in A.D. 79: reconstruction from historical and volcanological evidence"
+},
+"oppenheimer2003": {
+"doi": "10.1191/0309133303pp379ra",
+"title": "Climatic, environmental and human consequences of the largest known historic eruption: Tambora volcano (Indonesia) 1815",
+"journal": "Progress in Physical Geography: Earth and Environment",
+"year": 2003,
+"authors": [
+"Oppenheimer"
+],
+"type": "journal-article",
+"targets": [
+"n:tambora"
+],
+"first": "",
+"title_expected": "Climatic, environmental and human consequences of the largest known historic eruption: Tambora volcano (Indonesia) 1815"
 }
 }

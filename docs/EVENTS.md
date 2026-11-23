@@ -3,7 +3,10 @@
 A backlog, written 23 Nov 2026 when Evan asked: “identify more event areas that we could expand upon for each
 period possible.” It is Release 13 in `docs/PLAN.md`. Read `CLAUDE.md` first; its rules apply to every line here.
 
-**Progress.** Batch 1 shipped 23 Nov 2026: 24 sourced events. The Permian, Neoarchean, Mesoarchean,
+**Progress.** Batch 2 shipped 23 Nov 2026: 13 new sparks (Kalkarindji, Viluy, Karoo–Ferrar ×2, Paraná–Etendeka,
+Popigai, Columbia River, Ries, Yellowstone, Mazama, Thera, Vesuvius, Tambora). Every spark, old and new, now belongs
+to a timeline event that cites its papers. Ontong Java is a timeline event only: the plates carry continents,
+not the Pacific floor, so the map cannot place it. Batch 1 shipped 23 Nov 2026: 24 sourced events. The Permian, Neoarchean, Mesoarchean,
 Ectasian, Stenian, Ediacaran, Cambrian (first steps on land), Ordovician (Fezouata, the burst of new species,
 the asteroid) and Silurian lines below marked as pins are on the site, except where a line says “?”. The table
 below is the count from before batch 1. A check now keeps every period from the Ediacaran on at three events or

@@ -29,14 +29,14 @@ network secret and for `api.phylopic.org` among the allowed hosts.
 | Timeline | **4,567 million years ago → today**: the Hadean, the four Archean eras and every Proterozoic period, each with its insights and sources. Before 1,800 Ma no map of the land exists, so none is drawn and the map says so in words |
 | Map | Plate motion **1,800 Ma → today** (Merdith et al. 2021 for the last billion years, Cao et al. 2024 before); **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 547, every one a published work confirmed in Crossref |
+| References | 563, every one a published work confirmed in Crossref |
 | Age of Mammals | Told epoch by epoch: Paleocene, Eocene, Oligocene, Miocene and Pliocene each have their own chapter (header, map title, Insights), with sources |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
-| Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 270 passing, plus the benchmark ratchet (`tools/bench`) |
+| Living map | Wakes behind drifting land, light on the water, eruptions and impacts at 22 places (511 Ma → 1815 CE), each tied to a sourced event |
+| Checks | 274 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -654,9 +654,8 @@ status: 29 papers were found in Crossref on 23 Nov; the rest are marked “?”.
 1. ~~Empty and thin periods.~~ **Shipped 23 Nov 2026** (24 sourced events; see Shipped). Was: Pins for the
    Permian (none yet; its two sparks have no events) and the Neoarchean (none), then the Silurian,
    Mesoarchean, Ectasian and Stenian, with a check on the minimum per period.
-2. **Sparks.** About ten, Paleozoic to Holocene: Kalkarindji, Viluy, Karoo–Ferrar, Paraná–Etendeka,
-   Ontong Java, Columbia River, Ries, Yellowstone, Mazama, Tambora. Every one named on the map, and a check
-   that every spark has a timeline event and a source.
+2. ~~Sparks.~~ **Shipped 23 Nov 2026** (13 new; see Shipped). Was: About ten, Paleozoic to Holocene, every one
+   named on the map, with a check that every spark has a timeline event and a source.
 3. **The Cretaceous**: seven or more pins for its 77 Myr.
 4. **“Smaller crises”** in the Extinctions tab.
 5. **Snowball Earth as a story**, then the Missoula floods.
@@ -706,6 +705,18 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — More eruptions and impacts on the map (Release 13, batch 2).** The map’s sparks go from nine to 22.
+  - New: Kalkarindji (511 Ma, the first big animal extinction), Viluy (the Late Devonian), Karoo–Ferrar (the
+    Toarcian, in Africa and Antarctica), Paraná–Etendeka (before the South Atlantic opened), Popigai, the
+    Columbia River, Ries, Yellowstone’s Huckleberry Ridge, Mount Mazama, Thera, Vesuvius and Tambora.
+  - Every spark, old and new, now belongs to a timeline event with its papers, and tapping a spark shows
+    them; the build refuses a spark without one.
+  - Ontong Java is a timeline event only: the plates carry continents, not the Pacific floor, so its glow
+    would have landed south of India. It was taken off the map and a check keeps it off.
+  - Toba’s event no longer calls it “the largest” eruption of the last two million years; it is “one of
+    the largest”, as its map label already said.
+  16 new references (563). 274 checks.
 
 - **23 Nov 2026 — More events: the empty and thin periods (Release 13, batch 1).** 24 new timeline events,
   each citing its papers. Timeline events can now carry sources (`n:<id>`), shown as links in the event’s popup,

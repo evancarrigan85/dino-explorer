@@ -126,7 +126,9 @@ builds, passes the checks and has been looked at.
   time (`S.view = 'kin'`, `KIN`/`kinOf()`): one family branch on a time axis, with every member's site on the
   map (`dim` and `tag` on a marker fade it and label its age).
   `data_you.js` holds the reader's own line (`YOU_LINE`, shown in the bar under the map), the eruptions
-  and impacts drawn on the map (`SPARKS`), and feeds the guided journeys (`JOURNEYS` in `app.js`).
+  and impacts drawn on the map (`SPARKS`; each belongs to a timeline event with sources, and a tap shows them —
+  the build refuses a spark without one), and feeds the guided journeys (`JOURNEYS` in `app.js`). A spark is
+  only drawn where the plates can carry its spot: they carry continents, not the ocean floor (no Ontong Java).
   `data_extinctions.js` holds the Extinctions view; each event names a scene in `SCENES` (`app.js`),
   a function of progress 0→1 drawn over the map through `WorldMap.setFx()`, while `playScene()` runs
   the timeline through the event. A scene illustrates the order of events the card describes — it
