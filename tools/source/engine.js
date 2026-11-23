@@ -1068,6 +1068,10 @@ void main() {
   // A scene the page wants drawn over the map (an extinction playing out). The engine only lends
   // it a canvas and a few helpers; what the scene means is the page's business.
   let fxHook = null, fxStill = false, scn = null, scx = null, glide = 0;
+  // While a hand is on the map the frames are light — no terrain shading, dotted coast or soft glow — and the full
+  // picture follows 160 ms after it lets go. Only touches, drags, pinches and the wheel do this, never the page itself.
+  let lite = false, liteTimer = 0;
+  function interact() { lite = true; clearTimeout(liteTimer); liteTimer = setTimeout(() => { lite = false; dirty = true; schedule(); }, 160); }
   let snap = null, snapCv = null, viewDirty = false, settle = 0, iceOff = false, hideBox = null, inkCv = null, ictx = null, todayCv = null, tdx = null, dotPat = null, terMask = null, tmx = null, reachPat = null;
   const inHide = p => { if (!hideBox) return false; const lo = Math.atan2(p.c[1], p.c[0]) * R2D, la = Math.asin(p.c[2]) * R2D; return lo >= hideBox[0] && lo <= hideBox[2] && la >= hideBox[1] && la <= hideBox[3]; };
   const fxHelp = {
@@ -1295,7 +1299,7 @@ void main() {
       c.globalAlpha = 0.86 * sea.k; c.fillStyle = mix(pal.o1, '#d6f2e6', 0.55); c.fill(sea.M);
       c.globalAlpha = 0.55 * sea.k; c.strokeStyle = mix(pal.o1, '#f4fbf6', 0.65); c.lineWidth = 1; c.stroke(sea.M);
       c.globalAlpha = 1;
-      const tc = terDraw(t, 'sea', 0.95 * sea.k);       // how deep the shallow seas were, inside the traced sea
+      const tc = lite ? null : terDraw(t, 'sea', 0.95 * sea.k);       // how deep the shallow seas were, inside the traced sea
       if (tc) { c.save(); c.clip(sea.M); c.setTransform(1, 0, 0, 1, 0, 0); c.imageSmoothingEnabled = true; c.drawImage(tc, 0, 0, canvas.width, canvas.height); c.restore(); }
     }
 
@@ -1355,7 +1359,7 @@ void main() {
     L.clearRect(0, 0, land.width, land.height);
     L.setTransform(dpr, 0, 0, dpr, 0, 0);
     L.fillStyle = pal.land; L.fill(lp);
-    const guide = sea && sea.snap && t < 405 ? sea.k * Math.min(1, (405 - t) / 5) : 0;   // before 410 Ma the land is the model's own blocks, not today's coasts
+    const guide = !lite && sea && sea.snap && t < 405 ? sea.k * Math.min(1, (405 - t) / 5) : 0;   // before 410 Ma the land is the model's own blocks, not today's coasts
     if (guide) {
       if (!todayCv) { todayCv = document.createElement('canvas'); tdx = todayCv.getContext('2d'); }
       if (todayCv.width !== land.width || todayCv.height !== land.height) { todayCv.width = land.width; todayCv.height = land.height; }
@@ -1406,10 +1410,10 @@ void main() {
     }
     // today's terrain as light and shadow — only while the land is where it is today (last ~2 million years)
     const hf = t <= 1 ? 1 : t >= 2 ? 0 : 2 - t;
-    if (hf > 0) drawHill(L, 0.85 * hf);
+    if (hf > 0 && !lite) drawHill(L, 0.85 * hf);
     // deep time: light and shadow from the ancient elevation maps, kept to the land
     if (sea) {
-      const tc = terDraw(t, 'land', 0.9 * sea.k);
+      const tc = lite ? null : terDraw(t, 'land', 0.9 * sea.k);
       if (tc) {
         if (!terMask) { terMask = document.createElement('canvas'); tmx = terMask.getContext('2d'); }
         if (terMask.width !== land.width || terMask.height !== land.height) { terMask.width = land.width; terMask.height = land.height; }
@@ -1484,6 +1488,7 @@ void main() {
     const Q = i => { const x = qc[i]; x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.clearRect(0, 0, qw, qh); return x; };
     const ring = (x, src, r, a) => { x.globalAlpha = a; for (let i = 0; i < 8; i++) { const an = i * Math.PI / 4 + 0.39; x.drawImage(src, Math.cos(an) * r, Math.sin(an) * r); } x.globalAlpha = 1; };
     const k4 = dpr / QS * 2;                       // effect radii scale with pixel density
+    if (!lite) {
     let x = Q(0); x.imageSmoothingQuality = 'low'; x.drawImage(land, 0, 0, qw, qh);            // q0: land silhouette
     x = Q(1); x.fillStyle = '#54300e'; x.fillRect(0, 0, qw, qh);
     x.globalCompositeOperation = 'destination-out'; x.drawImage(q[0], 0, 0);                   // q1: everything but land
@@ -1492,11 +1497,12 @@ void main() {
     x = Q(1); x.drawImage(q[0], 0, 0); x.globalCompositeOperation = 'source-in';
     x.fillStyle = '#e2f6f2'; x.fillRect(0, 0, qw, qh);                                         // q1: pale silhouette
     x = Q(3); ring(x, q[1], 1.1 * k4, 0.12); ring(x, q[1], 2.6 * k4, 0.07);                    // q3: shelf glow
+    }
 
     // shelf glow → ink coastline → land → coastal wash
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.imageSmoothingEnabled = true;
-    c.drawImage(q[3], 0, 0, land.width, land.height);
+    if (!lite) c.drawImage(q[3], 0, 0, land.width, land.height);
     if (motion && trail && trailLife > 0) { c.save(); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clip(sphere); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 0.7; c.drawImage(trail, 0, 0); c.restore(); }
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     // Plate pieces overlap along their seams, so stroking every piece and
@@ -1525,7 +1531,7 @@ void main() {
     }
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.drawImage(land, 0, 0);
-    c.drawImage(q[2], 0, 0, land.width, land.height);
+    if (!lite) c.drawImage(q[2], 0, 0, land.width, land.height);
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // the ice sheets, from the published reconstructions (iceAt above)
@@ -1556,7 +1562,7 @@ void main() {
     if (!snapCv) snapCv = document.createElement('canvas');
     if (snapCv.width !== canvas.width || snapCv.height !== canvas.height) { snapCv.width = canvas.width; snapCv.height = canvas.height; }
     const sx = snapCv.getContext('2d'); sx.setTransform(1, 0, 0, 1, 0, 0); sx.globalAlpha = 1; sx.globalCompositeOperation = 'copy'; sx.drawImage(canvas, 0, 0);
-    snap = { mode, scale: proj.scale(), tx: proj.translate()[0], ty: proj.translate()[1] }; viewDirty = false;
+    snap = { mode, scale: proj.scale(), tx: proj.translate()[0], ty: proj.translate()[1], lon: centerLon, zoom }; viewDirty = false;
     drawFx();
     if (api.onDraw) api.onDraw();
   }
@@ -1565,8 +1571,25 @@ void main() {
     const k = proj.scale() / snap.scale, [tx, ty] = proj.translate(), c = ctx;
     c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
     c.drawImage(sheet, 0, 0);                                       // paper behind whatever the old frame does not cover
-    c.setTransform(k, 0, 0, k, dpr * (tx - snap.tx * k), dpr * (ty - snap.ty * k));
-    c.imageSmoothingEnabled = true; c.drawImage(snapCv, 0, 0);
+    const dl = ((centerLon - snap.lon + 540) % 360) - 180;
+    if (Math.abs(dl) > 1e-6 && Math.abs(k - 1) < 1e-6) {
+      // the world turned on its axis (the flat map at full size): each row of latitude slides by its own amount and
+      // wraps round at the edge of the map, so the picture follows the hand exactly until the proper redraw
+      const top = proj([centerLon, 89.9])[1], bot = proj([centerLon, -89.9])[1], step = 3, cv = snapCv.width;
+      for (let y = top; y < bot; y += step) {
+        const la = proj.invert([proj([centerLon, 0])[0], y + step / 2]); if (!la) continue;
+        const xc = proj([centerLon, la[1]])[0], hw = proj([centerLon + 179.999, la[1]])[0] - xc; if (!(hw > 0)) continue;
+        const sh = -dl / 180 * hw, Y = Math.floor(y * dpr), Hh = Math.ceil(step * dpr) + 1, a = xc - hw + 1.5, b = xc + hw - 1.5;
+        for (const o of [0, -2 * (hw - 1.5), 2 * (hw - 1.5)]) {       // each copy only where its source lies inside the map
+          const off = sh + o, d0 = Math.max(a, a + off), d1 = Math.min(b, b + off); if (d1 <= d0) continue;
+          const X0 = Math.round(d0 * dpr), X1 = Math.round(d1 * dpr), S0 = Math.round((d0 - off) * dpr);
+          if (X1 > X0 && S0 >= 0 && S0 + (X1 - X0) <= cv) c.drawImage(snapCv, S0, Y, X1 - X0, Hh, X0, Y, X1 - X0, Hh);
+        }
+      }
+    } else {
+      c.setTransform(k, 0, 0, k, dpr * (tx - snap.tx * k), dpr * (ty - snap.ty * k));
+      c.imageSmoothingEnabled = true; c.drawImage(snapCv, 0, 0);
+    }
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     hits = []; rings = [];                                          // positions are stale until the proper redraw
     drawFx();
@@ -1886,7 +1909,7 @@ void main() {
     raf = 0;
     if (dirty) { clearTimeout(settle); draw(); } else if (viewDirty && snap) drawQuick(); else drawFx();
     if (document.hidden) return;
-    if ((trailLife > 0 || performance.now() < animUntil) && !dirty) dirty = true;                       // keep fading the wake after the land stops
+    if ((trailLife > 0 || performance.now() < animUntil) && !dirty && !lite) dirty = true;             // keep fading the wake after the land stops — but not under a moving hand
     if (rings.length || trailLife > 0 || (fxHook && !fxStill) || performance.now() < animUntil || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
   }
   function resize() {
@@ -1920,10 +1943,10 @@ void main() {
       pts.set(e.pointerId, p);
       if (pts.size === 1) {
         const dx = p[0] - prev[0], dy = p[1] - prev[1]; moved += Math.abs(dx) + Math.abs(dy);
-        if (moved > 4) { api.panBy(dx, dy); canvas.style.cursor = 'grabbing'; const n = performance.now(); trail.push([n, dx, dy]); while (trail.length && n - trail[0][0] > 90) trail.shift(); }
+        if (moved > 4) { interact(); api.panBy(dx, dy); canvas.style.cursor = 'grabbing'; const n = performance.now(); trail.push([n, dx, dy]); while (trail.length && n - trail[0][0] > 90) trail.shift(); }
       } else if (pts.size === 2) {
         const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
-        if (pinch > 0) api.zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinch);
+        if (pinch > 0) { interact(); } if (pinch > 0) api.zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinch);
         pinch = d; moved += 10;
       }
     });
@@ -1935,7 +1958,7 @@ void main() {
         let vx = trail.reduce((a, q) => a + q[1], 0) / span, vy = trail.reduce((a, q) => a + q[2], 0) / span;   // px per ms
         if (Math.hypot(vx, vy) > 0.25) {
           const id = ++glide; let last = performance.now();
-          const coast = now => { if (id !== glide) return; const dt = Math.min(40, now - last); last = now; vx *= Math.pow(0.9955, dt); vy *= Math.pow(0.9955, dt); if (Math.hypot(vx, vy) < 0.02) return; api.panBy(vx * dt, vy * dt); requestAnimationFrame(coast); };
+          const coast = now => { if (id !== glide) return; const dt = Math.min(40, now - last); last = now; vx *= Math.pow(0.9955, dt); vy *= Math.pow(0.9955, dt); if (Math.hypot(vx, vy) < 0.02) return; interact(); api.panBy(vx * dt, vy * dt); requestAnimationFrame(coast); };
           requestAnimationFrame(coast);
         }
       }
@@ -1948,7 +1971,7 @@ void main() {
     };
     canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
     canvas.addEventListener('pointerleave', () => { if (api.onHover) api.onHover(null, 0, 0); });
-    canvas.addEventListener('wheel', e => { e.preventDefault(); const p = pos(e); api.zoomAt(p[0], p[1], e.deltaY < 0 ? 1.18 : 1 / 1.18); }, { passive: false });
+    canvas.addEventListener('wheel', e => { e.preventDefault(); interact(); const p = pos(e); api.zoomAt(p[0], p[1], e.deltaY < 0 ? 1.18 : 1 / 1.18); }, { passive: false });
     canvas.addEventListener('dblclick', e => { const p = pos(e); api.zoomAt(p[0], p[1], 2); });
   }
 
@@ -2075,7 +2098,7 @@ void main() {
     redraw() { dirty = true; schedule(); },
     resize,
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
-    _draw: draw, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
+    _draw: () => { lite = false; draw(); }, _drawLite: () => { lite = true; draw(); lite = false; }, _interact: interact, _isLite: () => lite, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
     /* Which land pieces cover a present-day point (for checks): 'index:family[from..to]' list. */
     /* How much of the continents was under the sea at t, in percent (and today), from the same maps; null where there are none. */
     seaShare(t) { if (!SEA.P || seaFade(t) <= 0) return null; const i = seaStep(t); return { pct: SEA.P.share[i] / 10, high: SEA.P.high[i] / 10, today: SEA.P.share[0] / 10, map: i * SEA.P.step }; },

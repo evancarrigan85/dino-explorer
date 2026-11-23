@@ -500,6 +500,17 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('kin: tapping one takes the map to its time, and the view stays', await p.evaluate(() => S.sel === 'deinotherium' && S.t <= 20 && S.t >= 1 && S.view === 'kin' && document.querySelector('#lifeList .kin-row.sel[data-key="deinotherium"]')));
   await p.click('#lifeList [data-kin-back]'); await p.waitForTimeout(300);
   ok('kin: back to the list, and the map shows only what is alive again', await p.evaluate(() => S.view === 'list' && WorldMap._markers().every(x => !x.dim && !x.tag)));
+  // dragging: the picture follows the hand without full redraws, and frames are light until it lets go
+  {
+    await p.evaluate(() => { WorldMap.setMode('flat'); WorldMap.resetView(); setTime(100); }); await p.waitForTimeout(900);
+    const bb = await (await p.$('#mapCanvas')).boundingBox(), cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2;
+    const f0 = await p.evaluate(() => WorldMap._fullDraws());
+    await p.mouse.move(cx, cy); await p.mouse.down(); for (let i = 1; i <= 20; i++) { await p.mouse.move(cx + i * 10, cy); await p.waitForTimeout(16); }
+    const mid = await p.evaluate(() => [WorldMap._fullDraws(), WorldMap._isLite()]); await p.mouse.up(); await p.waitForTimeout(1800);   // a flick coasts to a stop first
+    ok('drag: spinning the flat map moves the last picture row by row — at most a few (light) redraws in 20 moves, and the full picture comes back after', mid[0] - f0 <= 4 && mid[1] === true && await p.evaluate(f => WorldMap._fullDraws() > f && !WorldMap._isLite(), f0), JSON.stringify([mid[0] - f0, mid[1]]));
+    ok('drag: a light frame is quicker than a full one in deep time (about 4× with the terrain on, over http)', await p.evaluate(() => { let a = 0, b = 0; for (let i = 0; i < 3; i++) { WorldMap._draw(); a += WorldMap.stats().ms; WorldMap._drawLite(); b += WorldMap.stats().ms; } return b < a; }));
+    await p.evaluate(() => WorldMap.resetView());
+  }
   // the benchmark: the map against independent evidence, never worse than the recorded baseline
   { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
     ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));

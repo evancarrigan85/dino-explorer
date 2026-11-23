@@ -90,7 +90,10 @@ builds, passes the checks and has been looked at.
   loaded on demand and indexed by `HILL_HAVE` / `COAST_HAVE` in the page. They show today's land, so
   they fade out before about 2 million years (terrain) and are used only in the last ~7,000 years
   (coast). Everything else stays inside the one file. While the flat map is dragged or zoomed it moves
-  the last finished frame (`drawQuick`) and redraws properly 140 ms after the hand stops.
+  the last finished frame (`drawQuick`; a spin at full size slides each row of latitude by its own amount) and
+  redraws properly 140 ms after the hand stops. While a hand is on the map (`interact()`) every frame is light —
+  no WebGL terrain, dotted coast, soft glow or hill shading — and decorations never force a redraw; the full
+  picture follows 160 ms after it lets go. A full deep-time frame costs 4× a light one.
 - `engine.js` is `WorldMap`: a canvas map that carries today's coastlines back in time on their
   tectonic plates (Merdith et al. 2021), with Ice Age shorelines, ice, relief, labels, markers and a
   pin. It knows nothing about animals. From 540 Ma to 3 Ma it also draws **seas over the continents**

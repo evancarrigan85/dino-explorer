@@ -542,6 +542,14 @@ landLife 93.6% · facts 23/26. Next moves, best first:
 
 ## Shipped
 
+- **23 Nov 2026 — Dragging the map, fixed.** Evan: “when I try to drag the map it’s super glitchy.” Measured:
+  a full deep-time frame took 250–300 ms (most of it copying the WebGL terrain and a soft coastal glow), the
+  globe redrew in full on every movement (about 4 frames a second), the flat map at full size froze while
+  spun and then jumped, and the fading wakes forced full redraws even mid-drag. Now: while a hand is on the
+  map the frames are light (about 4× quicker), decorations wait, and a spin of the flat map slides each row
+  of latitude by exactly its own amount so the picture follows the hand; full quality returns 160 ms after
+  it lets go. 241 checks.
+
 - **23 Nov 2026 — Kin through time.** Evan: “if you pick an elephant we should see a view option for all
   those types of animals through time.” Every card now has “All 15 elephants & kin through time →” (or
   its own family: the deepest branch of its lineage with three or more animals). It opens the family on one
