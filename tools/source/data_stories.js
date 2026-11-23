@@ -6,9 +6,24 @@
 // shapes on it (ice edges, old lakes) are labelled sketches. Sources: refs_wanted.txt target s:<id>.
 //   ka      [k (0..1 through the story), thousand years ago] — how the clock runs through the story
 //   view    [lat, lon, zoom] to look at
+//   win     optional [from, to] in millions of years: the stretch of the timeline to show while it plays
 //   margin  the southern edge of the ice sheet as a rough sketch: { lons, edges: [[ka, lats per lon]] },
 //           after the dated ice-margin maps of Dalton et al. (2020)
 const STORIES = [
+  { id: 'moon', icon: '🌑', title: 'How the Moon was made', short: 'The Moon',
+    blurb: 'A planet the size of Mars hits the young Earth, and the wreckage becomes the Moon — as the computer models tell it.',
+    ma: [[0, 4567], [0.18, 4540], [0.3, 4515], [0.62, 4505], [0.8, 4470], [1, 4390]], view: [0, 0, 1, 'abs'], win: [4567, 4300],
+    steps: [[0, '4,567 million years ago. Around the young Sun, dust sticks into pebbles, pebbles into rocks, and rocks into small planets.'],
+      [0.14, 'The Earth grows by swallowing them. Each crash heats it, and much of its surface may be molten rock.'],
+      [0.27, 'Then a planet about the size of Mars — scientists call it Theia — hits the Earth a glancing blow.'],
+      [0.38, 'Molten rock and hot vapour are thrown into space, and form a glowing ring around the Earth.'],
+      [0.52, 'In the computer models the ring clumps together into one Moon very fast — in years, or perhaps a few centuries.'],
+      [0.66, 'The new Moon is many times closer than today. Its pull raises tides that slow the Earth’s spin and push the Moon away. It is still moving away: about 3.8 cm a year, measured with lasers bounced off mirrors the Apollo astronauts left.'],
+      [0.84, 'The Earth cools. By about 4.4 billion years ago it has a hard crust, and liquid water.']],
+    know: 'Moon rocks brought back by the Apollo astronauts have almost exactly the same mix of kinds of oxygen as Earth rocks: the two are made of the same stuff. The Moon has only a small iron core, and its rocks have lost much of the zinc and other elements that boil away easily — signs of great heat. A giant impact near the end of the Earth’s growth, run in a computer, can make a Moon like that. The idea was first put forward in 1975.',
+    debate: 'How the impact happened is argued over: a glancing blow from a Mars-sized planet, a faster hit on a fast-spinning Earth, a crash between two planets of about the same size, or many smaller hits. When it happened is argued too: from about 4.51 billion years ago to about 4.35.',
+    onmap: 'the picture is drawn from computer models of the impact, not to scale: the sizes of the Earth, Theia and the Moon are about right against each other, but not the distances. The map has no land this far back.',
+  },
   { id: 'greatlakes', icon: '🧊', title: 'How the Great Lakes were made', short: 'The Great Lakes',
     blurb: 'An ice sheet three kilometres thick scrapes out five basins — then melts, and fills them.',
     ka: [[0, 26], [0.12, 22], [0.3, 18], [0.45, 14.5], [0.55, 12.5], [0.66, 11], [0.78, 8.2], [0.9, 5], [1, 4]],

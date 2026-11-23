@@ -1217,14 +1217,82 @@ const STORY_SCENES = {
 // labels placed most-important first, none on top of another: [priority, text, x, y, size, colour, italic]
 function placeLabels(c, items) {
   const placed = [];
-  items.sort((a, b) => a[0] - b[0]).forEach(([, txt, x, y, size, col, italic]) => {
+  items.sort((a, b) => a[0] - b[0]).forEach(([, txt, x, y, size, col, italic, halo]) => {
     c.font = `${italic ? 'italic ' : ''}700 ${size}px Inter,system-ui,sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
     const w = c.measureText(txt).width + 8, h = size + 6, box = [x - w / 2, y - h / 2, w, h];
     if (placed.some(b => box[0] < b[0] + b[2] && box[0] + box[2] > b[0] && box[1] < b[1] + b[3] && box[1] + box[3] > b[1])) return;
-    placed.push(box); c.lineWidth = 3.5; c.strokeStyle = 'rgba(255,255,255,0.88)'; c.strokeText(txt, x, y); c.fillStyle = col; c.fillText(txt, x, y);
+    placed.push(box); c.lineWidth = 3.5; c.strokeStyle = halo || 'rgba(255,255,255,0.88)'; c.strokeText(txt, x, y); c.fillStyle = col; c.fillText(txt, x, y);
   });
 }
 Object.assign(STORY_SCENES, {
+  // The Moon-forming impact as the computer models tell it: a window into space inside the map's frame, not to scale.
+  // Everything moves with the story's progress k and the clock; nothing is left to chance (the stars come from a hash).
+  moon(g, k, st, now) {
+    const W = g.W, H = g.H, R = Math.min(W, H) * 0.13, E = [W * 0.42, H * 0.5], L = [];
+    const lab = (txt, p, size, col, italic, pri, dx = 0, dy = 0) => { if (p) L.push([pri, txt, p[0] + dx, p[1] + dy, size, col, italic, 'rgba(5,8,18,0.92)']); };
+    const hash = i => { const s = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); };
+    const mixc = (a, b, u) => 'rgb(' + a.map((v, i) => Math.round(v + (b[i] - v) * u)).join(',') + ')';
+    const cool = ramp(k, 0.8, 0.95), rE = R * (0.78 + 0.22 * ramp(k, 0, 0.27));
+    const tilt = -0.2, orbit = (rx, a) => { const x = Math.cos(a) * rx, y = Math.sin(a) * rx * 0.3; return [E[0] + x * Math.cos(tilt) - y * Math.sin(tilt), E[1] + x * Math.sin(tilt) + y * Math.cos(tilt)]; };
+    const ring = ramp(k, 0.34, 0.42) * (1 - ramp(k, 0.5, 0.62)), mo = ramp(k, 0.48, 0.62), out = ramp(k, 0.64, 0.86);
+    const th = -0.7, P = [E[0] + Math.cos(th) * rE, E[1] + Math.sin(th) * rE];                       // where Theia strikes
+    const rT = R * 0.53, C = [E[0] + Math.cos(th) * (R + rT * 0.9), E[1] + Math.sin(th) * (R + rT * 0.9)], v = [-0.94, 0.34];
+    const ut = ramp(k, 0.17, 0.3), T = [C[0] - v[0] * R * 4.2 * (1 - ut * ut), C[1] - v[1] * R * 4.2 * (1 - ut * ut)], tA = ramp(k, 0.17, 0.2) * (1 - ramp(k, 0.3, 0.335));
+    const flash = ramp(k, 0.29, 0.305) * (1 - ramp(k, 0.31, 0.4));
+    const mr = R * 0.27 * mo, ma = now / (1500 * (1 + 2.2 * out)), mrx = R * (2.3 + 2.3 * out), M = orbit(mrx, ma), front = Math.sin(ma) > 0;
+    g.layer('all', c => {
+      // the sky, and stars that twinkle with the clock
+      c.fillStyle = '#04060e'; c.fillRect(0, 0, W, H);
+      for (let i = 0; i < 150; i++) { const x = hash(i) * W, y = hash(i + 400) * H, tw = 0.55 + 0.45 * Math.sin(now / (700 + hash(i + 800) * 900) + i); c.fillStyle = `rgba(230,235,255,${(0.25 + 0.5 * hash(i + 1200)) * tw})`; c.fillRect(x, y, 1.2 + hash(i + 1600), 1.2 + hash(i + 1600)); }
+      const band = (back, r0, a0) => {   // the ring of molten rock: its far half behind the Earth, its near half in front
+        if (ring <= 0) return;
+        c.lineCap = 'round';
+        for (let j = 0; j < 3; j++) { c.beginPath(); for (let q = 0; q <= 48; q++) { const a = (back ? Math.PI : 0) + q / 48 * Math.PI, p = orbit(R * (r0 + j * 0.32), a); q ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); } c.strokeStyle = `rgba(255,${150 + 35 * j},${70 + 45 * j},${(0.42 - j * 0.08) * ring * a0})`; c.lineWidth = R * 0.2; c.stroke(); }
+        for (let i = 0; i < 46; i++) { const a = hash(i + 2000) * 6.283 + now / (700 + hash(i + 2100) * 800), sn = Math.sin(a); if ((sn < 0) !== back) continue; const p = orbit(R * (2 + hash(i + 2200) * 0.95), a); c.beginPath(); c.arc(p[0], p[1], 1 + hash(i + 2300) * R * 0.05, 0, 7); c.fillStyle = `rgba(255,${200 + 40 * hash(i)},150,${0.85 * ring * a0})`; c.fill(); }
+      };
+      const moon = () => { if (mr < 0.5) return; const gr = c.createRadialGradient(M[0] - mr * 0.35, M[1] - mr * 0.35, mr * 0.1, M[0], M[1], mr); gr.addColorStop(0, mixc([255, 214, 160], [236, 232, 222], ramp(k, 0.6, 0.8))); gr.addColorStop(1, mixc([170, 70, 30], [96, 94, 92], ramp(k, 0.6, 0.8))); c.fillStyle = gr; c.beginPath(); c.arc(M[0], M[1], mr, 0, 7); c.fill(); };
+      // the Moon's widening orbit, dashed
+      if (out > 0) { c.setLineDash([3, 6]); c.strokeStyle = `rgba(200,210,235,${0.45 * out})`; c.lineWidth = 1.2; c.beginPath(); for (let q = 0; q <= 64; q++) { const p = orbit(mrx, q / 64 * 6.283); q ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); } c.stroke(); c.setLineDash([]); }
+      band(true, 2.05, 1);
+      if (!front) moon();
+      // rocks and small planets falling in, each ending in a small flash on the surface
+      const rk = 1 - ramp(k, 0.24, 0.3);
+      if (rk > 0) for (let i = 0; i < 14; i++) { const u = (now / 2600 + i / 14) % 1, a = i * 2.39 + u * 1.2, d = rE * (1 + 2.6 * (1 - u)), p = [E[0] + Math.cos(a) * d, E[1] + Math.sin(a) * d * 0.8];
+        if (u > 0.94) glow(c, [E[0] + Math.cos(a) * rE, E[1] + Math.sin(a) * rE * 0.8], R * 0.22 * rk, [[0, 'rgba(255,230,170,0.9)'], [1, 'rgba(255,120,40,0)']]);
+        else { c.beginPath(); c.arc(p[0], p[1], R * (0.03 + 0.04 * hash(i + 3000)), 0, 7); c.fillStyle = `rgba(150,120,100,${rk})`; c.fill(); } }
+      // the Earth: molten, then cooling to oceans; a soft glow while it is molten
+      if (cool < 1) glow(c, E, rE * 1.35, [[0.6, `rgba(255,110,40,${0.35 * (1 - cool)})`], [1, 'rgba(255,80,20,0)']]);
+      const gr = c.createRadialGradient(E[0] - rE * 0.35, E[1] - rE * 0.35, rE * 0.1, E[0], E[1], rE);
+      gr.addColorStop(0, mixc([255, 196, 100], [130, 188, 230], cool)); gr.addColorStop(0.55, mixc([210, 70, 22], [40, 104, 162], cool)); gr.addColorStop(1, mixc([88, 20, 10], [12, 36, 70], cool));
+      c.fillStyle = gr; c.beginPath(); c.arc(E[0], E[1], rE, 0, 7); c.fill();
+      c.save(); c.beginPath(); c.arc(E[0], E[1], rE, 0, 7); c.clip();
+      for (let i = 0; i < 10; i++) { const y = E[1] + (hash(i + 3100) * 1.7 - 0.85) * rE, x = E[0] - rE + ((hash(i + 3200) + now / 9000) % 1) * 2.4 * rE - 0.2 * rE, w = rE * (0.25 + 0.35 * hash(i + 3300));
+        c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + w / 2, y - rE * 0.06, x + w, y + rE * 0.02);
+        c.strokeStyle = cool < 0.5 ? `rgba(255,214,120,${0.8 * (1 - cool * 2)})` : `rgba(255,255,255,${0.55 * (cool - 0.5) * 2})`; c.lineWidth = cool < 0.5 ? 1.6 : rE * 0.07; c.lineCap = 'round'; c.stroke(); }
+      c.restore();
+      // Theia, coming in, then gone into the Earth
+      if (tA > 0) { const sq = 1 - 0.4 * ramp(k, 0.3, 0.335), gt = c.createRadialGradient(T[0] - rT * 0.3, T[1] - rT * 0.3, rT * 0.1, T[0], T[1], rT); gt.addColorStop(0, `rgba(230,170,120,${tA})`); gt.addColorStop(1, `rgba(120,60,40,${tA})`); c.fillStyle = gt; c.beginPath(); c.ellipse(T[0], T[1], rT * sq, rT, 0, 0, 7); c.fill(); }
+      // the impact flash, and the spray of rock that becomes the ring
+      if (flash > 0) glow(c, P, R * (0.5 + 1.8 * ramp(k, 0.3, 0.36)), [[0, `rgba(255,252,235,${flash})`], [0.35, `rgba(255,200,110,${0.7 * flash})`], [1, 'rgba(255,120,40,0)']]);
+      const spray = ramp(k, 0.3, 0.32) * (1 - ramp(k, 0.38, 0.44));
+      if (spray > 0) for (let i = 0; i < 36; i++) { const s = ramp(k, 0.3 + hash(i + 4000) * 0.02, 0.42), q = orbit(R * (2 + hash(i + 4100) * 0.9), -0.9 + s * (1.4 + hash(i + 4200) * 2.4)), e = 1 - (1 - s) * (1 - s), p = [P[0] + (q[0] - P[0]) * e, P[1] + (q[1] - P[1]) * e]; c.beginPath(); c.arc(p[0], p[1], 1.2 + hash(i + 4300) * 2, 0, 7); c.fillStyle = `rgba(255,${190 + 50 * hash(i)},120,${spray})`; c.fill(); }
+      band(false, 2.05, 1);
+      if (front) moon();
+      // names for everything that glows or moves
+      const top = [E[0], E[1] - rE], below = [E[0], E[1] + rE], eAt = k < 0.33 ? below : top, eDy = k < 0.33 ? 16 : -14;   // above the Earth once the Moon circles it
+      if (k < 0.3) lab('young Earth — its surface molten', eAt, 12, '#ffcf9a', false, 1, 0, eDy);
+      else if (cool < 0.3) lab('the Earth, molten after the impact', eAt, 12, '#ffcf9a', false, 1, 0, eDy);
+      else lab('the Earth cools: a hard crust, and oceans', eAt, 12, '#bfe0ff', false, 1, 0, eDy);
+      if (rk > 0.3 && k < 0.26) lab('rocks and small planets crashing in', [E[0], E[1] - rE * 3], 11, '#e6d6c8', true, 3);
+      if (tA > 0.4 && k < 0.31) lab('Theia — about the size of Mars', T, 12, '#ffd9b8', false, 1, 0, -rT - 12);
+      if (flash > 0.15) lab('the impact', P, 13, '#fff1d6', false, 0, R * 0.9, -R * 0.55);
+      if (ring > 0.3) lab('a ring of molten rock and vapour', orbit(R * 2.6, Math.PI / 2), 11, '#ffc58a', true, 2, 0, R * 0.35);
+      if (mo > 0.5) lab(out > 0.15 ? 'the Moon, moving away' : 'the Moon', M, 12, '#e8e6e0', false, 2, 0, -mr - 11);
+      if (out > 0.3) lab('still moving away today: about 3.8 cm a year', orbit(mrx, Math.PI / 2), 10.5, '#c9d3ea', true, 4, 0, 14);
+      lab(W < 560 ? 'computer models · not to scale' : 'a picture of the computer models · not to scale', [W / 2, H * 0.83], 10, '#9aa6c4', true, 0);
+      placeLabels(c, L);
+    });
+  },
   // India's journey north and the mountains it pushes up
   himalaya(g, k, st, now) {
     const sc = S.story, t = S.t, L = [], lab = (txt, p, size, col, italic, pri, dx = 0, dy = 0) => { if (p) L.push([pri, txt, p[0] + dx, p[1] + dy, size, col, italic]); };
@@ -1345,7 +1413,8 @@ function playStory(id) {
   if (S.scene) stopScene();
   stopPlay(); cancelTween(); closeFact(); if (S.jr) endJourney();
   const ck = clockOf(st), t0 = ck[0][1] / 1000, t1 = ck[ck.length - 1][1] / 1000;
-  setWindow(t0 * 1.15, 0, true); setTime(t0);
+  if (st.win) setWindow(st.win[0], st.win[1], true); else setWindow(t0 * 1.15, 0, true);
+  setTime(t0);
   WorldMap.resetView(); if (WorldMap.mode === 'flat') WorldMap.zoomBy(st.view[2]);
   if (st.view[3] === 'abs') WorldMap.lookAtLL(st.view[1], st.view[0]); else WorldMap.lookAt(WorldMap.attach(st.view[0], st.view[1], t0));
   if (!WorldMap.motion) { setTime(t1); showFact(st.icon, '<b>' + esc(st.title) + '.</b> ' + st.steps.map(x => esc(x[1])).join(' '), 24000); return; }

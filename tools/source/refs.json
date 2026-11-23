@@ -8653,7 +8653,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:hadean"
+"p:hadean",
+"s:moon"
 ],
 "first": "",
 "title_expected": "The Absolute Chronology and Thermal Processing of Solids in the Solar Protoplanetary Disk"
@@ -8671,7 +8672,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:hadean"
+"p:hadean",
+"s:moon"
 ],
 "first": "",
 "title_expected": "Early formation of the Moon 4.51 billion years ago"
@@ -8687,7 +8689,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:hadean"
+"p:hadean",
+"s:moon"
 ],
 "first": "",
 "title_expected": "Origin of the Moon in a giant impact near the end of the Earth's formation"
@@ -8705,7 +8708,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:hadean"
+"p:hadean",
+"s:moon"
 ],
 "first": "",
 "title_expected": "Evidence from detrital zircons for the existence of continental crust and oceans on the Earth 4.4 Gyr ago"
@@ -8986,5 +8990,188 @@
 ],
 "first": "",
 "title_expected": "Microorganisms from the Gunflint Chert"
+},
+"hartmann1975": {
+"doi": "10.1016/0019-1035(75)90070-6",
+"title": "Satellite-sized planetesimals and lunar origin",
+"journal": "Icarus",
+"year": 1975,
+"authors": [
+"Hartmann",
+"Davis"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Satellite-sized planetesimals and lunar origin"
+},
+"ida1997": {
+"doi": "10.1038/38669",
+"title": "Lunar accretion from an impact-generated disk",
+"journal": "Nature",
+"year": 1997,
+"authors": [
+"Ida",
+"Canup",
+"Stewart"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Lunar accretion from an impact-generated disk"
+},
+"salmon2012": {
+"doi": "10.1088/0004-637x/760/1/83",
+"title": "Lunar Accretion from a Roche-interior Fluid Disk",
+"journal": "The Astrophysical Journal",
+"year": 2012,
+"authors": [
+"Salmon",
+"Canup"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Lunar accretion from a Roche-interior fluid disk"
+},
+"wiechert2001": {
+"doi": "10.1126/science.1063037",
+"title": "Oxygen Isotopes and the Moon-Forming Giant Impact",
+"journal": "Science",
+"year": 2001,
+"authors": [
+"Wiechert",
+"Halliday",
+"Lee",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Oxygen isotopes and the Moon-forming giant impact"
+},
+"paniello2012": {
+"doi": "10.1038/nature11507",
+"title": "Zinc isotopic evidence for the origin of the Moon",
+"journal": "Nature",
+"year": 2012,
+"authors": [
+"Paniello",
+"Day",
+"Moynier"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Zinc isotopic evidence for the origin of the Moon"
+},
+"dickey1994": {
+"doi": "10.1126/science.265.5171.482",
+"title": "Lunar Laser Ranging: A Continuing Legacy of the Apollo Program",
+"journal": "Science",
+"year": 1994,
+"authors": [
+"Dickey",
+"Bender",
+"Faller",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Lunar laser ranging: a continuing legacy of the Apollo program"
+},
+"borg2011": {
+"doi": "10.1038/nature10328",
+"title": "Chronological evidence that the Moon is either young or did not have a global magma ocean",
+"journal": "Nature",
+"year": 2011,
+"authors": [
+"Borg",
+"Connelly",
+"Boyet",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Chronological evidence that the Moon is either young or did not have a global magma ocean"
+},
+"cuk2012": {
+"doi": "10.1126/science.1225542",
+"title": "Making the Moon from a Fast-Spinning Earth: A Giant Impact Followed by Resonant Despinning",
+"journal": "Science",
+"year": 2012,
+"authors": [
+"Ćuk",
+"Stewart"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Making the Moon from a fast-spinning Earth: a giant impact followed by resonant despinning"
+},
+"canup2012": {
+"doi": "10.1126/science.1226073",
+"title": "Forming a Moon with an Earth-like Composition via a Giant Impact",
+"journal": "Science",
+"year": 2012,
+"authors": [
+"Canup"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Forming a Moon with an Earth-like composition via a giant impact"
+},
+"rufu2017": {
+"doi": "10.1038/ngeo2866",
+"title": "A multiple-impact origin for the Moon",
+"journal": "Nature Geoscience",
+"year": 2017,
+"authors": [
+"Rufu",
+"Aharonson",
+"Perets"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "A multiple-impact origin for the Moon"
+},
+"elkinstanton2012": {
+"doi": "10.1146/annurev-earth-042711-105503",
+"title": "Magma Oceans in the Inner Solar System",
+"journal": "Annual Review of Earth and Planetary Sciences",
+"year": 2012,
+"authors": [
+"Elkins-Tanton"
+],
+"type": "journal-article",
+"targets": [
+"s:moon"
+],
+"first": "",
+"title_expected": "Magma oceans in the inner solar system"
 }
 }

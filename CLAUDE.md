@@ -128,7 +128,7 @@ builds, passes the checks and has been looked at.
   the timeline through the event. A scene illustrates the order of events the card describes — it
   must not show anything the card does not say.
   `data_stories.js` holds “Watch the Earth being made” in the Geology tab — the same idea for how land
-  formed (first: the Great Lakes). `playStory()` runs the clock through `ka`, `STORY_SCENES` draws
+  formed (the Moon-forming impact, the Himalayas, the Mediterranean, Hawaii, the Great Lakes). `playStory()` runs the clock through `ka` (or `ma`; `win` sets the stretch of timeline shown), `STORY_SCENES` draws
   over the map, and while a story plays the map's own ice is hidden (`setIceOff`) and animals step aside.
   `data_mammals.js` holds the Age of Mammals chapter by chapter: each epoch from the Paleocene to the
   Pliocene has a chapter (`S.chapter`, `getChapter()`) that takes over the header, the map title and the
