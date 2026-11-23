@@ -18,7 +18,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 472, every one a published work confirmed in Crossref |
+| References | 478, every one a published work confirmed in Crossref |
 | Age of Mammals | Told epoch by epoch: Paleocene, Eocene, Oligocene, Miocene and Pliocene each have their own chapter (header, map title, Insights), with sources |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
@@ -506,7 +506,7 @@ changes the live address, so **ask Evan** first.
 ## Release 11 — Back to the birth of the Earth (Evan, 23 Nov: “go back to the proto-Earth, before the Moon collided”; “Earth like a geoid, the real shape, as an option”)
 
 The honest map runs out in steps; each step is said on the page.
-1. **1000 → 720 Ma (Rodinia breaking up).** Merdith et al. 2021 already covers it — the site stops at 720 Ma
+1. ~~1000 → 720 Ma~~ **Shipped 23 Nov 2026.** Was: (Rodinia breaking up). Merdith et al. 2021 already covers it — the site stops at 720 Ma
    only because `MAXT = 720` in `tools/build_plates.py`. Model on Zenodo 4485738 (CC BY 4.0). Rebuild the plates,
    seas (PaleoDEMs stop at 540 Ma, so before that land only), labels, timeline (Tonian), and the benchmark.
 2. **1800 → 1000 Ma (Nuna/Columbia).** Cao et al. 2024, “Earth’s tectonic and plate boundary evolution over
@@ -566,6 +566,18 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — Back to a billion years: the Tonian and Rodinia.** The map and timeline now start at
+  1,000 million years ago instead of 720: the plate model (Merdith et al. 2021) always reached that far,
+  the site had stopped at the Cryogenian by choice. Plates rebuilt (220 families), and the seas and terrain
+  layers rebuilt on them. A Tonian period card (“The World of Rodinia”) with sourced insights — Rodinia
+  gathering around North America and breaking up, bare land, 19-hour days — and its life: the oldest
+  fungus (Ourasphaira), the oldest green seaweed (Proterocladus), a possible 890-million-year-old sponge
+  (marked as argued over), and amoebae in vase-shaped shells; a food web; six timeline events; a first
+  stop for the reader’s own line and the drift journey; a Rodinia label. The map follows the model, where
+  many blocks are still apart a billion years ago, and the card says which pieces belonged is argued over.
+  Plants and seaweeds no longer say “Plant-eater”: they make their own food from sunlight. 6 new
+  references (478). Benchmark unchanged. 245 checks.
 
 - **23 Nov 2026 — Dragging the map, fixed.** Evan: “when I try to drag the map it’s super glitchy.” Measured:
   a full deep-time frame took 250–300 ms (most of it copying the WebGL terrain and a soft coastal glow), the

@@ -28,7 +28,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.mouse.wheel(0, 3000); await p.waitForTimeout(250);
   for (let i = 0; i < 20; i++) await p.mouse.wheel(0, 600);
   await p.waitForTimeout(200);
-  ok('wheel zooms back out to all time', await p.evaluate(() => S.win[0] === 720 && S.win[1] === 0), JSON.stringify(await p.evaluate(() => S.win)));
+  ok('wheel zooms back out to all time', await p.evaluate(() => S.win[0] === T_MAX && T_MAX === 1000 && S.win[1] === 0), JSON.stringify(await p.evaluate(() => S.win)));
   // brush: drag the left handle inward
   await p.click('#tlPresets .chip:nth-child(1)'); await p.waitForTimeout(150);
   const ov = await p.locator('#tlOverview').boundingBox();
@@ -36,7 +36,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('brush handle zooms', await p.evaluate(() => S.win[0] < 300 && S.win[0] > 150 && S.win[1] === 0), JSON.stringify(await p.evaluate(() => S.win)));
   await p.click('#tlPresets .chip:nth-child(1)');
   // slider
-  await p.evaluate(() => { const s = document.getElementById('timeSlider'); s.value = 6560; s.dispatchEvent(new Event('input')); });
+  await p.evaluate(() => { const s = document.getElementById('timeSlider'); s.value = Math.round(storyPos(68.3) * (+s.max / 1000)); s.dispatchEvent(new Event('input')); });
   await p.waitForTimeout(400);
   ok('slider moves time', await p.evaluate(() => Math.abs(S.t - 68.5) < 1 && S.period.id === 'cretaceous'), String(await p.evaluate(() => S.t)));
   // tabs
@@ -165,7 +165,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   // you: the reader's own line
   await p.evaluate(() => { setWindow(T_MAX, 0, true); setTime(250); }); await p.waitForTimeout(200);
   ok('you: the bar names your ancestor at this moment', await p.evaluate(() => /cynodont/.test(document.getElementById('youBar').innerText) && /Thrinaxodon/.test(document.getElementById('youBar').innerText)));
-  ok('you: the line runs unbroken from 720 million years ago to today', await p.evaluate(() => YOU_LINE[0].from === 720 && YOU_LINE[YOU_LINE.length - 1].to === 0 && YOU_LINE.every((y, i) => !i || YOU_LINE[i - 1].to === y.from) && [700, 500, 300, 100, 10, 1, 0].every(t => youAt(t) && t <= youAt(t).from && t >= youAt(t).to)));
+  ok('you: the line runs unbroken from a billion years ago to today', await p.evaluate(() => YOU_LINE[0].from === 1000 && YOU_LINE[YOU_LINE.length - 1].to === 0 && YOU_LINE.every((y, i) => !i || YOU_LINE[i - 1].to === y.from) && [700, 500, 300, 100, 10, 1, 0].every(t => youAt(t) && t <= youAt(t).from && t >= youAt(t).to)));
   await p.click('#youBar'); await p.waitForTimeout(500);
   ok('you: opening it tells the story and says the animal shown is a cousin', await p.evaluate(() => /Your ancestor/.test(document.getElementById('fpText').innerText) && /close cousin/.test(document.getElementById('fpText').innerText) && S.sel === 'thrinaxodon'));
   await p.evaluate(() => closeFact());
@@ -173,14 +173,14 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#journeyBtn'); await p.waitForTimeout(150);
   ok('journeys: the menu offers four', await p.evaluate(() => document.getElementById('journeyMenu').classList.contains('show') && document.querySelectorAll('#journeyMenu [data-journey]').length === 4));
   await p.click('#journeyMenu [data-journey="drift"]'); await p.waitForTimeout(2600);
-  ok('journeys: the first stop is shown and time has travelled there', await p.evaluate(() => /1 \/ 9/.test(document.querySelector('#journey .jr-n').textContent) && Math.abs(S.t - 700) < 1 && document.getElementById('journey').classList.contains('show')));
+  ok('journeys: the first stop is shown and time has travelled there', await p.evaluate(() => /1 \/ 10/.test(document.querySelector('#journey .jr-n').textContent) && Math.abs(S.t - 1000) < 1 && document.getElementById('journey').classList.contains('show')));
   await p.click('#journey [data-jr="next"]'); await p.waitForTimeout(2600);
-  ok('journeys: Next moves on through time', await p.evaluate(() => /2 \/ 9/.test(document.querySelector('#journey .jr-n').textContent) && Math.abs(S.t - 500) < 1 && /Gondwana/.test(document.querySelector('#journey .jr-head').textContent)));
+  ok('journeys: Next moves on through time', await p.evaluate(() => /2 \/ 10/.test(document.querySelector('#journey .jr-n').textContent) && Math.abs(S.t - 700) < 1 && /frozen/i.test(document.querySelector('#journey .jr-head').textContent)));
   await p.click('#journey [data-jr="end"]'); await p.waitForTimeout(150);
   ok('journeys: closing ends it', await p.evaluate(() => !S.jr && !document.getElementById('journey').classList.contains('show')));
-  ok('journeys: each is built from the site’s own data', await p.evaluate(() => { const n = id => JOURNEYS.find(j => j.id === id).stops().length; return n('you') === YOU_LINE.length && n('extinctions') === EXTINCTIONS.length && n('finds') === 10 && n('drift') === 9; }));
+  ok('journeys: each is built from the site’s own data', await p.evaluate(() => { const n = id => JOURNEYS.find(j => j.id === id).stops().length; return n('you') === YOU_LINE.length && n('extinctions') === EXTINCTIONS.length && n('finds') === 10 && n('drift') === 10; }));
   await p.evaluate(() => startJourney('you')); await p.waitForTimeout(2600);
-  for (let i = 0; i < 11; i++) { await p.evaluate(() => stepJourney(1)); await p.waitForTimeout(120); }
+  for (let i = 0; i < 12; i++) { await p.evaluate(() => stepJourney(1)); await p.waitForTimeout(120); }
   await p.waitForTimeout(2600);
   ok('journeys: “Your story” arrives at the cynodont that came through the Great Dying', await p.evaluate(() => Math.abs(S.t - 250) < 1 && S.sel === 'thrinaxodon' && /worst extinction/.test(document.querySelector('#journey .jr-text').textContent)));
   await p.evaluate(() => { endJourney(); S.sel = null; WorldMap.select(null); switchTab('life'); }); await p.waitForTimeout(150);
@@ -511,6 +511,11 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     ok('drag: a light frame is quicker than a full one in deep time (about 4× with the terrain on, over http)', await p.evaluate(() => { let a = 0, b = 0; for (let i = 0; i < 3; i++) { WorldMap._draw(); a += WorldMap.stats().ms; WorldMap._drawLite(); b += WorldMap.stats().ms; } return b < a; }));
     await p.evaluate(() => WorldMap.resetView());
   }
+  // back to a billion years: the Tonian and Rodinia (Merdith et al. 2021 reaches 1000 Ma)
+  ok('tonian: the map and timeline reach 1,000 million years ago, with its own period card and map title', await p.evaluate(() => { setTime(1000); return T_MAX === 1000 && WorldMap.MAXT === 1000 && S.t === 1000 && S.period.id === 'tonian' && document.getElementById('ctTitle').textContent === 'The World of Rodinia' && WorldMap.stats().polygons > 500; }));
+  ok('tonian: the land moves between 1,000 and 720 Ma (Rodinia gathers, then breaks up)', await p.evaluate(() => { const a = WorldMap.attach(40, -100, 0), b = WorldMap.attach(-25, 135, 0); const d = t => { const x = WorldMap.locate(a, t), y = WorldMap.locate(b, t); return x && y ? Math.round(d3.geoDistance(x, y) * 6371) : null; }; const v = [d(1000), d(850), d(730)]; return v.every(x => x != null) && new Set(v).size === 3; }));
+  ok('tonian: its life is placed and sourced — the oldest fungus and green seaweed, a possible sponge (marked as argued over), vase-shaped amoebae', await p.evaluate(() => ['Ourasphaira', 'Proterocladus', 'Possible sponge (Little Dal reefs)', 'Vase-shaped microfossils'].every(n => BY_NAME[n] && BY_NAME[n].sites && (SRCMAP['a:' + n] || []).length) && !!BY_NAME['Possible sponge (Little Dal reefs)'].debate && (SRCMAP['p:tonian'] || []).length >= 5));
+  ok('tonian: a seaweed is labelled as making its own food, a fungus as breaking down dead matter — not as a plant-eater', await p.evaluate(() => { setTime(990); S.scope = 'now'; renderLife(); const t = document.getElementById('lifeList').innerText; return /Makes its own food from sunlight/.test(t) && /Breaks down dead matter/.test(t); }));
   // the benchmark: the map against independent evidence, never worse than the recorded baseline
   { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
     ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));
@@ -522,12 +527,12 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   const nosite = await p.evaluate(() => ALL.filter(c => !c.sites || !c.sites.length).map(c => c.name));
   ok('only "Humans Today" has no site', nosite.length <= 1, nosite.join(', '));
   // sweep through time in both views: no errors, land always drawn
-  const sweep = await p.evaluate(async () => { const bad = []; for (const mode of ['flat', 'globe']) { WorldMap.setMode(mode); for (let t = 0; t <= 720; t += 9) { setTime(t); WorldMap._draw(); } } WorldMap.setMode('flat'); return bad; });
+  const sweep = await p.evaluate(async () => { const bad = []; for (const mode of ['flat', 'globe']) { WorldMap.setMode(mode); for (let t = 0; t <= 1000; t += 9) { setTime(t); WorldMap._draw(); } } WorldMap.setMode('flat'); return bad; });
   ok('time sweep, both views', sweep.length === 0);
   // every period: has insight, has animals, renders
   ok('every period has animals and an insight', await p.evaluate(() => PERIODS.every(p => p.creatures.length >= 4 && p.insight && p.insight.signs.length >= 3)));
-  ok('periods tile time with no gaps', await p.evaluate(() => PERIODS.every((p, i) => i === 0 || PERIODS[i - 1].end === p.start) && PERIODS[0].start === 720 && PERIODS[PERIODS.length - 1].end === 0));
-  ok('getPeriod never falls through', await p.evaluate(() => { for (let t = 0; t <= 720; t += 0.37) { const q = getPeriod(t); if (!(t <= q.start && t >= q.end)) return false; } return true; }));
+  ok('periods tile time with no gaps', await p.evaluate(() => PERIODS.every((p, i) => i === 0 || PERIODS[i - 1].end === p.start) && PERIODS[0].start === 1000 && PERIODS[0].id === 'tonian' && PERIODS[PERIODS.length - 1].end === 0));
+  ok('getPeriod never falls through', await p.evaluate(() => { for (let t = 0; t <= 1000; t += 0.37) { const q = getPeriod(t); if (!(t <= q.start && t >= q.end)) return false; } return true; }));
   await p.close();
   // deep links: new and old formats
   p = await open({ width: 1400, height: 900 }, '#cretaceous/tyrannosaurus-rex');

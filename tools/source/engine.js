@@ -720,6 +720,8 @@ void main() {
   // ── palette: sea and land colours shift with the climate of the age ─
   const PALS = [
     // [mya, oceanCentre, oceanMid, oceanEdge, landBase]
+    [1000, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],          // the Tonian: open sea, bare rock
+    [724, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],
     [720, '#cfe0ea', '#9fbacb', '#6a879c', '#d8c69c'],
     [640, '#cfe0ea', '#9fbacb', '#6a879c', '#d8c69c'],
     [620, '#a3cbd6', '#74a6b8', '#44728a', '#dcc08a'],

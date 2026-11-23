@@ -4,7 +4,7 @@ Guidance for Claude Code sessions working in this repository.
 
 **Before Us — a deep-time atlas of Earth, life and people** (until November 2026 “Dino Time
 Explorer”; the repository and the file `dino-explorer.html` keep the old name so the live address does
-not change) is one web page: a map of the Earth that moves through 720 million years, with the
+not change) is one web page: a map of the Earth that moves through a billion years (1000 Ma → today), with the
 animals, the human family, the food webs, the history of discovery and recorded history placed on it. It is built
 for Evan's kids and held to a museum standard: every claim should be traceable to published research,
 and where something is a guess, a sketch or still argued over, the page says so.

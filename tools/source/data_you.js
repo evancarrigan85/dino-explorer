@@ -8,6 +8,8 @@
 //   from/to  million years ago      at    a good moment to visit
 //   what     short description      like  an animal card's exact name, or hom: a hominin id
 const YOU_LINE = [
+  { from: 1000, to: 720, at: 850, what: 'a single cell with a nucleus', like: null,
+    text: 'Your ancestor is one cell floating in the sea — a cell with a nucleus, like the cells in your body, but living alone. The first fungi, found in rocks of this age, are close cousins: fungi are nearer relatives of animals than plants are. There are no animals yet.' },
   { from: 720, to: 600, at: 650, what: 'specks of life in the sea', like: null,
     text: 'Your ancestors are microscopic sea creatures — single cells, or little clusters of them — living under and around the ice of a frozen planet. No eyes, no mouth, no brain. But the line from them to you is unbroken.' },
   { from: 600, to: 535, at: 555, what: 'a tiny sea worm', like: 'Ikaria',
@@ -74,6 +76,7 @@ const SPARKS = [
 // Journeys: guided trips through time. "you", "extinctions" and "finds" are built from the data
 // above and elsewhere; this one is written out.
 const DRIFT_STOPS = [
+  { t: 1000, head: 'Rodinia', text: 'A billion years ago much of the land is gathering into a supercontinent, Rodinia, around what is now North America. Nothing lives on the land yet.' },
   { t: 700, head: 'A frozen world', text: 'The land lies scattered near the equator — the broken pieces of an older supercontinent — and ice reaches almost everywhere. This is Snowball Earth.' },
   { t: 500, head: 'Gondwana', text: 'The southern lands — today’s Africa, South America, Antarctica, Australia and India — are joined in one giant continent, Gondwana. The northern pieces drift alone, as islands in a warm sea.' },
   { t: 300, head: 'Pangaea comes together', text: 'Continents collide, pushing up mountains as high as the Himalayas where the worn-down Appalachians stand today. Nearly all the land on Earth is now one supercontinent: Pangaea.' },

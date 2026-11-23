@@ -2,7 +2,7 @@
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
 # targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain|checks|sound  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  i:<inspiration id>  s:<earth story id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
-merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift | 10.1016/j.earscirev.2020.103477
+merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift, p:tonian | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia, v:bridge, v:rising, v:cold
 spratt2016 | Spratt | 2016 | A Late Pleistocene sea level stack | m:sealevel | 10.5194/cp-12-1079-2016
 cohen2013 | Cohen | 2013 | The ICS International Chronostratigraphic Chart | m:time
@@ -494,3 +494,10 @@ dowsett2016 | Dowsett | 2016 | The PRISM4 (mid-Piacenzian) paleoenvironmental re
 woodburne2010 | Woodburne | 2010 | The Great American Biotic Interchange: Dispersals, Tectonics, Climate, Sea Level and Holding Pens | p:pliocene
 wang2017b | Wang | 2017 | A basal ursine bear (Protarctos abstrusus) from the Pliocene High Arctic reveals Eurasian affinities and a diet rich in fermentable sugars | a:Protarctos | 10.1038/s41598-017-17657-8
 fitzgerald2009 | Fitzgerald | 2009 | The morphology and systematics of Mammalodon colliveri (Cetacea: Mysticeti), a toothed mysticete from the Oligocene of Australia | a:Mammalodon | 10.1111/j.1096-3642.2009.00572.x
+# ── the Tonian, 1000–720 Ma ──
+li2008 | Li | 2008 | Assembly, configuration, and break-up history of Rodinia: A synthesis | p:tonian
+loron2019 | Loron | 2019 | Early fungi from the Proterozoic era in Arctic Canada | p:tonian, a:Ourasphaira, f:tonian
+tang2020 | Tang | 2020 | A one-billion-year-old multicellular chlorophyte | p:tonian, a:Proterocladus
+turner2021 | Turner | 2021 | Possible poriferan body fossils in early Neoproterozoic microbial reefs | p:tonian, a:Possible sponge (Little Dal reefs)
+porter2000 | Porter | 2000 | Testate amoebae in the Neoproterozoic Era: evidence from vase-shaped microfossils in the Chuar Group, Grand Canyon | p:tonian, a:Vase-shaped microfossils, f:tonian
+mitchell2023 | Mitchell | 2023 | Mid-Proterozoic day length stalled by tidal resonance | p:tonian

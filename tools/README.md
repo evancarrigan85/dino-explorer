@@ -123,7 +123,8 @@ npm i d3-geo@3 world-atlas@2 topojson-client@3
 git clone --depth 1 https://github.com/GPlates/gplates-web-service   # Merdith et al. 2021 model files
 node -e "const t=require('topojson-client'),w=require('world-atlas/land-50m.json');const out=[];const add=g=>g.type==='Polygon'?out.push(g.coordinates):g.type==='MultiPolygon'?g.coordinates.forEach(c=>out.push(c)):(g.geometries||[]).forEach(add);(t.feature(w,w.objects.land).features||[]).forEach(f=>add(f.geometry));require('fs').writeFileSync('ne_land_50m.json',JSON.stringify(out))"
 python3 tools/build_plates.py gplates-web-service/django/GWS/data/deprecated/MODELS/MERDITH2021 ne_land_50m.json plates_stage1.json
-node tools/encode_plates.mjs plates_stage1.json plates-data.js
+node tools/encode_plates.mjs plates_stage1.json plates-data.js       # MAXT = 1000 in build_plates.py: the model's full reach
+# then rebuild the seas and the terrain (build_seas.py, build_dem.py): they are tied to the plate families
 ```
 
 Paste `plates-data.js` into the plate-data block of the page.

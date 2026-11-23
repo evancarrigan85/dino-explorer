@@ -13,10 +13,11 @@
 "type": "journal-article",
 "targets": [
 "m:plates",
-"j:drift"
+"j:drift",
+"p:tonian"
 ],
-"title_expected": "Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic",
-"first": ""
+"first": "",
+"title_expected": "Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic"
 },
 "lambeck2014": {
 "doi": "10.1073/pnas.1411762111",
@@ -8315,5 +8316,112 @@
 ],
 "first": "",
 "title_expected": "The morphology and systematics of Mammalodon colliveri (Cetacea: Mysticeti), a toothed mysticete from the Oligocene of Australia"
+},
+"li2008": {
+"doi": "10.1016/j.precamres.2007.04.021",
+"title": "Assembly, configuration, and break-up history of Rodinia: A synthesis",
+"journal": "Precambrian Research",
+"year": 2008,
+"authors": [
+"Li",
+"Bogdanova",
+"Collins",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:tonian"
+],
+"first": "",
+"title_expected": "Assembly, configuration, and break-up history of Rodinia: A synthesis"
+},
+"loron2019": {
+"doi": "10.1038/s41586-019-1217-0",
+"title": "Early fungi from the Proterozoic era in Arctic Canada",
+"journal": "Nature",
+"year": 2019,
+"authors": [
+"Loron",
+"François",
+"Rainbird",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:tonian",
+"a:Ourasphaira",
+"f:tonian"
+],
+"first": "",
+"title_expected": "Early fungi from the Proterozoic era in Arctic Canada"
+},
+"tang2020": {
+"doi": "10.1038/s41559-020-1122-9",
+"title": "A one-billion-year-old multicellular chlorophyte",
+"journal": "Nature Ecology &amp; Evolution",
+"year": 2020,
+"authors": [
+"Tang",
+"Pang",
+"Yuan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:tonian",
+"a:Proterocladus"
+],
+"first": "",
+"title_expected": "A one-billion-year-old multicellular chlorophyte"
+},
+"turner2021": {
+"doi": "10.1038/s41586-021-03773-z",
+"title": "Possible poriferan body fossils in early Neoproterozoic microbial reefs",
+"journal": "Nature",
+"year": 2021,
+"authors": [
+"Turner"
+],
+"type": "journal-article",
+"targets": [
+"p:tonian",
+"a:Possible sponge (Little Dal reefs)"
+],
+"first": "",
+"title_expected": "Possible poriferan body fossils in early Neoproterozoic microbial reefs"
+},
+"porter2000": {
+"doi": "10.1666/0094-8373(2000)026<0360:taitne>2.0.co;2",
+"title": "Testate amoebae in the Neoproterozoic Era: evidence from vase-shaped microfossils in the Chuar Group, Grand Canyon",
+"journal": "Paleobiology",
+"year": 2000,
+"authors": [
+"Porter",
+"Knoll"
+],
+"type": "journal-article",
+"targets": [
+"p:tonian",
+"a:Vase-shaped microfossils",
+"f:tonian"
+],
+"first": "",
+"title_expected": "Testate amoebae in the Neoproterozoic Era: evidence from vase-shaped microfossils in the Chuar Group, Grand Canyon"
+},
+"mitchell2023": {
+"doi": "10.1038/s41561-023-01202-6",
+"title": "Mid-Proterozoic day length stalled by tidal resonance",
+"journal": "Nature Geoscience",
+"year": 2023,
+"authors": [
+"Mitchell",
+"Kirscher"
+],
+"type": "journal-article",
+"targets": [
+"p:tonian"
+],
+"first": "",
+"title_expected": "Mid-Proterozoic day length stalled by tidal resonance"
 }
 }

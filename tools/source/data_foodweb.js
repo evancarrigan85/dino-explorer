@@ -12,6 +12,10 @@
 //            marks, droppings, chemistry of bones, feeding traces
 //   likely = inferred from teeth, jaws, size and who lived together
 const FOODWEBS = {
+  tonian: { title: 'A sea of single cells', where: 'Shallow seas around Rodinia',
+    note: 'Almost all life is microscopic. Sunlight feeds bacteria and the first seaweeds; the first cells that eat other cells, and the first fungi, live off them. Nothing yet eats an animal — there may be no animals at all.',
+    nodes: { sun: ['Cyanobacteria', '🟢', 0], alg: ['Green seaweeds', '🌿', 0, 'Proterocladus'], ded: ['Dead cells and mats', '🟫', 0], vas: ['Amoebae in vase-shaped shells', '🏺', 1, 'Vase-shaped microfossils'], fun: ['Fungi', '🍄', 1, 'Ourasphaira'], spo: ['Possible sponges', '🧽', 1, 'Possible sponge (Little Dal reefs)'] },
+    links: [['sun', 'vas', 'likely', 'Amoebae like these eat bacteria and algae today.'], ['alg', 'vas', 'likely'], ['ded', 'fun', 'likely', 'Fungi absorb their food from dead matter; the oldest known one grew in a shallow coastal sea.'], ['sun', 'spo', 'likely', 'Sponges strain bacteria from the water — if these are sponges.']] },
   cryogenian: { title: 'A microbial world under the ice', where: 'Meltwater pools and ice-free seas',
     note: 'No animal yet ate another animal. Life was almost all microscopic, powered by sunlight reaching through thin ice.',
     nodes: { sun: ['Cyanobacteria mats', '🟢', 0, 'Stromatolite'], alg: ['Algae & acritarchs', '🦠', 0, 'Acritarch'], pro: ['Single-celled grazers', '🔬', 1], spo: ['Earliest sponges', '🫧', 1, 'Earliest Sponges'] },

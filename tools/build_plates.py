@@ -31,7 +31,7 @@ from shapely.ops import unary_union
 
 MODEL_DIR, NE_FILE, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
 
-MAXT = 720                 # oldest time the site shows (start of the Cryogenian)
+MAXT = 1000                # oldest time the site shows (the start of the Tonian; the model itself begins here)
 SWITCH = 410               # the model uses present-day coastlines up to this age
 SIMPLIFY_DEG = 0.07        # tolerance for outlines that survive to today
 SIMPLIFY_OLD_DEG = 0.22    # tolerance for outlines that only exist in deep time

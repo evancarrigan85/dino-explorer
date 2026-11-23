@@ -6,7 +6,7 @@
 // numbers — for example 145 rather than 143 million years for the start of
 // the Cretaceous — because the dates are refined as rocks are re-measured.
 const PERIOD_BOUNDS = {
-  cryogenian: [720, 635], ediacaran: [635, 539], cambrian: [539, 487], ordovician: [487, 443],
+  tonian: [1000, 720], cryogenian: [720, 635], ediacaran: [635, 539], cambrian: [539, 487], ordovician: [487, 443],
   silurian: [443, 420], devonian: [420, 359], carboniferous: [359, 299], permian: [299, 252],
   triassic: [252, 201], jurassic: [201, 143], cretaceous: [143, 66], paleogene: [66, 23],
   neogene: [23, 2.58], quaternary: [2.58, 0.0117], holocene: [0.0117, 0],
@@ -60,6 +60,12 @@ const DIVS = [
 // Events pinned to the timeline. More of them appear the further you zoom in.
 // [time (Ma), level, icon, title, detail]   level 1 = always shown … 5 = only when zoomed right in
 const EVENTS = [
+  [1000, 3, '🌍', 'Rodinia', 'Much of the land is gathering into a supercontinent around North America.'],
+  [990, 4, '🌿', 'The oldest green seaweed', 'Proterocladus, from northern China: about a billion years old.'],
+  [950, 4, '🍄', 'The oldest fungi', 'Ourasphaira, in Arctic Canada — fungi are older than any plant or animal fossil.'],
+  [890, 4, '🧽', 'The first sponges?', 'Tangled tubes in reefs in north-west Canada. If they are sponges, they are the oldest animals.'],
+  [780, 3, '💔', 'Rodinia breaks up', 'The supercontinent tears apart and new oceans open.'],
+  [742, 5, '🏺', 'Amoebae in tiny vases', 'Single cells that built little shells, in the rocks of the Grand Canyon.'],
   [717, 2, '🧊', 'Snowball Earth begins', 'The Sturtian glaciation: ice reaches the equator and stays for nearly 60 million years.'],
   [650, 3, '🧊', 'Second Snowball Earth', 'The Marinoan glaciation, about 650–635 million years ago.'],
   [635, 2, '🌡', 'The great thaw', 'CO₂ built up under the ice finally melts it; limestone “cap carbonates” mark the sudden hothouse.'],

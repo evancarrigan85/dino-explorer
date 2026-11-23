@@ -17,6 +17,14 @@ const PERIOD_EDITS = {
     funFact: 'If all of Earth\'s history were one 24-hour day, our species appears about six seconds before midnight. Dinosaurs went extinct at 11:39 PM. The entire Industrial Revolution fits into the last five-thousandths of a second.' },
 };
 
+// The Tonian: a billion years ago, before the ice. Added 23 Nov 2026 when the map went back to 1000 Ma.
+const TONIAN = {
+  id: 'tonian', name: 'Tonian', era: 'Neoproterozoic Era',
+  start: 1000, end: 720, color: '#5f93ad', textColor: '#8ec7e2',
+  desc: 'Much of the land gathers into a supercontinent, Rodinia, around North America — and later starts to break apart. The land is bare rock and sand: nothing grows on it. In the sea live microbes, seaweeds, the first fungi, and perhaps the first sponges.',
+  funFact: 'A day lasted only about 19 to 21 hours, because the Earth was spinning faster. The Moon’s pull has been slowing it down ever since.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
 const EDIACARAN = {
   id: 'ediacaran', name: 'Ediacaran', era: 'Neoproterozoic Era',
   start: 635, end: 539, color: '#8f7ad8', textColor: '#b7a6f5',
@@ -31,6 +39,18 @@ const EDIACARAN = {
 // know  how do we know?      today  why it matters now
 // ext   mass extinction, where one ends the period
 const INSIGHTS = {
+  tonian: {
+    big: 'A billion years ago: a supercontinent gathering, bare land, and life still tiny — but the first seaweeds, fungi and perhaps sponges are here.',
+    signs: [
+      ['🌍', 'Continents', 'Much of the land gathers into a supercontinent, Rodinia, with North America at its heart; it begins to tear apart about 800 to 750 million years ago. Which pieces belonged to it, and where each one sat, is argued over — the map shows one model.'],
+      ['🪨', 'Land', 'No plants and no animals on land: bare rock and sand.'],
+      ['☀️', 'Day length', 'About 19 hours at the start, getting longer: the Moon’s pull slows the Earth’s spin.'],
+      ['🌿', 'Life', 'Green seaweeds a billion years old, the oldest known fungi, and amoebae living in tiny vase-shaped shells.'],
+      ['🧽', 'Perhaps', 'Tangled tubes in 890-million-year-old reefs may be the first sponges — the oldest animals, if they are right.'],
+    ],
+    know: 'There are no bones or shells yet. The fossils are single cells and threads, found by dissolving rock in acid or slicing it thin and looking through a microscope. Chemical tests on the cell walls tell a fungus from a seaweed.',
+    today: 'The branch of life that holds every plant, fungus and animal alive today was spreading through these seas. Fungi are closer cousins of animals than plants are.',
+  },
   cryogenian: {
     big: 'Earth froze almost solid — twice — and life came through it.',
     signs: [
@@ -311,7 +331,7 @@ const SITES = [
 // ── map labels ─────────────────────────────────────────────────────
 // Continents ride their plates: [text, lat, lon (today), from, to, size]
 const LABELS = [
-  ['Laurentia', 50, -95, 720, 430, 13], ['Baltica', 58, 32, 720, 430, 12], ['Siberia', 63, 105, 720, 260, 12],
+  ['Rodinia', 47, -100, 1000, 760, 16], ['Laurentia', 50, -95, 720, 430, 13], ['Baltica', 58, 32, 720, 430, 12], ['Siberia', 63, 105, 720, 260, 12],
   ['Gondwana', 4, 22, 600, 335, 15], ['Avalonia', 52.2, -1.5, 490, 430, 10],
   ['North China', 38, 112, 539, 260, 10], ['South China', 27, 109, 539, 260, 10], ['Kazakhstania', 48, 70, 500, 320, 10],
   ['Laurussia', 50, -75, 430, 335, 14],
@@ -346,4 +366,4 @@ const ICE_AGE_NOTES = [
 // Existing geology cards: where to pin them on the map (present-day lat/lon), or null for none.
 const GEO_FIX = { camp: [32, -7], tethys_sea: null, iapetus_ocean: null, rheic_ocean: null, panthalassa: null, snowball_earth: null };
 
-if (typeof module !== 'undefined') module.exports = { PERIOD_EDITS, EDIACARAN, INSIGHTS, CREATURE_INSIGHTS, SITES, LABELS, OCEANS, SUPEROCEAN, ICE_AGE_NOTES, GEO_FIX };
+if (typeof module !== 'undefined') module.exports = { PERIOD_EDITS, TONIAN, EDIACARAN, INSIGHTS, CREATURE_INSIGHTS, SITES, LABELS, OCEANS, SUPEROCEAN, ICE_AGE_NOTES, GEO_FIX };

@@ -17,8 +17,15 @@ const P = {
 
 const EARLY = {
 
+tonian: [
+  R('micro', 'Microbes › Fungi', 'Ourasphaira', '🍄', 'absorb', 'Threads under 1 mm', 'Shallow sea near the shore', '~1,000–900 MYA', [1000, 900], 'The oldest known fungus: a tangle of tiny threads with round swellings, a billion years old. Its cell walls contain chitin, the same tough material as in mushrooms today. Fungi are close cousins of animals.', [[70.9, -115.5, 'Shaler Supergroup, Arctic Canada']], { know: 'Scientists dissolved the rock in acid to free the fossils, then used light to read the chemistry of their walls: the signal of chitin, which algae do not make.' }),
+  R('plant', 'Plants › Algae', 'Proterocladus', '🌿', 'sun', 'About 2 mm', 'Shallow sea floor', '~1,000 MYA', [1000, 950], 'A green seaweed about a billion years old, with branching threads divided into cells. It is the oldest known member of the green algae — the group that later gave rise to every land plant.', [[39.6, 121.6, 'Nanfen Formation, Dalian, China']]),
+  W('invert', IN + 'Sponges', 'Possible sponge (Little Dal reefs)', '🧽', 'filter', 'Tubes a fraction of a millimetre wide', 'Reefs built by microbes', '~890 MYA', [890, 880], 'A network of tiny tubes inside reefs built by microbes, 890 million years old. It looks like the skeleton of a sponge. If it is one, animals are about 350 million years older than the first clear fossils.', [[64.5, -129.5, 'Little Dal Group, Mackenzie Mountains, Canada']], { debate: 'Networks like this can also form in other ways, and no chemical traces of sponges are known from rocks this old. Many scientists are not convinced.' }),
+  R('micro', 'Microbes › Amoebae', 'Vase-shaped microfossils', '🏺', 'pred', 'About 0.1 mm', 'Shallow sea', '~750–730 MYA', [750, 730], 'Single cells that built tiny vase-shaped shells to live in, like some amoebae in ponds today. They are among the oldest fossils of cells that ate other cells.', [[36.2, -111.9, 'Chuar Group, Grand Canyon, Arizona']]),
+],
+
 cryogenian: [
-  W('invert', IN + 'Sponges', 'Otavia', '🫧', 'filter', 'Under 1 mm', 'Shallow sea', '~760–550 MYA (if confirmed)', [720, 635], 'A microscopic hollow ball with holes in its wall, found in Namibian rocks laid down before, during and after Snowball Earth.', [[-19.6, 17.3, 'Otavi Group, Namibia']], { debate: 'Its discoverers (2012) proposed it as a sponge — which would make it the oldest animal of all. Many specialists think it could be a protist or simply a mineral grain.' }),
+  W('invert', IN + 'Sponges', 'Otavia', '🫧', 'filter', 'Under 1 mm', 'Shallow sea', '~760–550 MYA (if confirmed)', [760, 550], 'A microscopic hollow ball with holes in its wall, found in Namibian rocks laid down before, during and after Snowball Earth.', [[-19.6, 17.3, 'Otavi Group, Namibia']], { debate: 'Its discoverers (2012) proposed it as a sponge — which would make it the oldest animal of all. Many specialists think it could be a protist or simply a mineral grain.' }),
 ],
 
 ediacaran: [
