@@ -12,7 +12,9 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 ## Next up (decided 23 Nov 2026 — start here)
 
 Evan asked for “a visual step forward” and for a plan that survives the session resetting. It is
-**Release 12** below. Work it in this order: **12.0 → 12.2 → 12.3 → 12.1**. 12.1 (the animal art) waits on
+**Release 12** below. Work it in this order: **12.0 → 12.2 → 12.3 → 12.1**. Then comes **Release 13**, more
+events period by period (the backlog is `docs/EVENTS.md`). Its first batch, the empty Permian and Neoarchean
+and the sparks already on the list, is a good small session to slot in between the others. 12.1 (the animal art) waits on
 Evan’s choice and setup, and nothing else does. If he has chosen by the time you read this, do 12.1 right after
 12.0. Before starting, check what Evan has done since: run `get_environment` and look for an `api.pixellab.ai`
 network secret and for `api.phylopic.org` among the allowed hosts.
@@ -643,6 +645,21 @@ Then:
      - Record the score in the benchmark as a tracked number, not a ratchet: it measures the model, not us.
 - **Rejected for now.** The PANALESIS atlas (Zenodo 19134591) is under review and is built on a different
   plate model. Guo 2026 (vegetation since plants reached land) does not include its model output.
+
+## Release 13 — More events, period by period (backlog in `docs/EVENTS.md`; Evan, 23 Nov: “identify more event areas that we could expand upon for each period possible”)
+
+`docs/EVENTS.md` counts what each period has, and lists candidates by period. Each candidate has a kind (a
+timeline pin, a spark on the map, a smaller crisis, a story, a fossil site, or an ambient picture), and a source
+status: 29 papers were found in Crossref on 23 Nov; the rest are marked “?”. Suggested batches, one release each:
+1. **Empty and thin periods.** Pins for the Permian (none yet; its two sparks have no events) and the
+   Neoarchean (none), then the Silurian, Mesoarchean, Ectasian and Stenian. Add a check that every period
+   from the Ediacaran on has at least three timeline events, and every older period at least one.
+2. **Sparks.** About ten, Paleozoic to Holocene: Kalkarindji, Viluy, Karoo–Ferrar, Paraná–Etendeka,
+   Ontong Java, Columbia River, Ries, Yellowstone, Mazama, Tambora. Every one named on the map, and a check
+   that every spark has a timeline event and a source.
+3. **The Cretaceous**: seven or more pins for its 77 Myr.
+4. **“Smaller crises”** in the Extinctions tab.
+5. **Snowball Earth as a story**, then the Missoula floods.
 
 ## Data hosts worth approving (none is reachable from the cloud environment today)
 `paleobiodb.org` and `macrostrat.org` (fossil collections with their environments and rocks — the basis for
