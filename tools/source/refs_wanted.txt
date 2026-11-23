@@ -57,7 +57,7 @@ nyakatura2019 | Nyakatura | 2019 | Reverse-engineering the locomotion of a stem 
 frobisch2009 | Fröbisch | 2009 | The Late Permian herbivore Suminia and the early evolution of arboreality in terrestrial vertebrate ecosystems | a:Suminia
 burgess2014 | Burgess | 2014 | High-precision timeline for Earth's most severe extinction | p:permian, e:permian
 sun2012 | Sun | 2012 | Lethally hot temperatures during the Early Triassic greenhouse | p:triassic
-dalcorso2020 | Dal Corso | 2020 | Extinction and dawn of the modern world in the Carnian (Late Triassic) | p:triassic
+dalcorso2020 | Dal Corso | 2020 | Extinction and dawn of the modern world in the Carnian (Late Triassic) | p:triassic, n:carnian
 blackburn2013 | Blackburn | 2013 | Zircon U-Pb geochronology links the end-Triassic extinction with the Central Atlantic Magmatic Province | p:triassic, e:triassic, n:endtriassic
 motani2014 | Motani | 2014 | Terrestrial origin of viviparity in Mesozoic marine reptiles indicated by Early Triassic embryonic fossils | a:Chaohusaurus
 fernandez2013 | Fernandez | 2013 | Synchrotron reveals Early Triassic odd couple: injured amphibian and aestivating therapsid share burrow | a:Thrinaxodon
@@ -476,7 +476,7 @@ thewissen1994 | Thewissen | 1994 | Fossil Evidence for the Origin of Aquatic Loc
 froehlich2002 | Froehlich | 2002 | Quo vadis eohippus? The systematics and taxonomy of the early Eocene equids (Perissodactyla) | a:Eohippus (Dawn Horse)
 mcnamara2011 | McNamara | 2011 | Fossilized Biophotonic Nanostructures Reveal the Original Colors of 47-Million-Year-Old Moths | a:Messel moths
 coxall2005 | Coxall | 2005 | Rapid stepwise onset of Antarctic glaciation and deeper calcite compensation in the Pacific Ocean | p:oligocene
-hooker2004 | Hooker | 2004 | Eocene–Oligocene mammalian faunal turnover in the Hampshire Basin, UK: calibration to the global time scale and the major cooling event | p:oligocene
+hooker2004 | Hooker | 2004 | Eocene–Oligocene mammalian faunal turnover in the Hampshire Basin, UK: calibration to the global time scale and the major cooling event | p:oligocene, n:grandecoupure
 scher2006 | Scher | 2006 | Timing and Climatic Consequences of the Opening of Drake Passage | p:oligocene
 seiffert2020 | Seiffert | 2020 | A parapithecid stem anthropoid of African origin in the Paleogene of South America | p:oligocene, a:Ucayalipithecus
 fordyce2018 | Fordyce | 2018 | Gigantism Precedes Filter Feeding in Baleen Whale Evolution | a:Llanocetus | 10.1016/j.cub.2018.04.027
@@ -596,3 +596,11 @@ polcyn2014 | Polcyn | 2014 | Physical drivers of mosasaur evolution | n:mosasaur
 mallon2012 | Mallon | 2012 | Megaherbivorous dinosaur turnover in the Dinosaur Park Formation (upper Campanian) of Alberta, Canada | n:dinopark
 druckenmiller2021 | Druckenmiller | 2021 | Nesting at extreme polar latitudes by non-avian dinosaurs | n:arcticnests
 prasad2005 | Prasad | 2005 | Dinosaur coprolites and the early evolution of grasses and grazers | n:grassdung
+darroch2015 | Darroch | 2015 | Biotic replacement and mass extinction of the Ediacara biota | n:endediacaran
+laflamme2013 | Laflamme | 2013 | The end of the Ediacara biota: Extinction, biotic replacement, or Cheshire Cat? | n:endediacaran
+saltzman2000 | Saltzman | 2000 | A global carbon isotope excursion (SPICE) during the Late Cambrian: relation to trilobite extinctions, organic-matter burial and sea level | n:spice
+munnecke2010 | Munnecke | 2010 | Ordovician and Silurian sea-water chemistry, sea level, and climate: A synopsis | n:ireviken
+kaiser2015 | Kaiser | 2015 | The global Hangenberg Crisis (Devonian-Carboniferous transition): review of a first-order mass extinction | n:hangenberg
+sahney2010 | Sahney | 2010 | Rainforest collapse triggered Carboniferous tetrapod diversification in Euramerica | n:coalforest
+turgeon2008 | Turgeon | 2008 | Cretaceous oceanic anoxic event 2 triggered by a massive magmatic episode | n:oae2
+kennett1991 | Kennett | 1991 | Abrupt deep-sea warming, palaeoceanographic changes and benthic extinctions at the end of the Palaeocene | n:petm

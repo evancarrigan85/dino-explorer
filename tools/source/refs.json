@@ -969,7 +969,8 @@
 "et al."
 ],
 "targets": [
-"p:triassic"
+"p:triassic",
+"n:carnian"
 ],
 "title_expected": "Extinction and dawn of the modern world in the Carnian (Late Triassic)",
 "type": "journal-article",
@@ -8028,7 +8029,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:oligocene"
+"p:oligocene",
+"n:grandecoupure"
 ],
 "first": "",
 "title_expected": "Eocene–Oligocene mammalian faunal turnover in the Hampshire Basin, UK: calibration to the global time scale and the major cooling event"
@@ -10084,5 +10086,143 @@
 ],
 "first": "",
 "title_expected": "Dinosaur coprolites and the early evolution of grasses and grazers"
+},
+"darroch2015": {
+"doi": "10.1098/rspb.2015.1003",
+"title": "Biotic replacement and mass extinction of the Ediacara biota",
+"journal": "Proceedings of the Royal Society B: Biological Sciences",
+"year": 2015,
+"authors": [
+"Darroch",
+"Sperling",
+"Boag",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:endediacaran"
+],
+"first": "",
+"title_expected": "Biotic replacement and mass extinction of the Ediacara biota"
+},
+"laflamme2013": {
+"doi": "10.1016/j.gr.2012.11.004",
+"title": "The end of the Ediacara biota: Extinction, biotic replacement, or Cheshire Cat?",
+"journal": "Gondwana Research",
+"year": 2013,
+"authors": [
+"Laflamme",
+"Darroch",
+"Tweedt",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:endediacaran"
+],
+"first": "",
+"title_expected": "The end of the Ediacara biota: Extinction, biotic replacement, or Cheshire Cat?"
+},
+"saltzman2000": {
+"doi": "10.1016/s0031-0182(00)00128-0",
+"title": "A global carbon isotope excursion (SPICE) during the Late Cambrian: relation to trilobite extinctions, organic-matter burial and sea level",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2000,
+"authors": [
+"Saltzman",
+"Ripperdan",
+"Brasier",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:spice"
+],
+"first": "",
+"title_expected": "A global carbon isotope excursion (SPICE) during the Late Cambrian: relation to trilobite extinctions, organic-matter burial and sea level"
+},
+"munnecke2010": {
+"doi": "10.1016/j.palaeo.2010.08.001",
+"title": "Ordovician and Silurian sea–water chemistry, sea level, and climate: A synopsis",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2010,
+"authors": [
+"Munnecke",
+"Calner",
+"Harper",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:ireviken"
+],
+"first": "",
+"title_expected": "Ordovician and Silurian sea-water chemistry, sea level, and climate: A synopsis"
+},
+"kaiser2015": {
+"doi": "10.1144/sp423.9",
+"title": "The global Hangenberg Crisis (Devonian–Carboniferous transition): review of a first-order mass extinction",
+"journal": "Geological Society, London, Special Publications",
+"year": 2016,
+"authors": [
+"Kaiser",
+"Aretz",
+"Becker"
+],
+"type": "journal-article",
+"targets": [
+"n:hangenberg"
+],
+"first": "",
+"title_expected": "The global Hangenberg Crisis (Devonian-Carboniferous transition): review of a first-order mass extinction"
+},
+"sahney2010": {
+"doi": "10.1130/g31182.1",
+"title": "Rainforest collapse triggered Carboniferous tetrapod diversification in Euramerica",
+"journal": "Geology",
+"year": 2010,
+"authors": [
+"Sahney",
+"Benton",
+"Falcon-Lang"
+],
+"type": "journal-article",
+"targets": [
+"n:coalforest"
+],
+"first": "",
+"title_expected": "Rainforest collapse triggered Carboniferous tetrapod diversification in Euramerica"
+},
+"turgeon2008": {
+"doi": "10.1038/nature07076",
+"title": "Cretaceous oceanic anoxic event 2 triggered by a massive magmatic episode",
+"journal": "Nature",
+"year": 2008,
+"authors": [
+"Turgeon",
+"Creaser"
+],
+"type": "journal-article",
+"targets": [
+"n:oae2"
+],
+"first": "",
+"title_expected": "Cretaceous oceanic anoxic event 2 triggered by a massive magmatic episode"
+},
+"kennett1991": {
+"doi": "10.1038/353225a0",
+"title": "Abrupt deep-sea warming, palaeoceanographic changes and benthic extinctions at the end of the Palaeocene",
+"journal": "Nature",
+"year": 1991,
+"authors": [
+"Kennett",
+"Stott"
+],
+"type": "journal-article",
+"targets": [
+"n:petm"
+],
+"first": "",
+"title_expected": "Abrupt deep-sea warming, palaeoceanographic changes and benthic extinctions at the end of the Palaeocene"
 }
 }

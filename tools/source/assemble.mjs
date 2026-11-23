@@ -249,6 +249,8 @@ for (const [k, r] of Object.entries(RAW)) {
   }
 }
 for (const t in SRCMAP) SRCMAP[t].sort((x, y) => REFS[x].y - REFS[y].y);
+{ const X = require('./data_extinctions.js');
+  for (const id of X.SMALL_CRISES || []) if (!T.EVENTS.some(e => e[5] === id)) problems.push('smaller crisis ' + id + ': no timeline event with that id'); }
 { const Y = require('./data_you.js');
   for (const sp of Y.SPARKS) { const ev = T.EVENTS.find(e => e[5] === sp[8]); if (!ev) problems.push('spark ' + sp[6] + ': belongs to no timeline event (its ninth element)'); else if (ev[0] > sp[2] + 2 || ev[0] < sp[3] - 2) problems.push('spark ' + sp[6] + ': its event ' + sp[8] + ' is at ' + ev[0] + ' Ma, outside its time'); } }
 { const ids = T.EVENTS.map(e => e[5]).filter(Boolean), seen = new Set();

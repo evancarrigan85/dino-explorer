@@ -3,7 +3,8 @@
 A backlog, written 23 Nov 2026 when Evan asked: “identify more event areas that we could expand upon for each
 period possible.” It is Release 13 in `docs/PLAN.md`. Read `CLAUDE.md` first; its rules apply to every line here.
 
-**Progress.** Batch 3 shipped 23 Nov 2026: the Cretaceous has eight more events (the South Atlantic opening, polar
+**Progress.** Batch 4 shipped 23 Nov 2026: “Smaller crises” in the Extinctions tab, 13 of them from the end of the
+Ediacaran creatures to the Great Break, each a timeline event with its papers. Batch 3 shipped 23 Nov 2026: the Cretaceous has eight more events (the South Atlantic opening, polar
 dinosaurs at Dinosaur Cove, Patagotitan, Spinosaurus’s rivers, mosasaurs, Dinosaur Provincial Park, the Arctic nests,
 grass in dinosaur dung), 15 in all. Batch 2 shipped 23 Nov 2026: 13 new sparks (Kalkarindji, Viluy, Karoo–Ferrar ×2, Paraná–Etendeka,
 Popigai, Columbia River, Ries, Yellowstone, Mazama, Thera, Vesuvius, Tambora). Every spark, old and new, now belongs

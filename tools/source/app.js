@@ -457,7 +457,7 @@ function bindTimeline() {
     const x = xIn((e.touches[0].clientX + e.touches[1].clientX) / 2); zoomAbout(timeAt(x), x, f); pinch = d;
   }, { passive: false });
   det.addEventListener('touchend', () => { pinch = 0; });
-  $('tlEvents').addEventListener('click', e => { const el = e.target.closest('.ev'); if (!el) return; const ev = EVENTS[+el.dataset.ev]; goTo(ev[0]); const src = evSources(ev); showFact(ev[2], '<b>' + esc(ev[3]) + '</b> — ' + esc(ev[4]) + src, src ? 15000 : 9000); });
+  $('tlEvents').addEventListener('click', e => { const el = e.target.closest('.ev'); if (!el) return; showEvent(EVENTS[+el.dataset.ev]); });
   // overview: drag the window, drag its edges, or click to jump
   const ov = $('tlOverview'), br = $('ovBrush');
   const tAt = cx => { const r = ov.getBoundingClientRect(); return storyTime(clamp((cx - r.left) / r.width, 0, 1) * 1000); };
@@ -530,6 +530,8 @@ function sizeHTML(c) {
 }
 // ── peer-reviewed sources ──
 const cite = k => { const r = REFS[k]; return `<li>${esc(r.a)} (${r.y}). ${esc(r.t)}. <i>${esc(r.j)}</i>. <a href="https://doi.org/${esc(r.d)}" target="_blank" rel="noopener">doi.org/${esc(r.d)}</a></li>`; };
+/* go to a timeline event and tell it, with its papers */
+function showEvent(ev) { goTo(ev[0]); const src = evSources(ev); showFact(ev[2], '<b>' + esc(ev[3]) + '</b> — ' + esc(ev[4]) + src, src ? 15000 : 9000); }
 /* a timeline event's papers, short enough for the little popup: “Som et al. 2012 · …”, each a link */
 function evSources(ev) {
   const ks = ev[5] && SRCMAP['n:' + ev[5]]; if (!ks || !ks.length) return '';
@@ -998,6 +1000,7 @@ function renderExt() {
       <div class="hf-note">Share of species lost — best estimates, worked out mostly from sea-life fossils. Paler bar = the range of estimates.</div></div>
     ${sel ? detail(sel) : ''}
     <div class="ms"><div class="list-h" style="padding-left:2px">The great dyings <small>oldest first</small></div>${EXTINCTIONS.map(e => { const x = extInfo(e); return `<div class="ms-item cul-item now ext-item${sel === e ? ' sel' : ''}" data-ext="${e.id}"><span class="when">${e.t >= 1 ? tidy(e.t) + ' MYA' : e.t > 0 ? years(Math.round(e.t * 1e6 / 100) * 100) + ' yrs' : 'now'}</span><span>${e.icon}</span><div><b>${esc(e.short)}</b><span>${esc(x.name)} · ${esc(x.toll.split(/[;:]/)[0])}</span></div></div>`; }).join('')}</div>
+    <div class="ms crises"><div class="list-h" style="padding-left:2px">Smaller crises <small>oldest first · real losses, smaller than the great dyings</small></div>${SMALL_CRISES.map(id => { const ev = EVENTS.find(e => e[5] === id); return `<button class="crisis" data-crisis="${id}"><span class="cr-i">${ev[2]}</span><span class="cr-b"><b>${esc(ev[3])}</b> <small>${esc(fmtLong(ev[0]))}</small><span>${esc(ev[4])}</span></span></button>`; }).join('')}</div>
     <div class="src">The map scenes are illustrations of what the evidence says happened, in order — not pictures of what it looked like. Colours, speeds and sizes are chosen to be read, and each card says what is still argued over.</div></div>`;
 }
 function selectExt(id, o = {}) {
@@ -1146,6 +1149,7 @@ function playScene(id) {
   renderExt(); sceneRaf = requestAnimationFrame(tick);
 }
 function bindExt() {
+  $('pane-ext').addEventListener('click', e => { const cr = e.target.closest('[data-crisis]'); if (cr) { showEvent(EVENTS.find(x => x[5] === cr.dataset.crisis)); } });
   $('pane-ext').addEventListener('click', e => {
     const m = e.target.closest('[data-meet]'); if (m) { stopScene(); switchTab('life'); if (S.view !== 'list') setView('list'); select(m.dataset.meet, { keep: true }); return; }
     if (e.target.closest('[data-play]')) return;       // handled below, wherever the button is

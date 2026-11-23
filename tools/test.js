@@ -548,6 +548,11 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   // more events, period by period (Release 13): no period left empty, and every new event cites its paper
   ok('events: every period from the Ediacaran on has at least three timeline events, every older one at least one, and the Permian is no longer empty', await p.evaluate(() => { const n = P => EVENTS.filter(e => e[0] <= P.start && e[0] > P.end).length; return PERIODS.every(P => n(P) >= (P.start <= 635 ? 3 : 1)) && n(PERIODS.find(P => P.id === 'permian')) >= 5; }));
   ok('events: the Cretaceous has at least a dozen events for its 77 million years', await p.evaluate(() => EVENTS.filter(e => e[0] <= 143 && e[0] > 66).length >= 12));
+  await p.evaluate(() => switchTab('ext')); await p.waitForTimeout(250);
+  ok('crises: the Extinctions tab lists the smaller crises, oldest first, each a timeline event with its papers', await p.evaluate(() => { const rows = [...document.querySelectorAll('#pane-ext .crisis')], ts = SMALL_CRISES.map(id => EVENTS.find(e => e[5] === id)[0]); return rows.length === SMALL_CRISES.length && rows.length >= 12 && ts.every((t, i) => !i || t < ts[i - 1]) && SMALL_CRISES.every(id => (SRCMAP['n:' + id] || []).length); }));
+  await p.click('#pane-ext .crisis[data-crisis="hangenberg"]'); await p.waitForFunction(() => Math.abs(S.t - 359.3) < 1, null, { timeout: 10000 }).catch(() => {}); await p.waitForTimeout(400);
+  ok('crises: tapping one goes to its time and shows its papers', await p.evaluate(() => Math.abs(S.t - 359.3) < 1 && /Hangenberg/.test(document.getElementById('fpText').textContent) && /Kaiser et al\. 201[56]/.test(document.getElementById('fpText').textContent)), await p.evaluate(() => S.t.toFixed(2) + ' ' + S.win.join('-') + ' ' + document.getElementById('fpText').textContent));
+  await p.evaluate(() => { closeFact(); switchTab('life'); }); await p.waitForTimeout(150);
   ok('events: every event with an id cites a verified paper', await p.evaluate(() => EVENTS.filter(e => e[5]).length >= 24 && EVENTS.filter(e => e[5]).every(e => (SRCMAP['n:' + e[5]] || []).length > 0)));
   await p.evaluate(() => { setWindow(300, 250, true); setTime(270); }); await p.waitForTimeout(300);
   { const idx = await p.evaluate(() => EVENTS.findIndex(e => e[5] === 'capitanian'));

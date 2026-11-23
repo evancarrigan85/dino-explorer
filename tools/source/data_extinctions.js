@@ -84,4 +84,7 @@ const EXTINCTIONS = [
 ];
 // Where and roughly when people first reached each land (thousand years ago). Dates are approximate and argued over.
 const PEOPLE_ARRIVE = [[31, 35, 60, 'Out of Africa'], [-22, 132, 50, 'Australia'], [47, 12, 45, 'Europe'], [62, 110, 35, 'Siberia'], [44, -105, 20, 'North America'], [-22, -58, 15, 'South America']];
-if (typeof module !== 'undefined') module.exports = { EXTINCTIONS, PEOPLE_ARRIVE };
+// Smaller crises: losses that were real but smaller than the great dyings. Each is a timeline event (data_time.js)
+// by its id, which carries its sentence, its date and its sources (n:<id>). Oldest first.
+const SMALL_CRISES = ['endediacaran', 'kalkarindji', 'spice', 'ireviken', 'lau', 'hangenberg', 'coalforest', 'capitanian', 'carnian', 'toarcian', 'oae2', 'petm', 'grandecoupure'];
+if (typeof module !== 'undefined') module.exports = { SMALL_CRISES, EXTINCTIONS, PEOPLE_ARRIVE };
