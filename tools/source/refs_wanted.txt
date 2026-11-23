@@ -609,3 +609,8 @@ rooney2015 | Rooney | 2015 | A Cryogenian chronology: Two long-lasting synchrono
 macdonald2010 | Macdonald | 2010 | Calibrating the Cryogenian | s:snowball, n:franklin
 hoffman2016 | Hoffman | 2016 | Cryoconite pans on Snowball Earth: supraglacial oases for Cryogenian eukaryotes? | s:snowball
 cox2016 | Cox | 2016 | Continental flood basalt weathering as a trigger for Neoproterozoic Snowball Earth | n:franklin, s:snowball
+bretz1923 | Bretz | 1923 | The Channeled Scablands of the Columbia Plateau | s:missoula, n:missoula
+waitt1985 | Waitt | 1985 | Case for periodic, colossal jökulhlaups from Pleistocene glacial Lake Missoula | s:missoula, n:missoula
+benito2003 | Benito | 2003 | Number and size of last-glacial Missoula floods in the Columbia River valley between the Pasco Basin, Washington, and Portland, Oregon | s:missoula
+baker2009 | Baker | 2009 | The Channeled Scabland: A Retrospective | s:missoula, n:missoula
+balbas2017 | Balbas | 2017 | 10Be dating of late Pleistocene megafloods and Cordilleran Ice Sheet retreat in the northwestern United States | s:missoula

@@ -1379,6 +1379,27 @@ Object.assign(STORY_SCENES, {
       placeLabels(c, L);
     });
   },
+  // The Missoula floods: the lake fills behind the ice dam, the dam breaks, the water crosses Washington; again and again
+  missoula(g, k, st, now) {
+    const L = [], P = ring => ring.map(([la, lo]) => g.ll(lo, la));
+    const path = (c, ps, close) => { if (ps.some(x => !x)) return false; c.beginPath(); ps.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); if (close) c.closePath(); return true; };
+    // how full the lake is: fills, empties fast, fills again, then gone with the ice
+    const full = k < 0.1 ? ramp(k, 0.02, 0.1) * 0.6 : k < 0.38 ? 0.6 + 0.4 * ramp(k, 0.1, 0.3) : k < 0.44 ? 1 - ramp(k, 0.38, 0.44) : k < 0.85 ? ramp(k, 0.6, 0.72) * (1 - ramp(k, 0.8, 0.84)) : 0;
+    const surge = Math.max(Math.min(ramp(k, 0.38, 0.42), 1 - ramp(k, 0.6, 0.66)), 0.6 * clamp(1 - Math.abs(k - 0.79) / 0.04, 0, 1));
+    g.layer('land', c => {
+      if (full > 0 && path(c, P(st.lake), true)) { c.fillStyle = `rgba(70,128,178,${0.85 * full})`; c.fill(); c.strokeStyle = `rgba(35,80,125,${0.7 * full})`; c.lineWidth = 1.2; c.stroke(); }
+      if (surge > 0 && path(c, P(st.scab), true)) { c.fillStyle = `rgba(150,110,70,${0.55 * surge})`; c.fill(); c.strokeStyle = `rgba(110,75,40,${0.6 * surge})`; c.lineWidth = 1; c.stroke(); }
+    });
+    g.layer('all', c => {
+      if (surge > 0 && path(c, P(st.route), false)) { c.setLineDash([10, 7]); c.lineDashOffset = -now / 14; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = `rgba(40,100,170,${0.9 * surge})`; c.lineWidth = 4; c.stroke(); c.setLineDash([]); }
+      const d = g.ll(st.dam[1], st.dam[0]);
+      if (d && k < 0.85) { c.beginPath(); c.arc(d[0], d[1], 4, 0, 7); c.fillStyle = '#eef6fb'; c.fill(); c.lineWidth = 1.6; c.strokeStyle = '#3d6f94'; c.stroke(); L.push([1, k > 0.38 && k < 0.6 ? 'the ice dam breaks' : 'the ice dam', d[0], d[1] - 14, 12, '#3d6f94', false]); }
+      if (full > 0.3) { const p = g.ll(-114.6, 47.2); if (p) L.push([1, 'Glacial Lake Missoula (sketch)', p[0], p[1], 12, '#1f4f80', false]); }
+      if (surge > 0.3) { const p = g.ll(-118.6, 47.1); if (p) L.push([2, 'the Channeled Scablands', p[0], p[1], 12, '#6b4a22', true]); const q = g.ll(-121.6, 45.45); if (q) L.push([3, 'Columbia River gorge', q[0], q[1] + 12, 11, '#1f4f80', true]); }
+      const pt = g.ll(-122.68, 45.52); if (pt) { L.push([4, 'Portland today', pt[0] + 6, pt[1] + 14, 10, '#5a4630', true]); }
+      placeLabels(c, L);
+    });
+  },
   // Hawaii: islands born over the hot spot, carried away north-west
   hawaii(g, k, st, now) {
     const t = S.t, hs = st.hotspot, L = [], out = 1 - ramp(k, 0.95, 1);

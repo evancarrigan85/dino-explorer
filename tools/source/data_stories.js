@@ -5,7 +5,7 @@
 // captions. Like the extinction scenes, a story illustrates the order of events its card describes;
 // shapes on it (ice edges, old lakes) are labelled sketches. Sources: refs_wanted.txt target s:<id>.
 //   ka      [k (0..1 through the story), thousand years ago] — how the clock runs through the story
-//   view    [lat, lon, zoom] to look at
+//   view    [lat, lon, zoom] to look at; dam, lake, route, scab: the Missoula story’s sketch shapes ([lat, lon])
 //   win     optional [from, to] in millions of years: the stretch of the timeline to show while it plays
 //   margin  the southern edge of the ice sheet as a rough sketch: { lons, edges: [[ka, lats per lon]] },
 //           after the dated ice-margin maps of Dalton et al. (2020)
@@ -103,6 +103,25 @@ const STORIES = [
     // the sea's outline: generous to the south, because Africa sat a little further south then; only sea is ever painted
     sea: [[36.2, -5.9], [37.3, -1.5], [38.6, 0.3], [40.8, 1.3], [42.6, 3.4], [43.3, 6.5], [44.2, 9.5], [42.5, 12], [40, 15.6], [41.8, 16.5], [45.7, 13], [45.3, 12.4], [42, 15.5], [40.5, 19], [39.5, 20.5], [38.5, 23.8], [40.9, 23], [40.8, 26.4], [40.1, 26.4], [38.9, 26.9], [37, 27.6], [36.6, 30.6], [36.8, 36.2], [34.5, 37], [31, 35.6], [30.4, 32.3], [29, 29], [27.5, 23], [27.5, 19.3], [29.5, 13], [31, 10.2], [35, 9.5], [35.4, 8.5], [34, 4], [33, -0.5], [33.5, -2.5], [35.3, -5.4]],
     pools: [[39.5, 5, 3.4], [40, 12, 1.8], [36, 18.5, 3.2], [33.8, 28, 3.2]],
+  },
+  { id: 'missoula', icon: '🌊', title: 'The floods that carved the Scablands', short: 'The Missoula floods',
+    blurb: 'A dam of ice holds back a lake in Montana — then breaks, again and again, and the floods tear across Washington.',
+    ka: [[0, 20], [0.1, 19], [0.3, 18.2], [0.4, 18], [0.55, 17.8], [0.7, 17], [0.85, 15], [1, 14]], view: [46.9, -118.6, 13, 'abs'],
+    steps: [[0, '20,000 years ago the great ice sheet over western Canada pushes tongues of ice south into what is now the United States.'],
+      [0.1, 'One tongue of ice blocks the Clark Fork River in Idaho like a dam. Behind it, water fills the valleys of western Montana: Glacial Lake Missoula.'],
+      [0.3, 'Ice floats on water. When the lake grows deep enough, the water lifts the dam and breaks it.'],
+      [0.4, 'The lake empties within days. A wall of water rushes across eastern Washington, stripping off the soil and cutting deep channels into the rock: the Channeled Scablands.'],
+      [0.55, 'The water backs up behind narrow gaps in the hills, then roars down the Columbia River gorge, past where Portland is today, and out to the Pacific.'],
+      [0.7, 'The ice pushes forward again, the dam forms again, and the lake fills again. It happens over and over — dozens of times.'],
+      [0.85, 'About 15,000 years ago the ice melts back for good, and the floods stop.'],
+      [0.94, 'In 1923 the geologist J Harlen Bretz said that a giant flood had made the Scablands. Other geologists scoffed. Decades later, he was proved right.']],
+    know: 'Giant ripples of gravel, tens of metres apart, cover parts of the Scablands — ripples only very deep, fast water can make. Dry waterfalls stand where no river flows today. Layer after layer of flood sand in the valleys downstream, and of lake mud in Montana, show the lake filled and emptied many times.',
+    debate: 'How many floods there were — dozens of floods, or fewer and bigger ones. Whether ice ages before the last one had floods like these too. And how much water poured out at the peak.',
+    onmap: 'the lake, the ice dam and the flood routes are sketches of the sequence the evidence supports, not measured maps. The ice sheet itself is the map’s own ice reconstruction.',
+    dam: [48.1, -116.4],
+    lake: [[48.15, -116.35], [48.0, -115.7], [47.75, -115.2], [47.6, -114.7], [47.95, -114.2], [47.75, -113.95], [47.25, -113.85], [46.75, -113.9], [46.2, -114.05], [46.45, -114.35], [46.95, -114.4], [47.25, -114.95], [47.55, -115.55], [47.9, -116.2]],
+    route: [[48.1, -116.4], [47.7, -117.4], [47.3, -118.3], [46.8, -118.9], [46.06, -118.92], [45.7, -120.4], [45.7, -121.5], [45.55, -122.6], [46.2, -123.4], [46.25, -124.05]],
+    scab: [[47.85, -117.3], [47.7, -118.4], [47.25, -119.6], [46.6, -119.4], [46.4, -118.6], [46.9, -117.7], [47.4, -117.2]],
   },
   { id: 'hawaii', icon: '🌋', title: 'How Hawaii’s islands were born', short: 'Hawaii',
     blurb: 'A hot spot in the mantle builds volcano after volcano as the Pacific plate slides over it like a conveyor belt.',

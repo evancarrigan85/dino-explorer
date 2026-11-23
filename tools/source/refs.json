@@ -10314,5 +10314,87 @@
 ],
 "first": "",
 "title_expected": "Continental flood basalt weathering as a trigger for Neoproterozoic Snowball Earth"
+},
+"bretz1923": {
+"doi": "10.1086/623053",
+"title": "The Channeled Scablands of the Columbia Plateau",
+"journal": "The Journal of Geology",
+"year": 1923,
+"authors": [
+"Bretz"
+],
+"type": "journal-article",
+"targets": [
+"s:missoula",
+"n:missoula"
+],
+"first": "",
+"title_expected": "The Channeled Scablands of the Columbia Plateau"
+},
+"waitt1985": {
+"doi": "10.1130/0016-7606(1985)96<1271:cfpcjf>2.0.co;2",
+"title": "Case for periodic, colossal jökulhlaups from Pleistocene glacial Lake Missoula",
+"journal": "Geological Society of America Bulletin",
+"year": 1985,
+"authors": [
+"WAITT"
+],
+"type": "journal-article",
+"targets": [
+"s:missoula",
+"n:missoula"
+],
+"first": "",
+"title_expected": "Case for periodic, colossal jökulhlaups from Pleistocene glacial Lake Missoula"
+},
+"benito2003": {
+"doi": "10.1130/0016-7606(2003)115<0624:nasolm>2.0.co;2",
+"title": "Number and size of last-glacial Missoula floods in the Columbia River valley between the Pasco Basin, Washington, and Portland, Oregon",
+"journal": "Geological Society of America Bulletin",
+"year": 2003,
+"authors": [
+"Benito",
+"OʼConnor"
+],
+"type": "journal-article",
+"targets": [
+"s:missoula"
+],
+"first": "",
+"title_expected": "Number and size of last-glacial Missoula floods in the Columbia River valley between the Pasco Basin, Washington, and Portland, Oregon"
+},
+"baker2009": {
+"doi": "10.1146/annurev.earth.061008.134726",
+"title": "The Channeled Scabland: A Retrospective",
+"journal": "Annual Review of Earth and Planetary Sciences",
+"year": 2009,
+"authors": [
+"Baker"
+],
+"type": "journal-article",
+"targets": [
+"s:missoula",
+"n:missoula"
+],
+"first": "",
+"title_expected": "The Channeled Scabland: A Retrospective"
+},
+"balbas2017": {
+"doi": "10.1130/g38956.1",
+"title": "10 Be dating of late Pleistocene megafloods and Cordilleran Ice Sheet retreat in the northwestern United States",
+"journal": "Geology",
+"year": 2017,
+"authors": [
+"Balbas",
+"Barth",
+"Clark",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:missoula"
+],
+"first": "",
+"title_expected": "10Be dating of late Pleistocene megafloods and Cordilleran Ice Sheet retreat in the northwestern United States"
 }
 }

@@ -212,6 +212,7 @@ const EVENTS = [
   [0.04, 4, '🕯', 'The last Neanderthals', 'Soon Homo sapiens is the only human species left.'],
   [0.036, 5, '🦁', 'Chauvet Cave', 'Lions, rhinos and mammoths painted on the walls of a French cave.'],
   [0.022, 4, '🧊', 'Peak of the last ice age', 'Ice 3 km thick over Canada; sea level 120 m lower; people already in North America.'],
+  [0.018, 4, '🌊', 'The Missoula floods', 'An ice dam in Idaho breaks again and again, and floods from a lake in Montana carve the Channeled Scablands of Washington.', 'missoula'],
   [0.0129, 5, '❄️', 'A sudden cold snap', 'The Younger Dryas: a 1,200-year return to near-glacial cold.'],
   [0.0117, 3, '🌾', 'The Holocene begins', 'The climate steadies; within a few centuries people in the Fertile Crescent are farming.'],
   [0.0082, 5, '🌊', 'Britain becomes an island', 'Rising seas drown Doggerland, the plain that joined it to Europe.'],
