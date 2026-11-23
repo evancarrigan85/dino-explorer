@@ -9,6 +9,14 @@ commit that builds, passes `node tools/test.js`, has been looked at on desktop a
 pushed to `main`. When a release ships, move it to "Shipped" with the date and the numbers, and
 correct anything below that turned out to be wrong. Where a step says **ask Evan**, stop and ask.
 
+## Next up (decided 23 Nov 2026 — start here)
+
+Evan asked for “a visual step forward” and for a plan that survives the session resetting. It is
+**Release 12** below. Work it in this order: **12.0 → 12.2 → 12.3 → 12.1**. 12.1 (the animal art) waits on
+Evan’s choice and setup, and nothing else does. If he has chosen by the time you read this, do 12.1 right after
+12.0. Before starting, check what Evan has done since: run `get_environment` and look for an `api.pixellab.ai`
+network secret and for `api.phylopic.org` among the allowed hosts.
+
 ## Where things stand
 
 | | |
@@ -286,6 +294,9 @@ the globe button, a legend, and one paragraph in Insights ("How do we know?") th
 
 ## Release 6 — Custom sprites with PixelLab (blocked on the API token)
 
+**23 Nov 2026: superseded by Release 12.1.** PixelLab makes pixel art only (16–768 px), which suits the game
+better than the atlas. The art decision is now in 12.1; the method notes below still hold if pixel art is chosen.
+
 **Blocker.** The token has not been saved: the secure form was declined or could not be shown, twice.
 Evan adds it himself in the cloud environment's settings (environment menu in the session title bar →
 Edit → Network secrets) for host `api.pixellab.ai`, as a bearer token. Never ask for it in chat.
@@ -528,11 +539,116 @@ The honest map runs out in steps; each step is said on the page.
    invisible unless exaggerated. A globe toggle, “today’s gravity shape, exaggerated about 8,000×”, from EGM96
    or EGM2008 (Zenodo 14537811, CC BY 4.0). Not drawn for the past: no gravity model of ancient Earth exists.
 
+## Release 12 — A visual step forward (planned 23 Nov 2026; Evan: “what else to visually take a step forward”, “set up a plan for when our session resets”)
+
+Research done in the planning session is written into each step, so none of it needs repeating.
+
+### 12.0 — The gravity shape at real size (small; no blockers)
+- In the Geology card “The real shape of the Earth”, a slider from 1× to 20,000× (default 10,000×), so a reader can
+  shrink the bumps to real size and watch the lumpy globe become a perfect ball. `GEO_X` in `engine.js` becomes a
+  setting (`WorldMap.setGeoidScale(x)`); `GEO_FIT` follows it; the legend reads “bumps N× taller”.
+- Add the comparison Evan liked, to the card’s “Too small to see”. On a 30 cm classroom globe: the equator bulge is
+  about 1 mm, Everest about 0.2 mm, the deepest trench about 0.26 mm, the gravity bumps about 0.0025 mm (thinner
+  than a hair). These are sums from the card’s own numbers (radius 6,371 km), and the text should say so.
+- Checks: at 1× `_limb()` ratio < 1.001; at 20,000× > 1.2; the legend follows the slider; phone screenshot.
+
+### 12.1 — Real animal art instead of emoji (waits on Evan: a choice, then one setup step)
+What was found (23 Nov):
+- **PixelLab** (`api.pixellab.ai`, reachable; REST v2 with a Bearer token, or its hosted MCP server at
+  `/mcp`) makes **pixel art only**, 16–768 px. Its prices are in “generations”: a basic image is about 1
+  (roughly $0.008 in credits) and the better models 5–25. A first image for all 769 animals would be roughly
+  800–5,000 generations. The token is **still not saved**: `get_environment` lists no network secrets.
+  Pixel art suits the planned game (Release 9). On the atlas it would clash with the parchment-and-ink look,
+  unless the whole map moved to a pixel style.
+- **PhyloPic** silhouettes are ink-black outlines drawn by scientists and artists from specimens, and they fit
+  the atlas and field-book backdrops. Licences are mixed: use only CC0 and CC BY, with each artist credited on
+  the card, and never BY-SA or NC. **Not reachable**: `api.phylopic.org` and `images.phylopic.org` must be
+  approved, and no copy exists on Zenodo or GitHub (searched 23 Nov).
+
+**The recommendation to put to Evan:** silhouettes for the atlas (map pins, cards, site scenes) and pixel art
+for the game. The alternatives are pixel art everywhere, or keeping the emoji. **What he must do himself:** for
+silhouettes, approve the two PhyloPic hosts in the environment’s network settings; for pixel art, add the
+PixelLab API token as a network secret for `api.pixellab.ai` (never pasted in chat).
+
+Then:
+1. **Coverage first (silhouettes).** For all 745 animals and 24 humans, find a CC0 or CC BY silhouette at
+   species, then genus, then family level. A family-level outline is labelled “a relative’s outline”. Report
+   the counts before drawing anything.
+2. **Pilot sheet, then stop for Evan.** Use the 12 pilot animals of Release 6, on light and dark backdrops,
+   at map-pin and card sizes.
+3. **Rules.** A picture is a claim, so it follows the card: feathers, posture, proportions. Where the shape is
+   argued over (Spinosaurus), use the cautious version, and the card’s `debate` says why. Keep emoji as the
+   fallback. Credit every artist and licence in the card’s sources. Build to a packed sheet in the page, or to
+   `tiles/` if it is large, with a check that every picture has a licence on the allowed list.
+
+### 12.2 — Life at the site: the Kem Kem first (no blockers; Release 10 step 2’s rules apply)
+- **Data.** A new `data_sites.js`, one record per site: `id`, `name`, `at` [lat, lon], `t` (Ma), `rock`,
+  `setting`, `plants` (only where fossil plants or pollen are known), and `animals`. Each animal has `name`
+  (must match the page’s animal list or the site’s source list), `role` (in the water / at the edge / on the
+  bank / in the air), `size_m`, `social` [kind, evidence, ref] (a herd only with a bonebed or trackways), and
+  `ate` [what, evidence: direct | inferred, ref]. Sources go under a new target prefix, `z:<site id>`, added
+  to `okTarget` in `assemble.mjs` and to the prefix list in `CLAUDE.md`.
+- **Sources for the Kem Kem, all checked in Crossref on 23 Nov** (add them to `refs_wanted.txt` and verify):
+  - Already verified: `ibrahim2014` (semiaquatic adaptations), `ibrahim2020` (the tail).
+  - The fauna list and the setting: Ibrahim et al. 2020, ZooKeys, “Geology and paleontology of the Upper
+    Cretaceous Kem Kem Group of eastern Morocco”.
+  - The puzzle of too many big predators: Läng et al. 2013, Palaeogeography, Palaeoclimatology,
+    Palaeoecology, “Unbalanced food web in a Late Cretaceous dinosaur assemblage”.
+  - The debate: Hone & Holtz 2021, Palaeontologia Electronica, “Evaluating the ecology of Spinosaurus:
+    shoreline generalist or aquatic pursuit specialist?”; Fabbri et al. 2022, Nature, “Subaqueous foraging
+    among carnivorous dinosaurs”; and Sereno et al. 2022, eLife, “Spinosaurus is not an aquatic dinosaur”.
+    For Sereno, **pin the DOI in the sixth column**: a title search finds the peer-review notes first. The
+    article itself is type journal-article in Crossref (checked).
+- **The scene** is a window over the map, like the Moon story. It opens from “See life here” on the site’s
+  card, or from the site’s pin when zoomed in, and the clock goes to the site’s time.
+  - The picture is a river channel: water, sandbanks, the bank. Every animal sits in its `role`, drawn to
+    scale against the others, and has a label. Take every name from the ZooKeys list.
+  - Spinosaurus is shown wading at the water’s edge. All four papers allow that much; how much it swam is
+    the debate, and the card says so.
+  - Caption: “a picture built from the finds at this site · poses and plants are guesses where not stated”.
+  - “Still debated” covers how aquatic Spinosaurus was, and why there are so many big predators (one idea is
+    bones from different times and places mixed together; Läng et al.).
+  - Until 12.1 lands it uses the map’s own icons; the layout, scale and labels are the real work.
+- **The benchmark.** `kem-kem-land` is one of the three facts still missing. While building the scene, look at
+  the coast there and see whether the river can be placed on land honestly.
+- **Checks.** The scene opens at the site’s time. Every animal drawn is in the site’s sourced list. Sizes keep
+  the cards’ ratios (within 10%). Every label and the caption are present. It runs on a phone.
+- **Next sites, in order:** Hell Creek, Messel, La Brea, Ashfall (a herd is allowed: a bonebed of one
+  species), the Morrison.
+
+### 12.3 — Ancient landscapes: climate zones on the land (data found; test it before drawing it)
+- **The candidate.** Pohl, Wong Hearing, Franc, Sepulchre & Scotese 2022, Data in Brief, “Dataset of
+  Phanerozoic continental climate and Köppen–Geiger climate classes” (in Crossref). The data are Zenodo
+  record 6620748, CC BY 4.0: one NetCDF or CSV per 20 Myr from 540 to 0 Ma, about 8 MB each.
+  - It is a climate model (FOAM) run on the Scotese & Wright 2018 maps, the same maps the seas and terrain
+    layers use.
+  - The grid is 128 × 128 (2.8° of longitude by 1.4° of latitude). Arrays are stored **[lon, lat]**, and
+    longitude runs 0–360.
+  - Variables: `koppen`, plus monthly precipitation, soil temperature, evaporation and runoff.
+  - **Class codes**, decoded from the figures PDF legend and checked against today’s slice (Sahara = BW,
+    Amazon and Congo = Af, Greenland = EF): 1 ET, 2 EF, 3 Dw, 4 Ds, 5 Df, 6 Cw, 7 Cs, 8 Cf, 9 BW, 10 BS,
+    11 Aw, 12 Am, 13 Af.
+- **The caution found.** Today’s slice puts Paris and Siberia in tundra (ET) and central Australia in Cf.
+  The model’s simple ocean carries no heat (so no Gulf Stream) and its orbit is simplified, so its
+  high-latitude land is too cold. So:
+  1. **Score it before drawing it.** Carry the model’s cells and the dated climate rocks (Boucot et al., already
+     in the map) onto the same plates. Then score agreement slice by slice: salt and gypsum in dry (B), coal
+     in humid (A, C, Df), bauxite and laterite in A or C, glacial deposits in E or D. Report the per-slice
+     scores to Evan. If agreement is poor, stop there and say so.
+  2. **If it passes, draw it.** Show only the five main groups (tropical wet, dry, temperate, cold, polar) as
+     soft washes on the land, carried on our plates the way `build_seas.py` carries the seas, and blended
+     between slices.
+     - In “How this map is made” it is called a climate model’s sketch, with its score.
+     - The rocks stay on top, as the evidence.
+     - Record the score in the benchmark as a tracked number, not a ratchet: it measures the model, not us.
+- **Rejected for now.** The PANALESIS atlas (Zenodo 19134591) is under review and is built on a different
+  plate model. Guo 2026 (vegetation since plants reached land) does not include its model output.
+
 ## Data hosts worth approving (none is reachable from the cloud environment today)
 `paleobiodb.org` and `macrostrat.org` (fossil collections with their environments and rocks — the basis for
 Release 10’s site scenes and Release 8), `nowdatabase.org` (Cenozoic mammal localities with tooth crown
-height: an independent test of where grassland was, for the benchmark), `api.phylopic.org` (animal
-silhouettes; licences are mixed — use only CC0 and CC BY, with credit). Evan approves hosts in the
+height: an independent test of where grassland was, for the benchmark), `api.phylopic.org` and `images.phylopic.org`
+(animal silhouettes, Release 12.1; licences are mixed — use only CC0 and CC BY, with credit). Evan approves hosts in the
 environment’s network settings.
 
 ## Release 8 — Real fossil occurrences (needs one host approved)
