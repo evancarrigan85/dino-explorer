@@ -503,6 +503,31 @@ changes the live address, so **ask Evan** first.
      crocodile relatives — Ibrahim et al. 2014, 2020), Hell Creek, the Morrison, Messel, Ashfall, La Brea.
 3. Pictures for the scenes come with Release 6 (custom sprites) — until then, the map’s own icons.
 
+## Release 11 — Back to the birth of the Earth (Evan, 23 Nov: “go back to the proto-Earth, before the Moon collided”; “Earth like a geoid, the real shape, as an option”)
+
+The honest map runs out in steps; each step is said on the page.
+1. **1000 → 720 Ma (Rodinia breaking up).** Merdith et al. 2021 already covers it — the site stops at 720 Ma
+   only because `MAXT = 720` in `tools/build_plates.py`. Model on Zenodo 4485738 (CC BY 4.0). Rebuild the plates,
+   seas (PaleoDEMs stop at 540 Ma, so before that land only), labels, timeline (Tonian), and the benchmark.
+2. **1800 → 1000 Ma (Nuna/Columbia).** Cao et al. 2024, “Earth’s tectonic and plate boundary evolution over
+   1.8 billion years”, full-plate model on Zenodo 13628813 (CC BY 4.0). Check it joins Merdith at 1000 Ma;
+   say on the page that these maps are far less certain.
+3. **4567 → 1800 Ma: no map exists of where the land was.** Draw no continents; show what the evidence says
+   instead, each with a verified source: the Solar System’s first solids (4.567 Ga), the Moon-forming impact
+   (~4.5 Ga, a model — versions argued over), the oldest crystals (Jack Hills zircons, 4.4 Ga), the oldest
+   rocks (Acasta, ~4.0 Ga), the oldest stromatolites (~3.5 Ga), the Great Oxidation Event (~2.4 Ga), the
+   Huronian ice ages. A scene for the impact, like the extinction scenes, labelled as a model.
+4. **The real shape (today only).** Flattening is 21 km at the poles (0.3%) and the geoid’s bumps are ±100 m —
+   invisible unless exaggerated. A globe toggle, “today’s gravity shape, exaggerated about 8,000×”, from EGM96
+   or EGM2008 (Zenodo 14537811, CC BY 4.0). Not drawn for the past: no gravity model of ancient Earth exists.
+
+## Data hosts worth approving (none is reachable from the cloud environment today)
+`paleobiodb.org` and `macrostrat.org` (fossil collections with their environments and rocks — the basis for
+Release 10’s site scenes and Release 8), `nowdatabase.org` (Cenozoic mammal localities with tooth crown
+height: an independent test of where grassland was, for the benchmark), `api.phylopic.org` (animal
+silhouettes; licences are mixed — use only CC0 and CC BY, with credit). Evan approves hosts in the
+environment’s network settings.
+
 ## Release 8 — Real fossil occurrences (needs one host approved)
 
 Show every recorded fossil of a selected animal or group as dots, from the Paleobiology Database
