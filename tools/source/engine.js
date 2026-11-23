@@ -169,10 +169,13 @@ const WorldMap = (() => {
      that the block's plate has a known position at `age`: a fossil site must
      be carried back to the animal's own time. If the ground it sits on did
      not exist yet (younger crust), it rides with the nearest block that did. */
+  // Blocks from the older model (before the join, when there is one) never carry a place younger than the join.
+  const JOIN = PLATE_DATA.join || Infinity;
   function attach(lat, lon, age = 0) {
-    const v = toXYZ(lat, lon), end = f => fams[f].t[fams[f].t.length - 1];
+    const v = toXYZ(lat, lon), end = f => fams[f].t[fams[f].t.length - 1], older = p => age <= JOIN && p.lo >= JOIN;
     let inside = null, insideEnd = -1;
     for (const p of polys) {
+      if (older(p)) continue;
       if (p.c[0] * v[0] + p.c[1] * v[1] + p.c[2] * v[2] < p.cosr - 0.02) continue;
       if (!ringContains(p.rings[0], v)) continue;
       const e = end(p.f); if (e > insideEnd) { insideEnd = e; inside = p; }
@@ -181,7 +184,7 @@ const WorldMap = (() => {
     const nearest = minEnd => {
       let best = null, bd = -2;
       for (const p of polys) {
-        if (end(p.f) < minEnd) continue;
+        if (end(p.f) < minEnd || older(p)) continue;
         const dc = p.c[0] * v[0] + p.c[1] * v[1] + p.c[2] * v[2];
         if (dc < Math.cos(Math.min(Math.PI, Math.acos(Math.max(-1, p.cosr)) + 0.3))) continue;
         const o = p.rings[0];
@@ -720,7 +723,8 @@ void main() {
   // ── palette: sea and land colours shift with the climate of the age ─
   const PALS = [
     // [mya, oceanCentre, oceanMid, oceanEdge, landBase]
-    [1000, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],          // the Tonian: open sea, bare rock
+    [1800, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],          // 1800 Ma to the Tonian: open sea, bare rock
+    [1000, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],
     [724, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],
     [720, '#cfe0ea', '#9fbacb', '#6a879c', '#d8c69c'],
     [640, '#cfe0ea', '#9fbacb', '#6a879c', '#d8c69c'],

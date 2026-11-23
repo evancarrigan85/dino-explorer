@@ -17,6 +17,37 @@ const PERIOD_EDITS = {
     funFact: 'If all of Earth\'s history were one 24-hour day, our species appears about six seconds before midnight. Dinosaurs went extinct at 11:39 PM. The entire Industrial Revolution fits into the last five-thousandths of a second.' },
 };
 
+// 1800–1000 Ma: the Statherian (end of the Paleoproterozoic) and the three Mesoproterozoic periods. Added 23 Nov 2026
+// when the map went back to 1.8 billion years (Cao et al. 2024).
+const STATHERIAN = {
+  id: 'statherian', name: 'Statherian', era: 'Paleoproterozoic Era',
+  start: 1800, end: 1600, color: '#7d6fb0', textColor: '#ada0e6',
+  desc: 'Most of the land gathers into an older supercontinent, Nuna (also called Columbia). The air holds only a little oxygen, the land is bare, and life is microscopic — until the first living things made of many cells appear in the sea.',
+  funFact: 'A day lasted about 19 hours — and scientists think it stayed that long for a billion years, while the pull of the Moon and the Sun’s warming of the air balanced each other out.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const CALYMMIAN = {
+  id: 'calymmian', name: 'Calymmian', era: 'Mesoproterozoic Era',
+  start: 1600, end: 1400, color: '#6f78b8', textColor: '#a3acf0',
+  desc: 'Living things big enough to see with your own eyes: ribbons of seaweed up to 30 cm long grow on the sea floor in what is now China. Everything else is still microscopic.',
+  funFact: 'The oldest living things big enough to see without a microscope are seaweed-like ribbons about 1.56 billion years old.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const ECTASIAN = {
+  id: 'ectasian', name: 'Ectasian', era: 'Mesoproterozoic Era',
+  start: 1400, end: 1200, color: '#6683b5', textColor: '#9cb8ea',
+  desc: 'The middle of what geologists call the “boring billion”: the climate, the sea and life change only slowly. There is little oxygen in the air — though some seas have enough for animals, which have not evolved.',
+  funFact: 'Rocks in northern China show that, 1.4 billion years ago, some seas had enough oxygen for animals to breathe — but there were no animals yet. Something else was missing.',
+  lifeNote: 'No fossil on this site is dated to these 200 million years. Rocks this old are scarce, and the microbes in them are hard to tell apart — life was there, but none of it has a name here yet.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const STENIAN = {
+  id: 'stenian', name: 'Stenian', era: 'Mesoproterozoic Era',
+  start: 1200, end: 1000, color: '#5e8bb2', textColor: '#94c1e6',
+  desc: 'Pieces of land crash together to build Rodinia, raising a long mountain belt down the east side of North America. In the sea, red seaweeds appear — and with them, perhaps, the oldest known sex.',
+  funFact: 'Nori, the seaweed wrapped round sushi, is a red alga — a distant relative of Bangiomorpha, which lived 1.05 billion years ago.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
 // The Tonian: a billion years ago, before the ice. Added 23 Nov 2026 when the map went back to 1000 Ma.
 const TONIAN = {
   id: 'tonian', name: 'Tonian', era: 'Neoproterozoic Era',
@@ -39,6 +70,50 @@ const EDIACARAN = {
 // know  how do we know?      today  why it matters now
 // ext   mass extinction, where one ends the period
 const INSIGHTS = {
+  statherian: {
+    big: 'An older supercontinent, Nuna, and the first living things made of many cells.',
+    signs: [
+      ['🌍', 'Continents', 'Most of the land gathers into a supercontinent, Nuna (also called Columbia), around what is now North America. The map shows one model of it; the details are argued over.'],
+      ['💨', 'Air', 'Only a little oxygen — far less than today.'],
+      ['☀️', 'Day length', 'About 19 hours, and it stayed about that long for a billion years.'],
+      ['🌿', 'Life', 'Chains of cells 1.63 billion years old in northern China: some of the oldest living things made of many cells.'],
+    ],
+    know: 'Rocks this old are mostly worn away or buried. A supercontinent is pieced together from mountain belts of the same age on different continents, and from the magnetism frozen into old lava, which tells how far from the poles each piece lay.',
+    today: 'Life spent well over a billion years as single cells and small threads before anything large evolved. Most of Earth’s history belongs to microbes.',
+  },
+  calymmian: {
+    big: 'Seaweeds you could see — and cells with spines and ridges, built to survive.',
+    signs: [
+      ['🌿', 'Life', 'Ribbons up to 30 cm long, 1.56 billion years old, in the Gaoyuzhuang rocks of China: many-celled seaweeds, big enough to see.'],
+      ['🔴', 'Perhaps', 'Cells in 1.6-billion-year-old rocks in India look like red seaweeds. If they are, they are the oldest; many scientists are not convinced.'],
+      ['🦠', 'Cells', 'Single cells with walls covered in spines and ridges float in the sea: complex cells, not bacteria.'],
+      ['💨', 'Air', 'Still very little oxygen in the air, and almost none in the deep sea.'],
+    ],
+    know: 'Microscopic fossils are freed from the rock with acid. Their walls — decorated with spines, ridges or branches — show they were complex cells with a nucleus, not bacteria.',
+    today: 'The seaweeds and the green plants that came from them belong to lines whose first members turn up in rocks like these.',
+  },
+  ectasian: {
+    big: 'The “boring billion”: little oxygen, slow change — and a puzzle about why animals did not appear.',
+    signs: [
+      ['💨', 'Oxygen', 'Low in the air overall, but in some shallow seas enough for animals to breathe — with no animals to breathe it.'],
+      ['🌊', 'Deep sea', 'Almost no oxygen in the deep ocean.'],
+      ['🦠', 'Life', 'Microbes, single-celled algae with decorated walls, and small seaweeds.'],
+      ['☀️', 'Day length', 'Still about 19 hours.'],
+    ],
+    know: 'Some metals, like chromium, behave differently when there is oxygen around. Their traces in old sea-floor mud tell how much oxygen there was in the air and the water.',
+    today: 'Oxygen alone does not make animals. Why complex life took so long, after the air and sea could support it, is still a big open question.',
+  },
+  stenian: {
+    big: 'Rodinia is built, and red seaweeds appear — perhaps with the oldest known sex.',
+    signs: [
+      ['🌍', 'Continents', 'Collisions build the supercontinent Rodinia, raising a mountain belt (the Grenville) down the east side of North America.'],
+      ['🔴', 'Life', 'Bangiomorpha, a red seaweed about 1.05 billion years old from Arctic Canada — the oldest seaweed we can match to a group alive today.'],
+      ['🏞', 'Away from the sea', 'Microscopic life in lakes in Scotland, about a billion years old: the first known life away from the sea.'],
+      ['☀️', 'Day length', 'About 19 hours.'],
+    ],
+    know: 'Bangiomorpha’s threads made different kinds of spore, as living red seaweeds with male and female forms do. Dating the rock layers around it put it at about 1.05 billion years.',
+    today: 'Nori, the seaweed on sushi, is one of its distant relatives.',
+  },
   tonian: {
     big: 'A billion years ago: a supercontinent gathering, bare land, and life still tiny — but the first seaweeds, fungi and perhaps sponges are here.',
     signs: [
@@ -331,7 +406,7 @@ const SITES = [
 // ── map labels ─────────────────────────────────────────────────────
 // Continents ride their plates: [text, lat, lon (today), from, to, size]
 const LABELS = [
-  ['Rodinia', 47, -100, 1000, 760, 16], ['Laurentia', 50, -95, 720, 430, 13], ['Baltica', 58, 32, 720, 430, 12], ['Siberia', 63, 105, 720, 260, 12],
+  ['Nuna (Columbia)', 52, -100, 1800, 1350, 16], ['Rodinia', 47, -100, 1050, 760, 16], ['Laurentia', 50, -95, 720, 430, 13], ['Baltica', 58, 32, 720, 430, 12], ['Siberia', 63, 105, 720, 260, 12],
   ['Gondwana', 4, 22, 600, 335, 15], ['Avalonia', 52.2, -1.5, 490, 430, 10],
   ['North China', 38, 112, 539, 260, 10], ['South China', 27, 109, 539, 260, 10], ['Kazakhstania', 48, 70, 500, 320, 10],
   ['Laurussia', 50, -75, 430, 335, 14],
@@ -366,4 +441,4 @@ const ICE_AGE_NOTES = [
 // Existing geology cards: where to pin them on the map (present-day lat/lon), or null for none.
 const GEO_FIX = { camp: [32, -7], tethys_sea: null, iapetus_ocean: null, rheic_ocean: null, panthalassa: null, snowball_earth: null };
 
-if (typeof module !== 'undefined') module.exports = { PERIOD_EDITS, TONIAN, EDIACARAN, INSIGHTS, CREATURE_INSIGHTS, SITES, LABELS, OCEANS, SUPEROCEAN, ICE_AGE_NOTES, GEO_FIX };
+if (typeof module !== 'undefined') module.exports = { PERIOD_EDITS, STATHERIAN, CALYMMIAN, ECTASIAN, STENIAN, TONIAN, EDIACARAN, INSIGHTS, CREATURE_INSIGHTS, SITES, LABELS, OCEANS, SUPEROCEAN, ICE_AGE_NOTES, GEO_FIX };

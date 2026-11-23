@@ -8330,7 +8330,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:tonian"
+"p:tonian",
+"p:stenian"
 ],
 "first": "",
 "title_expected": "Assembly, configuration, and break-up history of Rodinia: A synthesis"
@@ -8419,9 +8420,222 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:tonian"
+"p:tonian",
+"p:statherian",
+"p:ectasian",
+"p:stenian"
 ],
 "first": "",
 "title_expected": "Mid-Proterozoic day length stalled by tidal resonance"
+},
+"cao2024": {
+"doi": "10.1016/j.gsf.2024.101922",
+"title": "Earth’s tectonic and plate boundary evolution over 1.8 billion years",
+"journal": "Geoscience Frontiers",
+"year": 2024,
+"authors": [
+"Cao",
+"Collins",
+"Pisarevsky",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:plates",
+"p:statherian",
+"j:drift"
+],
+"first": "",
+"title_expected": "Earth’s tectonic and plate boundary evolution over 1.8 billion years"
+},
+"zhao2002": {
+"doi": "10.1016/s0012-8252(02)00073-9",
+"title": "Review of global 2.1–1.8 Ga orogens: implications for a pre-Rodinia supercontinent",
+"journal": "Earth-Science Reviews",
+"year": 2002,
+"authors": [
+"Zhao",
+"Cawood",
+"Wilde",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:statherian"
+],
+"first": "",
+"title_expected": "Review of global 2.1–1.8 Ga orogens: implications for a pre-Rodinia supercontinent"
+},
+"miao2024": {
+"doi": "10.1126/sciadv.adk3208",
+"title": "1.63-billion-year-old multicellular eukaryotes from the Chuanlinggou Formation in North China",
+"journal": "Science Advances",
+"year": 2024,
+"authors": [
+"Miao",
+"Yin",
+"Knoll",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:statherian",
+"a:Qingshania"
+],
+"first": "",
+"title_expected": "1.63-billion-year-old multicellular eukaryotes from the Chuanlinggou Formation in North China"
+},
+"planavsky2014": {
+"doi": "10.1126/science.1258410",
+"title": "Low Mid-Proterozoic atmospheric oxygen levels and the delayed rise of animals",
+"journal": "Science",
+"year": 2014,
+"authors": [
+"Planavsky",
+"Reinhard",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:statherian",
+"p:calymmian",
+"p:ectasian"
+],
+"first": "",
+"title_expected": "Low Mid-Proterozoic atmospheric oxygen levels and the delayed rise of animals"
+},
+"zhu2016": {
+"doi": "10.1038/ncomms11500",
+"title": "Decimetre-scale multicellular eukaryotes from the 1.56-billion-year-old Gaoyuzhuang Formation in North China",
+"journal": "Nature Communications",
+"year": 2016,
+"authors": [
+"Zhu",
+"Zhu",
+"Knoll",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:calymmian",
+"a:Gaoyuzhuang seaweeds",
+"f:calymmian"
+],
+"first": "",
+"title_expected": "Decimetre-scale multicellular eukaryotes from the 1.56-billion-year-old Gaoyuzhuang Formation in North China"
+},
+"bengtson2017": {
+"doi": "10.1371/journal.pbio.2000735",
+"title": "Three-dimensional preservation of cellular and subcellular structures suggests 1.6 billion-year-old crown-group red algae",
+"journal": "PLOS Biology",
+"year": 2017,
+"authors": [
+"Bengtson",
+"Sallstedt",
+"Belivanova",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:calymmian",
+"a:Rafatazmia"
+],
+"first": "",
+"title_expected": "Three-dimensional preservation of cellular and subcellular structures suggests 1.6 billion-year-old crown-group red algae"
+},
+"javaux2001": {
+"doi": "10.1038/35083562",
+"title": "Morphological and ecological complexity in early eukaryotic ecosystems",
+"journal": "Nature",
+"year": 2001,
+"authors": [
+"Javaux",
+"Knoll",
+"Walter"
+],
+"type": "journal-article",
+"targets": [
+"p:calymmian",
+"p:ectasian",
+"a:Tappania",
+"f:statherian",
+"f:ectasian"
+],
+"first": "",
+"title_expected": "Morphological and ecological complexity in early eukaryotic ecosystems"
+},
+"zhang2016": {
+"doi": "10.1073/pnas.1523449113",
+"title": "Sufficient oxygen for animal respiration 1,400 million years ago",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2016,
+"authors": [
+"Zhang",
+"Wang",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:ectasian"
+],
+"first": "",
+"title_expected": "Sufficient oxygen for animal respiration 1,400 million years ago"
+},
+"butterfield2000": {
+"doi": "10.1666/0094-8373(2000)026<0386:bpngns>2.0.co;2",
+"title": "Bangiomorpha pubescens n. gen., n. sp.: implications for the evolution of sex, multicellularity, and the Mesoproterozoic/Neoproterozoic radiation of eukaryotes",
+"journal": "Paleobiology",
+"year": 2000,
+"authors": [
+"Butterfield"
+],
+"type": "journal-article",
+"targets": [
+"p:stenian",
+"a:Bangiomorpha",
+"f:stenian"
+],
+"first": "",
+"title_expected": "Bangiomorpha pubescens n. gen., n. sp.: implications for the evolution of sex, multicellularity, and the Mesoproterozoic/Neoproterozoic radiation of eukaryotes"
+},
+"gibson2017": {
+"doi": "10.1130/g39829.1",
+"title": "Precise age of Bangiomorpha pubescens dates the origin of eukaryotic photosynthesis",
+"journal": "Geology",
+"year": 2018,
+"authors": [
+"Gibson",
+"Shih",
+"Cumming",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:stenian",
+"a:Bangiomorpha"
+],
+"first": "",
+"title_expected": "Precise age of Bangiomorpha pubescens dates the origin of eukaryotic photosynthesis"
+},
+"strother2011": {
+"doi": "10.1038/nature09943",
+"title": "Earth’s earliest non-marine eukaryotes",
+"journal": "Nature",
+"year": 2011,
+"authors": [
+"Strother",
+"Battison",
+"Brasier",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:stenian",
+"a:Torridon lake microbes"
+],
+"first": "",
+"title_expected": "Earth’s earliest non-marine eukaryotes"
 }
 }

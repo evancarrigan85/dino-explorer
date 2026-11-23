@@ -495,9 +495,21 @@ woodburne2010 | Woodburne | 2010 | The Great American Biotic Interchange: Disper
 wang2017b | Wang | 2017 | A basal ursine bear (Protarctos abstrusus) from the Pliocene High Arctic reveals Eurasian affinities and a diet rich in fermentable sugars | a:Protarctos | 10.1038/s41598-017-17657-8
 fitzgerald2009 | Fitzgerald | 2009 | The morphology and systematics of Mammalodon colliveri (Cetacea: Mysticeti), a toothed mysticete from the Oligocene of Australia | a:Mammalodon | 10.1111/j.1096-3642.2009.00572.x
 # ── the Tonian, 1000–720 Ma ──
-li2008 | Li | 2008 | Assembly, configuration, and break-up history of Rodinia: A synthesis | p:tonian
+li2008 | Li | 2008 | Assembly, configuration, and break-up history of Rodinia: A synthesis | p:tonian, p:stenian
 loron2019 | Loron | 2019 | Early fungi from the Proterozoic era in Arctic Canada | p:tonian, a:Ourasphaira, f:tonian
 tang2020 | Tang | 2020 | A one-billion-year-old multicellular chlorophyte | p:tonian, a:Proterocladus
 turner2021 | Turner | 2021 | Possible poriferan body fossils in early Neoproterozoic microbial reefs | p:tonian, a:Possible sponge (Little Dal reefs)
 porter2000 | Porter | 2000 | Testate amoebae in the Neoproterozoic Era: evidence from vase-shaped microfossils in the Chuar Group, Grand Canyon | p:tonian, a:Vase-shaped microfossils, f:tonian
-mitchell2023 | Mitchell | 2023 | Mid-Proterozoic day length stalled by tidal resonance | p:tonian
+mitchell2023 | Mitchell | 2023 | Mid-Proterozoic day length stalled by tidal resonance | p:tonian, p:statherian, p:ectasian, p:stenian
+# ── 1800–1000 Ma: Nuna, the boring billion, the first seaweeds ──
+cao2024 | Cao | 2024 | Earth’s tectonic and plate boundary evolution over 1.8 billion years | m:plates, p:statherian, j:drift
+zhao2002 | Zhao | 2002 | Review of global 2.1–1.8 Ga orogens: implications for a pre-Rodinia supercontinent | p:statherian
+miao2024 | Miao | 2024 | 1.63-billion-year-old multicellular eukaryotes from the Chuanlinggou Formation in North China | p:statherian, a:Qingshania
+planavsky2014 | Planavsky | 2014 | Low Mid-Proterozoic atmospheric oxygen levels and the delayed rise of animals | p:statherian, p:calymmian, p:ectasian
+zhu2016 | Zhu | 2016 | Decimetre-scale multicellular eukaryotes from the 1.56-billion-year-old Gaoyuzhuang Formation in North China | p:calymmian, a:Gaoyuzhuang seaweeds, f:calymmian
+bengtson2017 | Bengtson | 2017 | Three-dimensional preservation of cellular and subcellular structures suggests 1.6 billion-year-old crown-group red algae | p:calymmian, a:Rafatazmia
+javaux2001 | Javaux | 2001 | Morphological and ecological complexity in early eukaryotic ecosystems | p:calymmian, p:ectasian, a:Tappania, f:statherian, f:ectasian
+zhang2016 | Zhang | 2016 | Sufficient oxygen for animal respiration 1,400 million years ago | p:ectasian
+butterfield2000 | Butterfield | 2000 | Bangiomorpha pubescens n. gen., n. sp.: implications for the evolution of sex, multicellularity, and the Mesoproterozoic/Neoproterozoic radiation of eukaryotes | p:stenian, a:Bangiomorpha, f:stenian | 10.1666/0094-8373(2000)026<0386:bpngns>2.0.co;2
+gibson2017 | Gibson | 2017 | Precise age of Bangiomorpha pubescens dates the origin of eukaryotic photosynthesis | p:stenian, a:Bangiomorpha
+strother2011 | Strother | 2011 | Earth’s earliest non-marine eukaryotes | p:stenian, a:Torridon lake microbes

@@ -18,7 +18,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
 | Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 478, every one a published work confirmed in Crossref |
+| References | 489, every one a published work confirmed in Crossref |
 | Age of Mammals | Told epoch by epoch: Paleocene, Eocene, Oligocene, Miocene and Pliocene each have their own chapter (header, map title, Insights), with sources |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
@@ -509,7 +509,7 @@ The honest map runs out in steps; each step is said on the page.
 1. ~~1000 → 720 Ma~~ **Shipped 23 Nov 2026.** Was: (Rodinia breaking up). Merdith et al. 2021 already covers it — the site stops at 720 Ma
    only because `MAXT = 720` in `tools/build_plates.py`. Model on Zenodo 4485738 (CC BY 4.0). Rebuild the plates,
    seas (PaleoDEMs stop at 540 Ma, so before that land only), labels, timeline (Tonian), and the benchmark.
-2. **1800 → 1000 Ma (Nuna/Columbia).** Cao et al. 2024, “Earth’s tectonic and plate boundary evolution over
+2. ~~1800 → 1000 Ma~~ **Shipped 23 Nov 2026.** Was: (Nuna/Columbia). Cao et al. 2024, “Earth’s tectonic and plate boundary evolution over
    1.8 billion years”, full-plate model on Zenodo 13628813 (CC BY 4.0). Check it joins Merdith at 1000 Ma;
    say on the page that these maps are far less certain.
 3. **4567 → 1800 Ma: no map exists of where the land was.** Draw no continents; show what the evidence says
@@ -566,6 +566,18 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — Back to 1.8 billion years: Nuna and the boring billion.** The map now starts 1,800 million
+  years ago. Before 1,000 Ma the plates follow Cao et al. (2024), who carried Merdith et al. (2021) back to
+  1.8 Ga; the last billion years stay exactly Merdith (the benchmark caught Cao’s small changes there, so
+  they were not taken), and over 1,050–1,000 Ma the map eases from one to the other without a jump. The
+  benchmark also caught a builder bug that would have drawn the older model’s blocks frozen in place for
+  600 million years; fixed (a block counts only while it exists) and pinned by a check. Four new periods —
+  Statherian (“The World of Nuna”), Calymmian, Ectasian, Stenian — each with insights, a food web and sources;
+  life: Qingshania (1.63 Ga), the Gaoyuzhuang seaweeds (1.56 Ga, the oldest life big enough to see),
+  Rafatazmia (marked as argued over), Tappania, Bangiomorpha (the oldest known sex, perhaps) and the
+  Torridon lake microbes (the first known life away from the sea). The Ectasian has no named fossil and its
+  card says why. 11 new references (489). Benchmark unchanged. 250 checks.
 
 - **23 Nov 2026 — Back to a billion years: the Tonian and Rodinia.** The map and timeline now start at
   1,000 million years ago instead of 720: the plate model (Merdith et al. 2021) always reached that far,

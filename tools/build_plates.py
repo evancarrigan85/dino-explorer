@@ -18,7 +18,12 @@ The browser then rotates every polygon itself, so continents drift
 continuously instead of jumping between a handful of pre-drawn maps.
 
 Usage:
-  python3 -I build_plates.py <MERDITH2021 dir> <ne_land.json> <out.json>
+  python3 -I build_plates.py <MERDITH2021 dir> <ne_land.json> <out.json> [<Cao 2024 1.8Ga_model_GSF dir>]
+
+With the fourth argument the map reaches 1800 Ma: the last 1000 million years stay exactly Merdith et al.
+(2021) — what the benchmark was measured on — and older times come from Cao et al. (2024), which carries the
+same plates back to 1.8 Ga. The two models put the plates 5–10° apart at 1000 Ma, so between 1000 and 1050 Ma
+the map eases from one to the other (said on the page).
 
 Requires: pygplates, numpy, shapely.
 """
@@ -30,8 +35,10 @@ from shapely.geometry.polygon import orient
 from shapely.ops import unary_union
 
 MODEL_DIR, NE_FILE, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
+CAO_DIR = sys.argv[4] if len(sys.argv) > 4 else None
 
-MAXT = 1000                # oldest time the site shows (the start of the Tonian; the model itself begins here)
+MAXT = 1800 if CAO_DIR else 1000   # oldest time the site shows: as far as the models reach
+JOIN, BLEND = 1000.0, 50.0         # Merdith up to JOIN; Cao from JOIN + BLEND; eased in between
 SWITCH = 410               # the model uses present-day coastlines up to this age
 SIMPLIFY_DEG = 0.07        # tolerance for outlines that survive to today
 SIMPLIFY_OLD_DEG = 0.22    # tolerance for outlines that only exist in deep time
@@ -49,6 +56,10 @@ MIN_AREA = MIN_AREA_DEG2 * D2R * D2R        # steradians (LAEA is equal-area)
 rot = pygplates.RotationModel(MODEL_DIR + '/1000_0_rotfile_Merdith_et_al.rot')
 static = pygplates.FeatureCollection(MODEL_DIR + '/shapes_static_polygons_Merdith_et_al.gpmlz')
 coast = pygplates.FeatureCollection(MODEL_DIR + '/shapes_coastlines_Merdith_et_al_v2.gpmlz')
+rot_m_pids = set(int(l.split()[0]) for l in open(MODEL_DIR + '/1000_0_rotfile_Merdith_et_al.rot') if l.strip() and l.split()[0].isdigit())
+if CAO_DIR:   # Cao et al. 2024 (Zenodo 13628813, CC BY 4.0), for times before 1000 Ma
+    rot_c = pygplates.RotationModel([CAO_DIR + '/1000_0_rotfile.rot', CAO_DIR + '/1800_1000_rotfile.rot'])
+    coast_c = pygplates.FeatureCollection(CAO_DIR + '/shapes_coasts.gpmlz')
 log = lambda *a: print(*a, file=sys.stderr, flush=True)
 
 
@@ -60,6 +71,28 @@ def ll2xyz(ll):
 
 
 def quat(t, pid):
+    if CAO_DIR and t > JOIN:
+        qc = quat_of(rot_c, t if t >= JOIN + BLEND else JOIN + BLEND, pid)
+        if t >= JOIN + BLEND or pid not in rot_m_pids:
+            return qc
+        return slerp(quat_of(rot, JOIN, pid), qc, (t - JOIN) / BLEND)
+    return quat_of(rot, t, pid)
+
+
+def slerp(a, b, k):
+    a, b = np.array(a), np.array(b)
+    if np.dot(a, b) < 0: b = -b
+    d = min(1.0, float(np.dot(a, b)))
+    if d > 0.9995:
+        q = a + (b - a) * k
+    else:
+        th = math.acos(d)
+        q = (math.sin((1 - k) * th) * a + math.sin(k * th) * b) / math.sin(th)
+    q = q / np.linalg.norm(q)
+    return tuple(float(x) for x in q)
+
+
+def quat_of(rot, t, pid):
     fr = rot.get_rotation(float(t), pid)
     if fr.represents_identity_rotation():
         return (0.0, 0.0, 0.0, 1.0)
@@ -275,12 +308,18 @@ log('static polygons carrying land', len(feats), ' gap pieces reassigned', n_lef
 
 # ── 3. the model's own continental blocks, for times before SWITCH ────
 n_old = 0
-for f in coast:
+def blocks():
+    for f in coast:                                  # Merdith et al. 2021, back to JOIN
+        yield f, min(MAXT, JOIN), SWITCH
+    if CAO_DIR:
+        for f in coast_c:                            # Cao et al. 2024, before JOIN
+            yield f, MAXT, JOIN
+for f, hi, lo in blocks():
     pid = f.get_reconstruction_plate_id()
     b, e = f.get_valid_time()
-    if b <= SWITCH or e > MAXT:
+    if b <= lo or e > hi:
         continue
-    b = float(min(b, MAXT)); e = float(max(e, SWITCH))
+    b = float(min(b, hi)); e = float(max(e, lo))
     polys = []
     for g in f.get_geometries():
         if not isinstance(g, pygplates.PolygonOnSphere):
@@ -399,20 +438,28 @@ for fi in range(len(reps)):
     versions = []
     # (a) deep time: one merged outline per distinct begin age, each REPLACING
     #     the one before it, handing over to today's coastlines at SWITCH.
+    #     A block counts only while it exists: a version starts wherever one begins or ends (blocks of the
+    #     older model end at JOIN; all others last until SWITCH).
     old = [x for x in fl if x[4]]
-    prev_area = -1.0
-    for b in sorted(set(round(x[0], 1) for x in old), reverse=True):
-        geoms = project(old, lambda fb: round(fb, 1) >= b)
+    prev_area, open_v = -1.0, None
+    cuts = sorted(set([round(x[0], 1) for x in old] + [round(x[1], 1) for x in old if x[1] > SWITCH + 1e-6]), reverse=True)
+    for b in cuts:
+        group = [x for x in old if round(x[0], 1) >= b and round(x[1], 1) < b]
+        geoms = project(group, lambda fb: True)
         if not geoms:
+            if open_v is not None:
+                open_v['lo'] = b; open_v = None        # everything this family had here has ended
+            prev_area = -1.0
             continue
         out, area = outline(geoms, SIMPLIFY_OLD)
         if abs(area - prev_area) < 1e-9:
-            continue                                   # nothing new appeared
+            continue                                   # nothing appeared or ended
         prev_area = area
         if out:
-            if versions:
-                versions[-1]['lo'] = b
-            versions.append({'b': b, 'lo': SWITCH, 'polys': out, 'old': True, 'last': False})
+            if open_v is not None:
+                open_v['lo'] = b
+            open_v = {'b': b, 'lo': SWITCH, 'polys': out, 'old': True, 'last': False}
+            versions.append(open_v)
     # (b) today's land: pieces are ADDED as their crust appears, never redrawn.
     #     Neighbouring pieces overlap by SEAM, so no seams show between them.
     new = [x for x in fl if not x[4]]
@@ -438,4 +485,4 @@ log('families kept', len(families), 'polygons', total_polys, 'points', total_pts
     'keyframes', sum(len(f['keys']) for f in families))
 log('  deep-time points', sum(len(r) for f in families for v in f['versions'] if v['old'] for p in v['polys'] for r in p),
     ' present-coast points', sum(len(r) for f in families for v in f['versions'] if not v['old'] for p in v['polys'] for r in p))
-json.dump({'maxT': MAXT, 'families': families}, open(OUT, 'w'), separators=(',', ':'))
+json.dump(dict({'maxT': MAXT, 'families': families}, **({'join': JOIN} if CAO_DIR else {})), open(OUT, 'w'), separators=(',', ':'))

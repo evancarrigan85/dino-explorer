@@ -34,7 +34,7 @@ ALL.forEach(c => {
 const sitesOf = c => c._s || (c._s = (c.sites || []).map(([la, lo, label]) => ({ at: WorldMap.attach(la, lo, c.t[0]), label })));
 
 // ── time ────────────────────────────────────────────────────────────
-const T_MAX = 1000, MIN_SPAN = 0.006;
+const T_MAX = 1800, MIN_SPAN = 0.006;
 // recorded history: the last few thousand years are shown in calendar years
 const NOW_YEAR = 2025, HIST_T = 0.0056;
 const yearAt = t => NOW_YEAR - t * 1e6, tOfYear = y => Math.max(0, (NOW_YEAR - y) / 1e6);
@@ -42,7 +42,7 @@ const fmtYear = y => { y = Math.round(y); return y < 0 ? -y + ' BCE' : y === 0 ?
 const calYear = (t, step = 1) => fmtYear(Math.round(yearAt(t) / step) * step);
 // The "storybook" scale used when the whole of time is in view: recent time
 // is stretched, or the last few million years would be one pixel wide.
-const STORY = [[0, 1000], [40, 720], [80, 539], [240, 359], [370, 252], [665, 66], [820, 7], [940, 0.3], [985, 0.0117], [1000, 0]];
+const STORY = [[0, 1800], [30, 1000], [55, 720], [90, 539], [245, 359], [372, 252], [666, 66], [820, 7], [940, 0.3], [985, 0.0117], [1000, 0]];
 function storyTime(u) {
   u = clamp(u, 0, 1000);
   for (let i = 0; i < STORY.length - 1; i++) { const [u0, t0] = STORY[i], [u1, t1] = STORY[i + 1]; if (u <= u1) return t0 + (u - u0) / (u1 - u0) * (t1 - t0); }
@@ -361,7 +361,7 @@ function jumpPeriod(dir) {
 // ── the zoomable timeline ───────────────────────────────────────────
 const PRESETS = [['All time', T_MAX, 0], ['Paleozoic', 539, 252], ['Age of Dinosaurs', 252, 66], ['Age of Mammals', 66, 0],
   ['Last 10 million years', 10, 0], ['Last million years', 1, 0], ['Last 100,000 years', 0.1, 0], ['Since the Ice Age', 0.03, 0], ['Recorded history', HIST_T, 0]];
-const ABBR = { tonian: 'Ton', cryogenian: 'Cryo', ediacaran: 'Edi', cambrian: 'Cam', ordovician: 'Ord', silurian: 'Sil', devonian: 'Dev', carboniferous: 'Carb', permian: 'Perm',
+const ABBR = { statherian: 'Sta', calymmian: 'Cal', ectasian: 'Ect', stenian: 'Ste', tonian: 'Ton', cryogenian: 'Cryo', ediacaran: 'Edi', cambrian: 'Cam', ordovician: 'Ord', silurian: 'Sil', devonian: 'Dev', carboniferous: 'Carb', permian: 'Perm',
   triassic: 'Tri', jurassic: 'Jur', cretaceous: 'Cret', paleogene: 'Pg', neogene: 'Ng', quaternary: 'Q', holocene: 'H' };
 function setWindow(a, b, keepTime) {
   a = Math.min(a, T_MAX); b = Math.max(b, 0);
@@ -627,7 +627,7 @@ function renderLife() {
     // nothing at this instant: offer the nearest in time, either side
     const pool = ALL.filter(typeOK);
     const before = pool.filter(c => c.t[1] > S.t).sort((a, b) => a.t[1] - b.t[1])[0], after = pool.filter(c => c.t[0] < S.t).sort((a, b) => b.t[0] - a.t[0])[0];
-    html += `<div class="empty">${S.q ? 'No animal matches “' + esc(S.q) + '”.' : S.scope === 'now' ? 'No animal on this site is recorded at exactly this moment' + (S.type !== 'all' ? ' in this group' : '') + '.' : 'Nothing here' + (S.type !== 'all' ? ' in this group' : '') + '.'}<br>` +
+    html += `<div class="empty">${S.q ? 'No animal matches “' + esc(S.q) + '”.' : S.scope !== 'all' && S.period && S.period.lifeNote ? esc(S.period.lifeNote) : S.scope === 'now' ? 'No animal on this site is recorded at exactly this moment' + (S.type !== 'all' ? ' in this group' : '') + '.' : 'Nothing here' + (S.type !== 'all' ? ' in this group' : '') + '.'}<br>` +
       (S.scope === 'now' && !S.q ? [before && `<button class="linkbtn" data-jump="${before.key}">← earlier: ${esc(before.name)}</button>`, after && `<button class="linkbtn" data-jump="${after.key}">later: ${esc(after.name)} →</button>`].filter(Boolean).join(' ') : '') + '</div>';
   } else {
     const rich = S.scope === 'now' && !S.q && items.length <= 40 && S.sort !== 'tree';
@@ -1838,7 +1838,7 @@ const DOOR = [
 function openDoor() {
   closeFact();
   $('door').innerHTML = `<div class="door-card" role="dialog" aria-modal="true" aria-label="Before Us — choose a way in">
-    <div class="door-h"><span class="door-globe">🌍</span><div><h2>Before Us</h2><p>A billion years of Earth, life and people — on a map that moves.</p></div></div>
+    <div class="door-h"><span class="door-globe">🌍</span><div><h2>Before Us</h2><p>1.8 billion years of Earth, life and people — on a map that moves.</p></div></div>
     <div class="door-grid">${DOOR.map(([id, ic, t, d], i) => `<button class="door-b${i ? '' : ' first'}" data-door="${id}"><span class="door-i">${ic}</span><b>${esc(t)}</b><span>${esc(d)}</span></button>`).join('')}</div>
     <button class="door-skip" data-door="explore">Just let me explore →</button>
     <p class="door-note">Every fact comes with its evidence, and where scientists disagree, the page says so.</p></div>`;

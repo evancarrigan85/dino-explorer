@@ -12,6 +12,22 @@
 //            marks, droppings, chemistry of bones, feeding traces
 //   likely = inferred from teeth, jaws, size and who lived together
 const FOODWEBS = {
+  statherian: { title: 'A world of microbes', where: 'Shallow seas around Nuna',
+    note: 'Sunlight feeds bacteria and the first algae made of many cells. Other bacteria break down whatever dies. There is nothing that hunts, and nothing that grazes in the way animals do.',
+    nodes: { sun: ['Cyanobacteria', '🟢', 0], alg: ['Many-celled algae', '🌿', 0, 'Qingshania'], mat: ['Microbial mats', '🟫', 0], bac: ['Bacteria that break down the dead', '🦠', 1] },
+    links: [['mat', 'bac', 'likely', 'In living microbial mats, other bacteria feed on the dead cells.'], ['alg', 'bac', 'likely'], ['sun', 'bac', 'likely']] },
+  calymmian: { title: 'The first seaweeds', where: 'Shallow sea floor, North China',
+    note: 'Seaweeds big enough to see grow on the sea floor. Single cells with spiny walls float above. What, if anything, ate the seaweeds is unknown.',
+    nodes: { sun: ['Cyanobacteria', '🟢', 0], sea: ['Seaweed ribbons', '🌿', 0, 'Gaoyuzhuang seaweeds'], cel: ['Cells with spiny walls', '🦠', 1, 'Tappania'], bac: ['Bacteria that break down the dead', '🟫', 1] },
+    links: [['sea', 'bac', 'likely', 'Dead seaweed was broken down by bacteria, as it is today.'], ['sun', 'cel', 'likely', 'Some of these complex cells may have eaten bacteria; others made their own food.']] },
+  ectasian: { title: 'The boring billion', where: 'Shallow and deep seas',
+    note: 'Little changes for hundreds of millions of years. In the shallows, sunlight feeds microbes and small algae; the deep sea, with almost no oxygen, belongs to bacteria that need none.',
+    nodes: { sun: ['Cyanobacteria', '🟢', 0], alg: ['Single-celled algae', '🦠', 0], anx: ['Bacteria that need no oxygen', '🟣', 1], bac: ['Bacteria that break down the dead', '🟫', 1] },
+    links: [['sun', 'bac', 'likely'], ['alg', 'bac', 'likely'], ['alg', 'anx', 'likely', 'Dead cells sinking into the deep sea fed bacteria that live without oxygen.']] },
+  stenian: { title: 'Red seaweeds on a rocky shore', where: 'Shallow seas, Arctic Canada; lakes, Scotland',
+    note: 'Red seaweeds grow on the shore; in lakes on bare land, microscopic life appears for the first time away from the sea.',
+    nodes: { sun: ['Cyanobacteria', '🟢', 0], red: ['Red seaweed', '🔴', 0, 'Bangiomorpha'], lak: ['Lake microbes', '🦠', 0, 'Torridon lake microbes'], bac: ['Bacteria that break down the dead', '🟫', 1] },
+    links: [['red', 'bac', 'likely'], ['lak', 'bac', 'likely'], ['sun', 'bac', 'likely']] },
   tonian: { title: 'A sea of single cells', where: 'Shallow seas around Rodinia',
     note: 'Almost all life is microscopic. Sunlight feeds bacteria and the first seaweeds; the first cells that eat other cells, and the first fungi, live off them. Nothing yet eats an animal — there may be no animals at all.',
     nodes: { sun: ['Cyanobacteria', '🟢', 0], alg: ['Green seaweeds', '🌿', 0, 'Proterocladus'], ded: ['Dead cells and mats', '🟫', 0], vas: ['Amoebae in vase-shaped shells', '🏺', 1, 'Vase-shaped microfossils'], fun: ['Fungi', '🍄', 1, 'Ourasphaira'], spo: ['Possible sponges', '🧽', 1, 'Possible sponge (Little Dal reefs)'] },

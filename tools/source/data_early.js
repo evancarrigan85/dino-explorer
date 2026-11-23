@@ -17,6 +17,19 @@ const P = {
 
 const EARLY = {
 
+statherian: [
+  R('plant', 'Plants › Algae', 'Qingshania', '🌿', 'sun', 'Microscopic threads of cells', 'Shallow sea', '~1,630 MYA', [1640, 1620], 'Chains of cells 1.63 billion years old, found in northern China — among the oldest living things made of many cells. They were probably a kind of alga.', [[40.3, 117.6, 'Chuanlinggou Formation, Yanshan, China']]),
+],
+calymmian: [
+  R('plant', 'Plants › Algae', 'Gaoyuzhuang seaweeds', '🌿', 'sun', 'Ribbons up to about 30 cm long', 'Shallow sea floor', '~1,560 MYA', [1565, 1555], 'Long, flat ribbons up to 30 cm long and 8 cm wide, 1.56 billion years old — the oldest living things big enough to see with your own eyes. Their regular shapes and cells show they were many-celled seaweeds.', [[40.15, 118.3, 'Gaoyuzhuang Formation, Qianxi, China']]),
+  W('plant', 'Plants › Algae', 'Rafatazmia', '🔴', 'sun', 'Threads under 0.1 mm wide', 'Shallow sea', '~1,600 MYA', [1610, 1590], 'Tiny threads of cells in 1.6-billion-year-old rocks in India, with walls and structures inside that look like those of red seaweeds. If they are red algae, they are the oldest.', [[25.2, 80.9, 'Chitrakoot, India']], { debate: 'Bacteria can make threads that look like this, and the structures inside the cells are hard to read. Many scientists think it is too old to be a red alga.' }),
+  R('micro', 'Microbes › Single cells with walls', 'Tappania', '🦠', 'filter', 'Under 0.2 mm', 'Coastal sea', '~1,500–1,400 MYA', [1500, 1400], 'A single cell with branching arms growing out of its wall — a complex cell with a nucleus, perhaps an early fungus or alga. Its shape could change as it grew, which bacteria cannot do.', [[-15.5, 134.5, 'Roper Group, Northern Territory, Australia']]),
+],
+stenian: [
+  R('plant', 'Plants › Algae', 'Bangiomorpha', '🔴', 'sun', 'Threads under 0.1 mm wide', 'Rocky shore of a shallow sea', '~1,050 MYA', [1050, 1040], 'A red seaweed about 1.05 billion years old — the oldest seaweed we can match to a group alive today. Its threads made different kinds of spore, as red seaweeds that reproduce with male and female forms do today: perhaps the oldest known sex.', [[73.5, -93.0, 'Hunting Formation, Somerset Island, Arctic Canada']], { debate: 'Whether its spores really mean sex is argued over; living red seaweeds that look like it do reproduce that way.' }),
+  R('micro', 'Microbes › Single cells with walls', 'Torridon lake microbes', '🦠', 'filter', 'Cells under 0.1 mm', 'Lakes on bare land', '~1,000 MYA', [1010, 990], 'Microscopic cells, some with ornate walls, preserved in the mud of lakes about a billion years old in north-west Scotland — the first known life away from the sea.', [[57.55, -5.6, 'Torridon, Scotland']]),
+],
+ectasian: [],
 tonian: [
   R('micro', 'Microbes › Fungi', 'Ourasphaira', '🍄', 'absorb', 'Threads under 1 mm', 'Shallow sea near the shore', '~1,000–900 MYA', [1000, 900], 'The oldest known fungus: a tangle of tiny threads with round swellings, a billion years old. Its cell walls contain chitin, the same tough material as in mushrooms today. Fungi are close cousins of animals.', [[70.9, -115.5, 'Shaler Supergroup, Arctic Canada']], { know: 'Scientists dissolved the rock in acid to free the fossils, then used light to read the chemistry of their walls: the signal of chitin, which algae do not make.' }),
   R('plant', 'Plants › Algae', 'Proterocladus', '🌿', 'sun', 'About 2 mm', 'Shallow sea floor', '~1,000 MYA', [1000, 950], 'A green seaweed about a billion years old, with branching threads divided into cells. It is the oldest known member of the green algae — the group that later gave rise to every land plant.', [[39.6, 121.6, 'Nanfen Formation, Dalian, China']]),
