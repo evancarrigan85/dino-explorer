@@ -14,7 +14,7 @@ const TYPES = {
   plant: ['🌿', 'Plants & fungi'], micro: ['🦠', 'Microbes'],
 };
 const TYPE_ORDER = Object.keys(TYPES);
-const DIET = { sun: '☀️ Makes its own food from sunlight', absorb: '🍄 Breaks down dead matter', herb: '🌿 Plant-eater', carn: '🥩 Meat-eater', omni: '🍖 Eats both', pred: '⚡ Predator', filter: '💧 Filter feeder' };
+const DIET = { unknown: '❔ How it fed is unknown', sun: '☀️ Makes its own food from sunlight', absorb: '🍄 Breaks down dead matter', herb: '🌿 Plant-eater', carn: '🥩 Meat-eater', omni: '🍖 Eats both', pred: '⚡ Predator', filter: '💧 Filter feeder' };
 
 // ── index every animal ──────────────────────────────────────────────
 const ALL = [], BY_KEY = {};
@@ -34,7 +34,7 @@ ALL.forEach(c => {
 const sitesOf = c => c._s || (c._s = (c.sites || []).map(([la, lo, label]) => ({ at: WorldMap.attach(la, lo, c.t[0]), label })));
 
 // ── time ────────────────────────────────────────────────────────────
-const T_MAX = 1800, MIN_SPAN = 0.006;
+const T_MAX = 4567, MIN_SPAN = 0.006;
 // recorded history: the last few thousand years are shown in calendar years
 const NOW_YEAR = 2025, HIST_T = 0.0056;
 const yearAt = t => NOW_YEAR - t * 1e6, tOfYear = y => Math.max(0, (NOW_YEAR - y) / 1e6);
@@ -42,7 +42,7 @@ const fmtYear = y => { y = Math.round(y); return y < 0 ? -y + ' BCE' : y === 0 ?
 const calYear = (t, step = 1) => fmtYear(Math.round(yearAt(t) / step) * step);
 // The "storybook" scale used when the whole of time is in view: recent time
 // is stretched, or the last few million years would be one pixel wide.
-const STORY = [[0, 1800], [30, 1000], [55, 720], [90, 539], [245, 359], [372, 252], [666, 66], [820, 7], [940, 0.3], [985, 0.0117], [1000, 0]];
+const STORY = [[0, 4567], [25, 1800], [45, 1000], [62, 720], [95, 539], [247, 359], [373, 252], [666, 66], [820, 7], [940, 0.3], [985, 0.0117], [1000, 0]];
 function storyTime(u) {
   u = clamp(u, 0, 1000);
   for (let i = 0; i < STORY.length - 1; i++) { const [u0, t0] = STORY[i], [u1, t1] = STORY[i + 1]; if (u <= u1) return t0 + (u - u0) / (u1 - u0) * (t1 - t0); }
@@ -190,8 +190,16 @@ const SoundOfTime = (() => {
   };
 })();
 
+// Before the oldest plate map, the map says so on its face (WorldMap draws the banner over the sea)
+let lastBanner = '';
+function bannerFor(t) {
+  if (t <= WorldMap.MAXT) return null;
+  return t > 4430 ? ['No map exists this far back', 'The young Earth’s surface may have been molten · liquid water by 4.4 billion years ago']
+    : ['Nobody knows where the land was', 'The oldest map of the continents begins 1.8 billion years ago'];
+}
 function updateClock(fromSlider) {
   SoundOfTime.update(); ambientFx();
+  { const bn = bannerFor(S.t), k = bn ? bn.join('|') : ''; if (k !== lastBanner) { lastBanner = k; WorldMap.setLayers({ banner: bn }); } }
   const t = S.t, p = S.period;
   $('myaDisplay').textContent = fmtAgo(t);
   const sl = WorldMap.seaLevel(t);
@@ -219,7 +227,7 @@ function renderPeriod() {
   const p = S.period;
   $('eraBadge').textContent = p.era;
   const ch = S.chapter;
-  $('periodName').innerHTML = ch ? esc(ch.title) + '<small>' + esc(ch.name) + ' · ' + esc(p.name) + '</small>' : esc(p.title || p.name + ' Period') + (p.title ? '<small>' + esc(p.name) + '</small>' : '');
+  $('periodName').innerHTML = ch ? esc(ch.title) + '<small>' + esc(ch.name) + ' · ' + esc(p.name) + '</small>' : esc(p.title || p.name + ' ' + (p.kind || 'Period')) + (p.title ? '<small>' + esc(p.name) + '</small>' : '');
   $('periodName').style.color = p.textColor;
   $('periodInfo').style.borderLeftColor = p.color;
   $('periodYears').textContent = ch ? ch.start + ' – ' + ch.end + ' million years ago' : p.end === 0 ? fmtLong(p.start) + ' – today'
@@ -361,7 +369,7 @@ function jumpPeriod(dir) {
 // ── the zoomable timeline ───────────────────────────────────────────
 const PRESETS = [['All time', T_MAX, 0], ['Paleozoic', 539, 252], ['Age of Dinosaurs', 252, 66], ['Age of Mammals', 66, 0],
   ['Last 10 million years', 10, 0], ['Last million years', 1, 0], ['Last 100,000 years', 0.1, 0], ['Since the Ice Age', 0.03, 0], ['Recorded history', HIST_T, 0]];
-const ABBR = { statherian: 'Sta', calymmian: 'Cal', ectasian: 'Ect', stenian: 'Ste', tonian: 'Ton', cryogenian: 'Cryo', ediacaran: 'Edi', cambrian: 'Cam', ordovician: 'Ord', silurian: 'Sil', devonian: 'Dev', carboniferous: 'Carb', permian: 'Perm',
+const ABBR = { hadean: 'Had', eoarchean: 'Eo', paleoarchean: 'Pa', mesoarchean: 'Me', neoarchean: 'Ne', siderian: 'Sid', rhyacian: 'Rhy', orosirian: 'Oro', statherian: 'Sta', calymmian: 'Cal', ectasian: 'Ect', stenian: 'Ste', tonian: 'Ton', cryogenian: 'Cryo', ediacaran: 'Edi', cambrian: 'Cam', ordovician: 'Ord', silurian: 'Sil', devonian: 'Dev', carboniferous: 'Carb', permian: 'Perm',
   triassic: 'Tri', jurassic: 'Jur', cretaceous: 'Cret', paleogene: 'Pg', neogene: 'Ng', quaternary: 'Q', holocene: 'H' };
 function setWindow(a, b, keepTime) {
   a = Math.min(a, T_MAX); b = Math.max(b, 0);
@@ -1838,7 +1846,7 @@ const DOOR = [
 function openDoor() {
   closeFact();
   $('door').innerHTML = `<div class="door-card" role="dialog" aria-modal="true" aria-label="Before Us — choose a way in">
-    <div class="door-h"><span class="door-globe">🌍</span><div><h2>Before Us</h2><p>1.8 billion years of Earth, life and people — on a map that moves.</p></div></div>
+    <div class="door-h"><span class="door-globe">🌍</span><div><h2>Before Us</h2><p>4.5 billion years of Earth, life and people — on a map that moves.</p></div></div>
     <div class="door-grid">${DOOR.map(([id, ic, t, d], i) => `<button class="door-b${i ? '' : ' first'}" data-door="${id}"><span class="door-i">${ic}</span><b>${esc(t)}</b><span>${esc(d)}</span></button>`).join('')}</div>
     <button class="door-skip" data-door="explore">Just let me explore →</button>
     <p class="door-note">Every fact comes with its evidence, and where scientists disagree, the page says so.</p></div>`;

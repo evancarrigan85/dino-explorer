@@ -28,7 +28,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.mouse.wheel(0, 3000); await p.waitForTimeout(250);
   for (let i = 0; i < 20; i++) await p.mouse.wheel(0, 600);
   await p.waitForTimeout(200);
-  ok('wheel zooms back out to all time', await p.evaluate(() => S.win[0] === T_MAX && T_MAX === 1800 && S.win[1] === 0), JSON.stringify(await p.evaluate(() => S.win)));
+  ok('wheel zooms back out to all time', await p.evaluate(() => S.win[0] === T_MAX && T_MAX === 4567 && S.win[1] === 0), JSON.stringify(await p.evaluate(() => S.win)));
   // brush: drag the left handle inward
   await p.click('#tlPresets .chip:nth-child(1)'); await p.waitForTimeout(150);
   const ov = await p.locator('#tlOverview').boundingBox();
@@ -73,7 +73,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('culture pins on the map', await p.evaluate(() => CULTURES.filter(c => culActive(c)).some(c => c.id === 'catalhoyuk')));
   await p.click('#tab-life'); await p.waitForTimeout(150);
   // food webs
-  ok('every period has a food web', await p.evaluate(() => PERIODS.every(q => FOODWEBS[q.id] && Object.keys(FOODWEBS[q.id].nodes).length >= 4)));
+  ok('every period from 1.8 billion years on has a food web (before that, life is known only as microbes and traces)', await p.evaluate(() => PERIODS.every(q => q.start > 1800 || (FOODWEBS[q.id] && Object.keys(FOODWEBS[q.id].nodes).length >= 4))));
   await p.evaluate(() => setTime(67)); await p.click('#tab-insights'); await p.waitForTimeout(250);
   ok('food web drawn with links', await p.evaluate(() => document.querySelectorAll('#pane-insights .fw-node').length >= 8 && document.querySelectorAll('#pane-insights .fw-link.proof').length >= 2));
   await p.click('#pane-insights .fw-node[data-key="tyrannosaurus-rex"]'); await p.waitForTimeout(400);
@@ -165,7 +165,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   // you: the reader's own line
   await p.evaluate(() => { setWindow(T_MAX, 0, true); setTime(250); }); await p.waitForTimeout(200);
   ok('you: the bar names your ancestor at this moment', await p.evaluate(() => /cynodont/.test(document.getElementById('youBar').innerText) && /Thrinaxodon/.test(document.getElementById('youBar').innerText)));
-  ok('you: the line runs unbroken from 1.8 billion years ago to today', await p.evaluate(() => YOU_LINE[0].from === 1800 && YOU_LINE[YOU_LINE.length - 1].to === 0 && YOU_LINE.every((y, i) => !i || YOU_LINE[i - 1].to === y.from) && [700, 500, 300, 100, 10, 1, 0].every(t => youAt(t) && t <= youAt(t).from && t >= youAt(t).to)));
+  ok('you: the line runs unbroken from the birth of the Earth to today', await p.evaluate(() => YOU_LINE[0].from === 4567 && YOU_LINE[YOU_LINE.length - 1].to === 0 && YOU_LINE.every((y, i) => !i || YOU_LINE[i - 1].to === y.from) && [700, 500, 300, 100, 10, 1, 0].every(t => youAt(t) && t <= youAt(t).from && t >= youAt(t).to)));
   await p.click('#youBar'); await p.waitForTimeout(500);
   ok('you: opening it tells the story and says the animal shown is a cousin', await p.evaluate(() => /Your ancestor/.test(document.getElementById('fpText').innerText) && /close cousin/.test(document.getElementById('fpText').innerText) && S.sel === 'thrinaxodon'));
   await p.evaluate(() => closeFact());
@@ -180,7 +180,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('journeys: closing ends it', await p.evaluate(() => !S.jr && !document.getElementById('journey').classList.contains('show')));
   ok('journeys: each is built from the site’s own data', await p.evaluate(() => { const n = id => JOURNEYS.find(j => j.id === id).stops().length; return n('you') === YOU_LINE.length && n('extinctions') === EXTINCTIONS.length && n('finds') === 10 && n('drift') === 11; }));
   await p.evaluate(() => startJourney('you')); await p.waitForTimeout(2600);
-  for (let i = 0; i < 12; i++) { await p.evaluate(() => stepJourney(1)); await p.waitForTimeout(120); }
+  for (let i = 0; i < 13; i++) { await p.evaluate(() => stepJourney(1)); await p.waitForTimeout(120); }
   await p.waitForTimeout(2600);
   ok('journeys: “Your story” arrives at the cynodont that came through the Great Dying', await p.evaluate(() => Math.abs(S.t - 250) < 1 && S.sel === 'thrinaxodon' && /worst extinction/.test(document.querySelector('#journey .jr-text').textContent)));
   await p.evaluate(() => { endJourney(); S.sel = null; WorldMap.select(null); switchTab('life'); }); await p.waitForTimeout(150);
@@ -512,7 +512,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     await p.evaluate(() => WorldMap.resetView());
   }
   // back to a billion years: the Tonian and Rodinia (Merdith et al. 2021 reaches 1000 Ma)
-  ok('tonian: the map and timeline reach 1,000 million years ago, with its own period card and map title', await p.evaluate(() => { setTime(1000); return T_MAX === 1800 && WorldMap.MAXT === 1800 && S.t === 1000 && S.period.id === 'tonian' && document.getElementById('ctTitle').textContent === 'The World of Rodinia' && WorldMap.stats().polygons > 500; }));
+  ok('tonian: the map and timeline reach 1,000 million years ago, with its own period card and map title', await p.evaluate(() => { setTime(1000); return T_MAX === 4567 && WorldMap.MAXT === 1800 && S.t === 1000 && S.period.id === 'tonian' && document.getElementById('ctTitle').textContent === 'The World of Rodinia' && WorldMap.stats().polygons > 500; }));
   ok('tonian: the land moves between 1,000 and 720 Ma (Rodinia gathers, then breaks up)', await p.evaluate(() => { const a = WorldMap.attach(40, -100, 0), b = WorldMap.attach(-25, 135, 0); const d = t => { const x = WorldMap.locate(a, t), y = WorldMap.locate(b, t); return x && y ? Math.round(d3.geoDistance(x, y) * 6371) : null; }; const v = [d(1000), d(850), d(730)]; return v.every(x => x != null) && new Set(v).size === 3; }));
   ok('tonian: its life is placed and sourced — the oldest fungus and green seaweed, a possible sponge (marked as argued over), vase-shaped amoebae', await p.evaluate(() => ['Ourasphaira', 'Proterocladus', 'Possible sponge (Little Dal reefs)', 'Vase-shaped microfossils'].every(n => BY_NAME[n] && BY_NAME[n].sites && (SRCMAP['a:' + n] || []).length) && !!BY_NAME['Possible sponge (Little Dal reefs)'].debate && (SRCMAP['p:tonian'] || []).length >= 5));
   ok('tonian: a seaweed is labelled as making its own food, a fungus as breaking down dead matter — not as a plant-eater', await p.evaluate(() => { setTime(990); S.scope = 'now'; renderLife(); const t = document.getElementById('lifeList').innerText; return /Makes its own food from sunlight/.test(t) && /Breaks down dead matter/.test(t); }));
@@ -521,14 +521,21 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('nuna: the plates come from Cao et al. 2024 before 1,000 Ma and ease into Merdith et al. 2021 without a jump', await p.evaluate(() => { const pts = [[40, -100], [-25, 135], [0, 20], [60, 100]].map(([la, lo]) => WorldMap.attach(la, lo, 1000)); let worst = 0; for (let t = 990; t < 1070; t += 5) for (const a of pts) { const x = WorldMap.locate(a, t), y = WorldMap.locate(a, t + 5); if (!x || !y) return false; worst = Math.max(worst, d3.geoDistance(x, y) * 180 / Math.PI); } return worst < 4 && (SRCMAP['m:plates'] || []).includes('cao2024') && PLATE_DATA.join === 1000; }));
   ok('nuna: its life is placed and sourced — Qingshania, the Gaoyuzhuang seaweeds, Bangiomorpha, the Torridon lake microbes; Rafatazmia marked as argued over', await p.evaluate(() => ['Qingshania', 'Gaoyuzhuang seaweeds', 'Rafatazmia', 'Tappania', 'Bangiomorpha', 'Torridon lake microbes'].every(n => BY_NAME[n] && BY_NAME[n].sites && (SRCMAP['a:' + n] || []).length) && !!BY_NAME['Rafatazmia'].debate));
   ok('nuna: places younger than 1,000 Ma never ride on the older model’s blocks', await p.evaluate(() => { const a = WorldMap.attach(56, 4, 385.5), b = WorldMap.attach(48, -64, 406); const la = WorldMap.locate(a, 385.5), lb = WorldMap.locate(b, 406); return !!la && !!lb && Math.abs(la[1] - 56) > 20 && Math.abs(lb[1] - 48) > 20; }));
+  // back to the birth of the Earth: no map of the land before 1.8 Ga, and the page says so
+  ok('early earth: the timeline reaches 4,567 Ma; the map follows past its plate data and draws no land there', await p.evaluate(() => { setTime(4000); WorldMap._draw(); return S.t === 4000 && WorldMap.time === 4000 && WorldMap.MAXT === 1800 && S.period.id === 'eoarchean' && WorldMap._markers().length === 0; }));
+  ok('early earth: the map says plainly that nobody knows where the land was — and that the youngest Earth may have been molten', await p.evaluate(() => { setTime(3000); const a = lastBanner; setTime(4500); const b = lastBanner; setTime(1000); return /Nobody knows where the land was/.test(a) && /molten/.test(b) && lastBanner === ''; }));
+  ok('early earth: “How this map is made” says why no land is drawn before 1.8 billion years', await p.evaluate(() => /Before 1\.8 billion years ago no published model says where the land was/.test(document.getElementById('mapAbout').textContent)));
+  ok('early earth: on a wide screen the banner stays two lines', await p.evaluate(() => { setTime(3000); WorldMap._draw(); const n = WorldMap._bannerLines(); setTime(1000); return n === 2; }));
+  ok('early earth: eight new cards (an eon, four eras, three periods), named as such, each with sources; life sourced, with the argued-over finds marked', await p.evaluate(() => ['hadean', 'eoarchean', 'paleoarchean', 'mesoarchean', 'neoarchean', 'siderian', 'rhyacian', 'orosirian'].every(id => (SRCMAP['p:' + id] || []).length >= 1 && PERIODS.find(x => x.id === id)) && (setTime(4200), /Hadean Eon/.test(document.getElementById('periodName').textContent)) && (setTime(3300), /Paleoarchean Era/.test(document.getElementById('periodName').textContent)) && ['Isua cones (possible stromatolites)', 'Strelley Pool stromatolites', 'Dresser hot-spring microbes', 'Moodies river mats', 'Francevillian fossils', 'Gunflint microbes'].every(n => BY_NAME[n] && (SRCMAP['a:' + n] || []).length) && !!BY_NAME['Isua cones (possible stromatolites)'].debate && !!BY_NAME['Francevillian fossils'].debate && (setTime(150), true)));
   // the benchmark: the map against independent evidence, never worse than the recorded baseline
   { const { runBench, regressions, loadBase } = require('./bench/bench.js'); const run = await runBench(p), bad = regressions(run, loadBase());
     ok('benchmark: no score below the baseline and no fact that held now failing (tools/bench)', bad.length === 0, '\n    ' + bad.join('\n    '));
     ok('benchmark: every named fact names a verified source and a real place', run.facts.every(f => !f.invalid));
     ok('benchmark: “How this map is made” shows the scores and cites the poles and the rocks method', await p.evaluate(() => { const t = document.getElementById('mapAbout').textContent; return /How we check this map/.test(t) && /\d+% of 367 directions of ancient magnetism/.test(t) && /Torsvik/.test(t) && /Cao/.test(t); })); }
   // data QA: every fossil site can be placed on the map at the animal's time
-  const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
-  ok('every fossil site rides a plate at the right time', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));
+  const bad = await p.evaluate(() => { const out = []; for (const c of ALL) { if (c.t[1] > WorldMap.MAXT) continue;   // older than any map of the land: no plate to ride
+    const mid = (c.t[0] + c.t[1]) / 2; (c._s || sitesOf(c)).forEach((s, i) => { if (s.at.f < 0 || !WorldMap.locate(s.at, mid) || !WorldMap.locate(s.at, c.t[0])) out.push(c.name + ' @ ' + c.sites[i][2] + ' f=' + s.at.f); }); } return out; });
+  ok('every fossil site rides a plate at the right time (except life older than any map of the land)', bad.length === 0, '\n    ' + bad.slice(0, 30).join('\n    '));
   const nosite = await p.evaluate(() => ALL.filter(c => !c.sites || !c.sites.length).map(c => c.name));
   ok('only "Humans Today" has no site', nosite.length <= 1, nosite.join(', '));
   // sweep through time in both views: no errors, land always drawn
@@ -537,8 +544,8 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   // every period: has insight, has animals, renders
   ok('every period has animals and an insight (before 1,000 Ma, at least one sourced fossil — or a note on the card saying why there is none)', await p.evaluate(() => PERIODS.every(p => (p.start > 1000 ? p.creatures.length >= 1 || !!p.lifeNote : p.creatures.length >= 4) && p.insight && p.insight.signs.length >= 3)));
   ok('a period with no named fossil says why, in the Life list', await p.evaluate(() => { setTime(1300); S.scope = 'now'; S.q = ''; renderLife(); const ok = S.period.id === 'ectasian' && /Rocks this old are scarce/.test(document.getElementById('lifeList').innerText); setTime(150); return ok; }));
-  ok('periods tile time with no gaps', await p.evaluate(() => PERIODS.every((p, i) => i === 0 || PERIODS[i - 1].end === p.start) && PERIODS[0].start === 1800 && PERIODS[0].id === 'statherian' && PERIODS[PERIODS.length - 1].end === 0));
-  ok('getPeriod never falls through', await p.evaluate(() => { for (let t = 0; t <= 1800; t += 0.37) { const q = getPeriod(t); if (!(t <= q.start && t >= q.end)) return false; } return true; }));
+  ok('periods tile time with no gaps', await p.evaluate(() => PERIODS.every((p, i) => i === 0 || PERIODS[i - 1].end === p.start) && PERIODS[0].start === 4567 && PERIODS[0].id === 'hadean' && PERIODS[PERIODS.length - 1].end === 0));
+  ok('getPeriod never falls through', await p.evaluate(() => { for (let t = 0; t <= 4567; t += 0.37) { const q = getPeriod(t); if (!(t <= q.start && t >= q.end)) return false; } return true; }));
   await p.close();
   // deep links: new and old formats
   p = await open({ width: 1400, height: 900 }, '#cretaceous/tyrannosaurus-rex');
@@ -551,6 +558,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   p = await open({ width: 390, height: 844 }, '', { hasTouch: true, isMobile: true });
   ok('phone: no sideways overflow', await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1 && document.getElementById('main').scrollWidth <= window.innerWidth + 1), String(await p.evaluate(() => document.getElementById('main').scrollWidth)));
   ok('phone: map has height', await p.evaluate(() => document.getElementById('mapCanvas').getBoundingClientRect().height > 200));
+  ok('phone: the no-map banner wraps to fit between the map buttons instead of running under them', await p.evaluate(() => { setTime(4500); WorldMap._draw(); const n = WorldMap._bannerLines(); setTime(1000); WorldMap._draw(); return n >= 3 && WorldMap._bannerLines() === 0; }));
   await p.close();
   // ancient relief and sea depth (WebGL, from tiles/dem): needs the page served over http, as on GitHub Pages
   {

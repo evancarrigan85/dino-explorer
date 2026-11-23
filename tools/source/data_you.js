@@ -8,6 +8,8 @@
 //   from/to  million years ago      at    a good moment to visit
 //   what     short description      like  an animal card's exact name, or hom: a hominin id
 const YOU_LINE = [
+  { from: 4567, to: 1800, at: 3200, what: 'the first microbes — or nothing yet', like: null,
+    text: 'For the first few hundred million years there may have been no life at all. Then your ancestors are microbes: single cells without a nucleus, too small to see. Every living thing today, you included, comes from them.' },
   { from: 1800, to: 720, at: 1200, what: 'a single cell with a nucleus', like: null,
     text: 'Your ancestor is one cell floating in the sea — a cell with a nucleus, like the cells in your body, but living alone. For more than a billion years nothing much bigger exists. The first fungi, found in rocks about a billion years old, are close cousins: fungi are nearer relatives of animals than plants are. There are no animals yet.' },
   { from: 720, to: 600, at: 650, what: 'specks of life in the sea', like: null,

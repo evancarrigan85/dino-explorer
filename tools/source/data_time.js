@@ -6,7 +6,7 @@
 // numbers — for example 145 rather than 143 million years for the start of
 // the Cretaceous — because the dates are refined as rocks are re-measured.
 const PERIOD_BOUNDS = {
-  statherian: [1800, 1600], calymmian: [1600, 1400], ectasian: [1400, 1200], stenian: [1200, 1000], tonian: [1000, 720], cryogenian: [720, 635], ediacaran: [635, 539], cambrian: [539, 487], ordovician: [487, 443],
+  hadean: [4567, 4031], eoarchean: [4031, 3600], paleoarchean: [3600, 3200], mesoarchean: [3200, 2800], neoarchean: [2800, 2500], siderian: [2500, 2300], rhyacian: [2300, 2050], orosirian: [2050, 1800], statherian: [1800, 1600], calymmian: [1600, 1400], ectasian: [1400, 1200], stenian: [1200, 1000], tonian: [1000, 720], cryogenian: [720, 635], ediacaran: [635, 539], cambrian: [539, 487], ordovician: [487, 443],
   silurian: [443, 420], devonian: [420, 359], carboniferous: [359, 299], permian: [299, 252],
   triassic: [252, 201], jurassic: [201, 143], cretaceous: [143, 66], paleogene: [66, 23],
   neogene: [23, 2.58], quaternary: [2.58, 0.0117], holocene: [0.0117, 0],
@@ -60,6 +60,19 @@ const DIVS = [
 // Events pinned to the timeline. More of them appear the further you zoom in.
 // [time (Ma), level, icon, title, detail]   level 1 = always shown … 5 = only when zoomed right in
 const EVENTS = [
+  [4567, 2, '🌞', 'The Solar System’s first solids', 'Grains form around the young Sun; the Earth grows from them.'],
+  [4510, 2, '🌙', 'The Moon is made', 'A Mars-sized planet hits the young Earth; the debris becomes the Moon. The best-supported idea, argued over in its details.'],
+  [4400, 3, '💧', 'Water and the oldest crystals', 'Zircons from the Jack Hills of Australia: liquid water already.'],
+  [4030, 3, '🪨', 'The oldest rock', 'The Acasta Gneiss, north-west Canada.'],
+  [3700, 4, '🦠', 'The oldest fossils?', 'Cone shapes in Greenland — microbes, or folds in the rock? Argued over.'],
+  [3480, 3, '♨️', 'Life in hot springs', 'Signs of microbes in hot springs in the Pilbara, Australia.'],
+  [3430, 3, '🪸', 'A reef of stromatolites', 'Strelley Pool, Australia: microbes build mounds and cones.'],
+  [3000, 4, '💨', 'A first hint of oxygen', 'Traces in ancient soils in South Africa — if the reading is right.'],
+  [2500, 4, '💨', 'A whiff of oxygen', 'A brief rise, before the big one.'],
+  [2430, 2, '💨', 'The Great Oxidation Event', 'Oxygen builds up in the air for good.'],
+  [2100, 4, '🧩', 'Large life’s first try?', 'The Francevillian fossils of Gabon, up to 12 cm across. Argued over.'],
+  [2020, 3, '☄️', 'Vredefort', 'The largest known asteroid crater, South Africa.'],
+  [1880, 4, '🔬', 'The Gunflint microbes', 'Microbes sealed in glassy rock in Ontario.'],
   [1800, 3, '🌍', 'Nuna', 'An older supercontinent, Nuna (also called Columbia), gathers around North America.'],
   [1630, 4, '🌿', 'Living things of many cells', 'Qingshania, in northern China: chains of cells 1.63 billion years old.'],
   [1600, 5, '🔴', 'Red seaweeds?', 'Cells in rocks in India that may be red algae — if so, the oldest.'],

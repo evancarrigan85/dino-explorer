@@ -22,6 +22,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_time.js` | Epochs, ages and timeline events |
 | `data_cultures.js`, `data_drowned.js`, `data_foodweb.js` | Ways of life, drowned sites, food webs |
 | `data_finds.js` | The Finds tab: the history of fossil discovery |
+| `data_early.js` | Life before the Cryogenian, from the birth of the Earth to 720 Ma, period by period; a span with no named fossil is empty on purpose, and its `lifeNote` in `data_periods.js` says why |
 | `data_gaps.js` | Animals added to fill regions and periods the map had nothing in |
 | `data_roots.js` | Proto-mammals, early mammals and dinosaurs added with the family trees |
 | `data_you.js` | The reader's own line through time, eruptions and impacts on the map, the drift journey |

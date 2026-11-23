@@ -25,7 +25,7 @@ for (const p0 of old.PERIODS) {
   const p = Object.assign({}, p0, P.PERIOD_EDITS[p0.id] || {});
   delete p.continentKey; p.creatures = [];
   periods.push(p);
-  if (p.id === 'cryogenian') for (const q0 of [P.STATHERIAN, P.CALYMMIAN, P.ECTASIAN, P.STENIAN, P.TONIAN]) { const q = Object.assign({}, q0); delete q.continentKey; q.creatures = []; periods.splice(periods.length - 1, 0, q); }
+  if (p.id === 'cryogenian') for (const q0 of [P.HADEAN, P.EOARCHEAN, P.PALEOARCHEAN, P.MESOARCHEAN, P.NEOARCHEAN, P.SIDERIAN, P.RHYACIAN, P.OROSIRIAN, P.STATHERIAN, P.CALYMMIAN, P.ECTASIAN, P.STENIAN, P.TONIAN]) { const q = Object.assign({}, q0); delete q.continentKey; q.creatures = []; periods.splice(periods.length - 1, 0, q); }
   if (p.id === 'cryogenian') { const e = Object.assign({}, P.EDIACARAN); delete e.continentKey; e.creatures = []; periods.push(e); }
 }
 const byId = Object.fromEntries(periods.map(p => [p.id, p]));
@@ -180,7 +180,7 @@ const { YOU_LINE } = require('./data_you.js');
     if (y.hom && !HOMININS.some(h => h.id === y.hom)) problems.push('you: no hominin ' + y.hom);
     const c = y.like && allC.find(x => x.name === y.like); if (c && (y.at > c.t[0] + 12 || y.at < c.t[1] - 12)) problems.push('you: ' + y.like + ' did not live near ' + y.at);
   });
-  if (YOU_LINE[0].from !== 1800 || YOU_LINE[YOU_LINE.length - 1].to !== 0) problems.push('you: the line must run from 720 to 0');
+  if (YOU_LINE[0].from !== 4567 || YOU_LINE[YOU_LINE.length - 1].to !== 0) problems.push('you: the line must run from 720 to 0');
   const ysrc = fs.readFileSync(SRC + 'data_you.js', 'utf8');
   data += ysrc.slice(ysrc.indexOf('// ===='), ysrc.indexOf("if (typeof module")).trim() + '\n';
 }
@@ -283,7 +283,7 @@ const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.read
 let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
 if (!/\ninit\(\);$/.test(app)) throw new Error('app.js must end with init();');
 app = app.replace(/\ninit\(\);$/, '\n\n' + quiz + '\n\ninit();');
-const desc = `Slide through 1.8 billion years of life on a moving Earth — continents that drift with real plate-tectonic data, ${Math.floor(total / 10) * 10}+ animals placed where their fossils were found, the whole human family, and a zoomable timeline from Snowball Earth to today.`;
+const desc = `Slide through 4.5 billion years of Earth and life — continents moving for the last 1.8 billion — continents that drift with real plate-tectonic data, ${Math.floor(total / 10) * 10}+ animals placed where their fossils were found, the whole human family, and a zoomable timeline from Snowball Earth to today.`;
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>

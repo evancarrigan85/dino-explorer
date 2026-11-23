@@ -13,20 +13,21 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 | | |
 |---|---|
-| Animals | 705 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids) |
+| Animals | 745 + 24 members of the human family; 194 dinosaurs; 47 proto-mammals (synapsids); 17 signs of life from before 720 Ma (microbes, seaweeds, the first possible signs of life), 6 of them older than any map of the land |
 | Family trees | Four, linked to each other and to every animal card: the road to mammals, the dinosaur tree, from fish to four legs, the reptile tree |
 | Tabs | Life · Humans · Insights · Finds · Quiz · Geology |
-| Map | Plate motion 720 Ma → today; **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
+| Timeline | **4,567 million years ago → today**: the Hadean, the four Archean eras and every Proterozoic period, each with its insights and sources. Before 1,800 Ma no map of the land exists, so none is drawn and the map says so in words |
+| Map | Plate motion **1,800 Ma → today** (Merdith et al. 2021 for the last billion years, Cao et al. 2024 before); **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 489, every one a published work confirmed in Crossref |
+| References | 508, every one a published work confirmed in Crossref |
 | Age of Mammals | Told epoch by epoch: Paleocene, Eocene, Oligocene, Miocene and Pliocene each have their own chapter (header, map title, Insights), with sources |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
-| Connection | “Your ancestor at this moment” bar under the map (24 steps, 720 Ma → today); four guided journeys |
+| Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 215 passing, plus the benchmark ratchet (`tools/bench`) |
-| Page | about 1.78 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
+| Checks | 256 passing, plus the benchmark ratchet (`tools/bench`) |
+| Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
 **Source coverage** (entries that cite at least one verified paper):
@@ -512,11 +513,17 @@ The honest map runs out in steps; each step is said on the page.
 2. ~~1800 → 1000 Ma~~ **Shipped 23 Nov 2026.** Was: (Nuna/Columbia). Cao et al. 2024, “Earth’s tectonic and plate boundary evolution over
    1.8 billion years”, full-plate model on Zenodo 13628813 (CC BY 4.0). Check it joins Merdith at 1000 Ma;
    say on the page that these maps are far less certain.
-3. **4567 → 1800 Ma: no map exists of where the land was.** Draw no continents; show what the evidence says
+3. ~~4567 → 1800 Ma: no map exists of where the land was.~~ **Shipped 23 Nov 2026, except the impact scene (3b).**
+   Was: Draw no continents; show what the evidence says
    instead, each with a verified source: the Solar System’s first solids (4.567 Ga), the Moon-forming impact
    (~4.5 Ga, a model — versions argued over), the oldest crystals (Jack Hills zircons, 4.4 Ga), the oldest
    rocks (Acasta, ~4.0 Ga), the oldest stromatolites (~3.5 Ga), the Great Oxidation Event (~2.4 Ga), the
    Huronian ice ages. A scene for the impact, like the extinction scenes, labelled as a model.
+3b. **Next: the Moon-forming impact as a scene.** A Geology-tab story (`data_stories.js`, `STORY_SCENES`) from
+   4,567 to ~4,400 Ma: dust and rock gathering, a Mars-sized body (Theia) striking, a ring of debris, the Moon
+   forming close and drifting outward, the surface cooling to oceans. Every frame captioned, and the card says
+   which parts are a model and argued over (giant-impact versions: Canup & Asphaug 2001; ages: Barboni et al.
+   2017 and later work). It draws over the map's empty sphere; it must not show anything the card does not say.
 4. **The real shape (today only).** Flattening is 21 km at the poles (0.3%) and the geoid’s bumps are ±100 m —
    invisible unless exaggerated. A globe toggle, “today’s gravity shape, exaggerated about 8,000×”, from EGM96
    or EGM2008 (Zenodo 14537811, CC BY 4.0). Not drawn for the past: no gravity model of ancient Earth exists.
@@ -566,6 +573,17 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — Back to the birth of the Earth.** The timeline now starts 4,567 million years ago, when the
+  first solids formed around the young Sun. Eight new spans — the Hadean, the Eoarchean, Paleoarchean,
+  Mesoarchean and Neoarchean eras, and the Siderian, Rhyacian and Orosirian periods — each with insights and
+  sources (the Moon-forming impact, the Jack Hills crystals and early water, the oldest rocks, the Great
+  Oxidation Event and the Huronian ice). Before 1,800 Ma no map of the land is drawn: the map says “Nobody
+  knows where the land was” (or, before 4.43 Ga, “No map exists this far back”, on a glowing sea), wrapped to
+  fit on a phone. Life with no plate to ride is listed without pins: Isua (argued over), Dresser, Strelley
+  Pool, Moodies, the Francevillian fossils (argued over) and Gunflint. A span with no named fossil says why
+  (`lifeNote`). The reader’s own line starts at the birth of the Earth. 19 new references (508). Benchmark
+  unchanged. 256 checks.
 
 - **23 Nov 2026 — Back to 1.8 billion years: Nuna and the boring billion.** The map now starts 1,800 million
   years ago. Before 1,000 Ma the plates follow Cao et al. (2024), who carried Merdith et al. (2021) back to

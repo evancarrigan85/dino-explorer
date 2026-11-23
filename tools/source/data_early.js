@@ -17,6 +17,21 @@ const P = {
 
 const EARLY = {
 
+hadean: [], mesoarchean: [], neoarchean: [], siderian: [],
+eoarchean: [
+  W('micro', 'Microbes › Mat-building bacteria', 'Isua cones (possible stromatolites)', '🦠', 'sun', 'Cones 1–4 cm high', 'Shallow sea', '~3,700 MYA', [3710, 3690], 'Small cone shapes in 3.7-billion-year-old rock in Greenland. If microbes built them, layer on layer, they are the oldest fossils on Earth.', [[65.2, -49.8, 'Isua, Greenland']], { debate: 'A second team found the cones were probably made when the rock was squeezed and folded, not by microbes. Which reading is right is still argued over.' }),
+],
+paleoarchean: [
+  R('micro', 'Microbes › Mat-building bacteria', 'Dresser hot-spring microbes', '🦠', 'sun', 'Microscopic', 'Hot springs on land', '~3,480 MYA', [3490, 3470], 'Signs of microbes in the rock of hot springs that bubbled on land in the Pilbara of Western Australia — perhaps the oldest signs of life on land.', [[-21.1, 119.6, 'Dresser Formation, Pilbara, Australia']]),
+  R('micro', 'Microbes › Mat-building bacteria', 'Strelley Pool stromatolites', '🪸', 'sun', 'Cones and domes, centimetres high', 'Shallow sea', '~3,430 MYA', [3440, 3420], 'A reef of stromatolites of many shapes — cones, domes, egg-crate patterns — built by microbes in a shallow sea 3.43 billion years ago, in what is now Western Australia.', [[-21.2, 119.4, 'Strelley Pool, Pilbara, Australia']]),
+  R('micro', 'Microbes › Mat-building bacteria', 'Moodies river mats', '🦠', 'sun', 'Mats a few millimetres thick', 'Riverbanks and shores', '~3,220 MYA', [3225, 3215], 'Wrinkled mats of microbes preserved beside old rivers in South Africa, 3.22 billion years old: life on land.', [[-25.9, 31.0, 'Moodies Group, Barberton, South Africa']]),
+],
+rhyacian: [
+  W('invert', 'Invertebrates › Puzzling early life', 'Francevillian fossils', '🧩', 'unknown', 'Up to 12 cm across', 'Shallow sea', '~2,100 MYA', [2110, 2090], 'Flat, lobed shapes up to 12 cm across in 2.1-billion-year-old shale in Gabon. Their finders think they were colonies of living things that grew in a regular way — the oldest large life by more than a billion years.', [[-1.6, 13.5, 'Franceville, Gabon']], { debate: 'Others think the shapes were made by minerals growing in the mud, or by microbial mats, not by many-celled life.' }),
+],
+orosirian: [
+  R('micro', 'Microbes › Mat-building bacteria', 'Gunflint microbes', '🔬', 'sun', 'Threads and spheres a few thousandths of a millimetre', 'Shallow sea', '~1,880 MYA', [1885, 1875], 'Threads and tiny spheres of microbes sealed in glassy chert on the shore of Lake Superior, 1.88 billion years old. When they were described in 1965, they showed that life had a long history before the Cambrian.', [[48.8, -87.3, 'Schreiber Beach, Gunflint Chert, Ontario']]),
+],
 statherian: [
   R('plant', 'Plants › Algae', 'Qingshania', '🌿', 'sun', 'Microscopic threads of cells', 'Shallow sea', '~1,630 MYA', [1640, 1620], 'Chains of cells 1.63 billion years old, found in northern China — among the oldest living things made of many cells. They were probably a kind of alga.', [[40.3, 117.6, 'Chuanlinggou Formation, Yanshan, China']]),
 ],

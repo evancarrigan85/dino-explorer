@@ -500,10 +500,10 @@ loron2019 | Loron | 2019 | Early fungi from the Proterozoic era in Arctic Canada
 tang2020 | Tang | 2020 | A one-billion-year-old multicellular chlorophyte | p:tonian, a:Proterocladus
 turner2021 | Turner | 2021 | Possible poriferan body fossils in early Neoproterozoic microbial reefs | p:tonian, a:Possible sponge (Little Dal reefs)
 porter2000 | Porter | 2000 | Testate amoebae in the Neoproterozoic Era: evidence from vase-shaped microfossils in the Chuar Group, Grand Canyon | p:tonian, a:Vase-shaped microfossils, f:tonian
-mitchell2023 | Mitchell | 2023 | Mid-Proterozoic day length stalled by tidal resonance | p:tonian, p:statherian, p:ectasian, p:stenian
+mitchell2023 | Mitchell | 2023 | Mid-Proterozoic day length stalled by tidal resonance | p:tonian, p:statherian, p:ectasian, p:stenian, p:siderian
 # ── 1800–1000 Ma: Nuna, the boring billion, the first seaweeds ──
 cao2024 | Cao | 2024 | Earth’s tectonic and plate boundary evolution over 1.8 billion years | m:plates, p:statherian, j:drift
-zhao2002 | Zhao | 2002 | Review of global 2.1–1.8 Ga orogens: implications for a pre-Rodinia supercontinent | p:statherian
+zhao2002 | Zhao | 2002 | Review of global 2.1–1.8 Ga orogens: implications for a pre-Rodinia supercontinent | p:statherian, p:orosirian
 miao2024 | Miao | 2024 | 1.63-billion-year-old multicellular eukaryotes from the Chuanlinggou Formation in North China | p:statherian, a:Qingshania
 planavsky2014 | Planavsky | 2014 | Low Mid-Proterozoic atmospheric oxygen levels and the delayed rise of animals | p:statherian, p:calymmian, p:ectasian
 zhu2016 | Zhu | 2016 | Decimetre-scale multicellular eukaryotes from the 1.56-billion-year-old Gaoyuzhuang Formation in North China | p:calymmian, a:Gaoyuzhuang seaweeds, f:calymmian
@@ -513,3 +513,23 @@ zhang2016 | Zhang | 2016 | Sufficient oxygen for animal respiration 1,400 millio
 butterfield2000 | Butterfield | 2000 | Bangiomorpha pubescens n. gen., n. sp.: implications for the evolution of sex, multicellularity, and the Mesoproterozoic/Neoproterozoic radiation of eukaryotes | p:stenian, a:Bangiomorpha, f:stenian | 10.1666/0094-8373(2000)026<0386:bpngns>2.0.co;2
 gibson2017 | Gibson | 2017 | Precise age of Bangiomorpha pubescens dates the origin of eukaryotic photosynthesis | p:stenian, a:Bangiomorpha
 strother2011 | Strother | 2011 | Earth’s earliest non-marine eukaryotes | p:stenian, a:Torridon lake microbes
+# ── 4567–1800 Ma: the birth of the Earth to Nuna ──
+connelly2012 | Connelly | 2012 | The Absolute Chronology and Thermal Processing of Solids in the Solar Protoplanetary Disk | p:hadean
+barboni2017 | Barboni | 2017 | Early formation of the Moon 4.51 billion years ago | p:hadean
+canup2001 | Canup | 2001 | Origin of the Moon in a giant impact near the end of the Earth's formation | p:hadean
+wilde2001 | Wilde | 2001 | Evidence from detrital zircons for the existence of continental crust and oceans on the Earth 4.4 Gyr ago | p:hadean
+bell2015 | Bell | 2015 | Potentially biogenic carbon preserved in a 4.1 billion-year-old zircon | p:hadean
+bowring1999 | Bowring | 1999 | Priscoan (4.00-4.03 Ga) orthogneisses from northwestern Canada | p:eoarchean
+nutman2016 | Nutman | 2016 | Rapid emergence of life shown by discovery of 3,700-million-year-old microbial structures | p:eoarchean, a:Isua cones (possible stromatolites)
+allwood2018 | Allwood | 2018 | Reassessing evidence of life in 3,700-million-year-old rocks of Greenland | p:eoarchean, a:Isua cones (possible stromatolites)
+allwood2006 | Allwood | 2006 | Stromatolite reef from the Early Archaean era of Australia | p:paleoarchean, a:Strelley Pool stromatolites
+djokic2017 | Djokic | 2017 | Earliest signs of life on land preserved in ca. 3.5 Ga hot spring deposits | p:paleoarchean, a:Dresser hot-spring microbes
+homann2018 | Homann | 2018 | Microbial life and biogeochemical cycling on land 3,220 million years ago | p:paleoarchean, a:Moodies river mats
+crowe2013 | Crowe | 2013 | Atmospheric oxygenation three billion years ago | p:mesoarchean
+anbar2007 | Anbar | 2007 | A Whiff of Oxygen Before the Great Oxidation Event? | p:neoarchean
+lyons2014 | Lyons | 2014 | The rise of oxygen in Earth’s early ocean and atmosphere | p:eoarchean, p:paleoarchean, p:mesoarchean, p:neoarchean, p:siderian, p:rhyacian
+bekker2004 | Bekker | 2004 | Dating the rise of atmospheric oxygen | p:siderian
+gumsley2017 | Gumsley | 2017 | Timing and tempo of the Great Oxidation Event | p:siderian
+elalbani2010 | Albani | 2010 | Large colonial organisms with coordinated growth in oxygenated environments 2.1 Gyr ago | p:rhyacian, a:Francevillian fossils | 10.1038/nature09166 | El Albani
+kamo1996 | Kamo | 1996 | A 2.023 Ga age for the Vredefort impact event and a first report of shock metamorphosed zircons in pseudotachylitic breccias and Granophyre | p:orosirian
+barghoorn1965 | Barghoorn | 1965 | Microorganisms from the Gunflint Chert | p:orosirian, a:Gunflint microbes

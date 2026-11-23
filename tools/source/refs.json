@@ -8423,7 +8423,8 @@
 "p:tonian",
 "p:statherian",
 "p:ectasian",
-"p:stenian"
+"p:stenian",
+"p:siderian"
 ],
 "first": "",
 "title_expected": "Mid-Proterozoic day length stalled by tidal resonance"
@@ -8461,7 +8462,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"p:statherian"
+"p:statherian",
+"p:orosirian"
 ],
 "first": "",
 "title_expected": "Review of global 2.1–1.8 Ga orogens: implications for a pre-Rodinia supercontinent"
@@ -8637,5 +8639,352 @@
 ],
 "first": "",
 "title_expected": "Earth’s earliest non-marine eukaryotes"
+},
+"connelly2012": {
+"doi": "10.1126/science.1226919",
+"title": "The Absolute Chronology and Thermal Processing of Solids in the Solar Protoplanetary Disk",
+"journal": "Science",
+"year": 2012,
+"authors": [
+"Connelly",
+"Bizzarro",
+"Krot",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:hadean"
+],
+"first": "",
+"title_expected": "The Absolute Chronology and Thermal Processing of Solids in the Solar Protoplanetary Disk"
+},
+"barboni2017": {
+"doi": "10.1126/sciadv.1602365",
+"title": "Early formation of the Moon 4.51 billion years ago",
+"journal": "Science Advances",
+"year": 2017,
+"authors": [
+"Barboni",
+"Boehnke",
+"Keller",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:hadean"
+],
+"first": "",
+"title_expected": "Early formation of the Moon 4.51 billion years ago"
+},
+"canup2001": {
+"doi": "10.1038/35089010",
+"title": "Origin of the Moon in a giant impact near the end of the Earth's formation",
+"journal": "Nature",
+"year": 2001,
+"authors": [
+"Canup",
+"Asphaug"
+],
+"type": "journal-article",
+"targets": [
+"p:hadean"
+],
+"first": "",
+"title_expected": "Origin of the Moon in a giant impact near the end of the Earth's formation"
+},
+"wilde2001": {
+"doi": "10.1038/35051550",
+"title": "Evidence from detrital zircons for the existence of continental crust and oceans on the Earth 4.4 Gyr ago",
+"journal": "Nature",
+"year": 2001,
+"authors": [
+"Wilde",
+"Valley",
+"Peck",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:hadean"
+],
+"first": "",
+"title_expected": "Evidence from detrital zircons for the existence of continental crust and oceans on the Earth 4.4 Gyr ago"
+},
+"bell2015": {
+"doi": "10.1073/pnas.1517557112",
+"title": "Potentially biogenic carbon preserved in a 4.1 billion-year-old zircon",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2015,
+"authors": [
+"Bell",
+"Boehnke",
+"Harrison",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:hadean"
+],
+"first": "",
+"title_expected": "Potentially biogenic carbon preserved in a 4.1 billion-year-old zircon"
+},
+"bowring1999": {
+"doi": "10.1007/s004100050465",
+"title": "Priscoan (4.00-4.03 Ga) orthogneisses from northwestern Canada",
+"journal": "Contributions to Mineralogy and Petrology",
+"year": 1999,
+"authors": [
+"Bowring",
+"Williams"
+],
+"type": "journal-article",
+"targets": [
+"p:eoarchean"
+],
+"first": "",
+"title_expected": "Priscoan (4.00-4.03 Ga) orthogneisses from northwestern Canada"
+},
+"nutman2016": {
+"doi": "10.1038/nature19355",
+"title": "Rapid emergence of life shown by discovery of 3,700-million-year-old microbial structures",
+"journal": "Nature",
+"year": 2016,
+"authors": [
+"Nutman",
+"Bennett",
+"Friend",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:eoarchean",
+"a:Isua cones (possible stromatolites)"
+],
+"first": "",
+"title_expected": "Rapid emergence of life shown by discovery of 3,700-million-year-old microbial structures"
+},
+"allwood2018": {
+"doi": "10.1038/s41586-018-0610-4",
+"title": "Reassessing evidence of life in 3,700-million-year-old rocks of Greenland",
+"journal": "Nature",
+"year": 2018,
+"authors": [
+"Allwood",
+"Rosing",
+"Flannery",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:eoarchean",
+"a:Isua cones (possible stromatolites)"
+],
+"first": "",
+"title_expected": "Reassessing evidence of life in 3,700-million-year-old rocks of Greenland"
+},
+"allwood2006": {
+"doi": "10.1038/nature04764",
+"title": "Stromatolite reef from the Early Archaean era of Australia",
+"journal": "Nature",
+"year": 2006,
+"authors": [
+"Allwood",
+"Walter",
+"Kamber",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:paleoarchean",
+"a:Strelley Pool stromatolites"
+],
+"first": "",
+"title_expected": "Stromatolite reef from the Early Archaean era of Australia"
+},
+"djokic2017": {
+"doi": "10.1038/ncomms15263",
+"title": "Earliest signs of life on land preserved in ca. 3.5 Ga hot spring deposits",
+"journal": "Nature Communications",
+"year": 2017,
+"authors": [
+"Djokic",
+"Van Kranendonk",
+"Campbell",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:paleoarchean",
+"a:Dresser hot-spring microbes"
+],
+"first": "",
+"title_expected": "Earliest signs of life on land preserved in ca. 3.5 Ga hot spring deposits"
+},
+"homann2018": {
+"doi": "10.1038/s41561-018-0190-9",
+"title": "Microbial life and biogeochemical cycling on land 3,220 million years ago",
+"journal": "Nature Geoscience",
+"year": 2018,
+"authors": [
+"Homann",
+"Sansjofre",
+"Van Zuilen",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:paleoarchean",
+"a:Moodies river mats"
+],
+"first": "",
+"title_expected": "Microbial life and biogeochemical cycling on land 3,220 million years ago"
+},
+"crowe2013": {
+"doi": "10.1038/nature12426",
+"title": "Atmospheric oxygenation three billion years ago",
+"journal": "Nature",
+"year": 2013,
+"authors": [
+"Crowe",
+"Døssing",
+"Beukes",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:mesoarchean"
+],
+"first": "",
+"title_expected": "Atmospheric oxygenation three billion years ago"
+},
+"anbar2007": {
+"doi": "10.1126/science.1140325",
+"title": "A Whiff of Oxygen Before the Great Oxidation Event?",
+"journal": "Science",
+"year": 2007,
+"authors": [
+"Anbar",
+"Duan",
+"Lyons",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:neoarchean"
+],
+"first": "",
+"title_expected": "A Whiff of Oxygen Before the Great Oxidation Event?"
+},
+"lyons2014": {
+"doi": "10.1038/nature13068",
+"title": "The rise of oxygen in Earth’s early ocean and atmosphere",
+"journal": "Nature",
+"year": 2014,
+"authors": [
+"Lyons",
+"Reinhard",
+"Planavsky"
+],
+"type": "journal-article",
+"targets": [
+"p:eoarchean",
+"p:paleoarchean",
+"p:mesoarchean",
+"p:neoarchean",
+"p:siderian",
+"p:rhyacian"
+],
+"first": "",
+"title_expected": "The rise of oxygen in Earth’s early ocean and atmosphere"
+},
+"bekker2004": {
+"doi": "10.1038/nature02260",
+"title": "Dating the rise of atmospheric oxygen",
+"journal": "Nature",
+"year": 2004,
+"authors": [
+"Bekker",
+"Holland",
+"Wang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:siderian"
+],
+"first": "",
+"title_expected": "Dating the rise of atmospheric oxygen"
+},
+"gumsley2017": {
+"doi": "10.1073/pnas.1608824114",
+"title": "Timing and tempo of the Great Oxidation Event",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2017,
+"authors": [
+"Gumsley",
+"Chamberlain",
+"Bleeker",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:siderian"
+],
+"first": "",
+"title_expected": "Timing and tempo of the Great Oxidation Event"
+},
+"elalbani2010": {
+"doi": "10.1038/nature09166",
+"title": "Large colonial organisms with coordinated growth in oxygenated environments 2.1 Gyr ago",
+"journal": "Nature",
+"year": 2010,
+"authors": [
+"Albani",
+"Bengtson",
+"Canfield",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:rhyacian",
+"a:Francevillian fossils"
+],
+"first": "El Albani",
+"title_expected": "Large colonial organisms with coordinated growth in oxygenated environments 2.1 Gyr ago"
+},
+"kamo1996": {
+"doi": "10.1016/s0012-821x(96)00180-x",
+"title": "A 2.023 Ga age for the Vredefort impact event and a first report of shock metamorphosed zircons in pseudotachylitic breccias and Granophyre",
+"journal": "Earth and Planetary Science Letters",
+"year": 1996,
+"authors": [
+"Kamo",
+"Reimold",
+"Krogh",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"p:orosirian"
+],
+"first": "",
+"title_expected": "A 2.023 Ga age for the Vredefort impact event and a first report of shock metamorphosed zircons in pseudotachylitic breccias and Granophyre"
+},
+"barghoorn1965": {
+"doi": "10.1126/science.147.3658.563",
+"title": "Microorganisms from the Gunflint Chert",
+"journal": "Science",
+"year": 1965,
+"authors": [
+"Barghoorn",
+"Tyler"
+],
+"type": "journal-article",
+"targets": [
+"p:orosirian",
+"a:Gunflint microbes"
+],
+"first": "",
+"title_expected": "Microorganisms from the Gunflint Chert"
 }
 }

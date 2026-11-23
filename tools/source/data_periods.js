@@ -17,6 +17,67 @@ const PERIOD_EDITS = {
     funFact: 'If all of Earth\'s history were one 24-hour day, our species appears about six seconds before midnight. Dinosaurs went extinct at 11:39 PM. The entire Industrial Revolution fits into the last five-thousandths of a second.' },
 };
 
+// 4567–1800 Ma: from the birth of the Earth to Nuna. No map of the land exists for this time; the page says so.
+const HADEAN = {
+  id: 'hadean', name: 'Hadean', era: 'Hadean Eon', kind: 'Eon',
+  start: 4567, end: 4031, color: '#a5523c', textColor: '#e8957c',
+  desc: 'The Earth forms from dust and rock around the young Sun. A planet about the size of Mars crashes into it, and the debris becomes the Moon. By 4.4 billion years ago there is liquid water — but almost no rock from this time survives.',
+  funFact: 'The oldest pieces of the Earth you could hold are tiny crystals called zircons from the Jack Hills of Australia: 4.4 billion years old, older than any rock.',
+  lifeNote: 'No sure sign of life is known from the Hadean: almost no rock survives from it. A speck of carbon inside a 4.1-billion-year-old crystal may be a trace of life — that is argued over.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const EOARCHEAN = {
+  id: 'eoarchean', name: 'Eoarchean', era: 'Archean Eon', kind: 'Era',
+  start: 4031, end: 3600, color: '#a8566e', textColor: '#e692ad',
+  desc: 'The oldest rocks that survive form in this time, in north-west Canada. Life may already be here: Greenland holds 3.7-billion-year-old cone shapes that some scientists read as the oldest fossils.',
+  funFact: 'The Acasta Gneiss, in Canada’s Northwest Territories, is about 4 billion years old — the oldest rock known on Earth.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const PALEOARCHEAN = {
+  id: 'paleoarchean', name: 'Paleoarchean', era: 'Archean Eon', kind: 'Era',
+  start: 3600, end: 3200, color: '#a05a86', textColor: '#de97c4',
+  desc: 'Microbes build mound-shaped reefs — stromatolites — in shallow seas and around hot springs in what is now Western Australia. These are among the oldest widely accepted signs of life.',
+  funFact: 'Stromatolites are still being built today, at Shark Bay in Western Australia — the same corner of the world as the 3.5-billion-year-old ones.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const MESOARCHEAN = {
+  id: 'mesoarchean', name: 'Mesoarchean', era: 'Archean Eon', kind: 'Era',
+  start: 3200, end: 2800, color: '#93609b', textColor: '#d19ee0',
+  desc: 'Microbial mats cover shores and riverbanks. Traces in ancient soils suggest living things were already making a little oxygen, about 3 billion years ago — long before it built up in the air.',
+  funFact: 'The oxygen you breathe was first made by microbes. Traces in 3-billion-year-old soils in South Africa may be the first hint of them at work.',
+  lifeNote: 'No fossil on this site is dated to this time. The best signs of life are microbial mats and chemical traces, too small to name.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const NEOARCHEAN = {
+  id: 'neoarchean', name: 'Neoarchean', era: 'Archean Eon', kind: 'Era',
+  start: 2800, end: 2500, color: '#8665a6', textColor: '#c3a3ea',
+  desc: 'Oxygen-making microbes spread, and brief “whiffs” of oxygen come and go a few hundred million years before it builds up for good. Striped rocks of iron settle on the sea floor.',
+  funFact: 'Striped rocks of iron and silica — banded iron formations — were laid down on the sea floor in this time: iron in the sea rusting out as the first oxygen appeared.',
+  lifeNote: 'No fossil on this site is dated to this time. Life is everywhere in the shallow seas, but as mats and chemical traces rather than named fossils.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const SIDERIAN = {
+  id: 'siderian', name: 'Siderian', era: 'Paleoproterozoic Era',
+  start: 2500, end: 2300, color: '#8a6fb0', textColor: '#bfa9ec',
+  desc: 'The Great Oxidation Event: oxygen builds up in the air for the first time. The Earth also goes through some of its first great ice ages.',
+  funFact: 'Before this time a pile of iron sand left out in the air would not have rusted: there was no oxygen in the air to rust it.',
+  lifeNote: 'No fossil on this site is dated to this time. The microbes that made the oxygen are known from the chemistry of the rocks, not from named fossils.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const RHYACIAN = {
+  id: 'rhyacian', name: 'Rhyacian', era: 'Paleoproterozoic Era',
+  start: 2300, end: 2050, color: '#8573b3', textColor: '#b9aeee',
+  desc: 'Oxygen stays in the air. In Gabon, 2.1-billion-year-old rocks hold centimetre-sized fossils that some scientists think were early many-celled life — far older than any other.',
+  funFact: 'The Francevillian fossils from Gabon look like flat, wrinkled pancakes up to 12 cm across.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
+const OROSIRIAN = {
+  id: 'orosirian', name: 'Orosirian', era: 'Paleoproterozoic Era',
+  start: 2050, end: 1800, color: '#8071b4', textColor: '#b4abee',
+  desc: 'The biggest known asteroid crater on Earth, Vredefort, is made in what is now South Africa. In Ontario, microbes are sealed in glassy rock so well that their shapes can still be seen. The pieces of Nuna begin to gather.',
+  funFact: 'The Vredefort crater in South Africa, about 2 billion years old, is the largest asteroid crater known on Earth.',
+  event: null, continentKey: 'cryogenian', creatures: [],
+};
 // 1800–1000 Ma: the Statherian (end of the Paleoproterozoic) and the three Mesoproterozoic periods. Added 23 Nov 2026
 // when the map went back to 1.8 billion years (Cao et al. 2024).
 const STATHERIAN = {
@@ -70,6 +131,94 @@ const EDIACARAN = {
 // know  how do we know?      today  why it matters now
 // ext   mass extinction, where one ends the period
 const INSIGHTS = {
+  hadean: {
+    big: 'The Earth is born, the Moon is made, and the first oceans form — almost nothing survives to show us.',
+    signs: [
+      ['🌞', '4,567 MYA', 'The first solid grains of the Solar System form around the young Sun; the Earth grows from them.'],
+      ['🌙', 'About 4,510 MYA', 'A planet about the size of Mars hits the young Earth, and the debris gathers into the Moon. This is the best-supported idea; exactly how it happened is argued over.'],
+      ['💧', 'By 4,400 MYA', 'Crystals from Australia show there was already liquid water — and perhaps the first continental crust.'],
+      ['🗺', 'No map', 'No rock from the Hadean survives in place, so nobody knows where any land was. The map shows only the sea.'],
+    ],
+    know: 'Zircon crystals survive almost anything. The uranium in them turns into lead at a known rate, so they keep their age, and the oxygen in them shows whether they formed near liquid water.',
+    today: 'The Moon made in that collision raises our tides today, and its pull has been slowing the Earth’s spin ever since.',
+  },
+  eoarchean: {
+    big: 'The oldest rocks — and perhaps the oldest signs of life.',
+    signs: [
+      ['🪨', 'About 4,030 MYA', 'The oldest rock known: the Acasta Gneiss, in north-west Canada.'],
+      ['🦠', 'About 3,700 MYA', 'Small cone shapes in Greenland may be the oldest stromatolites, built by microbes — or folds in the rock. Argued over.'],
+      ['🌊', 'Sea', 'A world ocean, and almost no oxygen in the air.'],
+      ['🗺', 'No map', 'Where land stood is unknown; the map shows only the sea.'],
+    ],
+    know: 'Rocks this old have been squeezed and heated many times. Finding life in them means telling shapes made by microbes from shapes made by folding — which is why the Greenland cones are still argued over.',
+    today: 'If life appeared soon after the oceans formed, scientists ask, does it arise easily wherever conditions allow?',
+  },
+  paleoarchean: {
+    big: 'Microbes build reefs: the oldest widely accepted signs of life.',
+    signs: [
+      ['🪸', 'About 3,430 MYA', 'A reef of stromatolites of many shapes at Strelley Pool, Australia — built by microbes.'],
+      ['♨️', 'About 3,480 MYA', 'Hot springs on land in the Pilbara hold signs of microbial life: perhaps life on land already.'],
+      ['🏞', 'About 3,220 MYA', 'Microbial mats on land, beside rivers, in South Africa.'],
+      ['💨', 'Air', 'Still almost no oxygen.'],
+    ],
+    know: 'A stromatolite grows in layers as microbes trap sand and build on top of one another. Its wavy, cone and dome shapes, and chemical traces inside the layers, are hard to make without life.',
+    today: 'Stromatolites were the main sign of life you could see for most of Earth’s history.',
+  },
+  mesoarchean: {
+    big: 'A first hint of oxygen made by living things.',
+    signs: [
+      ['💨', 'About 3,000 MYA', 'Traces in ancient soil in South Africa suggest a little oxygen in the air, made by microbes — if the reading is right.'],
+      ['🌊', 'Sea', 'The deep sea is full of dissolved iron, with no oxygen.'],
+      ['🦠', 'Life', 'Microbial mats on shores and tidal flats.'],
+      ['🗺', 'No map', 'Where land stood is unknown.'],
+    ],
+    know: 'Chromium in soil only moves about when there is oxygen. Its traces in old soils, and in mud laid down nearby, are read as a sign that oxygen existed.',
+    today: 'Every breath you take depends on what microbes started in seas like these.',
+  },
+  neoarchean: {
+    big: 'Oxygen-making microbes spread; oxygen comes and goes in brief whiffs.',
+    signs: [
+      ['💨', 'About 2,500 MYA', 'A brief whiff of oxygen, before the big rise.'],
+      ['🪨', 'Iron', 'Striped iron rocks — banded iron formations — build up on the sea floor.'],
+      ['🦠', 'Life', 'Oxygen-making microbes and stromatolite reefs.'],
+      ['🗺', 'No map', 'Where land stood is unknown.'],
+    ],
+    know: 'Some metals, like molybdenum, wash off the land only when oxygen weathers the rocks. A short pulse of them in 2.5-billion-year-old mud is read as a whiff of oxygen.',
+    today: 'The oxygen in today’s air began as a waste gas of microbes like these.',
+  },
+  siderian: {
+    big: 'The Great Oxidation Event: oxygen in the air, for good.',
+    signs: [
+      ['💨', 'About 2,430 MYA', 'Oxygen builds up in the air for the first time — the Great Oxidation Event.'],
+      ['🧊', 'Ice', 'Some of the Earth’s first great ice ages.'],
+      ['🦠', 'Life', 'Microbes, including the oxygen-makers; for many others oxygen was a poison.'],
+      ['🗺', 'No map', 'Where land stood is unknown.'],
+    ],
+    know: 'Before the rise of oxygen, sulfur in rocks kept an unusual chemical signature that only an air without oxygen allows. It vanishes at the Great Oxidation Event, which dates it.',
+    today: 'Oxygen was a poison to many microbes of the time; it also made later animals, including us, possible.',
+  },
+  rhyacian: {
+    big: 'Oxygen stays — and perhaps a first try at large life.',
+    signs: [
+      ['🧩', 'About 2,100 MYA', 'The Francevillian fossils of Gabon: flat, lobed shapes up to 12 cm across. Early many-celled life — or shapes made by microbes? Argued over.'],
+      ['💨', 'Oxygen', 'In the air to stay, though far below today’s level.'],
+      ['🦠', 'Life', 'Microbes in every shallow sea.'],
+      ['🗺', 'No map', 'Where land stood is unknown.'],
+    ],
+    know: 'X-ray scans of the Gabon fossils show they were three-dimensional and grew in a regular way — why some scientists think they were living things, not mineral shapes.',
+    today: 'If the Gabon fossils were alive, large life had a first try more than a billion years before it took hold.',
+  },
+  orosirian: {
+    big: 'The biggest known crater, the clearest early microbes, and the start of Nuna.',
+    signs: [
+      ['☄️', 'About 2,020 MYA', 'A huge asteroid strikes what is now South Africa, leaving the Vredefort crater — the largest known.'],
+      ['🦠', 'About 1,880 MYA', 'The Gunflint microbes of Ontario, among the first fossils ever recognised from this far back, described in 1965.'],
+      ['🌍', 'Continents', 'Collisions begin to gather land into the supercontinent Nuna.'],
+      ['🗺', 'No map', 'Where land stood is unknown until 1.8 billion years ago.'],
+    ],
+    know: 'Chert, a glassy rock made of silica, can seal microbes in before they rot. Thin slices of the Gunflint chert show threads and tiny spheres.',
+    today: 'The Gunflint fossils showed that life had a long history before the Cambrian — an answer to Darwin’s puzzle about the missing early fossils.',
+  },
   statherian: {
     big: 'An older supercontinent, Nuna, and the first living things made of many cells.',
     signs: [
@@ -441,4 +590,4 @@ const ICE_AGE_NOTES = [
 // Existing geology cards: where to pin them on the map (present-day lat/lon), or null for none.
 const GEO_FIX = { camp: [32, -7], tethys_sea: null, iapetus_ocean: null, rheic_ocean: null, panthalassa: null, snowball_earth: null };
 
-if (typeof module !== 'undefined') module.exports = { PERIOD_EDITS, STATHERIAN, CALYMMIAN, ECTASIAN, STENIAN, TONIAN, EDIACARAN, INSIGHTS, CREATURE_INSIGHTS, SITES, LABELS, OCEANS, SUPEROCEAN, ICE_AGE_NOTES, GEO_FIX };
+if (typeof module !== 'undefined') module.exports = { PERIOD_EDITS, HADEAN, EOARCHEAN, PALEOARCHEAN, MESOARCHEAN, NEOARCHEAN, SIDERIAN, RHYACIAN, OROSIRIAN, STATHERIAN, CALYMMIAN, ECTASIAN, STENIAN, TONIAN, EDIACARAN, INSIGHTS, CREATURE_INSIGHTS, SITES, LABELS, OCEANS, SUPEROCEAN, ICE_AGE_NOTES, GEO_FIX };

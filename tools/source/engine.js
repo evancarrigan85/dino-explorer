@@ -110,7 +110,7 @@ const WorldMap = (() => {
       polys.push({ f, hi, lo, rings, lod: [rings, thin(rings, 0.3), thin(rings, 0.8)], c: [cx, cy, cz], cosr });
     }
   })(PLATE_DATA);
-  const MAXT = PLATE_DATA.maxT;
+  const MAXT = PLATE_DATA.maxT, EARTH_AGE = 4567;   // the map can go back to the Earth’s birth; the land only to MAXT
 
   // ── rotation of a family at time t (million years ago) ─────────────
   let stamp = 0;
@@ -571,7 +571,7 @@ void main() {
   let centerLon = 0;                          // flat view central meridian
   let proj = null, baseScale = 1, baseT = [0, 0];
   let dirty = true, raf = 0;
-  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], regions: [], routes: [], rocks: [], pin: null };
+  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], regions: [], routes: [], rocks: [], pin: null, banner: null };
   let selected = null, hits = [], rings = [];
   let pal = null;
   const QS = 4;                               // soft effects are built at 1/4 size
@@ -723,6 +723,9 @@ void main() {
   // ── palette: sea and land colours shift with the climate of the age ─
   const PALS = [
     // [mya, oceanCentre, oceanMid, oceanEdge, landBase]
+    [4567, '#e07a3e', '#a8461f', '#5a1d0c', '#d3c3a2'],          // after the Moon-forming impact the surface may have been molten
+    [4430, '#e07a3e', '#a8461f', '#5a1d0c', '#d3c3a2'],
+    [4380, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],          // by 4.4 Ga, liquid water (Jack Hills zircons)
     [1800, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],          // 1800 Ma to the Tonian: open sea, bare rock
     [1000, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],
     [724, '#a3cbd6', '#74a6b8', '#44728a', '#d3c3a2'],
@@ -1604,6 +1607,25 @@ void main() {
   // ── labels and markers ─────────────────────────────────────────────
   const FONT = "'Cinzel','Georgia','Book Antiqua',serif";
   const EMOJI = "system-ui,'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
+  /* split words into lines no wider than maxW at this size; a ' · ' always starts a new line when wrapping is needed */
+  function wrapText(c, s, size, o, maxW) {
+    c.font = `${o.italic ? 'italic ' : ''}${o.weight || 700} ${size}px ${o.font || FONT}`;
+    try { c.letterSpacing = (o.spacing ?? 1.4) + 'px'; } catch (e) {}
+    const w = x => c.measureText(x).width, out = [];
+    if (w(s) <= maxW) out.push(s);
+    else for (const part of s.split(' · ')) {
+      const greedy = mw => { const ls = []; let line = '';
+        for (const word of part.split(' ')) { const tryL = line ? line + ' ' + word : word; if (line && w(tryL) > mw) { ls.push(line); line = word; } else line = tryL; }
+        if (line) ls.push(line); return ls; };
+      // as even as possible: the narrowest width that still needs no more lines than the full width does
+      const k = greedy(maxW).length; let lo = maxW / 2, hi = maxW;
+      for (let i = 0; i < 8; i++) { const mid = (lo + hi) / 2; if (greedy(mid).length <= k) hi = mid; else lo = mid; }
+      out.push(...greedy(hi));
+    }
+    try { c.letterSpacing = '0px'; } catch (e) {}
+    return out;
+  }
+  let bannerLines = 0;
   function text(c, s, x, y, size, o = {}) {
     c.font = `${o.italic ? 'italic ' : ''}${o.weight || 700} ${size}px ${o.font || FONT}`;
     c.textAlign = o.align || 'center'; c.textBaseline = 'middle';
@@ -1644,6 +1666,22 @@ void main() {
       if (!free(bs, x, p[1] - h / 2, w, h)) return false;
       bs.push([x, p[1] - h / 2, w, h]); text(c, s, p[0], p[1], size, o); return true;
     };
+    // before the oldest plate map: say plainly that there is no map of the land
+    bannerLines = 0;
+    if (t > MAXT && layers.banner) {
+      // two lines of words, each wrapped to the width left between the map's buttons
+      const [a, b] = layers.banner, maxW = W - 2 * Math.min(72, W * 0.17);
+      const s1 = Math.min(22, Math.max(14, W / 26)), s2 = Math.min(13, Math.max(10.5, W / 46));
+      const o1 = { spacing: 1.2, color: '#2a1608', haloW: 4 }, o2 = { italic: true, weight: 400, spacing: 0.3, color: '#2a1608', haloW: 3.4 };
+      const L1 = wrapText(c, a, s1, o1, maxW), L2 = b ? wrapText(c, b, s2, o2, maxW) : [];
+      const h1 = s1 * 1.25, h2 = s2 * 1.45, gap = L2.length ? s2 * 0.7 : 0, tall = L1.length * h1 + gap + L2.length * h2;
+      let y = H / 2 - tall / 2;
+      L1.forEach(l => { text(c, l, W / 2, y + h1 / 2, s1, o1); y += h1; });
+      y += gap;
+      L2.forEach(l => { text(c, l, W / 2, y + h2 / 2, s2, o2); y += h2; });
+      bannerLines = L1.length + L2.length;
+      boxes.push([W / 2 - maxW / 2, H / 2 - tall / 2 - 6, maxW, tall + 12]);
+    }
     // continents ride their plates
     for (const L of layers.labels) {
       if (t > L.from || t < L.to) continue;
@@ -2022,7 +2060,7 @@ void main() {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) schedule(); });
     },
     get time() { return time; },
-    setTime(t) { t = Math.max(0, Math.min(MAXT, t)); if (t !== time) { time = t; dirty = true; wake(); schedule(); } },
+    setTime(t) { t = Math.max(0, Math.min(EARTH_AGE, t)); if (t !== time) { time = t; dirty = true; wake(); schedule(); } },
     /* A scene to draw over the map every frame, or null to stop. Called as fn(ctx, helpers, now). */
     setFx(fn, o) { fxHook = fn || null; fxStill = !!(o && o.still); schedule(); },
     /* hide the drawn North American ice sheet while a story draws its own, retreating one */
@@ -2104,7 +2142,7 @@ void main() {
     redraw() { dirty = true; schedule(); },
     resize,
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
-    _draw: () => { lite = false; draw(); }, _drawLite: () => { lite = true; draw(); lite = false; }, _interact: interact, _isLite: () => lite, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
+    _draw: () => { lite = false; draw(); }, _drawLite: () => { lite = true; draw(); lite = false; }, _interact: interact, _isLite: () => lite, _bannerLines: () => bannerLines, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
     /* Which land pieces cover a present-day point (for checks): 'index:family[from..to]' list. */
     /* How much of the continents was under the sea at t, in percent (and today), from the same maps; null where there are none. */
     seaShare(t) { if (!SEA.P || seaFade(t) <= 0) return null; const i = seaStep(t); return { pct: SEA.P.share[i] / 10, high: SEA.P.high[i] / 10, today: SEA.P.share[0] / 10, map: i * SEA.P.step }; },

@@ -4,7 +4,8 @@ Guidance for Claude Code sessions working in this repository.
 
 **Before Us — a deep-time atlas of Earth, life and people** (until November 2026 “Dino Time
 Explorer”; the repository and the file `dino-explorer.html` keep the old name so the live address does
-not change) is one web page: a map of the Earth that moves through 1.8 billion years (1800 Ma → today), with the
+not change) is one web page: a timeline from the birth of the Earth (4,567 Ma) to today, with a map of the Earth that
+moves through the last 1.8 billion years (before that nobody knows where the land was, and the map says so), and the
 animals, the human family, the food webs, the history of discovery and recorded history placed on it. It is built
 for Evan's kids and held to a museum standard: every claim should be traceable to published research,
 and where something is a guess, a sketch or still argued over, the page says so.
@@ -97,7 +98,9 @@ builds, passes the checks and has been looked at.
 - `engine.js` is `WorldMap`: a canvas map that carries today's coastlines back in time on their
   tectonic plates (Merdith et al. 2021 for the last 1000 Myr; Cao et al. 2024 before, eased in over 1050–1000 Ma
   — `PLATE_DATA.join`, and blocks of the older model never carry a place younger than the join), with Ice Age shorelines, ice, relief, labels, markers and a
-  pin. It knows nothing about animals. From 540 Ma to 3 Ma it also draws **seas over the continents**
+  pin. It knows nothing about animals. Before `WorldMap.MAXT` (1800 Ma) it draws no land: the sea alone, and the
+  words the app passes in `layers.banner` (`bannerFor()` in `app.js`), wrapped to fit between the map's buttons.
+  Life older than that has no plate, so it is listed without pins. From 540 Ma to 3 Ma it also draws **seas over the continents**
   (`seas-data.js`, from the Scotese & Wright 2018 PaleoDEMs — coast and shelf edge — and Kocsis &
   Scotese 2021 — blue stripes for land the sea reached at its highest), one map every 5 Myr, carried on
   our plates and traced into outlines in the page. There the land is the mapped land, not today's
