@@ -19,7 +19,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_class.js` | Lineage (family-tree path) for every animal |
 | `data_hominins.js` | The human family and its turning points |
 | `data_periods.js` | Period insights, museum notes, fossil sites, map labels |
-| `data_time.js` | Epochs, ages and timeline events |
+| `data_time.js` | Epochs, ages and timeline events (an event with an id, its sixth element, cites its papers under `n:<id>`) |
 | `data_cultures.js`, `data_drowned.js`, `data_foodweb.js` | Ways of life, drowned sites, food webs |
 | `data_finds.js` | The Finds tab: the history of fossil discovery |
 | `data_early.js` | Life before the Cryogenian, from the birth of the Earth to 720 Ma, period by period; a span with no named fossil is empty on purpose, and its `lifeNote` in `data_periods.js` says why |

@@ -3,6 +3,12 @@
 A backlog, written 23 Nov 2026 when Evan asked: “identify more event areas that we could expand upon for each
 period possible.” It is Release 13 in `docs/PLAN.md`. Read `CLAUDE.md` first; its rules apply to every line here.
 
+**Progress.** Batch 1 shipped 23 Nov 2026: 24 sourced events. The Permian, Neoarchean, Mesoarchean,
+Ectasian, Stenian, Ediacaran, Cambrian (first steps on land), Ordovician (Fezouata, the burst of new species,
+the asteroid) and Silurian lines below marked as pins are on the site, except where a line says “?”. The table
+below is the count from before batch 1. A check now keeps every period from the Ediacaran on at three events or
+more, and every older period at one or more.
+
 ## How to read this
 
 Each candidate has a **kind**: what it would become on the page.

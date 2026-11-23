@@ -14,7 +14,8 @@
 "targets": [
 "m:plates",
 "j:drift",
-"p:tonian"
+"p:tonian",
+"n:iapetus"
 ],
 "first": "",
 "title_expected": "Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic"
@@ -4544,7 +4545,8 @@
 "Wegener"
 ],
 "targets": [
-"x:wegener"
+"x:wegener",
+"n:mesosaurus"
 ],
 "title_expected": "Die Entstehung der Kontinente",
 "type": "journal-article",
@@ -9241,5 +9243,416 @@
 ],
 "first": "",
 "title_expected": "Do lower mantle slabs contribute in generating the Indian Ocean geoid low?"
+},
+"young1998": {
+"doi": "10.1086/516039",
+"title": "Earth'S Oldest Reported Glaciation: Physical and Chemical Evidence From the Archean Mozaan Group (∼2.9 Ga) of South Africa",
+"journal": "The Journal of Geology",
+"year": 1998,
+"authors": [
+"Young",
+"Brunn",
+"Gold",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:pongola"
+],
+"first": "",
+"title_expected": "Earth's oldest reported glaciation: physical and chemical evidence from the Archean Mozaan Group (~2.9 Ga) of South Africa"
+},
+"frimmel2008": {
+"doi": "10.1016/j.epsl.2007.11.022",
+"title": "Earth's continental crustal gold endowment",
+"journal": "Earth and Planetary Science Letters",
+"year": 2008,
+"authors": [
+"Frimmel"
+],
+"type": "journal-article",
+"targets": [
+"n:witwatersrand"
+],
+"first": "",
+"title_expected": "Earth's continental crustal gold endowment"
+},
+"som2012": {
+"doi": "10.1038/nature10890",
+"title": "Air density 2.7 billion years ago limited to less than twice modern levels by fossil raindrop imprints",
+"journal": "Nature",
+"year": 2012,
+"authors": [
+"Som",
+"Catling",
+"Harnmeijer",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:raindrops"
+],
+"first": "",
+"title_expected": "Air density 2.7 billion years ago limited to less than twice modern levels by fossil raindrop imprints"
+},
+"condie1998": {
+"doi": "10.1016/s0012-821x(98)00178-2",
+"title": "Episodic continental growth and supercontinents: a mantle avalanche connection?",
+"journal": "Earth and Planetary Science Letters",
+"year": 1998,
+"authors": [
+"Condie"
+],
+"type": "journal-article",
+"targets": [
+"n:crust"
+],
+"first": "",
+"title_expected": "Episodic continental growth and supercontinents: a mantle avalanche connection?"
+},
+"bekker2010": {
+"doi": "10.2113/gsecongeo.105.3.467",
+"title": "Iron Formation: The Sedimentary Product of a Complex Interplay among Mantle, Tectonic, Oceanic, and Biospheric Processes",
+"journal": "Economic Geology",
+"year": 2010,
+"authors": [
+"Bekker",
+"Slack",
+"Planavsky",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:iron"
+],
+"first": "",
+"title_expected": "Iron formation: the sedimentary product of a complex interplay among mantle, tectonic, oceanic, and biospheric processes"
+},
+"lecheminant1989": {
+"doi": "10.1016/0012-821x(89)90122-2",
+"title": "Mackenzie igneous events, Canada: Middle Proterozoic hotspot magmatism associated with ocean opening",
+"journal": "Earth and Planetary Science Letters",
+"year": 1989,
+"authors": [
+"LeCheminant",
+"Heaman"
+],
+"type": "journal-article",
+"targets": [
+"n:mackenzie"
+],
+"first": "",
+"title_expected": "Mackenzie igneous events, Canada: Middle Proterozoic hotspot magmatism associated with ocean opening"
+},
+"stein2015": {
+"doi": "10.1130/ges01183.1",
+"title": "North America’s Midcontinent Rift: When rift met LIP",
+"journal": "Geosphere",
+"year": 2015,
+"authors": [
+"Stein",
+"Kley",
+"Stein",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:midcontinent"
+],
+"first": "",
+"title_expected": "North America's Midcontinent Rift: When rift met LIP"
+},
+"rivers1997": {
+"doi": "10.1016/s0301-9268(97)00038-7",
+"title": "Lithotectonic elements of the Grenville Province: review and tectonic implications",
+"journal": "Precambrian Research",
+"year": 1997,
+"authors": [
+"Rivers"
+],
+"type": "journal-article",
+"targets": [
+"n:grenville"
+],
+"first": "",
+"title_expected": "Lithotectonic elements of the Grenville Province: review and tectonic implications"
+},
+"pu2016": {
+"doi": "10.1130/g38284.1",
+"title": "Dodging snowballs: Geochronology of the Gaskiers glaciation and the first appearance of the Ediacaran biota",
+"journal": "Geology",
+"year": 2016,
+"authors": [
+"Pu",
+"Bowring",
+"Ramezani",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:gaskiers",
+"n:mistakenpoint"
+],
+"first": "",
+"title_expected": "Dodging snowballs: Geochronology of the Gaskiers glaciation and the first appearance of the Ediacaran biota"
+},
+"matthews2020": {
+"doi": "10.1130/b35646.1",
+"title": "A Chronostratigraphic Framework for the Rise of the Ediacaran Macrobiota: New Constraints from Mistaken Point Ecological Reserve, Newfoundland",
+"journal": "GSA Bulletin",
+"year": 2021,
+"authors": [
+"Matthews",
+"Liu",
+"Yang",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:mistakenpoint"
+],
+"first": "",
+"title_expected": "A chronostratigraphic framework for the rise of the Ediacaran macrobiota: new constraints from Mistaken Point Ecological Reserve, Newfoundland"
+},
+"macnaughton2002": {
+"doi": "10.1130/0091-7613(2002)030<0391:fsolat>2.0.co;2",
+"title": "First steps on land: Arthropod trackways in Cambrian-Ordovician eolian sandstone, southeastern Ontario, Canada",
+"journal": "Geology",
+"year": 2002,
+"authors": [
+"MacNaughton",
+"Cole",
+"Dalrymple",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:firststeps"
+],
+"first": "",
+"title_expected": "First steps on land: Arthropod trackways in Cambrian-Ordovician eolian sandstone, southeastern Ontario, Canada"
+},
+"vanroy2010": {
+"doi": "10.1038/nature09038",
+"title": "Ordovician faunas of Burgess Shale type",
+"journal": "Nature",
+"year": 2010,
+"authors": [
+"Van Roy",
+"Orr",
+"Botting",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:fezouata"
+],
+"first": "",
+"title_expected": "Ordovician faunas of Burgess Shale type"
+},
+"servais2010": {
+"doi": "10.1016/j.palaeo.2010.05.031",
+"title": "The Great Ordovician Biodiversification Event (GOBE): The palaeoecological dimension",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2010,
+"authors": [
+"Servais",
+"Owen",
+"Harper",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:gobe"
+],
+"first": "",
+"title_expected": "The Great Ordovician Biodiversification Event (GOBE): The palaeoecological dimension"
+},
+"schmitz2019": {
+"doi": "10.1126/sciadv.aax4184",
+"title": "An extraterrestrial trigger for the mid-Ordovician ice age: Dust from the breakup of the L-chondrite parent body",
+"journal": "Science Advances",
+"year": 2019,
+"authors": [
+"Schmitz",
+"Farley",
+"Goderis",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:asteroid"
+],
+"first": "",
+"title_expected": "An extraterrestrial trigger for the mid-Ordovician ice age: Dust from the breakup of the L-chondrite parent body"
+},
+"briggs1996": {
+"doi": "10.1038/382248a0",
+"title": "Soft-bodied fossils from a Silurian volcaniclastic deposit",
+"journal": "Nature",
+"year": 1996,
+"authors": [
+"Briggs",
+"Siveter",
+"Siveter"
+],
+"type": "journal-article",
+"targets": [
+"n:herefordshire"
+],
+"first": "",
+"title_expected": "Soft-bodied fossils from a Silurian volcaniclastic deposit"
+},
+"brookfield2020": {
+"doi": "10.1080/08912963.2020.1762593",
+"title": "Myriapod divergence times differ between molecular clock and fossil evidence: U/Pb zircon ages of the earliest fossil millipede-bearing sediments and their significance",
+"journal": "Historical Biology",
+"year": 2021,
+"authors": [
+"Brookfield",
+"Catlos",
+"Suarez"
+],
+"type": "journal-article",
+"targets": [
+"n:firstland"
+],
+"first": "",
+"title_expected": "Myriapod divergence times differ between molecular clock and fossil evidence: U/Pb zircon ages of the earliest fossil millipede-bearing sediments and their significance"
+},
+"dewey2003": {
+"doi": "10.1144/0016-764902-085",
+"title": "Changing Silurian–Devonian relative plate motion in the Caledonides: sinistral transpression to sinistral transtension",
+"journal": "Journal of the Geological Society",
+"year": 2003,
+"authors": [
+"Dewey",
+"Strachan"
+],
+"type": "journal-article",
+"targets": [
+"n:iapetus"
+],
+"first": "",
+"title_expected": "Changing Silurian-Devonian relative plate motion in the Caledonides: sinistral transpression to sinistral transtension"
+},
+"calner2005": {
+"doi": "10.1130/g21185.1",
+"title": "A Late Silurian extinction event and anachronistic period",
+"journal": "Geology",
+"year": 2005,
+"authors": [
+"Calner"
+],
+"type": "journal-article",
+"targets": [
+"n:lau"
+],
+"first": "",
+"title_expected": "A Late Silurian extinction event and anachronistic period"
+},
+"montanez2013": {
+"doi": "10.1146/annurev.earth.031208.100118",
+"title": "The Late Paleozoic Ice Age: An Evolving Paradigm",
+"journal": "Annual Review of Earth and Planetary Sciences",
+"year": 2013,
+"authors": [
+"Montañez",
+"Poulsen"
+],
+"type": "journal-article",
+"targets": [
+"n:lpia"
+],
+"first": "",
+"title_expected": "The Late Paleozoic Ice Age: An Evolving Paradigm"
+},
+"pineiro2012": {
+"doi": "10.4202/app.2010.0113",
+"title": "Unusual Environmental Conditions Preserve a Permian Mesosaur-Bearing Konservat-Lagerstätte from Uruguay",
+"journal": "Acta Palaeontologica Polonica",
+"year": 2012,
+"authors": [
+"Piñeiro",
+"Ramos",
+"Goso",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:mesosaurus"
+],
+"first": "",
+"title_expected": "Unusual environmental conditions preserve a Permian mesosaur-bearing Konservat-Lagerstätte from Uruguay"
+},
+"day2015": {
+"doi": "10.1098/rspb.2015.0834",
+"title": "When and how did the terrestrial mid-Permian mass extinction occur? Evidence from the tetrapod record of the Karoo Basin, South Africa",
+"journal": "Proceedings of the Royal Society B: Biological Sciences",
+"year": 2015,
+"authors": [
+"Day",
+"Ramezani",
+"Bowring",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:therapsids",
+"n:capitanian"
+],
+"first": "",
+"title_expected": "When and how did the terrestrial mid-Permian mass extinction occur? Evidence from the tetrapod record of the Karoo Basin, South Africa"
+},
+"wignall2009": {
+"doi": "10.1126/science.1171956",
+"title": "Volcanism, Mass Extinction, and Carbon Isotope Fluctuations in the Middle Permian of China",
+"journal": "Science",
+"year": 2009,
+"authors": [
+"Wignall",
+"Sun",
+"Bond",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:capitanian"
+],
+"first": "",
+"title_expected": "Volcanism, mass extinction, and carbon isotope fluctuations in the Middle Permian of China"
+},
+"frey1997": {
+"doi": "10.1126/science.275.5305.1450",
+"title": "Gliding Mechanism in the Late Permian Reptile Coelurosauravus",
+"journal": "Science",
+"year": 1997,
+"authors": [
+"Frey",
+"Sues",
+"Munk"
+],
+"type": "journal-article",
+"targets": [
+"n:gliders"
+],
+"first": "",
+"title_expected": "Gliding mechanism in the Late Permian reptile Coelurosauravus"
+},
+"burgess2015": {
+"doi": "10.1126/sciadv.1500470",
+"title": "High-precision geochronology confirms voluminous magmatism before, during, and after Earth’s most severe extinction",
+"journal": "Science Advances",
+"year": 2015,
+"authors": [
+"Burgess",
+"Bowring"
+],
+"type": "journal-article",
+"targets": [
+"n:siberia"
+],
+"first": "",
+"title_expected": "High-precision geochronology confirms voluminous magmatism before, during, and after Earth's most severe extinction"
 }
 }

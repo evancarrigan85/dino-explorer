@@ -2,7 +2,7 @@
 #   for the few papers the registry files under a given name (the match is still made on the registry's spelling)
 # targets: a:<animal name>  h:<hominin id>  c:<culture id>  d:<drowned id>  p:<period id>  f:<food-web period id>  m:plates|sealevel|time|climate|history|landcover|rocks|seas|terrain|checks|sound  x:<find id>  t:<family tree id>  j:<journey id>  e:<extinction id>  k:<empire id>  b:<belief id>  r:<trade route id>  w:<great work id>  o:<first-cities place id | sumer>  i:<inspiration id>  s:<earth story id>
 # Every line is checked against Crossref by tools/verify_refs.py; anything that does not match is left off the site.
-merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift, p:tonian | 10.1016/j.earscirev.2020.103477
+merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic | m:plates, j:drift, p:tonian, n:iapetus | 10.1016/j.earscirev.2020.103477
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia, v:bridge, v:rising, v:cold
 spratt2016 | Spratt | 2016 | A Late Pleistocene sea level stack | m:sealevel | 10.5194/cp-12-1079-2016
 cohen2013 | Cohen | 2013 | The ICS International Chronostratigraphic Chart | m:time
@@ -258,7 +258,7 @@ davidson2002 | Davidson | 2002 | Bonehead mistakes: the background in scientific
 shen2009 | Shen | 2009 | Age of Zhoukoudian Homo erectus determined with 26Al/10Be burial dating | x:peking, h:erectus
 zhang2024 | Zhang | 2024 | The demise of the giant ape Gigantopithecus blacki | x:gigantopithecus, a:Gigantopithecus
 ford1958 | Ford | 1958 | Pre-Cambrian fossils from Charnwood Forest | x:charnia, a:Charnia
-wegener1912 | Wegener | 1912 | Die Entstehung der Kontinente | x:wegener
+wegener1912 | Wegener | 1912 | Die Entstehung der Kontinente | x:wegener, n:mesosaurus
 vine1963 | Vine | 1963 | Magnetic anomalies over oceanic ridges | x:seafloor
 ostrom1973 | Ostrom | 1973 | The ancestry of birds | x:deinonychus, a:Deinonychus
 brochu2003 | Brochu | 2003 | Osteology of Tyrannosaurus rex: insights from a nearly complete skeleton and high-resolution computed tomographic analysis of the skull | x:sue, a:Tyrannosaurus rex
@@ -548,3 +548,27 @@ pavlis2012 | Pavlis | 2012 | The development and evaluation of the Earth Gravita
 tapley2004 | Tapley | 2004 | GRACE measurements of mass variability in the Earth system | m:geoid
 pal2023 | Pal | 2023 | How the Indian Ocean geoid low was formed | m:geoid
 ghosh2022 | Ghosh | 2022 | Do lower mantle slabs contribute in generating the Indian Ocean geoid low? | m:geoid
+young1998 | Young | 1998 | Earth's oldest reported glaciation: physical and chemical evidence from the Archean Mozaan Group (~2.9 Ga) of South Africa | n:pongola
+frimmel2008 | Frimmel | 2008 | Earth's continental crustal gold endowment | n:witwatersrand
+som2012 | Som | 2012 | Air density 2.7 billion years ago limited to less than twice modern levels by fossil raindrop imprints | n:raindrops
+condie1998 | Condie | 1998 | Episodic continental growth and supercontinents: a mantle avalanche connection? | n:crust
+bekker2010 | Bekker | 2010 | Iron formation: the sedimentary product of a complex interplay among mantle, tectonic, oceanic, and biospheric processes | n:iron
+lecheminant1989 | LeCheminant | 1989 | Mackenzie igneous events, Canada: Middle Proterozoic hotspot magmatism associated with ocean opening | n:mackenzie
+stein2015 | Stein | 2015 | North America's Midcontinent Rift: When rift met LIP | n:midcontinent
+rivers1997 | Rivers | 1997 | Lithotectonic elements of the Grenville Province: review and tectonic implications | n:grenville
+pu2016 | Pu | 2016 | Dodging snowballs: Geochronology of the Gaskiers glaciation and the first appearance of the Ediacaran biota | n:gaskiers, n:mistakenpoint
+matthews2020 | Matthews | 2020 | A chronostratigraphic framework for the rise of the Ediacaran macrobiota: new constraints from Mistaken Point Ecological Reserve, Newfoundland | n:mistakenpoint | 10.1130/b35646.1
+macnaughton2002 | MacNaughton | 2002 | First steps on land: Arthropod trackways in Cambrian-Ordovician eolian sandstone, southeastern Ontario, Canada | n:firststeps
+vanroy2010 | Van Roy | 2010 | Ordovician faunas of Burgess Shale type | n:fezouata
+servais2010 | Servais | 2010 | The Great Ordovician Biodiversification Event (GOBE): The palaeoecological dimension | n:gobe
+schmitz2019 | Schmitz | 2019 | An extraterrestrial trigger for the mid-Ordovician ice age: Dust from the breakup of the L-chondrite parent body | n:asteroid
+briggs1996 | Briggs | 1996 | Soft-bodied fossils from a Silurian volcaniclastic deposit | n:herefordshire
+brookfield2020 | Brookfield | 2020 | Myriapod divergence times differ between molecular clock and fossil evidence: U/Pb zircon ages of the earliest fossil millipede-bearing sediments and their significance | n:firstland
+dewey2003 | Dewey | 2003 | Changing Silurian-Devonian relative plate motion in the Caledonides: sinistral transpression to sinistral transtension | n:iapetus
+calner2005 | Calner | 2005 | A Late Silurian extinction event and anachronistic period | n:lau | 10.1130/g21185.1
+montanez2013 | Montañez | 2013 | The Late Paleozoic Ice Age: An Evolving Paradigm | n:lpia
+pineiro2012 | Piñeiro | 2012 | Unusual environmental conditions preserve a Permian mesosaur-bearing Konservat-Lagerstätte from Uruguay | n:mesosaurus
+day2015 | Day | 2015 | When and how did the terrestrial mid-Permian mass extinction occur? Evidence from the tetrapod record of the Karoo Basin, South Africa | n:therapsids, n:capitanian
+wignall2009 | Wignall | 2009 | Volcanism, mass extinction, and carbon isotope fluctuations in the Middle Permian of China | n:capitanian
+frey1997 | Frey | 1997 | Gliding mechanism in the Late Permian reptile Coelurosauravus | n:gliders
+burgess2015 | Burgess | 2015 | High-precision geochronology confirms voluminous magmatism before, during, and after Earth's most severe extinction | n:siberia

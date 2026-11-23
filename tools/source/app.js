@@ -457,7 +457,7 @@ function bindTimeline() {
     const x = xIn((e.touches[0].clientX + e.touches[1].clientX) / 2); zoomAbout(timeAt(x), x, f); pinch = d;
   }, { passive: false });
   det.addEventListener('touchend', () => { pinch = 0; });
-  $('tlEvents').addEventListener('click', e => { const el = e.target.closest('.ev'); if (!el) return; const ev = EVENTS[+el.dataset.ev]; goTo(ev[0]); showFact(ev[2], '<b>' + esc(ev[3]) + '</b> — ' + esc(ev[4])); });
+  $('tlEvents').addEventListener('click', e => { const el = e.target.closest('.ev'); if (!el) return; const ev = EVENTS[+el.dataset.ev]; goTo(ev[0]); const src = evSources(ev); showFact(ev[2], '<b>' + esc(ev[3]) + '</b> — ' + esc(ev[4]) + src, src ? 15000 : 9000); });
   // overview: drag the window, drag its edges, or click to jump
   const ov = $('tlOverview'), br = $('ovBrush');
   const tAt = cx => { const r = ov.getBoundingClientRect(); return storyTime(clamp((cx - r.left) / r.width, 0, 1) * 1000); };
@@ -530,6 +530,11 @@ function sizeHTML(c) {
 }
 // ── peer-reviewed sources ──
 const cite = k => { const r = REFS[k]; return `<li>${esc(r.a)} (${r.y}). ${esc(r.t)}. <i>${esc(r.j)}</i>. <a href="https://doi.org/${esc(r.d)}" target="_blank" rel="noopener">doi.org/${esc(r.d)}</a></li>`; };
+/* a timeline event's papers, short enough for the little popup: “Som et al. 2012 · …”, each a link */
+function evSources(ev) {
+  const ks = ev[5] && SRCMAP['n:' + ev[5]]; if (!ks || !ks.length) return '';
+  return '<div class="fp-src">📚 ' + ks.map(k => { const r = REFS[k], who = (r.a.split(',')[0] || '').replace(/ et al\.$/, '') + (r.a.includes(',') || / et al\.$/.test(r.a) ? ' et al.' : ''); return `<a href="https://doi.org/${esc(r.d)}" target="_blank" rel="noopener">${esc(who)} ${r.y}</a>`; }).join(' · ') + '</div>';
+}
 function srcHTML(target, title) {
   const ks = SRCMAP[target]; if (!ks || !ks.length) return '';
   return `<div class="label-sec sources"><h5>📚 ${title || 'Peer-reviewed sources'}</h5><ul>${ks.map(cite).join('')}</ul></div>`;
@@ -538,7 +543,7 @@ function allSourcesHTML() {
   const n = Object.keys(REFS).length, has = t => !!SRCMAP[t];
   const rate = (list, f) => { const k = list.filter(f).length; return `${k} of ${list.length}`; };
   const cov = [['animal entries', rate(ALL.filter(c => !c.hom), c => has('a:' + c.name))], ['human species', rate(HOMININS, h => has('h:' + h.id))], ['cultures', rate(CULTURES, c => has('c:' + c.id))],
-    ['drowned sites', rate(DROWNED, d => has('d:' + d.id))], ['periods', rate(PERIODS, p => has('p:' + p.id))], ['food webs', rate(Object.keys(FOODWEBS), id => has('f:' + id))], ['discovery stories', rate(FINDS, f => has('x:' + f.id))], ['helps and threats', rate(SURVIVAL, v => has('v:' + v.id))]];
+    ['drowned sites', rate(DROWNED, d => has('d:' + d.id))], ['periods', rate(PERIODS, p => has('p:' + p.id))], ['food webs', rate(Object.keys(FOODWEBS), id => has('f:' + id))], ['discovery stories', rate(FINDS, f => has('x:' + f.id))], ['helps and threats', rate(SURVIVAL, v => has('v:' + v.id))], ['timeline events', rate(EVENTS, e => e[5] && has('n:' + e[5]))]];
   const keys = Object.keys(REFS).sort((x, y) => REFS[x].a.localeCompare(REFS[y].a) || REFS[x].y - REFS[y].y);
   return `<details class="fw-how all-src"><summary>📚 All ${n} peer-reviewed sources on this site</summary>
     <div class="src-note">Every reference is checked against the Crossref DOI registry — title, year and first author must match a registered paper before it can appear here. Coverage so far: ${cov.map(c => `${c[1]} ${c[0]}`).join(' · ')}. Entries without a listed source draw on standard references and museum summaries, and are being sourced one by one.</div>

@@ -29,14 +29,14 @@ network secret and for `api.phylopic.org` among the allowed hosts.
 | Timeline | **4,567 million years ago → today**: the Hadean, the four Archean eras and every Proterozoic period, each with its insights and sources. Before 1,800 Ma no map of the land exists, so none is drawn and the map says so in words |
 | Map | Plate motion **1,800 Ma → today** (Merdith et al. 2021 for the last billion years, Cao et al. 2024 before); **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 523, every one a published work confirmed in Crossref |
+| References | 547, every one a published work confirmed in Crossref |
 | Age of Mammals | Told epoch by epoch: Paleocene, Eocene, Oligocene, Miocene and Pliocene each have their own chapter (header, map title, Insights), with sources |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each |
 | Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at nine events |
-| Checks | 267 passing, plus the benchmark ratchet (`tools/bench`) |
+| Checks | 270 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -651,9 +651,9 @@ Then:
 `docs/EVENTS.md` counts what each period has, and lists candidates by period. Each candidate has a kind (a
 timeline pin, a spark on the map, a smaller crisis, a story, a fossil site, or an ambient picture), and a source
 status: 29 papers were found in Crossref on 23 Nov; the rest are marked “?”. Suggested batches, one release each:
-1. **Empty and thin periods.** Pins for the Permian (none yet; its two sparks have no events) and the
-   Neoarchean (none), then the Silurian, Mesoarchean, Ectasian and Stenian. Add a check that every period
-   from the Ediacaran on has at least three timeline events, and every older period at least one.
+1. ~~Empty and thin periods.~~ **Shipped 23 Nov 2026** (24 sourced events; see Shipped). Was: Pins for the
+   Permian (none yet; its two sparks have no events) and the Neoarchean (none), then the Silurian,
+   Mesoarchean, Ectasian and Stenian, with a check on the minimum per period.
 2. **Sparks.** About ten, Paleozoic to Holocene: Kalkarindji, Viluy, Karoo–Ferrar, Paraná–Etendeka,
    Ontong Java, Columbia River, Ries, Yellowstone, Mazama, Tambora. Every one named on the map, and a check
    that every spark has a timeline event and a source.
@@ -706,6 +706,24 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — More events: the empty and thin periods (Release 13, batch 1).** 24 new timeline events,
+  each citing its papers. Timeline events can now carry sources (`n:<id>`), shown as links in the event’s popup,
+  and the build refuses an event id with no verified source.
+  - The Permian goes from none to six: the southern ice melting back, Mesosaurus (the drift clue),
+    the dinocephalians, the Capitanian crisis with the Emeishan eruptions, the first gliding reptiles, and the
+    start of the Siberian Traps.
+  - The Neoarchean goes from none to three: fossil raindrops, a burst of continent-making, banded iron.
+  - The Mesoarchean gains the oldest ice age and the Witwatersrand gold.
+  - The Ectasian gains the Mackenzie dykes; the Stenian, the Lake Superior rift and the Grenville mountains.
+  - The Ediacaran gains the Gaskiers ice age and Mistaken Point; the Cambrian, the first steps on land
+    (Ontario).
+  - The Ordovician gains Fezouata, the great burst of new species and the asteroid break-up.
+  - The Silurian gains the Herefordshire fossils, the first land animals (Kerrera), Scotland meeting England
+    and the Lau crisis.
+  - A check keeps every period from the Ediacaran on at three events or more, and every older one at one or
+    more.
+  24 new references (547). 270 checks.
 
 - **23 Nov 2026 — The real shape of the Earth.** On the globe, for today, the Geology tab’s new card turns on the Earth’s
   gravity shape (the geoid): the level the sea would settle at if it could flow under the land, 107 m below the smooth

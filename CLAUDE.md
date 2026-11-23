@@ -150,7 +150,8 @@ builds, passes the checks and has been looked at.
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `s:` story id, `k:` empire id, `b:` belief id,
-  `r:` trade route id, `w:` great work id, `v:` help or threat id (`data_survival.js`), `i:` inspiration id, `m:` map layer
+  `r:` trade route id, `w:` great work id, `v:` help or threat id (`data_survival.js`), `i:` inspiration id, `n:` timeline event id (the optional
+  sixth element of an `EVENTS` entry; its papers show in the event’s popup, and the build refuses an id with no source), `m:` map layer
   (`plates|seas|terrain|sealevel|ice|rivers|climate|rocks|landcover|history|time|checks|sound|geoid`).
 
 ## Network

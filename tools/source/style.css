@@ -413,6 +413,8 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 #fpEmoji{font-size:1.5rem;flex-shrink:0}
 #fpText{font-size:0.82rem;color:#d0ddf0;line-height:1.5}
 #fpText b{color:#fff}
+#fpText .fp-src{margin-top:5px;font-size:0.72rem;color:#9fb3d1}
+#fpText .fp-src a{color:#9fc8ff;text-decoration:underline;text-underline-offset:2px}
 .fp-close{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:2px 6px}
 
 /* === SMALL SCREENS === */
