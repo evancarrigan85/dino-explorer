@@ -100,7 +100,9 @@ builds, passes the checks and has been looked at.
   — `PLATE_DATA.join`, and blocks of the older model never carry a place younger than the join), with Ice Age shorelines, ice, relief, labels, markers and a
   pin. It knows nothing about animals. Before `WorldMap.MAXT` (1800 Ma) it draws no land: the sea alone, and the
   words the app passes in `layers.banner` (`bannerFor()` in `app.js`), wrapped to fit between the map's buttons.
-  Life older than that has no plate, so it is listed without pins.
+  Life older than that has no plate, so it is listed without pins. Where no seas map is in charge (before 540 Ma, and
+  3–2.6 Ma) `landPath(t, fill)` leaves out today’s lakes and fills Hudson Bay and the Baltic (`PLUGS`, each riding the
+  plate under its anchor): they are ice-age features. Big enclosed seas (Black Sea, Caspian) stay until 540 Ma.
   On the globe, for today only, `WorldMap.setGeoid(true)` shows **the real shape**: today’s gravity shape (the geoid,
   `geoid-data.js` from `build_geoid.py`, EGM2008) with every bump 10,000× taller. It is a `d3.geoProjection` whose
   points are pushed out or in by their height (`geoidRaw`), so land, labels, pins and taps all follow it; the light-and-

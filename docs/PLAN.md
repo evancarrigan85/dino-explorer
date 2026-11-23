@@ -36,7 +36,7 @@ network secret and for `api.phylopic.org` among the allowed hosts.
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each; then 13 smaller crises, each a sourced timeline event |
 | Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at 22 places (511 Ma → 1815 CE), each tied to a sourced event |
-| Checks | 281 passing, plus the benchmark ratchet (`tools/bench`) |
+| Checks | 282 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -707,6 +707,16 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **23 Nov 2026 — No ice-age water on Nuna and Rodinia.** Evan saw Hudson Bay and the Great Lakes on the 1.7-billion-year-old
+  continent. Before 540 Ma the land is today’s outline on its plates, so it carried today’s lakes and bays with it.
+  - Where no seas map is in charge (before 540 Ma, and 3–2.6 Ma), today’s lakes are no longer cut out of the land:
+    nearly all were made by the ice ages of the last 2.6 Myr.
+  - Hudson Bay and the Baltic, basins the ice sheets pressed down and the sea then flooded, are filled in, each
+    riding the plate under its shore.
+  - The Black Sea and the Caspian stay until 540 Ma, where the seas maps take over.
+  - The dotted “today’s coast” line and the seas maps (540–3 Ma) are untouched. “How this map is made” says so,
+    and a check pins it. 282 checks.
 
 - **23 Nov 2026 — The Missoula floods (Release 13, batch 6).** A seventh story: “The floods that carved the Scablands”,
   20,000 → 14,000 years ago.

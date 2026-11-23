@@ -1154,7 +1154,20 @@ void main() {
     point(x, y) { if (this._p === 0) { this.p.moveTo(x, y); this._p = 1; } else this.p.lineTo(x, y); },
     sphere() {}
   };
-  function landPath(t) {
+  // ── water the deep past did not have ──
+  // Where no map of the ancient land is in charge (before 540 Ma, and from 3 to 2.6 Ma) the land is today's coast carried
+  // on its plates. Today's lakes are holes in it — nearly all cut by the ice ages of the last 2.6 Myr — and Hudson Bay and
+  // the Baltic are basins the ice sheets pressed down and the sea then flooded. So there the lakes are not cut out and the
+  // two basins are filled, each riding its own plate. Big enclosed seas (the Black Sea, the Caspian) stay until 540 Ma.
+  const FILL_T = 2.6, BIG_HOLE = 0.004;                  // steradians: about 160,000 km²
+  const PLUGS = [
+    { name: 'Hudson Bay', anchor: [56.5, -89], ring: [[-97, 58.5], [-95.5, 61], [-94.5, 63], [-91, 64.8], [-87.5, 66.6], [-87.5, 68.5], [-85, 70.3], [-81, 70.8], [-77, 70], [-73.5, 67.5], [-72.5, 65], [-70, 64.2], [-65.8, 62.4], [-64.6, 61.3], [-64.9, 60.1], [-67.2, 57.6], [-70, 57.8], [-71.5, 60.5], [-76.5, 61.5], [-77.6, 60.5], [-76.3, 58.5], [-76.5, 56], [-78, 54.6], [-78.2, 52], [-79.9, 50.4], [-82.3, 51.6], [-82.7, 53.6], [-83.5, 55], [-85, 54.8], [-88, 56], [-90.6, 56.9], [-92.6, 56.6], [-95.5, 57.8]] },
+    { name: 'the Baltic', anchor: [60.5, 16.5], ring: [[10.8, 54], [13, 53.7], [16.5, 54.2], [19.5, 54.2], [21, 55], [21, 56.6], [22.5, 57], [24.5, 56.8], [24.8, 58.6], [23, 59], [24.5, 59.2], [28, 59.3], [30.5, 59.8], [29.5, 60.6], [26.5, 60.7], [22.5, 60.6], [21.8, 62], [21, 63.2], [23.5, 64.6], [25, 65.4], [24.5, 66.2], [22, 66], [21, 64.8], [18.8, 63.6], [17.3, 62.4], [17.2, 61], [18.8, 60.3], [18.8, 59.4], [17, 58.6], [16.3, 57.4], [16, 56.2], [14, 55.4], [12.9, 55.6], [12.4, 55], [11.2, 55.2]] },
+  ].map(P => { let ring = P.ring.concat([P.ring[0]]); if (d3.geoArea({ type: 'Polygon', coordinates: [ring] }) > 2 * Math.PI) ring = ring.slice().reverse(); return { ...P, ring, xyz: ring.map(([lo, la]) => toXYZ(la, lo)), tt: NaN, f: -1 }; });
+  const holeArea = xyz => { const r = []; for (let i = 0; i < xyz.length; i += 3) r.push([Math.atan2(xyz[i + 1], xyz[i]) * R2D, Math.asin(Math.max(-1, Math.min(1, xyz[i + 2]))) * R2D]); if (r.length < 4) return 0; r.push(r[0]); const a = d3.geoArea({ type: 'Polygon', coordinates: [r] }); return Math.min(a, 4 * Math.PI - a); };
+  /* the family a basin rides at time t: the plate under its anchor, on the shore */
+  function plugFam(P, t) { if (P.tt !== t) { P.tt = t; const a = attach(P.anchor[0], P.anchor[1], t); P.f = a ? a.f : -1; } return P.f; }
+  function landPath(t, fill = false) {
     const path = new Path2D(); sink.p = path;
     const st = proj.stream(sink);
     // pick the coarsest outline whose error stays under about a pixel
@@ -1164,8 +1177,12 @@ void main() {
       if (!visible(p, t) || inHide(p)) continue;
       const rings_ = p.lod[lod]; if (!rings_.length) continue;
       const m = famRot(p.f, t); if (!m) continue;
+      if (fill && rings_.length > 1 && !p.hb) p.hb = [];
+      if (fill && rings_.length > 1 && !p.hb[lod]) p.hb[lod] = rings_.map((r, i) => i > 0 && holeArea(r) > BIG_HOLE);
       st.polygonStart();
-      for (const xyz of rings_) {
+      for (let ri = 0; ri < rings_.length; ri++) {
+        const xyz = rings_[ri];
+        if (fill && ri > 0 && (t > 540 || !p.hb[lod][ri])) continue;   // a lake the deep past did not have
         st.lineStart();
         for (let i = 0; i < xyz.length; i += 3) {
           const x = xyz[i], y = xyz[i + 1], z = xyz[i + 2];
@@ -1175,6 +1192,13 @@ void main() {
         st.lineEnd();
       }
       st.polygonEnd();
+    }
+    if (fill) for (const P of PLUGS) {                   // Hudson Bay and the Baltic, filled, on their plates
+      const f = plugFam(P, t); if (f < 0) continue;
+      const m = famRot(f, t); if (!m) continue;
+      st.polygonStart(); st.lineStart();
+      for (const [x, y, z] of P.xyz) { const X = m[0] * x + m[1] * y + m[2] * z, Y = m[3] * x + m[4] * y + m[5] * z, Z = m[6] * x + m[7] * y + m[8] * z; st.point(Math.atan2(Y, X) * R2D, Math.asin(Z > 1 ? 1 : Z < -1 ? -1 : Z) * R2D); }
+      st.lineEnd(); st.polygonEnd();
     }
     return path;
   }
@@ -1429,7 +1453,7 @@ void main() {
 
     // ── land, built on its own layer so overlapping blocks merge ──
     const det = detailedLand(t, [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H].join('|'));
-    const lp = det ? det.fill : landPath(t);
+    const lp = det ? det.fill : landPath(t, t > FILL_T && !(sea && sea.snap));
     const L = lctx;
     L.setTransform(1, 0, 0, 1, 0, 0); L.globalCompositeOperation = 'source-over'; L.globalAlpha = 1;
     L.clearRect(0, 0, land.width, land.height);
@@ -2168,6 +2192,8 @@ void main() {
     geoidAt,
     _geoidShown: () => projGeoid,
     _screen: (lon, lat) => project([lon, lat]),
+    /* is this present-day place drawn as land now? (carried on its plate to the map's time) */
+    _landHere(lat, lon) { const a = attach(lat, lon, time), ll = locate(a, time), p = ll && project(ll); return p ? onLand(p[0], p[1]) : null; },
     /* how far the globe's edge strays from a circle: [shortest, longest] distance from the centre, in pixels */
     _limb() { const rot = d3.geoRotation(proj.rotate()), c = proj.translate(), r = [];
       for (let a = 0; a < 360; a += 4) { const sa = Math.sin(a * D2R) * 0.9995, ph = Math.asin(sa), la = Math.asin(Math.cos(a * D2R) * 0.9995 / Math.cos(ph)), p = proj(rot.invert([la * R2D, ph * R2D])); if (p) r.push(Math.hypot(p[0] - c[0], p[1] - c[1])); }
