@@ -1640,7 +1640,8 @@
 "et al."
 ],
 "targets": [
-"a:Patagotitan"
+"a:Patagotitan",
+"n:patagotitan"
 ],
 "title_expected": "A new giant titanosaur sheds light on body mass evolution among sauropod dinosaurs",
 "type": "journal-article",
@@ -4690,7 +4691,8 @@
 ],
 "targets": [
 "x:spinosaurus",
-"a:Spinosaurus"
+"a:Spinosaurus",
+"n:kemkem"
 ],
 "title_expected": "Semiaquatic adaptations in a giant predatory dinosaur",
 "type": "journal-article",
@@ -9938,5 +9940,149 @@
 ],
 "first": "",
 "title_expected": "Climatic, environmental and human consequences of the largest known historic eruption: Tambora volcano (Indonesia) 1815"
+},
+"torsvik2009": {
+"doi": "10.1111/j.1365-246x.2009.04137.x",
+"title": "A new scheme for the opening of the South Atlantic Ocean and the dissection of an Aptian salt basin",
+"journal": "Geophysical Journal International",
+"year": 2009,
+"authors": [
+"Torsvik",
+"Rousse",
+"Labails",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:southatlantic"
+],
+"first": "",
+"title_expected": "A new scheme for the opening of the South Atlantic Ocean and the dissection of an Aptian salt basin"
+},
+"rich1988": {
+"doi": "10.1126/science.242.4884.1403",
+"title": "Evidence for Low Temperatures and Biologic Diversity in Cretaceous High Latitudes of Australia",
+"journal": "Science",
+"year": 1988,
+"authors": [
+"Rich",
+"Rich",
+"Wagstaff",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:polardinos"
+],
+"first": "",
+"title_expected": "Evidence for low temperatures and biologic diversity in Cretaceous high latitudes of Australia"
+},
+"ibrahim2020b": {
+"doi": "10.3897/zookeys.928.47517",
+"title": "Geology and paleontology of the Upper Cretaceous Kem Kem Group of eastern Morocco",
+"journal": "ZooKeys",
+"year": 2020,
+"authors": [
+"Ibrahim",
+"Sereno",
+"Varricchio",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:kemkem"
+],
+"first": "",
+"title_expected": "Geology and paleontology of the Upper Cretaceous Kem Kem Group of eastern Morocco"
+},
+"lang2013": {
+"doi": "10.1016/j.palaeo.2013.04.011",
+"title": "Unbalanced food web in a Late Cretaceous dinosaur assemblage",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2013,
+"authors": [
+"Läng",
+"Boudad",
+"Maio",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:kemkem"
+],
+"first": "",
+"title_expected": "Unbalanced food web in a Late Cretaceous dinosaur assemblage"
+},
+"polcyn2014": {
+"doi": "10.1016/j.palaeo.2013.05.018",
+"title": "Physical drivers of mosasaur evolution",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2014,
+"authors": [
+"Polcyn",
+"Jacobs",
+"Araújo",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:mosasaurs"
+],
+"first": "",
+"title_expected": "Physical drivers of mosasaur evolution"
+},
+"mallon2012": {
+"doi": "10.1016/j.palaeo.2012.06.024",
+"title": "Megaherbivorous dinosaur turnover in the Dinosaur Park Formation (upper Campanian) of Alberta, Canada",
+"journal": "Palaeogeography, Palaeoclimatology, Palaeoecology",
+"year": 2012,
+"authors": [
+"Mallon",
+"Evans",
+"Ryan",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:dinopark"
+],
+"first": "",
+"title_expected": "Megaherbivorous dinosaur turnover in the Dinosaur Park Formation (upper Campanian) of Alberta, Canada"
+},
+"druckenmiller2021": {
+"doi": "10.1016/j.cub.2021.05.041",
+"title": "Nesting at extreme polar latitudes by non-avian dinosaurs",
+"journal": "Current Biology",
+"year": 2021,
+"authors": [
+"Druckenmiller",
+"Erickson",
+"Brinkman",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:arcticnests"
+],
+"first": "",
+"title_expected": "Nesting at extreme polar latitudes by non-avian dinosaurs"
+},
+"prasad2005": {
+"doi": "10.1126/science.1118806",
+"title": "Dinosaur Coprolites and the Early Evolution of Grasses and Grazers",
+"journal": "Science",
+"year": 2005,
+"authors": [
+"Prasad",
+"Strömberg",
+"Alimohammadian",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:grassdung"
+],
+"first": "",
+"title_expected": "Dinosaur coprolites and the early evolution of grasses and grazers"
 }
 }

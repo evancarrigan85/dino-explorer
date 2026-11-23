@@ -96,7 +96,7 @@ ortega2010 | Ortega | 2010 | A bizarre, humped Carcharodontosauria (Theropoda) f
 lee2014 | Lee | 2014 | Resolving the long-standing enigmas of a giant ornithomimosaur Deinocheirus mirificus | a:Deinocheirus
 sereno2007 | Sereno | 2007 | Structural extremes in a Cretaceous dinosaur | a:Nigersaurus
 lacovara2014 | Lacovara | 2014 | A gigantic, exceptionally complete titanosaurian sauropod dinosaur from southern Patagonia, Argentina | a:Dreadnoughtus
-carballido2017 | Carballido | 2017 | A new giant titanosaur sheds light on body mass evolution among sauropod dinosaurs | a:Patagotitan
+carballido2017 | Carballido | 2017 | A new giant titanosaur sheds light on body mass evolution among sauropod dinosaurs | a:Patagotitan, n:patagotitan
 therrien2023 | Therrien | 2023 | Exceptionally preserved stomach contents of a young tyrannosaurid reveal an ontogenetic dietary shift in an iconic extinct predator | a:Gorgosaurus
 arbour2017 | Arbour | 2017 | A new ankylosaurine dinosaur from the Judith River Formation of Montana, USA, based on an exceptional skeleton with soft tissue preservation | a:Zuul | 10.1098/rsos.161086
 sampson2010 | Sampson | 2010 | New horned dinosaurs from Utah provide evidence for intracontinental dinosaur endemism | a:Kosmoceratops
@@ -266,7 +266,7 @@ chen1998 | Chen | 1998 | An exceptionally well-preserved theropod dinosaur from 
 zhang2010 | Zhang | 2010 | Fossilized melanosomes and the colour of Cretaceous dinosaurs and birds | x:sinosauropteryx, a:Sinosauropteryx
 schweitzer2005 | Schweitzer | 2005 | Soft-tissue vessels and cellular preservation in Tyrannosaurus rex | x:softtissue, a:Tyrannosaurus rex
 xing2016 | Xing | 2016 | A feathered dinosaur tail with primitive plumage trapped in mid-Cretaceous amber | x:amber
-ibrahim2014 | Ibrahim | 2014 | Semiaquatic adaptations in a giant predatory dinosaur | x:spinosaurus, a:Spinosaurus
+ibrahim2014 | Ibrahim | 2014 | Semiaquatic adaptations in a giant predatory dinosaur | x:spinosaurus, a:Spinosaurus, n:kemkem
 richter2017 | Richter | 2017 | The age of the hominin fossils from Jebel Irhoud, Morocco, and the origins of the Middle Stone Age | x:irhoud, h:sapiens
 pigati2023 | Pigati | 2023 | Independent age estimates resolve the controversy of ancient human footprints at White Sands | x:whitesands
 krause2010 | Krause | 2010 | The complete mitochondrial DNA genome of an unknown hominin from southern Siberia | x:denisova, h:denisovan
@@ -588,3 +588,11 @@ zdanowicz1999 | Zdanowicz | 1999 | Mount Mazama eruption: Calendrical age verifi
 friedrich2006 | Friedrich | 2006 | Santorini eruption radiocarbon dated to 1627-1600 B.C. | n:thera
 sigurdsson1982 | Sigurdsson | 1982 | The eruption of Vesuvius in A.D. 79: reconstruction from historical and volcanological evidence | n:vesuvius
 oppenheimer2003 | Oppenheimer | 2003 | Climatic, environmental and human consequences of the largest known historic eruption: Tambora volcano (Indonesia) 1815 | n:tambora
+torsvik2009 | Torsvik | 2009 | A new scheme for the opening of the South Atlantic Ocean and the dissection of an Aptian salt basin | n:southatlantic
+rich1988 | Rich | 1988 | Evidence for low temperatures and biologic diversity in Cretaceous high latitudes of Australia | n:polardinos
+ibrahim2020b | Ibrahim | 2020 | Geology and paleontology of the Upper Cretaceous Kem Kem Group of eastern Morocco | n:kemkem | 10.3897/zookeys.928.47517
+lang2013 | Läng | 2013 | Unbalanced food web in a Late Cretaceous dinosaur assemblage | n:kemkem
+polcyn2014 | Polcyn | 2014 | Physical drivers of mosasaur evolution | n:mosasaurs
+mallon2012 | Mallon | 2012 | Megaherbivorous dinosaur turnover in the Dinosaur Park Formation (upper Campanian) of Alberta, Canada | n:dinopark
+druckenmiller2021 | Druckenmiller | 2021 | Nesting at extreme polar latitudes by non-avian dinosaurs | n:arcticnests
+prasad2005 | Prasad | 2005 | Dinosaur coprolites and the early evolution of grasses and grazers | n:grassdung

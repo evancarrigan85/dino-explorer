@@ -547,6 +547,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   ok('early earth: on a wide screen the banner stays two lines', await p.evaluate(() => { setTime(3000); WorldMap._draw(); const n = WorldMap._bannerLines(); setTime(1000); return n === 2; }));
   // more events, period by period (Release 13): no period left empty, and every new event cites its paper
   ok('events: every period from the Ediacaran on has at least three timeline events, every older one at least one, and the Permian is no longer empty', await p.evaluate(() => { const n = P => EVENTS.filter(e => e[0] <= P.start && e[0] > P.end).length; return PERIODS.every(P => n(P) >= (P.start <= 635 ? 3 : 1)) && n(PERIODS.find(P => P.id === 'permian')) >= 5; }));
+  ok('events: the Cretaceous has at least a dozen events for its 77 million years', await p.evaluate(() => EVENTS.filter(e => e[0] <= 143 && e[0] > 66).length >= 12));
   ok('events: every event with an id cites a verified paper', await p.evaluate(() => EVENTS.filter(e => e[5]).length >= 24 && EVENTS.filter(e => e[5]).every(e => (SRCMAP['n:' + e[5]] || []).length > 0)));
   await p.evaluate(() => { setWindow(300, 250, true); setTime(270); }); await p.waitForTimeout(300);
   { const idx = await p.evaluate(() => EVENTS.findIndex(e => e[5] === 'capitanian'));
