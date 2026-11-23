@@ -1235,7 +1235,20 @@ function placeLabels(c, items) {
     placed.push(box); c.lineWidth = 3.5; c.strokeStyle = halo || 'rgba(255,255,255,0.88)'; c.strokeText(txt, x, y); c.fillStyle = col; c.fillText(txt, x, y);
   });
 }
+// How far the Snowball Earth ice reaches toward the equator at time t (Ma): 0 none, 1 to the tropics. After Rooney et al.
+// 2015 (Sturtian 717–660, Marinoan ending 635); the Marinoan’s start is argued over, so it grows from 645 here.
+const snowIce = t => t > 717 ? 0 : t > 714 ? (717 - t) / 3 : t > 661 ? 1 : t > 659 ? (t - 659) / 2 : t > 645 ? 0 : t > 642 ? (645 - t) / 3 : t > 636 ? 1 : t > 635 ? t - 635 : 0;
 Object.assign(STORY_SCENES, {
+  snowball(g, k, st, now) {
+    const ice = snowIce(S.t); if (ice <= 0) return;
+    const r = 84 * ice, L = [], lab = (txt, p, size, col, italic, pri) => { if (p) L.push([pri, txt, p[0], p[1], size, col, italic]); };
+    g.layer('all', c => {
+      for (const south of [false, true]) { const P = g.cap(south, r); if (!P) continue; c.fillStyle = 'rgba(238,246,251,0.74)'; c.fill(P); c.setLineDash([4, 4]); c.strokeStyle = 'rgba(110,150,185,0.75)'; c.lineWidth = 1.2; c.stroke(P); c.setLineDash([]); }
+      lab('ice (a sketch)', g.ll(0, 52), 13, '#3d6f94', false, 1);
+      if (ice > 0.95) lab(g.W < 600 ? 'open water? (argued over)' : 'open water here? (argued over)', g.ll(0, 1.5), 11, '#2b5d86', true, 2);
+      placeLabels(c, L);
+    });
+  },
   // The Moon-forming impact as the computer models tell it: a window into space inside the map's frame, not to scale.
   // Everything moves with the story's progress k and the clock; nothing is left to chance (the stars come from a hash).
   moon(g, k, st, now) {
@@ -1402,7 +1415,7 @@ let storyRaf = 0;
 // The map's own record of what a story tells: while the clock is inside it, and no story or scene has the map,
 // the story's picture is drawn for that moment — so the Mediterranean is dry 5.6 million years ago whether or not
 // the story plays. The flood itself (5.33 Ma) belongs to the story: it lasted months, too short to land on.
-const AMBIENT = [{ id: 'mediterranean', from: 5.97, to: 5.335, k: 0.5 }];
+const AMBIENT = [{ id: 'mediterranean', from: 5.97, to: 5.335, k: 0.5 }, { id: 'snowball', from: 717, to: 635, k: 0.5 }];
 function ambientFx() {
   if (S.story || S.scene) return;
   const a = AMBIENT.find(x => S.t <= x.from && S.t >= x.to) || null, id = a ? a.id : null;

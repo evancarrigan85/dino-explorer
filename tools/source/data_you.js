@@ -88,6 +88,7 @@ const SPARKS = [
   [36.4, 25.4, 0.003665, 0.003605, 'volcano', 12, 'Thera (Santorini)', 'The volcano of Santorini explodes, around 1600 BCE.', 'thera'],
   [40.82, 14.43, 0.00195, 0.00194, 'volcano', 10, 'Vesuvius', 'Vesuvius erupts and buries the Roman towns of Pompeii and Herculaneum.', 'vesuvius'],
   [-8.25, 118.0, 0.000212, 0.000207, 'volcano', 14, 'Tambora', 'The largest eruption in recorded history. Its haze cooled the world: 1816 was “the year without a summer”.', 'tambora'],
+  [70.5, -113.0, 718, 716.5, 'volcano', 26, 'Franklin eruptions', 'Lava floods across what is now Arctic Canada, just as the first Snowball Earth begins.', 'franklin'],
 ];
 // Journeys: guided trips through time. "you", "extinctions" and "finds" are built from the data
 // above and elsewhere; this one is written out.

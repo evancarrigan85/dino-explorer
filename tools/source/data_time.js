@@ -95,6 +95,7 @@ const EVENTS = [
   [890, 4, '🧽', 'The first sponges?', 'Tangled tubes in reefs in north-west Canada. If they are sponges, they are the oldest animals.'],
   [780, 3, '💔', 'Rodinia breaks up', 'The supercontinent tears apart and new oceans open.'],
   [742, 5, '🏺', 'Amoebae in tiny vases', 'Single cells that built little shells, in the rocks of the Grand Canyon.'],
+  [717.5, 4, '🌋', 'The Franklin eruptions', 'Lava floods across Arctic Canada just as the first Snowball Earth begins. Some scientists think the eruptions helped start it.', 'franklin'],
   [717, 2, '🧊', 'Snowball Earth begins', 'The Sturtian glaciation: ice reaches the equator and stays for nearly 60 million years.'],
   [650, 3, '🧊', 'Second Snowball Earth', 'The Marinoan glaciation, about 650–635 million years ago.'],
   [635, 2, '🌡', 'The great thaw', 'CO₂ built up under the ice finally melts it; limestone “cap carbonates” mark the sudden hothouse.'],

@@ -89,7 +89,8 @@
 "et al."
 ],
 "targets": [
-"p:cryogenian"
+"p:cryogenian",
+"s:snowball"
 ],
 "title_expected": "A Neoproterozoic Snowball Earth",
 "type": "journal-article",
@@ -10224,5 +10225,94 @@
 ],
 "first": "",
 "title_expected": "Abrupt deep-sea warming, palaeoceanographic changes and benthic extinctions at the end of the Palaeocene"
+},
+"hoffman2017": {
+"doi": "10.1126/sciadv.1600983",
+"title": "Snowball Earth climate dynamics and Cryogenian geology-geobiology",
+"journal": "Science Advances",
+"year": 2017,
+"authors": [
+"Hoffman",
+"Abbot",
+"Ashkenazy",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:snowball"
+],
+"first": "",
+"title_expected": "Snowball Earth climate dynamics and Cryogenian geology-geobiology"
+},
+"rooney2015": {
+"doi": "10.1130/g36511.1",
+"title": "A Cryogenian chronology: Two long-lasting synchronous Neoproterozoic glaciations",
+"journal": "Geology",
+"year": 2015,
+"authors": [
+"Rooney",
+"Strauss",
+"Brandon",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:snowball"
+],
+"first": "",
+"title_expected": "A Cryogenian chronology: Two long-lasting synchronous Neoproterozoic glaciations"
+},
+"macdonald2010": {
+"doi": "10.1126/science.1183325",
+"title": "Calibrating the Cryogenian",
+"journal": "Science",
+"year": 2010,
+"authors": [
+"Macdonald",
+"Schmitz",
+"Crowley",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"s:snowball",
+"n:franklin"
+],
+"first": "",
+"title_expected": "Calibrating the Cryogenian"
+},
+"hoffman2016": {
+"doi": "10.1111/gbi.12191",
+"title": "Cryoconite pans on Snowball Earth: supraglacial oases for Cryogenian eukaryotes?",
+"journal": "Geobiology",
+"year": 2016,
+"authors": [
+"Hoffman"
+],
+"type": "journal-article",
+"targets": [
+"s:snowball"
+],
+"first": "",
+"title_expected": "Cryoconite pans on Snowball Earth: supraglacial oases for Cryogenian eukaryotes?"
+},
+"cox2016": {
+"doi": "10.1016/j.epsl.2016.04.016",
+"title": "Continental flood basalt weathering as a trigger for Neoproterozoic Snowball Earth",
+"journal": "Earth and Planetary Science Letters",
+"year": 2016,
+"authors": [
+"Cox",
+"Halverson",
+"Stevenson",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"n:franklin",
+"s:snowball"
+],
+"first": "",
+"title_expected": "Continental flood basalt weathering as a trigger for Neoproterozoic Snowball Earth"
 }
 }

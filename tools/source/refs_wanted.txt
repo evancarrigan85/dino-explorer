@@ -6,7 +6,7 @@ merdith2021 | Merdith | 2021 | Extending full-plate tectonic models into deep ti
 lambeck2014 | Lambeck | 2014 | Sea level and global ice volumes from the Last Glacial Maximum to the Holocene | m:sealevel, d:doggerland, d:beringia, v:bridge, v:rising, v:cold
 spratt2016 | Spratt | 2016 | A Late Pleistocene sea level stack | m:sealevel | 10.5194/cp-12-1079-2016
 cohen2013 | Cohen | 2013 | The ICS International Chronostratigraphic Chart | m:time
-hoffman1998 | Hoffman | 1998 | A Neoproterozoic Snowball Earth | p:cryogenian
+hoffman1998 | Hoffman | 1998 | A Neoproterozoic Snowball Earth | p:cryogenian, s:snowball
 love2009 | Love | 2009 | Fossil steroids record the appearance of Demospongiae during the Cryogenian period | a:Earliest Sponges, p:cryogenian
 brain2012 | Brain | 2012 | The first animals: ca. 760-million-year-old sponge-like fossils from Namibia | a:Otavia
 knoll2004 | Knoll | 2004 | A new period for the geologic time scale | p:ediacaran
@@ -604,3 +604,8 @@ kaiser2015 | Kaiser | 2015 | The global Hangenberg Crisis (Devonian-Carboniferou
 sahney2010 | Sahney | 2010 | Rainforest collapse triggered Carboniferous tetrapod diversification in Euramerica | n:coalforest
 turgeon2008 | Turgeon | 2008 | Cretaceous oceanic anoxic event 2 triggered by a massive magmatic episode | n:oae2
 kennett1991 | Kennett | 1991 | Abrupt deep-sea warming, palaeoceanographic changes and benthic extinctions at the end of the Palaeocene | n:petm
+hoffman2017 | Hoffman | 2017 | Snowball Earth climate dynamics and Cryogenian geology-geobiology | s:snowball | 10.1126/sciadv.1600983
+rooney2015 | Rooney | 2015 | A Cryogenian chronology: Two long-lasting synchronous Neoproterozoic glaciations | s:snowball
+macdonald2010 | Macdonald | 2010 | Calibrating the Cryogenian | s:snowball, n:franklin
+hoffman2016 | Hoffman | 2016 | Cryoconite pans on Snowball Earth: supraglacial oases for Cryogenian eukaryotes? | s:snowball
+cox2016 | Cox | 2016 | Continental flood basalt weathering as a trigger for Neoproterozoic Snowball Earth | n:franklin, s:snowball
