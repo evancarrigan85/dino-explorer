@@ -40,7 +40,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 
 | Block | Made by |
 |---|---|
-| d3-geo (map projections, ISC licence) | `npx esbuild tools/d3entry.js --bundle --minify --format=iife --global-name=d3` (after `npm i d3-geo@3 esbuild`) |
+| d3-geo (map projections, ISC licence) | `npx esbuild tools/d3entry.js --bundle --minify --format=iife --global-name=d3` (after `npm i d3-geo@3 esbuild`); written to `tools/source/d3-geo-bundle.min.js`. `geoProjection` was added for the gravity shape (d3-geo 3.1.2; the rest of the bundle is byte-identical) |
 | `PLATE_DATA` (moving continents) | `build_plates.py` → `encode_plates.mjs` |
 | `SHELF_PACKED` (Ice Age shorelines) | `build_shelf.py` |
 | `RELIEF_PACKED` (today's high ground) | `build_relief.py` |
@@ -51,6 +51,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `RIVERS_PACKED` (today's great rivers and lakes) | `build_rivers.py` |
 | `QUAT_SL`, `ICE_SLICES`, `ICE_PACKED` (sea level and ice sheets of the last 3.6 Ma) | `build_quaternary.py` |
 | `SHELF_RIVERS` (rivers across the dry sea floor, per ice outline) | `build_shelf_rivers.py` (after `build_quaternary.py` and `build_rivers.py`) |
+| `GEOID` (today’s gravity shape, 2° grid, smoothed; the globe’s “real shape” view) | `build_geoid.py EGM2008_2p5arcmin.nc4 tools/source/geoid-data.js` — the file is in Zenodo 10.5281/zenodo.14537811 (CC BY 4.0); needs `pip install netCDF4` |
 | `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
 

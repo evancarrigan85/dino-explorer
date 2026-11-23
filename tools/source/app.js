@@ -245,9 +245,10 @@ const typeOK = c => (S.type === 'all' || c.g === S.type) && (S.branch === 'all' 
 function updateMarkers(now) {
   now = now || ALL.filter(c => alive(c, S.t));
   if (S.story) now = [];                                                 // a story has the map to itself
+  if (gravityShown()) now = [];                                          // so does the Earth's gravity shape
   if (S.tab === 'humans' && inHistory()) now = now.filter(c => c.hom);   // recorded history: the map is for empires and beliefs
   if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
-  if (S.tab === 'life' && S.view === 'kin' && KIN[S.kin] && !S.story) {
+  if (S.tab === 'life' && S.view === 'kin' && KIN[S.kin] && !S.story && !gravityShown()) {
     WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
     return;
   }
@@ -1147,6 +1148,7 @@ function bindExt() {
   });
   document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) playScene(b.dataset.play); });
   document.addEventListener('click', e => { const b = e.target.closest('[data-story]'); if (b) { S.storyOpen = b.dataset.story; playStory(b.dataset.story); } });
+  document.addEventListener('click', e => { if (e.target.closest('[data-geoid]')) toggleGeoid(); });
 }
 
 // --- Stories: the Earth being made, played out on the map (Geology tab) ---
@@ -1442,6 +1444,36 @@ function playStory(id) {
   if (S.tab === 'geo') renderGeo();
   storyRaf = requestAnimationFrame(tick);
 }
+// The real shape of the Earth: today's gravity shape on the globe (WorldMap.setGeoid), with what it is and how we know.
+const GEOID_CARD = {
+  blurb: 'Gravity is a little stronger in some places than others, so the level of the sea has hills and hollows up to about 100 m high. Make them 10,000 times taller and the Earth looks lumpy.',
+  what: 'The Earth is not a perfect ball. Its spin makes it bulge at the equator: it is 43 km wider across the equator than from pole to pole. And the rock inside is heavier in some places than others, so gravity pulls a little harder there. If the sea could flow everywhere, even under the land, and lay perfectly still, its surface would not be smooth: about 107 m lower than the smooth shape south of Sri Lanka, and 86 m higher over New Guinea. That lumpy surface is called the geoid. When a map gives a mountain’s height above sea level, it means above the geoid.',
+  small: 'A bump of 100 m on a planet 12,742 km across is like a bump less than a fiftieth of the thickness of a sheet of paper on a football. So the globe here makes every bump 10,000 times taller. It leaves out the bulge at the equator: made 10,000 times bigger, that would squash the Earth flat.',
+  know: 'From satellites. Two satellites called GRACE, launched in 2002, chased each other around the Earth about 220 km apart. As each one passed over heavier rock it was tugged a little, and the gap between them changed. Measuring that gap — together with gravity measured on land, from ships and planes, and the height of the sea measured from space — gives the gravity map used here, EGM2008.',
+  debate: 'Why the deepest low lies south of India. One study points to hot, light rock rising from deep in the mantle beneath it; another asks whether old sea floor that sank deep into the mantle adds to it.',
+  when: 'Today only. Nobody has a gravity map of the ancient Earth, so the lumps are not drawn for the past.',
+};
+function geoidHTML() {
+  const on = WorldMap.geoid, open = on || S.geoidOpen;
+  return `<div class="stories"><div class="list-h" style="padding:2px 4px 6px">🥔 The real shape of the Earth</div><div class="story${open ? ' open' : ''}"><div class="story-top"><span class="story-i">🥔</span><div><b>Not quite a ball</b><span>${esc(GEOID_CARD.blurb)}</span></div></div>
+    <button class="watch" data-geoid="1">${on ? '■ Back to the round globe' : '▶ Show its gravity shape on the globe'}</button>
+    ${open ? `<div class="label-sec"><h5>🌍 What is it?</h5>${esc(GEOID_CARD.what)}</div><div class="label-sec"><h5>🔬 Too small to see</h5>${esc(GEOID_CARD.small)}</div>
+    <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(GEOID_CARD.know)}</div><div class="label-sec"><h5>❓ Still worked out</h5>${esc(GEOID_CARD.debate)}</div>
+    <div class="found">🕰 <b>When:</b> ${esc(GEOID_CARD.when)}</div>${srcHTML('m:geoid')}` : '<button class="linkbtn" data-geoid-open="1">Read what it is and how we know</button>'}</div></div>`;
+}
+const gravityShown = () => WorldMap.geoid && WorldMap.mode === 'globe' && S.t <= 0.0001;
+function toggleGeoid(on = !WorldMap.geoid) {
+  if (on) {
+    if (S.story) stopStory(); if (S.scene) stopScene(); stopPlay(); cancelTween(); if (S.jr) endJourney();
+    if (WorldMap.mode !== 'globe') WorldMap.setMode('globe');
+    if (S.win[1] > 0) setWindow(T_MAX, 0, true);
+    setTime(0);
+  }
+  WorldMap.setGeoid(on);
+  if (on) WorldMap.lookAtLL(100, 0);   // the deepest low and the highest high, side by side
+  updateMarkers();
+  if (S.tab === 'geo') renderGeo();
+}
 function storiesHTML() {
   return `<div class="stories"><div class="list-h" style="padding:2px 4px 6px">🎬 Watch the Earth being made</div>${STORIES.map(st => { const on = S.story && S.story.id === st.id, open = S.storyOpen === st.id || on;
     return `<div class="story${open ? ' open' : ''}"><div class="story-top"><span class="story-i">${st.icon}</span><div><b>${esc(st.title)}</b><span>${esc(st.blurb)}</span></div></div>
@@ -1679,7 +1711,7 @@ function bindInsights() {
 // --- Geology ---
 function renderGeo() {
   const p = S.period, fs = GEO_FEATURES.filter(f => f.periods && f.periods.includes(p.id));
-  $('pane-geo').innerHTML = storiesHTML() + seasHTML() + `<div class="geo-list"><div class="list-h" style="padding:2px 4px 8px">Geology of the ${esc(p.name)}</div>` + (fs.length ? fs.map(f => `
+  $('pane-geo').innerHTML = storiesHTML() + geoidHTML() + seasHTML() + `<div class="geo-list"><div class="list-h" style="padding:2px 4px 8px">Geology of the ${esc(p.name)}</div>` + (fs.length ? fs.map(f => `
     <div class="geo-card${S.sel === 'geo:' + f.id ? ' sel expanded' : ''}" data-key="geo:${f.id}">
       <div class="geo-card-top"><div class="geo-icon">${f.icon}</div><div class="geo-info"><div class="geo-name">${esc(f.name)}</div><div class="geo-short">${esc(f.shortDesc || '')}</div></div></div>
       <div class="geo-full">${f.fullDesc ? `<div style="margin-bottom:5px">${esc(f.fullDesc)}</div>` : ''}${f.funFact ? `<div class="geo-fun">💡 ${esc(f.funFact)}</div>` : ''}</div>
@@ -1726,6 +1758,7 @@ function bindGeo() {
     const sv = e.target.closest('#seasSvg');
     if (sv) { const r = sv.getBoundingClientRect(), ma = Math.round((1 - (e.clientX - r.left) / r.width) * 540); travel(clamp(ma, 3, 540)); return; }
     const so = e.target.closest('[data-story-open]'); if (so) { S.storyOpen = so.dataset.storyOpen; renderGeo(); return; }
+    if (e.target.closest('[data-geoid-open]')) { S.geoidOpen = true; renderGeo(); return; }
     const el = e.target.closest('.geo-card'); if (!el) return;
     el.classList.toggle('expanded');
     const f = GEO_FEATURES.find(x => 'geo:' + x.id === el.dataset.key), pl = placeCache['g' + f.id + S.period.id];
@@ -2015,11 +2048,11 @@ function init() {
     tip.style.display = 'block'; tip.style.left = x + 'px'; tip.style.top = y + 'px';
   };
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };
-  $('mapGlobe').onclick = () => WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe');
+  $('mapGlobe').onclick = () => { WorldMap.setMode(WorldMap.mode === 'globe' ? 'flat' : 'globe'); if (WorldMap.geoid) updateMarkers(); };
   $('mapIn').onclick = () => WorldMap.zoomBy(1.6); $('mapOut').onclick = () => WorldMap.zoomBy(1 / 1.6); $('mapReset').onclick = () => WorldMap.resetView();
   if (typeof BENCH !== 'undefined') { const s = BENCH.scores, pc = v => Math.round(v * 100) + '%';
     $('benchNote').innerHTML = `<b>How we check this map.</b> Every change is tested against evidence the map was not built from, and is not allowed to make any score worse. Today: <b>${pc(s.poles)}</b> of 367 directions of ancient magnetism frozen in rocks (which show where each continent lay) agree with where our plates put it; <b>${pc(s.ice)}</b> of glacial deposits sit in cold high latitudes, <b>${pc(s.salt)}</b> of salt and desert crusts in the dry belts and <b>${pc(s.tropics)}</b> of the clays that form in hot, wet weather within 40° of the equator; <b>${pc(s.seaLife)}</b> of sea creatures’ fossil sites are in the sea and <b>${pc(s.landLife)}</b> of dinosaurs’ on land; and ${BENCH.facts} of ${BENCH.of} known facts hold — from the asteroid falling into a shallow sea to India racing north. The misses are the next things to fix. (Checked ${esc(BENCH.date)}.)`; }
-  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:seas', 'm:terrain', 'm:sealevel', 'm:ice', 'm:rivers', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time', 'm:sound', 'm:checks'].map(t => srcHTML(t, { 'm:sound': 'Sounds of the time', 'm:checks': 'How we check this map', 'm:plates': 'Plate model', 'm:seas': 'Seas over the continents', 'm:terrain': 'Ancient heights and depths', 'm:sealevel': 'Sea level', 'm:ice': 'Ice sheets', 'm:rivers': 'Rivers on the dry sea floor', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
+  $('mapAbout').insertAdjacentHTML('beforeend', ['m:plates', 'm:seas', 'm:terrain', 'm:sealevel', 'm:ice', 'm:rivers', 'm:climate', 'm:rocks', 'm:landcover', 'm:history', 'm:time', 'm:geoid', 'm:sound', 'm:checks'].map(t => srcHTML(t, { 'm:geoid': 'The real shape (gravity)', 'm:sound': 'Sounds of the time', 'm:checks': 'How we check this map', 'm:plates': 'Plate model', 'm:seas': 'Seas over the continents', 'm:terrain': 'Ancient heights and depths', 'm:sealevel': 'Sea level', 'm:ice': 'Ice sheets', 'm:rivers': 'Rivers on the dry sea floor', 'm:climate': 'Temperature', 'm:rocks': 'Climate from the rocks', 'm:landcover': 'Landscapes of today', 'm:history': 'Sizes and dates of empires', 'm:time': 'Time scale' }[t])).join(''));
   // on a phone the title box is one slim line; a tap opens it in full for a few seconds
   let ctTimer = 0;
   $('cartouche').addEventListener('click', () => { const c = $('cartouche'); c.classList.toggle('open'); clearTimeout(ctTimer); if (c.classList.contains('open')) ctTimer = setTimeout(() => c.classList.remove('open'), 6000); });

@@ -544,3 +544,7 @@ cuk2012 | Ćuk | 2012 | Making the Moon from a fast-spinning Earth: a giant impa
 canup2012 | Canup | 2012 | Forming a Moon with an Earth-like composition via a giant impact | s:moon
 rufu2017 | Rufu | 2017 | A multiple-impact origin for the Moon | s:moon
 elkinstanton2012 | Elkins-Tanton | 2012 | Magma oceans in the inner solar system | s:moon
+pavlis2012 | Pavlis | 2012 | The development and evaluation of the Earth Gravitational Model 2008 (EGM2008) | m:geoid
+tapley2004 | Tapley | 2004 | GRACE measurements of mass variability in the Earth system | m:geoid
+pal2023 | Pal | 2023 | How the Indian Ocean geoid low was formed | m:geoid
+ghosh2022 | Ghosh | 2022 | Do lower mantle slabs contribute in generating the Indian Ocean geoid low? | m:geoid

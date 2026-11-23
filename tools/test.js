@@ -335,6 +335,24 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     await p.evaluate(() => stopStory()); await p.waitForTimeout(150);
   }
   ok('stories: Hawaii hides today’s islands while it builds its own, and gives them back after', await p.evaluate(() => !S.story && WorldMap._cover(19.6, -155.5) !== ''));
+  // the real shape: today's gravity shape (the geoid) on the globe
+  const lumpy = () => p.evaluate(() => { const [a, b] = WorldMap._limb(); return b / a; });
+  await p.evaluate(() => switchTab('geo')); await p.waitForTimeout(200);
+  ok('geoid: the card starts folded, with a way to read more', await p.evaluate(() => !!document.querySelector('#pane-geo [data-geoid-open]') && !/GRACE/.test(document.getElementById('pane-geo').innerText)));
+  await p.click('#pane-geo [data-geoid-open]'); await p.waitForTimeout(150);
+  ok('geoid: the Geology tab explains the real shape — what it is, why it is drawn taller, how we know, what is argued over — with its sources', await p.evaluate(() => { const t = document.getElementById('pane-geo').innerText; return /The real shape of the Earth/i.test(t) && /10,000 times taller/.test(t) && /GRACE/.test(t) && /south of India/.test(t) && /Today only/.test(t) && ['pavlis2012', 'tapley2004', 'pal2023'].every(k => (SRCMAP['m:geoid'] || []).includes(k)); }));
+  await p.click('#pane-geo [data-geoid]'); await p.waitForTimeout(900);
+  ok('geoid: one tap turns to the globe, today, with the gravity shape showing and the animals stepping aside', await p.evaluate(() => WorldMap.mode === 'globe' && S.t === 0 && WorldMap.geoid && WorldMap._geoidShown() && WorldMap._markers().length === 0 && /Back to the round globe/.test(document.querySelector('#pane-geo [data-geoid]').textContent)));
+  ok('geoid: the globe’s edge is lumpy — its farthest point more than 10% farther out than its nearest', await lumpy() > 1.1, String(await lumpy()));
+  ok('geoid: the deepest low south of India, the highest high over New Guinea, Iceland high and Hudson Bay low, as EGM2008 has them', await p.evaluate(() => WorldMap.geoidAt(78, 4) < -95 && WorldMap.geoidAt(144, -4) > 70 && WorldMap.geoidAt(-20, 64) > 50 && WorldMap.geoidAt(-85, 60) < -30 && GEOID.peak[0] < -106 && GEOID.peak[1] > 85));
+  ok('geoid: a tap on the lumpy globe still finds the place under the finger (Sri Lanka)', await p.evaluate(() => { const s = WorldMap._screen(80.7, 7.8), q = s && WorldMap.pickPresent(s[0], s[1]); return !!q && Math.abs(q.lon - 80.7) < 0.3 && Math.abs(q.lat - 7.8) < 0.3; }));
+  await p.evaluate(() => setTime(10)); await p.waitForTimeout(300);
+  ok('geoid: today only — 10 million years ago the globe is round again and the animals are back', await p.evaluate(() => !WorldMap._geoidShown() && WorldMap._markers().length > 0) && await lumpy() < 1.01);
+  await p.evaluate(() => setTime(0)); await p.waitForTimeout(300);
+  await p.click('#pane-geo [data-geoid]'); await p.waitForTimeout(400);
+  ok('geoid: off again, the globe is round', await p.evaluate(() => !WorldMap.geoid && !WorldMap._geoidShown()) && await lumpy() < 1.01);
+  ok('geoid: “How this map is made” explains the real shape and cites EGM2008', await p.evaluate(() => /The real shape\./.test(document.getElementById('mapAbout').textContent) && !!document.querySelector('#mapAbout .sources a[href="https://doi.org/10.1029/2011jb008916"]')));
+  await p.evaluate(() => WorldMap.setMode('flat'));
   await p.evaluate(() => { WorldMap.resetView(); setWindow(T_MAX, 0, true); setTime(150); switchTab('life'); }); await p.waitForTimeout(400);
   ok('camera: a flick keeps the zoomed map coasting after the finger lifts', await (async () => { await p.evaluate(() => WorldMap.zoomBy(4)); await p.waitForTimeout(400); const bb = await (await p.$('#mapCanvas')).boundingBox();
     const probe = () => p.evaluate(() => { const q = WorldMap.pickPresent(document.getElementById('mapCanvas').getBoundingClientRect().width / 2, 300); return q ? q.lat.toFixed(2) + ',' + q.lon.toFixed(2) : 'sea'; });

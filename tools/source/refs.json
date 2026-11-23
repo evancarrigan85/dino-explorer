@@ -9173,5 +9173,73 @@
 ],
 "first": "",
 "title_expected": "Magma oceans in the inner solar system"
+},
+"pavlis2012": {
+"doi": "10.1029/2011jb008916",
+"title": "The development and evaluation of the Earth Gravitational Model 2008 (EGM2008)",
+"journal": "Journal of Geophysical Research: Solid Earth",
+"year": 2012,
+"authors": [
+"Pavlis",
+"Holmes",
+"Kenyon",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:geoid"
+],
+"first": "",
+"title_expected": "The development and evaluation of the Earth Gravitational Model 2008 (EGM2008)"
+},
+"tapley2004": {
+"doi": "10.1126/science.1099192",
+"title": "GRACE Measurements of Mass Variability in the Earth System",
+"journal": "Science",
+"year": 2004,
+"authors": [
+"Tapley",
+"Bettadpur",
+"Ries",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"m:geoid"
+],
+"first": "",
+"title_expected": "GRACE measurements of mass variability in the Earth system"
+},
+"pal2023": {
+"doi": "10.1029/2022gl102694",
+"title": "How the Indian Ocean Geoid Low Was Formed",
+"journal": "Geophysical Research Letters",
+"year": 2023,
+"authors": [
+"Pal",
+"Ghosh"
+],
+"type": "journal-article",
+"targets": [
+"m:geoid"
+],
+"first": "",
+"title_expected": "How the Indian Ocean geoid low was formed"
+},
+"ghosh2022": {
+"doi": "10.1016/j.tecto.2021.229176",
+"title": "Do lower mantle slabs contribute in generating the Indian Ocean geoid low?",
+"journal": "Tectonophysics",
+"year": 2022,
+"authors": [
+"Ghosh",
+"Pal"
+],
+"type": "journal-article",
+"targets": [
+"m:geoid"
+],
+"first": "",
+"title_expected": "Do lower mantle slabs contribute in generating the Indian Ocean geoid low?"
 }
 }

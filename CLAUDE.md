@@ -100,7 +100,11 @@ builds, passes the checks and has been looked at.
   — `PLATE_DATA.join`, and blocks of the older model never carry a place younger than the join), with Ice Age shorelines, ice, relief, labels, markers and a
   pin. It knows nothing about animals. Before `WorldMap.MAXT` (1800 Ma) it draws no land: the sea alone, and the
   words the app passes in `layers.banner` (`bannerFor()` in `app.js`), wrapped to fit between the map's buttons.
-  Life older than that has no plate, so it is listed without pins. From 540 Ma to 3 Ma it also draws **seas over the continents**
+  Life older than that has no plate, so it is listed without pins.
+  On the globe, for today only, `WorldMap.setGeoid(true)` shows **the real shape**: today’s gravity shape (the geoid,
+  `geoid-data.js` from `build_geoid.py`, EGM2008) with every bump 10,000× taller. It is a `d3.geoProjection` whose
+  points are pushed out or in by their height (`geoidRaw`), so land, labels, pins and taps all follow it; the light-and-
+  shadow tiles are flat pictures and are left out. The Geology tab has the card and the switch (`toggleGeoid()`). From 540 Ma to 3 Ma it also draws **seas over the continents**
   (`seas-data.js`, from the Scotese & Wright 2018 PaleoDEMs — coast and shelf edge — and Kocsis &
   Scotese 2021 — blue stripes for land the sea reached at its highest), one map every 5 Myr, carried on
   our plates and traced into outlines in the page. There the land is the mapped land, not today's
@@ -147,7 +151,7 @@ builds, passes the checks and has been looked at.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `s:` story id, `k:` empire id, `b:` belief id,
   `r:` trade route id, `w:` great work id, `v:` help or threat id (`data_survival.js`), `i:` inspiration id, `m:` map layer
-  (`plates|seas|terrain|sealevel|ice|rivers|climate|rocks|landcover|history|time|checks|sound`).
+  (`plates|seas|terrain|sealevel|ice|rivers|climate|rocks|landcover|history|time|checks|sound|geoid`).
 
 ## Network
 
