@@ -9,7 +9,13 @@ commit that builds, passes `node tools/test.js`, has been looked at on desktop a
 pushed to `main`. When a release ships, move it to "Shipped" with the date and the numbers, and
 correct anything below that turned out to be wrong. Where a step says **ask Evan**, stop and ask.
 
-## Next up (decided 23 Nov 2026 — start here)
+## Next up (updated 24 Nov 2026 — start here)
+
+**Evan chose silhouettes (24 Nov: “go with silhouettes for now”).** The PhyloPic hosts are approved, the build
+(`tools/build_silhouettes.py`) works, and the Kem Kem scene draws them. **Next: 12.1 steps 1 and 4**, the coverage
+count for all 769 and then the cards and map pins. After that: 12.3, then more sites (12.2’s list). The plan as
+written on 23 Nov follows.
+
 
 Evan asked for “a visual step forward” and for a plan that survives the session resetting. It is
 **Release 12** below. Work it in this order: **12.0 → 12.2 → 12.3 → 12.1**. Then comes **Release 13**, more
@@ -36,7 +42,8 @@ network secret and for `api.phylopic.org` among the allowed hosts.
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each; then 13 smaller crises, each a sourced timeline event |
 | Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at 22 places (511 Ma → 1815 CE), each tied to a sourced event |
-| Checks | 288 passing, plus the benchmark ratchet (`tools/bench`) |
+| Animal art | PhyloPic silhouettes (CC0 and CC BY, every artist credited): the Kem Kem scene’s 13 animals and a 12-animal pilot; the cards and pins still use emoji |
+| Checks | 289 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -554,7 +561,22 @@ Research done in the planning session is written into each step, so none of it n
   than a hair). These are sums from the card’s own numbers (radius 6,371 km), and the text should say so.
 - Checks: at 1× `_limb()` ratio < 1.001; at 20,000× > 1.2; the legend follows the slider; phone screenshot.
 
-### 12.1 — Real animal art instead of emoji (waits on Evan: a choice, then one setup step)
+### 12.1 — Real animal art instead of emoji — **Evan chose silhouettes, 24 Nov; the Kem Kem scene and the pilot shipped** (see Shipped)
+**Where it stands (24 Nov).** `tools/build_silhouettes.py` asks PhyloPic for each animal in its `WANT` list, then for
+each broader group in turn, keeps only CC0, public domain and CC BY 3.0/4.0, and writes `tiles/sil/<key>.png` and
+`SIL` (`silhouettes-data.js`: file, size, artist, licence, the taxon shown, `level` own | member | relative, image
+id). `--only k1,k2` rebuilds just those keys. An `img=<uuid>` entry in `WANT` pins one picture when the first pick
+is wrong. The build refuses a cast entry whose silhouette or file is missing. Lessons:
+- **Check every pick by eye.** First picks included a skull only (Alanqa), a head-on Dimetrodon, a swimming
+  Spinosaurus (the scene shows it at the edge), and a burbot for Tiktaalik (a name match on the wrong genus: the
+  genus check now stops that).
+- **The view must match the measure.** A pterosaur sized by its wingspan is drawn from below with its wings spread,
+  so the drawn width is the wingspan. PhyloPic’s three ornithocheirids are side views, so Siroccopteryx uses
+  *Pterodactylus* from below. Pteranodon’s crest would have claimed a head Siroccopteryx did not have.
+- **Say whose outline it is.** For a group (“side-necked turtles”, “an abelisaurid”) the outline is one named member,
+  and for a missing genus it is a relative. The page names the animal the outline shows.
+- PhyloPic’s API answers “no match” with a 404, and lists only the first page of images per group, which was enough so far.
+
 What was found (23 Nov):
 - **PixelLab** (`api.pixellab.ai`, reachable; REST v2 with a Bearer token, or its hosted MCP server at
   `/mcp`) makes **pixel art only**, 16–768 px. Its prices are in “generations”: a basic image is about 1
@@ -572,8 +594,9 @@ for the game. The alternatives are pixel art everywhere, or keeping the emoji. *
 silhouettes, approve the two PhyloPic hosts in the environment’s network settings; for pixel art, add the
 PixelLab API token as a network secret for `api.pixellab.ai` (never pasted in chat).
 
-Then:
-1. **Coverage first (silhouettes).** For all 745 animals and 24 humans, find a CC0 or CC BY silhouette at
+Then (steps 2 and the scene are done; 1 and 4 are next):
+1. **Coverage first (silhouettes).** `python3 -I tools/build_silhouettes.py --coverage names.json` counts it (dump the
+   names from the page’s `ALL`). For all 745 animals and 24 humans, find a CC0 or CC BY silhouette at
    species, then genus, then family level. A family-level outline is labelled “a relative’s outline”. Report
    the counts before drawing anything.
 2. **Pilot sheet, then stop for Evan.** Use the 12 pilot animals of Release 6, on light and dark backdrops,
@@ -582,6 +605,9 @@ Then:
    argued over (Spinosaurus), use the cautious version, and the card’s `debate` says why. Keep emoji as the
    fallback. Credit every artist and licence in the card’s sources. Build to a packed sheet in the page, or to
    `tiles/` if it is large, with a check that every picture has a licence on the allowed list.
+4. **Cards and map pins.** Show the silhouette on each card (with its credit line under the sources) and as the map
+   pin at a size that stays readable at 24 px. Keep the emoji where no silhouette exists, and count those on the page.
+   For humans, check each outline against the card (posture, tools); none is drawn yet.
 
 ### 12.2 — Life at the site: the Kem Kem first — **the Kem Kem shipped 24 Nov 2026** (see Shipped); next sites below
 - **Data.** A new `data_sites.js`, one record per site: `id`, `name`, `at` [lat, lon], `t` (Ma), `rock`,
@@ -610,7 +636,8 @@ Then:
   - Caption: “a picture built from the finds at this site · poses and plants are guesses where not stated”.
   - “Still debated” covers how aquatic Spinosaurus was, and why there are so many big predators (one idea is
     bones from different times and places mixed together; Läng et al.).
-  - Until 12.1 lands it uses the map’s own icons; the layout, scale and labels are the real work.
+  - ~~Until 12.1 lands it uses the map’s own icons~~ It draws PhyloPic silhouettes since 24 Nov: lengths to scale, the
+    unknown ones paler.
 - **The benchmark.** `kem-kem-land` is one of the three facts still missing. While building the scene, look at
   the coast there and see whether the river can be placed on land honestly.
 - **Checks.** The scene opens at the site’s time. Every animal drawn is in the site’s sourced list. Sizes keep
@@ -662,11 +689,10 @@ status: 29 papers were found in Crossref on 23 Nov; the rest are marked “?”.
 6. **What is left** is the lines in `docs/EVENTS.md` still marked “?” (no paper found yet), plus the fossil sites,
    which belong to Release 12.2.
 
-## Data hosts worth approving (none is reachable from the cloud environment today)
-`paleobiodb.org` and `macrostrat.org` (fossil collections with their environments and rocks — the basis for
+## Data hosts worth approving
+`api.phylopic.org` and `images.phylopic.org` were approved on 24 Nov. Still closed: `paleobiodb.org` and `macrostrat.org` (fossil collections with their environments and rocks — the basis for
 Release 10’s site scenes and Release 8), `nowdatabase.org` (Cenozoic mammal localities with tooth crown
-height: an independent test of where grassland was, for the benchmark), `api.phylopic.org` and `images.phylopic.org`
-(animal silhouettes, Release 12.1; licences are mixed — use only CC0 and CC BY, with credit). Evan approves hosts in the
+height: an independent test of where grassland was, for the benchmark). Evan approves hosts in the
 environment’s network settings.
 
 ## Release 8 — Real fossil occurrences (needs one host approved)
@@ -707,6 +733,15 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **24 Nov 2026 — Silhouettes from PhyloPic: the Kem Kem scene and the pilot (Release 12.1, first part).** Evan chose
+  silhouettes. `tools/build_silhouettes.py` fetches them with their credits (CC0, public domain or CC BY only) into
+  `tiles/sil` (24 pictures, 272 KB) and `SIL`. The Kem Kem scene now draws every animal as a silhouette in the
+  atlas’s ink, with the swimmers under the water. The four with a known length are drawn to scale (Spinosaurus to
+  Carcharodontosaurus is 17 : 12.5, and a pterosaur’s width is its wingspan). The rest are paler and marked “size
+  not known”. A “Silhouettes” credit line names every artist and licence, with links. Where the outline is a
+  relative’s (5) or one member of a group (2), the cast list names it. The pilot covers 11 more animals (T. rex to
+  Tiktaalik), ready for the cards. One new check (289).
 
 - **24 Nov 2026 — Life at the Kem Kem rivers (Release 12.2, the first site).** The Spinosaurus and Carcharodontosaurus
   cards open a scene over the map: the rivers of south-east Morocco about 100–95 million years ago.

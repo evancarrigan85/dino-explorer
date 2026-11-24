@@ -148,6 +148,11 @@ builds, passes the checks and has been looked at.
   animal from the site’s paper, placed by role (air, bank, edge, sand, water), with a strip of bars showing known lengths
   to scale beside a grown-up person; no bar where the length is not known; numbers stand in for names on phones. First
   site: the Kem Kem, from Ibrahim et al. 2020 (ZooKeys; its full text is on Zenodo, record 19068755, CC BY 4.0).
+  The animals are **PhyloPic silhouettes** (`SIL` in `silhouettes-data.js`, pictures in `tiles/sil`, both from
+  `tools/build_silhouettes.py`): CC0, public domain or CC BY only, every artist credited where the picture is shown,
+  and the page names the animal an outline shows when it is a relative’s or one member of a group (`level`).
+  A known length is drawn to scale (a pterosaur’s width is its wingspan, so it is drawn from below). Check every
+  pick by eye, and pin a better one with `img=` in `WANT`.
   `data_survival.js` holds what helped people and what threatened them (“At this time” in the Humans
   tab): each entry has a window in Ma (`t`) or calendar years (`y`) and starts at its oldest evidence.
   `data_history.js` holds the empires, kingdoms and beliefs of the last 5,500 years, shown in the
@@ -166,8 +171,8 @@ builds, passes the checks and has been looked at.
 
 ## Network
 
-This environment reaches GitHub, npm, PyPI, Crossref, `zenodo.org` (allowed 17 Nov 2026) and
-`api.pixellab.ai`. It does **not** reach `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
+This environment reaches GitHub, npm, PyPI, Crossref, `zenodo.org` (allowed 17 Nov 2026),
+`api.phylopic.org` and `images.phylopic.org` (24 Nov 2026) and `api.pixellab.ai`. It does **not** reach `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
 so, and the host has to be approved by Evan first. Public GitHub repositories can be cloned with
 `git clone` even though the GitHub API is scoped to this project — search them with
 `gh api -X GET search/repositories` first: that is how the ancient-coast data was found when the

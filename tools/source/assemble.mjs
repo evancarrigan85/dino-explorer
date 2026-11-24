@@ -136,6 +136,9 @@ const { SITE_SCENES } = require('./data_sites.js');
     if (!st.cast || !st.cast.length) problems.push('site ' + st.id + ': no animals');
     for (const c of st.cast || []) { if (!ok.has(c.zone)) problems.push('site ' + st.id + ': ' + c.name + ' has no zone'); if (c.len == null && c.size !== 'size not known') problems.push('site ' + st.id + ': ' + c.name + ' has no length, so its size must say “size not known”'); }
     for (const n of st.open || []) if (!allNames.has(n)) problems.push('site ' + st.id + ': opens from ' + n + ', which is not an animal here');
+    { const sj = fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8'), SIL = JSON.parse(sj.slice(sj.indexOf('{', sj.indexOf('const SIL')), sj.lastIndexOf('}') + 1));
+      for (const c of st.cast || []) if (c.sil && !SIL[c.sil]) problems.push('site ' + st.id + ': ' + c.name + ' wants silhouette ' + c.sil + ', which silhouettes-data.js does not have');
+      for (const k in SIL) if (!fs.existsSync(SRC + '../../' + SIL[k].f)) problems.push('silhouette ' + k + ': ' + SIL[k].f + ' is missing'); }
   }
   const ssrc = fs.readFileSync(SRC + 'data_sites.js', 'utf8');
   data += ssrc.slice(ssrc.indexOf('// ===='), ssrc.indexOf("if (typeof module")).trim() + '\n';
@@ -291,7 +294,7 @@ const rocks = fs.readFileSync(SRC + 'rocks-data.js', 'utf8').trim();
 const seas = fs.readFileSync(SRC + 'seas-data.js', 'utf8').trim();
 const demIndex = fs.readFileSync(SRC + 'dem-index.js', 'utf8').trim();
 const rivers = fs.readFileSync(SRC + 'rivers-data.js', 'utf8').trim();
-const quat = fs.readFileSync(SRC + 'quaternary-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'shelf-rivers-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'geoid-data.js', 'utf8').trim();
+const quat = fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'quaternary-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'shelf-rivers-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'geoid-data.js', 'utf8').trim();
 const hillIndex = fs.readFileSync(SRC + 'hill-index.js', 'utf8').trim();
 const coastIndex = fs.readFileSync(SRC + 'coast-index.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }

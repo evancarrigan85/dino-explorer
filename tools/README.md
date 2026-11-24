@@ -29,7 +29,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_stories.js` | “Watch the Earth being made” stories in the Geology tab (the Great Lakes so far) |
 | `data_mammals.js` | The Age of Mammals, epoch by epoch: a chapter (title, map title, Insights) for each epoch from the Paleocene to the Pliocene; sources under `p:<epoch>` |
 | `data_history.js` | Empires, kingdoms and beliefs of the last 5,500 years (Humans tab) |
-| `data_sites.js` | Life at the site: one fossil site at its own time, every animal from the site’s paper, known lengths as bars to scale; sources under `z:<id>` |
+| `data_sites.js` | Life at the site: one fossil site at its own time, every animal from the site’s paper, drawn as a silhouette (`sil`, a key in `SIL`), known lengths to scale and as bars; sources under `z:<id>` |
 | `data_survival.js` | What helped people and what threatened them, by time (Humans tab, “At this time”); sources under `v:` |
 | `data_extinctions.js` | The Extinctions view: one entry per event, with its scene and its steps |
 | `data_trees.js` | The family trees: branches, the feature each one added, and which lineage paths hang on it |
@@ -55,6 +55,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `GEOID` (today’s gravity shape, 2° grid, smoothed; the globe’s “real shape” view) | `build_geoid.py EGM2008_2p5arcmin.nc4 tools/source/geoid-data.js` — the file is in Zenodo 10.5281/zenodo.14537811 (CC BY 4.0); needs `pip install netCDF4` |
 | `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
+| `SIL` + `tiles/sil/` (animal silhouettes from PhyloPic, with artist and licence; CC0, public domain or CC BY only) | `build_silhouettes.py` (all of `WANT`), `--only k1,k2` (just those), `--coverage names.json` (count, no files); needs Pillow and the two PhyloPic hosts |
 
 **Tiles beside the page.** `tiles/relief/` (about 3.3 MB of grey JPEGs) and `tiles/coast/` (about 1 MB of
 packed text) are the only files the page loads besides itself, and only when you zoom in. They are
