@@ -25,6 +25,54 @@ Evan’s choice and setup, and nothing else does. If he has chosen by the time y
 12.0. Before starting, check what Evan has done since: run `get_environment` and look for an `api.pixellab.ai`
 network secret and for `api.phylopic.org` among the allowed hosts.
 
+## The audit of 24 Nov 2026: what makes it look amateur (Evan: “what am I overlooking, what exposes that I’m an amateur most?”)
+
+Measured on an emulated iPhone 13 and Pixel 7 (4× slower CPU, 9 Mbps), with axe-core, and by eye. Ranked by how much a
+first-time visitor on a phone would notice. Evan works only from his phone now, so the phone is the product.
+1. **On a phone the tabs do nothing you can see.** The tab content sits about 7,900 px down a scrolling box under the
+   map; tapping “Humans” leaves the screen unchanged (all seven tabs screenshot the same). The map, the heart of it, gets
+   about a third of the screen under the header, timeline and period text. **Fix:** a phone layout with the map
+   full-width and the tab content in a bottom sheet that slides up (three heights), like a maps app. At the very least a
+   tab tap must bring its content into view.
+2. **Emoji are the animals.** At 150 Ma the map is ~30 identical green dinosaur emoji, and emoji look different on every
+   device. **Fix:** silhouettes as map pins and on cards (12.1 step 4); an SVG icon set for the buttons.
+3. **Two voices, and two-thirds of the cards unsourced.** 506 of 745 animal cards have no verified source; 56 use
+   exclamation-mark hype (“The ocean EXPLODES with life!”, “all appeared at once!”, “longer than a bus”), and there are
+   typos (“strait-shelled”). These are the original page’s cards; everything added since is careful. **Fix:** a rewrite
+   and sourcing pass, period by period, with the `debate`/`wrong` fields filled where the science moved.
+4. **Sharing and identity.** A shared link shows no picture (`twitter:card` says large image, but there is no `og:image`),
+   and the description repeats itself and still says “from Snowball Earth”. The icon is a dinosaur emoji from the old name.
+   The address ends in `dino-explorer.html` behind a redirect. There is no home-screen icon and no offline use.
+   Fonts come from Google, which sends every visitor’s address to Google. **Fix:** a share card, a real icon, a web-app
+   manifest and service worker (installable, works offline in the car), `index.html` as the page itself, self-hosted fonts.
+5. **It runs the phone hot.** With the map’s decorative motion on, an idle mid-range phone’s main thread is **100% busy**
+   (0% with motion off). **Fix:** draw only when something changes; run the water and wakes at a low frame rate and pause
+   them after a few seconds without a touch.
+6. **Small targets.** 53 controls under 32 px on a phone (Apple asks for 44). Children’s fingers.
+7. **Map crowding.** Pins cover the continent and ocean names (“LAURASIA”, “TETHYS SEA”). **Fix:** labels avoid pins, and
+   at world zoom one pin per group with a count.
+What is already beyond most professional sites, and should be kept as it is: Crossref-verified references, the
+benchmark ratchet, 289 checks, and uncertainty said on the page. axe-core finds only two moderate issues (landmarks).
+
+**Proposed order:** (a) silhouettes on pins and cards; (b) the phone layout; (c) a polish release for 4–6; (d) the card
+rewrite, a period per session; (e) hero pictures (below); (f) real fossils in 3D. Plus a review gallery after every
+release (`tools/eye`, below), published as a private page Evan can open on his phone.
+
+**Better pictures of the animals, three tiers.** (1) Silhouettes everywhere: done for the scene, next for pins and cards.
+(2) Hero pictures for the ~50 animals children look for first: painted by an image model **inside the scientist-drawn
+PhyloPic outline** (the outline sets the anatomy, the model only paints), with a check that the painted shape matches the
+outline, a by-eye check against the card (feathers, hands, posture), and a label saying it is AI-painted over whose outline.
+Palaeontologists and palaeoartists object to AI pictures that invent anatomy (#PaleoAgainstAI), so disclosure and the
+outline rule are not optional. Or commission a palaeoartist for the same 50. Evan already has a Gemini key (Groundwork);
+it would go in as a network secret for this environment, never in chat. (3) The real thing: Smithsonian 3D scans are CC0
+and download as glTF, which `<model-viewer>` shows in the page and in AR on a phone. Needs `3d.si.edu` approved.
+
+**`tools/eye` (the review tool, not built yet).** One command that walks every tab at six times on phone and desktop,
+screenshots each, measures load, idle CPU, tap targets, overlaps, console errors and axe, and writes a gallery. Claude
+reads the gallery as a reviewer, and it is published as a private page for Evan. Plus the two human eyes no tool
+replaces: Evan’s children using it for ten minutes, with notes on where they get stuck, and one palaeontologist or
+museum educator reading 20 random cards.
+
 ## Where things stand
 
 | | |
