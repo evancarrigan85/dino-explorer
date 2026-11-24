@@ -153,6 +153,15 @@ builds, passes the checks and has been looked at.
   and the page names the animal an outline shows when it is a relative’s or one member of a group (`level`).
   A known length is drawn to scale (a pterosaur’s width is its wingspan, so it is drawn from below). Check every
   pick by eye, and pin a better one with `img=` in `WANT`.
+  **Every animal card** has one too where PhyloPic allows (`SILA[name] = [picture, level]`, `SILI[picture]` = size, artist,
+  licence, taxon, image id; pictures in `tiles/sil/p`): on the map pins (`pic` on a marker; the engine draws it inside the
+  disc), on the cards with a credit line (`picCredit()`), in the lists, and all artists in Finds › “What this atlas
+  borrows”. Only over http(s): on `file:` the map must read its own pixels, so the emoji stay. Picks come from
+  `build_silhouettes.py --animals` then `--fetch`: the card’s own genus, then one member of the group a card is about,
+  then a relative by the card’s group (`GROUPS`), with `NAMES` for cards without a scientific name and the corrections
+  from checking every pick by eye (`~` same animal under another name, `!` no relative, `img=` one drawing, `BAD` never).
+  A group whose members look too different gets no relative’s outline at all: the emoji is better than a wrong shape.
+  Human-family cards keep their emoji until each outline is checked against the card (posture, tools).
   `data_survival.js` holds what helped people and what threatened them (“At this time” in the Humans
   tab): each entry has a window in Ma (`t`) or calendar years (`y`) and starts at its oldest evidence.
   `data_history.js` holds the empires, kingdoms and beliefs of the last 5,500 years, shown in the

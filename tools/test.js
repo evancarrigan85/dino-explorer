@@ -625,7 +625,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   {
     const fs = require('fs'), path = require('path'), root = path.join(__dirname, '..');
     ok('terrain: a mesh and one elevation map per 5 million years sit beside the page', fs.existsSync(path.join(root, 'tiles/dem/mesh.bin')) && Array.from({ length: 109 }, (_, i) => 'tiles/dem/s' + String(i * 5).padStart(3, '0') + '.bin').every(f => fs.existsSync(path.join(root, f))));
-    const types = { '.html': 'text/html', '.bin': 'application/octet-stream', '.jpg': 'image/jpeg', '.txt': 'text/plain' };
+    const types = { '.html': 'text/html', '.bin': 'application/octet-stream', '.jpg': 'image/jpeg', '.png': 'image/png', '.txt': 'text/plain' };
     const srv = require('http').createServer((q, r) => { const f = path.join(root, decodeURIComponent(q.url.split('?')[0])); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { r.writeHead(404); r.end(); return; } r.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(r); });
     await new Promise(res => srv.listen(0, '127.0.0.1', res));
     const ctx = await b.newContext({ viewport: { width: 1400, height: 900 } }); p = await ctx.newPage();
@@ -642,9 +642,31 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     ok('terrain: switching it off gives the plain map back, and on draws something different', shelf[0].join() !== shelf[1].join(), JSON.stringify(shelf));
     await p.evaluate(() => setTime(600)); await p.waitForTimeout(200);
     ok('terrain: nothing before the elevation maps begin (540 Ma)', await p.evaluate(() => { const d = WorldMap._ter().drawn; WorldMap._draw(); return WorldMap._ter().drawn === d; }));
+    // silhouettes from PhyloPic on the map pins, the cards and the lists (Release 12.1): served over http, as on the live site
+    await p.evaluate(() => { setTime(150); switchTab('life'); }); await p.waitForTimeout(400);
+    await p.waitForFunction(() => Object.values(WorldMap._pins()).filter(Boolean).length >= 5, null, { timeout: 10000 }).catch(() => {});
+    const pins = await p.evaluate(() => { const d = WorldMap._pins(), ks = Object.keys(d), card = k => ALL.find(c => c.key === k); return { n: ks.length, pic: ks.filter(k => d[k]).length, wrong: ks.filter(k => d[k] && !silOf(card(k))).length }; });
+    ok('silhouettes: map pins draw PhyloPic silhouettes, and only for animals that have one', pins.pic >= 5 && pins.wrong === 0, JSON.stringify(pins));
+    const sc = await p.evaluate(async () => {
+      const own = ALL.find(c => c.name === 'Tyrannosaurus rex'), rel = ALL.find(c => !c.hom && silOf(c) && silOf(c).lv === 2);
+      const cardOf = c => document.querySelector(`.creature-card.active[data-key="${c.key}"]`);
+      const until = async f => { for (let i = 0; i < 80 && !f(); i++) await new Promise(r => setTimeout(r, 100)); return f(); };   // select() travels to the animal’s time first
+      select(own.key); await until(() => cardOf(own) && cardOf(own).querySelector('.sil-credit'));
+      const a = cardOf(own), pic = a && a.querySelector('.sil-pic'), url = pic && (pic.style.maskImage || pic.style.webkitMaskImage || '').replace(/^url\("?|"?\)$/g, '');
+      const got = url ? (await fetch(url)).ok : false, s = silOf(own), credit = a && a.querySelector('.sil-credit');
+      select(rel.key); await until(() => cardOf(rel) && cardOf(rel).querySelector('.sil-credit')); const b = cardOf(rel);
+      return { got, url, credit: !!credit && credit.textContent.includes(s.by) && !!credit.querySelector(`a[href="${LIC_URL[s.lic]}"]`) && !!credit.querySelector('a[href*="phylopic.org/images/"]'),
+        rel: !!b && !!b.querySelector('.sil-rel') && /outline of a relative/.test(b.textContent) && b.textContent.includes(silOf(rel).of), rows: document.querySelectorAll('.crow .sil-pic').length };
+    });
+    ok('silhouettes: a card shows its silhouette and credits the artist, the licence and the PhyloPic page', sc.got && sc.credit, JSON.stringify(sc));
+    ok('silhouettes: a card drawn with a relative’s outline says so, and names the relative', sc.rel, JSON.stringify(sc));
+    const cr = await p.evaluate(async () => { switchTab('finds'); await new Promise(r => setTimeout(r, 300)); const e = document.querySelector('.sil-credits'); const artists = [...new Set(Object.values(SILI).map(i => i[2] || 'unnamed artists'))];
+      return !!e && e.textContent.includes(Object.keys(SILI).length + ' drawings') && artists.every(n => e.textContent.includes(n)) && Object.values(SILI).every(i => [0, 1, 2, 3].includes(i[3])); });
+    ok('silhouettes: “What this atlas borrows” credits every artist, and every drawing is CC0, public domain or CC BY', cr);
     await ctx.close(); srv.close();
   }
   ok('terrain: off when the page is opened from a file (browsers will not load its data there)', await (async () => { const q = await open({ width: 900, height: 700 }, '#90mya'); await q.waitForTimeout(1500); const r = await q.evaluate(() => !WorldMap.terrain && WorldMap._ter().drawn === 0); await q.close(); return r; })());
+  ok('silhouettes: off when the page is opened from a file (the map could not read its own pixels), so the emoji stay', await (async () => { const q = await open({ width: 900, height: 700 }, '#150mya'); await q.waitForTimeout(1200); const r = await q.evaluate(() => !SIL_HTTP && !document.querySelector('.sil-pic') && Object.values(WorldMap._pins()).every(v => !v)); await q.close(); return r; })());
   ok('no console errors', errs.length === 0, '\n    ' + errs.slice(0, 8).join('\n    '));
   await b.close();
   console.log(`${pass} passed, ${fail} failed`);

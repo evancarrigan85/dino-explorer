@@ -17,7 +17,7 @@ const LINEAGE = {
   'Tribrachidium': 'Invertebrates › Ediacaran life › Three-armed discs', 'Spriggina': 'Invertebrates › Ediacaran life › Early bilaterians', 'Kimberella': 'Invertebrates › Ediacaran life › Early bilaterians',
   'Haootia': 'Invertebrates › Jellyfish & corals', 'Cloudina': 'Invertebrates › Ediacaran life › First shells',
   'Anomalocaris': 'Invertebrates › Arthropods › Radiodonts', 'Opabinia': 'Invertebrates › Arthropods › Opabiniids', 'Trilobite': 'Invertebrates › Arthropods › Trilobites',
-  'Marella': 'Invertebrates › Arthropods › Early arthropods', 'Naraoia': 'Invertebrates › Arthropods › Trilobite relatives', 'Sanctacaris': 'Invertebrates › Arthropods › Early chelicerates',
+  'Marrella': 'Invertebrates › Arthropods › Early arthropods', 'Naraoia': 'Invertebrates › Arthropods › Trilobite relatives', 'Sanctacaris': 'Invertebrates › Arthropods › Early chelicerates',
   'Hallucigenia': 'Invertebrates › Lobopodians', 'Aysheaia': 'Invertebrates › Lobopodians', 'Wiwaxia': 'Invertebrates › Molluscs › Early mollusc relatives', 'Ottoia': 'Invertebrates › Worms',
   'Orthoceras': 'Invertebrates › Molluscs › Shelled cephalopods', 'Cameroceras': 'Invertebrates › Molluscs › Shelled cephalopods', 'Pulmonate Snail': 'Invertebrates › Molluscs › Snails',
   'Eurypterid (Sea Scorpion)': 'Invertebrates › Arthropods › Sea scorpions', 'Eurypterid (Peak Era)': 'Invertebrates › Arthropods › Sea scorpions', 'Mixopterus (Sea Scorpion)': 'Invertebrates › Arthropods › Sea scorpions', 'Pterygotus (Giant Eurypterid)': 'Invertebrates › Arthropods › Sea scorpions',

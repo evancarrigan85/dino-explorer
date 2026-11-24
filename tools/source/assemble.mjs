@@ -131,12 +131,24 @@ const { EXTINCTIONS } = require('./data_extinctions.js');
   data += xsrc.slice(xsrc.indexOf('// ===='), xsrc.indexOf("if (typeof module")).trim() + '\n';
 }
 const { SITE_SCENES } = require('./data_sites.js');
+// silhouettes-data.js holds three constants: SIL (the scenes), SILI (every picture) and SILA (every animal card → picture)
+const silSrc = fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8');
+const silConst = name => { const i = silSrc.indexOf('const ' + name + ' = '); if (i < 0) return null; const a = silSrc.indexOf('{', i); return JSON.parse(silSrc.slice(a, silSrc.indexOf(';\n', a))); };
+{ const SILI = silConst('SILI'), SILA = silConst('SILA');
+  if (SILA) {
+    for (const [k, i] of Object.entries(SILI)) {
+      if (!fs.existsSync(SRC + '../../tiles/sil/p/' + k + '.png')) problems.push('silhouette picture ' + k + ' is missing from tiles/sil/p');
+      if (![0, 1, 2, 3].includes(i[3])) problems.push('silhouette picture ' + k + ' has a licence that is not CC0, public domain or CC BY');
+    }
+    for (const [n, a] of Object.entries(SILA)) { if (!allNames.has(n)) problems.push('silhouette for ' + n + ', which is not an animal here'); if (!SILI[a[0]]) problems.push('silhouette for ' + n + ': picture ' + a[0] + ' is not in SILI'); }
+  }
+}
 { const ok = new Set(['air', 'bank', 'edge', 'sand', 'water']);
   for (const st of SITE_SCENES) {
     if (!st.cast || !st.cast.length) problems.push('site ' + st.id + ': no animals');
     for (const c of st.cast || []) { if (!ok.has(c.zone)) problems.push('site ' + st.id + ': ' + c.name + ' has no zone'); if (c.len == null && c.size !== 'size not known') problems.push('site ' + st.id + ': ' + c.name + ' has no length, so its size must say “size not known”'); }
     for (const n of st.open || []) if (!allNames.has(n)) problems.push('site ' + st.id + ': opens from ' + n + ', which is not an animal here');
-    { const sj = fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8'), SIL = JSON.parse(sj.slice(sj.indexOf('{', sj.indexOf('const SIL')), sj.lastIndexOf('}') + 1));
+    { const SIL = silConst('SIL');
       for (const c of st.cast || []) if (c.sil && !SIL[c.sil]) problems.push('site ' + st.id + ': ' + c.name + ' wants silhouette ' + c.sil + ', which silhouettes-data.js does not have');
       for (const k in SIL) if (!fs.existsSync(SRC + '../../' + SIL[k].f)) problems.push('silhouette ' + k + ': ' + SIL[k].f + ' is missing'); }
   }

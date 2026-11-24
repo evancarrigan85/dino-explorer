@@ -249,10 +249,10 @@ function updateMarkers(now) {
   if (S.tab === 'humans' && inHistory()) now = now.filter(c => c.hom);   // recorded history: the map is for empires and beliefs
   if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
   if (S.tab === 'life' && S.view === 'kin' && KIN[S.kin] && !S.story && !gravityShown()) {
-    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
+    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
     return;
   }
-  WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, name: c.name, sites: sitesOf(c) })) });
+  WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), name: c.name, sites: sitesOf(c) })) });
 }
 const placeCache = {};
 // cultures shown at the current moment: active now, with a little give so short-lived ones can be found
@@ -568,10 +568,11 @@ function cardHTML(c, open) {
     L.push(sec('🧬 Classification', c.taxonomy ? `<span class="tax">${esc(c.taxonomy)}</span>` : ''));
     L.push(sec('👩‍🔬 Key researchers', esc(c.keyResearchers || '')));
     L.push(sec('📚 Reference', esc(c.citation || '')));
+    L.push(picCredit(c));
     if (c.sites && c.sites.length) L.push(`<div class="found">📍 <b>Fossils found at:</b> ${c.sites.map(s => esc(s[2])).join(' · ')} <span style="opacity:.7">— shown on the map where those places were at the time.</span></div>`);
   }
   return `<div class="creature-card${open ? ' active' : ''}" data-key="${c.key}">
-    <div class="creature-top"><div class="creature-emoji">${c.emoji}</div><div class="creature-title">
+    <div class="creature-top"><div class="creature-emoji">${picHTML(c, 'big') || c.emoji}${SIL_HTTP && silOf(c) && silOf(c).lv === 2 ? '<small class="sil-rel">a relative</small>' : ''}</div><div class="creature-title">
       <div class="creature-name">${esc(c.name)}${c.nick ? `<i>${esc(c.nick)}</i>` : ''}</div>
       ${c.means ? `<div class="creature-means">“${esc(c.means)}”</div>` : ''}
       <div class="creature-size">${esc(c.size || '')}</div><div class="creature-lived">${esc(c.lived || '')}</div>
@@ -582,7 +583,7 @@ function cardHTML(c, open) {
     <div class="lineage">🧬 <b>${esc(c.path[0])}</b>${c.path.slice(1).map(s => ' › ' + esc(s)).join('')}</div>
     ${L.join('')}</div>`;
 }
-const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${c.emoji}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
+const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${picHTML(c, 'row') || c.emoji}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
 // ── when each group lived: a range chart, oldest group at the top ──
 const EXT_LINES = [[445, 'End-Ordovician'], [372, 'Late Devonian'], [252, 'The Great Dying'], [201, 'End-Triassic'], [66, 'The asteroid']];
 function chartHTML() {
@@ -977,6 +978,45 @@ function drawSite(s) {
   });
   S.siteDrawn = drawn; S.siteBars = bars;
 }
+/* Silhouettes for every animal card (SILA/SILI in silhouettes-data.js, pictures in tiles/sil/p): on the map pins, the
+   cards and the lists. Only over http(s), as on the live site: a picture opened from a file would stop the map reading
+   its own pixels. Until a picture loads, and for the cards without one, the emoji stays. */
+const SIL_HTTP = /^https?:$/.test(location.protocol);
+const LIC_NAME = ['CC0 1.0', 'public domain', 'CC BY 3.0', 'CC BY 4.0'];
+const LIC_URL = ['https://creativecommons.org/publicdomain/zero/1.0/', 'https://creativecommons.org/publicdomain/mark/1.0/', 'https://creativecommons.org/licenses/by/3.0/', 'https://creativecommons.org/licenses/by/4.0/'];
+function silOf(c) {
+  const a = !c.hom && typeof SILA !== 'undefined' && SILA[c.name]; if (!a) return null;
+  const i = SILI[a[0]]; return { k: a[0], lv: a[1], w: i[0], h: i[1], by: i[2], lic: i[3], of: i[4], img: i[5] };
+}
+const pinPics = {};
+let picTimer = 0;
+function pinPic(k) {
+  let e = pinPics[k];
+  if (!e) {
+    e = pinPics[k] = { cv: null }; const im = new Image();
+    im.onload = () => {
+      const sc = Math.min(112 / im.naturalWidth, 112 / im.naturalHeight), w = Math.max(1, Math.round(im.naturalWidth * sc)), h = Math.max(1, Math.round(im.naturalHeight * sc));
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const x = cv.getContext('2d');
+      x.imageSmoothingQuality = 'high'; x.drawImage(im, 0, 0, w, h); x.globalCompositeOperation = 'source-in'; x.fillStyle = '#3a2410'; x.fillRect(0, 0, w, h);
+      e.cv = cv; clearTimeout(picTimer); picTimer = setTimeout(() => WorldMap.redraw(), 60);
+    };
+    im.src = 'tiles/sil/p/' + k + '.png';
+  }
+  return e.cv;
+}
+const picFn = c => { const s = SIL_HTTP && silOf(c); return s ? () => pinPic(s.k) : undefined; };
+const picHTML = (c, cls) => { const s = SIL_HTTP && silOf(c); if (!s) return ''; const u = `url(tiles/sil/p/${s.k}.png)`;
+  return `<span class="sil-pic ${cls}" role="img" aria-label="${esc(c.name)}" style="-webkit-mask-image:${u};mask-image:${u}"></span>`; };
+function picCredit(c) {
+  const s = SIL_HTTP && silOf(c); if (!s) return '';
+  return `<div class="label-sec sil-credit"><h5>✒️ The picture</h5>${s.lv === 2 ? `This is the outline of a relative, <i>${esc(s.of)}</i>: there is no free drawing of ${esc(c.name)} itself yet. ` : s.lv === 1 ? `This is one member of the group, <i>${esc(s.of)}</i>. ` : ''}Silhouette by <a href="https://www.phylopic.org/images/${esc(s.img)}" target="_blank" rel="noopener">${esc(s.by || 'an unnamed artist')}</a> (<a href="${LIC_URL[s.lic]}" target="_blank" rel="noopener">${LIC_NAME[s.lic]}</a>), from <a href="https://www.phylopic.org" target="_blank" rel="noopener">PhyloPic</a>.</div>`;
+}
+function picCreditsHTML() {
+  if (!SIL_HTTP || typeof SILI === 'undefined') return '';
+  const by = {}; for (const [k, i] of Object.entries(SILI)) { const n = i[2] || 'unnamed artists'; (by[n] = by[n] || { n: 0, lic: new Set() }).n++; by[n].lic.add(i[3]); }
+  const rows = Object.entries(by).sort((a, b) => b[1].n - a[1].n || a[0].localeCompare(b[0]));
+  return `<div class="sil-credits"><div class="insp-h"><b>The animal silhouettes</b> · PhyloPic</div><div class="insp-w">${Object.keys(SILI).length} drawings by ${rows.length} scientists and artists, used under CC0, public domain or CC BY. Each card names its artist and whether the outline is of the animal itself, one member of its group, or a relative.</div><div class="insp-b">${rows.map(([n, v]) => `${esc(n)} (${v.n}; ${[...v.lic].sort().map(l => `<a href="${LIC_URL[l]}" target="_blank" rel="noopener">${LIC_NAME[l]}</a>`).join(', ')})`).join(' · ')}</div></div>`;
+}
 const ageTag = t => t >= 1 ? (t >= 10 ? Math.round(t) : +t.toFixed(1)) + ' M' : t >= 0.0117 ? Math.round(t * 1000) + 'k' : 'today';
 function kinHTML() {
   const list = (KIN[S.kin] || []).slice().sort((a, b) => b.t[0] - a.t[0] || b.t[1] - a.t[1]); if (!list.length) return '';
@@ -1045,7 +1085,7 @@ function renderFinds() {
     ${sel ? findHTML(sel) : '<div class="empty">Tap a dot or a row — the map jumps to the world that fossil lived in.</div>'}
     ${FIND_ERAS.map(([id, name, sub]) => { const fs = FINDS.filter(f => f.era === id && show(f)).sort((a, b) => a.year - b.year); return fs.length ? `<div class="ms"><div class="list-h" style="padding-left:2px">${esc(name)} <small>${esc(sub)}</small></div>${fs.map(f => `<div class="ms-item cul-item find-item now${sel === f ? ' sel' : ''}" data-find="${f.id}"><span class="when">${esc(f.when)}</span><span>${f.icon}</span><div><b>${esc(f.title)}</b><span>${esc(f.who.split(/;|, with| \(/)[0])} · ${esc(f.where.split(/,| \(/)[0])}</span></div></div>`).join('')}</div>` : ''; }).join('')}
     <div class="ms insp"><div class="list-h" style="padding-left:2px">What this atlas borrows <small>the drawings, maps and pictures it follows</small></div>
-      ${INSPIRATIONS.map(x => `<div class="insp-row"${x.find ? ` data-find="${x.find}"` : ''}><div class="insp-h"><b>${esc(x.who)}</b> · ${esc(x.when)}${x.find ? ' <span class="insp-go">›</span>' : ''}</div><div class="insp-w">${esc(x.what)}</div><div class="insp-b">We borrowed: ${esc(x.borrowed)}</div>${x.find ? '' : srcHTML('i:' + x.id, 'Source')}</div>`).join('')}</div>
+      ${INSPIRATIONS.map(x => `<div class="insp-row"${x.find ? ` data-find="${x.find}"` : ''}><div class="insp-h"><b>${esc(x.who)}</b> · ${esc(x.when)}${x.find ? ' <span class="insp-go">›</span>' : ''}</div><div class="insp-w">${esc(x.what)}</div><div class="insp-b">We borrowed: ${esc(x.borrowed)}</div>${x.find ? '' : srcHTML('i:' + x.id, 'Source')}</div>`).join('')}${picCreditsHTML()}</div>
     <div class="src">Dates are when a fossil was found or first described. Where a story is a later legend or still argued over, the card says so.</div></div>`;
 }
 function selectFind(id, fromMap) {

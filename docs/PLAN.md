@@ -11,10 +11,10 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 ## Next up (updated 24 Nov 2026 — start here)
 
-**Evan chose silhouettes (24 Nov: “go with silhouettes for now”).** The PhyloPic hosts are approved, the build
-(`tools/build_silhouettes.py`) works, and the Kem Kem scene draws them. **Next: 12.1 steps 1 and 4**, the coverage
-count for all 769 and then the cards and map pins. After that: 12.3, then more sites (12.2’s list). The plan as
-written on 23 Nov follows.
+**25 Nov: the audit’s order, as Evan approved it (“proceed”).** (a) ~~Silhouettes on pins and cards~~ **shipped 25 Nov**;
+**(b) the phone layout is next** (the audit’s item 1: a bottom sheet over a bigger map); then (c) the polish release
+(share card, icon, offline, battery, tap targets, self-hosted fonts); (d) the card rewrite, a period per session; then
+12.3 and more sites. The plan as written on 23 Nov follows.
 
 
 Evan asked for “a visual step forward” and for a plan that survives the session resetting. It is
@@ -90,7 +90,7 @@ museum educator reading 20 random cards.
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each; then 13 smaller crises, each a sourced timeline event |
 | Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at 22 places (511 Ma → 1815 CE), each tied to a sourced event |
-| Animal art | PhyloPic silhouettes (CC0 and CC BY, every artist credited): the Kem Kem scene’s 13 animals and a 12-animal pilot; the cards and pins still use emoji |
+| Animal art | PhyloPic silhouettes (CC0, public domain and CC BY, every artist credited) on the map pins, cards and lists for 601 of the 720 animal cards (380 the animal itself, 16 one member of its group, 205 a relative, each labelled), 427 drawings in `tiles/sil/p`; the other 119 and the human family keep their emoji |
 | Checks | 289 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
@@ -609,7 +609,12 @@ Research done in the planning session is written into each step, so none of it n
   than a hair). These are sums from the card’s own numbers (radius 6,371 km), and the text should say so.
 - Checks: at 1× `_limb()` ratio < 1.001; at 20,000× > 1.2; the legend follows the slider; phone screenshot.
 
-### 12.1 — Real animal art instead of emoji — **Evan chose silhouettes, 24 Nov; the Kem Kem scene and the pilot shipped** (see Shipped)
+### 12.1 — Real animal art instead of emoji — **silhouettes on every card that can have one shipped 25 Nov** (see Shipped)
+**What is left:** the human family (check each outline against its card: posture, tools, how upright); the 119 cards
+without an outline (mostly microbes, plants and Ediacaran life, which PhyloPic barely covers, and groups whose members
+look too different for one shape); and better drawings where the review accepted a weak one (Diplocaulus, Endoceras,
+Patagosaurus). Fixing one is: correct `NAMES`/`GROUPS`/`BAD` in `build_silhouettes.py`, delete that card from
+`tools/silhouette-picks.json`, `--animals ... --resume` into it, look at the pick, then `--fetch`.
 **Where it stands (24 Nov).** `tools/build_silhouettes.py` asks PhyloPic for each animal in its `WANT` list, then for
 each broader group in turn, keeps only CC0, public domain and CC BY 3.0/4.0, and writes `tiles/sil/<key>.png` and
 `SIL` (`silhouettes-data.js`: file, size, artist, licence, the taxon shown, `level` own | member | relative, image
@@ -781,6 +786,22 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **25 Nov 2026 — Silhouettes on the map pins, the cards and the lists (Release 12.1).** The audit’s second item: the map
+  was thirty identical green cartoon dinosaurs. Now 601 of the 720 animal cards have a PhyloPic silhouette: 380 of the
+  animal itself (or its genus), 16 of one member of the group the card is about, 205 of a relative by the card’s group.
+  The map pins draw them in ink inside the parchment disc. The cards show them in parchment colour, with “a relative”
+  under the picture where that is so, and a credit line naming the artist, the licence and the PhyloPic page. The lists
+  use them too, and Finds › “What this atlas borrows” credits all of them. Every one of the 720 picks was checked by eye
+  on contact sheets, and about 60 were corrected: skulls and skeleton diagrams excluded; a legless Ophiderpeton given
+  no relative with legs; four-legged animals removed from lobe-finned fishes; a burbot, a modern fern, a spider for a
+  snail, a moa for a thunder bird; leatherback flippers on land turtles; humps on a camel nobody knows had them. Where a
+  group looks too varied for one shape (Ediacaran life, early whales, sloths with armadillos, insects) there is no
+  relative’s outline, on purpose: the emoji is better than a wrong shape. The picks are kept in
+  `tools/silhouette-picks.json`, because PhyloPic does not always list drawings in the same order. Only over http(s), as
+  on the live site: from a file the map could not read its own pixels, so the emoji stay. Also fixed: the card
+  “Marella” is **Marrella** (Walcott 1912), in the card, its group and the Cambrian food web. 427 drawings, 3.7 MB, each
+  loaded only when shown. Six new checks.
 
 - **24 Nov 2026 — Silhouettes from PhyloPic: the Kem Kem scene and the pilot (Release 12.1, first part).** Evan chose
   silhouettes. `tools/build_silhouettes.py` fetches them with their credits (CC0, public domain or CC BY only) into

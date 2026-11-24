@@ -1898,7 +1898,8 @@ void main() {
       const age = motion && born[m.key] ? (nowMs - born[m.key]) / 420 : 1, grow = age >= 1 ? 1 : 1 - Math.pow(1 - Math.max(0, age), 3);
       if (grow < 1) { c.save(); c.globalAlpha = grow; c.translate(q_[0], q_[1] + (1 - grow) * 9); c.scale(0.6 + 0.4 * grow, 0.6 + 0.4 * grow); c.translate(-q_[0], -q_[1]); }
       if (m.dim && !strong) { c.save(); c.globalAlpha *= 0.55; }      // a relative that is not alive at this moment
-      lastAt[m.key] = [q_[0], q_[1], r, m.emoji];
+      const pic = m.pic ? m.pic() : null;    // a silhouette from the app, once it has loaded; the emoji until then
+      lastAt[m.key] = [q_[0], q_[1], r, m.emoji, !!pic];
       if (q_ !== p && (q_[0] !== p[0] || q_[1] !== p[1])) {
         c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q_[0], q_[1]); c.strokeStyle = 'rgba(60,34,10,0.7)'; c.lineWidth = 1; c.stroke();
         c.beginPath(); c.arc(p[0], p[1], 2, 0, 7); c.fillStyle = 'rgba(60,34,10,0.9)'; c.fill();
@@ -1906,8 +1907,13 @@ void main() {
       c.beginPath(); c.arc(q_[0], q_[1], r, 0, 7);
       c.fillStyle = strong ? 'rgba(255,246,216,0.98)' : 'rgba(247,233,196,0.92)'; c.fill();
       c.lineWidth = strong ? 2 : 1; c.strokeStyle = strong ? 'rgba(190,60,20,0.95)' : 'rgba(70,40,12,0.8)'; c.stroke();
-      c.font = `${Math.round(r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
-      c.fillText(m.emoji, q_[0], q_[1] + r * 0.08);
+      if (pic) {                                // fitted so its corners stay inside the disc: long shapes use the full width
+        const a = pic.width / pic.height, h = 1.74 * r / Math.sqrt(a * a + 1), w = a * h;
+        c.drawImage(pic, q_[0] - w / 2, q_[1] - h / 2, w, h);
+      } else {
+        c.font = `${Math.round(r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
+        c.fillText(m.emoji, q_[0], q_[1] + r * 0.08);
+      }
       if (m.dim && !strong) c.restore();
       if (m.tag) text(c, m.tag, q_[0], q_[1] + r + 6 * zs, 8.5 * zs, { align: 'center', spacing: 0.2, weight: 700, haloW: 3, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       if (grow < 1) c.restore();
@@ -2292,6 +2298,7 @@ void main() {
       return v === 1 ? 'sea' : v === 2 ? 'land' : v === 3 ? 'reached' : 'none';
     },
     /* share of the map's sheet the land layer covers, sampled on a coarse grid (tests) */
+    _pins() { return Object.fromEntries(Object.entries(lastAt).map(([k, a]) => [k, a[4]])); },
     _landFrac() { const d = lctx.getImageData(0, 0, land.width, land.height).data, w = land.width; let n = 0, k = 0; for (let y = 4; y < land.height; y += 16) for (let x = 4; x < w; x += 16) { const sx = x / dpr, sy = y / dpr; const ll = proj.invert && proj.invert([sx, sy]); if (!ll || !isFinite(ll[0]) || (mode === 'globe' && d3.geoDistance(ll, [-proj.rotate()[0], -proj.rotate()[1]]) > 1.5)) continue; n++; if (d[(y * w + x) * 4 + 3] > 128) k++; } return n ? k / n : 0; },
     _seaCheck() {                                   // every map: traced area against the pixels' area, for both outlines (tests)
       const area = r => { const c = []; for (let i = 0; i < r.length; i += 3) c.push([Math.atan2(r[i + 1], r[i]) * R2D, Math.asin(Math.max(-1, Math.min(1, r[i + 2]))) * R2D]); c.push(c[0]); return d3.geoArea({ type: 'Polygon', coordinates: [c] }); };

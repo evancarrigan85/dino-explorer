@@ -62,7 +62,7 @@ const META = {
   'Hallucigenia': { t: [518, 505], g: 'invert', lived: '518–505 MYA', sites: [S.burgess, S.cheng] },
   'Opabinia': { t: [509, 505], g: 'invert', lived: '~508 MYA', sites: [S.burgess] },
   'Wiwaxia': { t: [518, 505], g: 'invert', lived: '518–505 MYA', sites: [S.burgess, S.cheng] },
-  'Marella': { t: [509, 505], g: 'invert', lived: '~508 MYA', sites: [S.burgess] },
+  'Marella': { t: [509, 505], g: 'invert', name: 'Marrella', lived: '~508 MYA', sites: [S.burgess] },   // the genus is Marrella (Walcott 1912)
   'Pikaia': { t: [509, 505], g: 'fish', lived: '~508 MYA', sites: [S.burgess] },
   'Ottoia': { t: [509, 505], g: 'invert', lived: '~508 MYA', sites: [S.burgess] },
   'Naraoia': { t: [520, 505], g: 'invert', sites: [S.burgess, S.cheng] },

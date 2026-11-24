@@ -55,7 +55,8 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `GEOID` (today’s gravity shape, 2° grid, smoothed; the globe’s “real shape” view) | `build_geoid.py EGM2008_2p5arcmin.nc4 tools/source/geoid-data.js` — the file is in Zenodo 10.5281/zenodo.14537811 (CC BY 4.0); needs `pip install netCDF4` |
 | `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
-| `SIL` + `tiles/sil/` (animal silhouettes from PhyloPic, with artist and licence; CC0, public domain or CC BY only) | `build_silhouettes.py` (all of `WANT`), `--only k1,k2` (just those), `--coverage names.json` (count, no files); needs Pillow and the two PhyloPic hosts |
+| `SIL` + `tiles/sil/` (animal silhouettes for the site scenes, from PhyloPic, with artist and licence; CC0, public domain or CC BY only) | `build_silhouettes.py` (all of `WANT`), `--only k1,k2` (just those); needs Pillow and the two PhyloPic hosts |
+| `SILA`, `SILI` + `tiles/sil/p/` (a silhouette for every animal card that has one: own, one member of the group, or a relative) | `build_silhouettes.py --animals cards.json picks.json [--resume]` (choose; `cards.json` is `[{n: name, path: [...]}]` from the page’s `ALL`, without the human family), look at every pick on contact sheets, correct `NAMES`/`GROUPS`/`BAD`, then `--fetch picks.json` (download once per drawing, 320 px, and write the data) |
 
 **Tiles beside the page.** `tiles/relief/` (about 3.3 MB of grey JPEGs) and `tiles/coast/` (about 1 MB of
 packed text) are the only files the page loads besides itself, and only when you zoom in. They are
