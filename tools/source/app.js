@@ -497,6 +497,19 @@ function renderPanel() {
   else if (S.tab === 'ext') renderExt();
   else renderGeo();
 }
+// ── phones: the panel is a sheet over the map at three heights; desktop is untouched ──
+const isPhone = () => window.innerWidth < 768;
+function sheet(st) {
+  const rp = $('rightPanel'); rp.style.height = ''; rp.classList.remove('dragging');
+  if (!isPhone() || !st) { delete document.body.dataset.sheet; S.sheet = null; return; }
+  S.sheet = st; document.body.dataset.sheet = st;
+  const g = $('sheetGrip'); g.setAttribute('aria-expanded', st === 'peek' ? 'false' : 'true'); g.setAttribute('aria-label', st === 'peek' ? 'Open the panel' : 'Close the panel');
+}
+const peekH = () => $('sheetGrip').offsetHeight + document.querySelector('.tab-bar').offsetHeight;
+function sheetSetup() {
+  if (isPhone()) { $('main').style.setProperty('--peek', peekH() + 'px'); if (!S.sheet) sheet('peek'); } else if (S.sheet) sheet(null);
+}
+const sheetDown = () => { if (isPhone() && S.sheet && S.sheet !== 'peek') sheet('peek'); };
 function switchTab(tab) {
   if (S.scene && tab !== 'ext') stopScene();
   if (S.story && tab !== 'geo') stopStory();
@@ -884,6 +897,7 @@ const kinLink = c => { const k = kinOf(c); return k ? `<div class="found">🕰 <
 const SITE = Object.fromEntries(SITE_SCENES.map(s => [s.id, s]));
 const siteLink = c => { const s = SITE_SCENES.find(x => x.open.includes(c.name)); return s ? `<div class="found">🏞 <b>At the site:</b> <button class="linkbtn" data-site="${s.id}">See life at ${esc(s.name.replace(/^The /, 'the '))} →</button></div>` : ''; };
 function openSite(id) {
+  sheetDown();                                     // on a phone the scene needs the whole map
   const s = SITE[id]; if (!s) return;
   if (S.story) stopStory(); if (S.scene) stopScene(); stopPlay();
   S.site = id;
@@ -1240,6 +1254,7 @@ function stopScene(done) {
   if (was && done) { const e = EXT[was.id]; showFact(e.icon, '<b>' + esc(extInfo(e).name) + '.</b> ' + esc(e.winners) + '<br><small><button class="linkbtn" data-play="' + e.id + '">↻ Watch again</button></small>', 14000); }
 }
 function playScene(id) {
+  sheetDown();
   const e = EXT[id]; if (!e) return;
   if (S.scene) { const same = S.scene.id === id; stopScene(); if (same) return; }
   stopPlay(); cancelTween(); closeFact();
@@ -1596,6 +1611,7 @@ function stopStory(done) {
   if (done) { const st = STORY_BY[was.id]; showFact(st.icon, '<b>' + esc(st.title) + '.</b> ' + esc(st.steps[st.steps.length - 1][1]) + '<br><small><button class="linkbtn" data-story="' + st.id + '">↻ Watch again</button></small>', 14000); }
 }
 function playStory(id) {
+  sheetDown();
   const st = STORY_BY[id]; if (!st) return;
   if (S.story) { const same = S.story.id === id; stopStory(); if (same) return; }
   if (S.scene) stopScene();
@@ -2079,6 +2095,7 @@ const JOURNEYS = [
 let jTimer = 0;
 function journeyStops() { const j = S.jr && JOURNEYS.find(x => x.id === S.jr.id); return j ? (j._s || (j._s = j.stops())) : []; }
 function startJourney(id) {
+  sheetDown();
   if (!JOURNEYS.some(j => j.id === id)) return;
   closeFact(); $('journeyMenu').classList.remove('show'); $('journeyBtn').setAttribute('aria-expanded', 'false');
   S.jr = { id, i: 0, auto: false }; showStop();
@@ -2247,9 +2264,30 @@ function init() {
   let ctTimer = 0;
   $('cartouche').addEventListener('click', () => { const c = $('cartouche'); c.classList.toggle('open'); clearTimeout(ctTimer); if (c.classList.contains('open')) ctTimer = setTimeout(() => c.classList.remove('open'), 6000); });
   $('mapNote').onclick = () => $('mapAbout').classList.toggle('show'); $('mapAboutX').onclick = () => $('mapAbout').classList.remove('show');
-  $('eventsRibbon').onclick = () => switchTab('insights');
+  $('eventsRibbon').onclick = () => { switchTab('insights'); if (isPhone() && S.sheet === 'peek') sheet('half'); };
   $('fpClose').onclick = closeFact;
-  document.querySelector('.tab-bar').addEventListener('click', e => { const b = e.target.closest('.tab-btn'); if (b) switchTab(b.dataset.tab); });
+  document.querySelector('.tab-bar').addEventListener('click', e => {
+    const b = e.target.closest('.tab-btn'); if (!b) return;
+    if (isPhone() && b.dataset.tab === S.tab && S.sheet !== 'peek') { sheet('peek'); return; }   // the open tab again lowers the sheet
+    if (b.dataset.tab !== S.tab) switchTab(b.dataset.tab);
+    if (isPhone() && S.sheet === 'peek') sheet('half');
+  });
+  { // the grip: a tap opens or lowers the sheet; a drag sets its height and lets go at the nearest of the three
+    const g = $('sheetGrip'), rp = $('rightPanel'); let y0 = null, h0 = 0, moved = false, dragged = false;
+    g.addEventListener('pointerdown', e => { if (!isPhone()) return; y0 = e.clientY; h0 = rp.offsetHeight; moved = false; try { g.setPointerCapture(e.pointerId); } catch (x) {} rp.classList.add('dragging'); });
+    g.addEventListener('pointermove', e => { if (y0 == null) return; const dy = e.clientY - y0; if (Math.abs(dy) > 6) moved = true; if (moved) rp.style.height = clamp(h0 - dy, peekH(), $('main').clientHeight - 6) + 'px'; });
+    const end = () => {
+      if (y0 == null) return; y0 = null;
+      if (!moved) { rp.classList.remove('dragging'); return; }       // a tap: the click below does it (and Enter on the keyboard)
+      dragged = true;
+      const H = $('main').clientHeight, h = rp.offsetHeight, stops = [['peek', peekH()], ['half', H * 0.52], ['full', H - 6]];
+      sheet(stops.reduce((a, b) => Math.abs(b[1] - h) < Math.abs(a[1] - h) ? b : a)[0]);
+    };
+    g.addEventListener('pointerup', end); g.addEventListener('pointercancel', end);
+    g.addEventListener('click', e => { e.preventDefault(); if (dragged) { dragged = false; return; } if (isPhone()) sheet(S.sheet === 'peek' ? 'half' : 'peek'); });
+    $('periodInfo').addEventListener('click', () => { if (isPhone()) $('periodInfo').classList.toggle('open'); });
+    sheetSetup(); window.addEventListener('resize', sheetSetup);
+  }
   document.addEventListener('keydown', e => {
     if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
     if (e.key === 'ArrowLeft') jumpPeriod(-1); else if (e.key === 'ArrowRight') jumpPeriod(1); else if (e.key === 'Escape') { closeFact(); $('mapAbout').classList.remove('show'); }

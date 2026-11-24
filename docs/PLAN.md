@@ -11,10 +11,12 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 ## Next up (updated 24 Nov 2026 — start here)
 
-**25 Nov: the audit’s order, as Evan approved it (“proceed”).** (a) ~~Silhouettes on pins and cards~~ **shipped 25 Nov**;
-**(b) the phone layout is next** (the audit’s item 1: a bottom sheet over a bigger map); then (c) the polish release
-(share card, icon, offline, battery, tap targets, self-hosted fonts); (d) the card rewrite, a period per session; then
-12.3 and more sites. The plan as written on 23 Nov follows.
+**25 Nov: the audit’s order, as Evan approved it (“proceed”).** (a) ~~Silhouettes on pins and cards~~ and (b) ~~the phone layout~~
+**shipped 25 Nov**; **(c) the polish release is next**: the share card (`og:image`, a fixed description), a real icon,
+a web-app manifest and service worker (home screen, offline), `index.html` as the page itself, self-hosted fonts, the
+map’s idle work (draw only when something changes; the water and wakes at a low frame rate, paused after a few
+seconds without a touch), and 44 px tap targets. Then (d) the card rewrite, a period per session; then 12.3 and more
+sites. On the phone the timeline bar still takes about a quarter of the screen: worth a look in (c). The plan as written on 23 Nov follows.
 
 
 Evan asked for “a visual step forward” and for a plan that survives the session resetting. It is
@@ -786,6 +788,14 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **25 Nov 2026 — The phone layout: the map has the screen, the panel is a sheet (the audit’s item 1).** On a phone the
+  tab content used to sit about 7,900 px down a scrolling box under the map, so tapping a tab changed nothing you could
+  see. Now the map fills the space between the timeline and the bottom (310 px tall on an iPhone 13, from 242), the
+  period line is one line until tapped, and the tabs sit in a sheet at the bottom: a tab tap raises it to half the
+  screen with that tab’s content; the open tab again, or the grip, lowers it; dragging the grip sets the height and
+  lets go at peek, half or full. Stories, scenes, journeys and fossil sites lower it so the map can be seen. The grip is
+  a button (Enter works, `aria-expanded` follows). Desktop and tablets (768 px and wider) are unchanged. Eight new checks.
 
 - **25 Nov 2026 — Silhouettes on the map pins, the cards and the lists (Release 12.1).** The audit’s second item: the map
   was thirty identical green cartoon dinosaurs. Now 601 of the 720 animal cards have a PhyloPic silhouette: 380 of the

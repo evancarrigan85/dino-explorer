@@ -16,6 +16,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   let p = await open({ width: 1400, height: 900 });
   ok('loads at 150 MYA', await p.evaluate(() => S.t === 150 && S.period.id === 'jurassic'));
   ok('map engine has land', await p.evaluate(() => WorldMap.stats().polygons > 500));
+  ok('desktop: no sheet — the panel sits beside the map and the grip is hidden', await p.evaluate(() => !S.sheet && !document.body.dataset.sheet && getComputedStyle(document.getElementById('sheetGrip')).display === 'none'));
   ok('markers drawn', await p.evaluate(() => ALL.filter(c => alive(c, S.t)).length > 5));
   // timeline zoom: presets, wheel, brush
   await p.click('#tlPresets .chip:nth-child(5)'); await p.waitForTimeout(300);
@@ -619,6 +620,22 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   p = await open({ width: 390, height: 844 }, '', { hasTouch: true, isMobile: true });
   ok('phone: no sideways overflow', await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1 && document.getElementById('main').scrollWidth <= window.innerWidth + 1), String(await p.evaluate(() => document.getElementById('main').scrollWidth)));
   ok('phone: map has height', await p.evaluate(() => document.getElementById('mapCanvas').getBoundingClientRect().height > 200));
+  // phone: the panel is a sheet over the map (the audit of 24 Nov: a tab tap used to change nothing you could see)
+  const vis = async sel => p.evaluate(sel => { const e = document.querySelector(sel); if (!e) return false; const r = e.getBoundingClientRect(); return r.height > 0 && r.top >= 0 && r.top < innerHeight - 60; }, sel);
+  const sh0 = await p.evaluate(() => ({ st: S.sheet, map: document.getElementById('mapCanvas').getBoundingClientRect().height, tabs: document.getElementById('tab-life').getBoundingClientRect().bottom, vh: innerHeight, scroll: document.getElementById('main').scrollHeight - document.getElementById('main').clientHeight }));
+  ok('phone: at rest the map has the screen, the tabs sit at the bottom, and nothing scrolls under it', sh0.st === 'peek' && sh0.map >= sh0.vh * 0.42 && sh0.tabs > sh0.vh - 70 && sh0.scroll <= 1, JSON.stringify(sh0));
+  await p.tap('#tab-humans'); await p.waitForTimeout(500);
+  ok('phone: tapping a tab opens the sheet and its content is on screen', await p.evaluate(() => S.tab === 'humans' && S.sheet === 'half') && await vis('#pane-humans .hf-axis, #pane-humans > *'));
+  await p.tap('#tab-humans'); await p.waitForTimeout(450);
+  ok('phone: tapping the open tab again lowers the sheet', await p.evaluate(() => S.sheet === 'peek' && document.getElementById('rightPanel').getBoundingClientRect().height < 80));
+  await p.tap('#sheetGrip'); await p.waitForTimeout(450);
+  const gb = await (await p.$('#sheetGrip')).boundingBox();
+  await p.mouse.move(gb.x + gb.width / 2, gb.y + 6); await p.mouse.down(); await p.mouse.move(gb.x + gb.width / 2, 90, { steps: 6 }); await p.mouse.up(); await p.waitForTimeout(450);
+  ok('phone: the grip opens the sheet, and dragging it up gives the whole screen to the panel', await p.evaluate(() => S.sheet === 'full' && document.getElementById('rightPanel').getBoundingClientRect().height > document.getElementById('main').clientHeight - 20 && document.getElementById('sheetGrip').getAttribute('aria-expanded') === 'true'));
+  await p.evaluate(() => { switchTab('geo'); playStory('missoula'); }); await p.waitForTimeout(600);
+  ok('phone: a story lowers the sheet so the map can be seen', await p.evaluate(() => S.sheet === 'peek'));
+  await p.evaluate(() => stopStory());
+  ok('phone: the period line is one line until tapped', await p.evaluate(() => { const d = document.getElementById('periodDesc'), h = d.getBoundingClientRect().height; document.getElementById('periodInfo').click(); const h2 = d.getBoundingClientRect().height; document.getElementById('periodInfo').click(); return h < 22 && h2 > h * 1.8; }));
   ok('phone: the no-map banner wraps to fit between the map buttons instead of running under them', await p.evaluate(() => { setTime(4500); WorldMap._draw(); const n = WorldMap._bannerLines(); setTime(1000); WorldMap._draw(); return n >= 3 && WorldMap._bannerLines() === 0; }));
   await p.close();
   // ancient relief and sea depth (WebGL, from tiles/dem): needs the page served over http, as on GitHub Pages

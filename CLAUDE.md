@@ -121,6 +121,10 @@ builds, passes the checks and has been looked at.
   (`quaternary-data.js` from `build_quaternary.py`; `shelf-rivers-data.js` from `build_shelf_rivers.py`):
   `seaLevel()`, `iceAt()` (PaleoMIST to 80 ka, Batchelor et al. 2019 before, faded by sea level),
   `WorldMap.underIce()`, and rivers traced across the dry sea floor with the ice as a wall.
+- **On phones (under 768 px) the panel is a sheet over the map** (`sheet('peek'|'half'|'full')`, `S.sheet`,
+  `body[data-sheet]`, the grip `#sheetGrip`): a tab tap opens it, the open tab or the grip lowers it, a drag snaps to the
+  nearest height, and anything that takes over the map (stories, scenes, journeys, sites) calls `sheetDown()`. The map
+  keeps its size whatever the sheet does, so the sheet never forces a redraw. Desktop has no sheet (`S.sheet` is null).
 - `app.js` holds the state `S`, the zoomable timeline, and one render function per tab:
   Life, Humans, Insights, Extinctions, Finds, Quiz, Geology. Map pins for a tab are built in
   `updatePlaces()`.

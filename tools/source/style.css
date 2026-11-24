@@ -680,3 +680,31 @@ header .logo,header h1{cursor:pointer}
 .kin-row.now .kin-bar{opacity:1;background:#f0c040}
 .kin-cur{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.7);z-index:1;pointer-events:none}
 @media (max-width:767px){.kin{--kl:124px}}
+
+/* === PHONES: the map fills the screen and the panel is a sheet over it, at three heights (peek, half, full) ===
+   A tab tap opens the sheet; the grip is tapped or dragged; stories, scenes, journeys and fossil sites lower it. */
+.sheet-grip{display:none}
+@media (max-width:767px){
+  .main{position:relative;display:block;overflow:hidden}
+  .left-panel{position:absolute;left:0;right:0;top:0;bottom:var(--peek,54px);display:flex;flex-direction:column;overflow:hidden}
+  .left-panel .map-area{flex:1 1 auto;height:auto;max-height:none;min-height:0}
+  .period-info{padding:5px 12px 6px;cursor:pointer;flex-shrink:0}
+  .period-era-label{font-size:.58rem}
+  .period-name{font-size:1.05rem;display:inline}
+  .period-years{display:inline;margin:0 0 0 8px;font-size:.7rem}
+  .period-desc{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-size:.74rem;margin-top:1px}
+  .period-info.open .period-desc{display:block}
+  #youBar,.events-ribbon{flex-shrink:0}
+  .events-ribbon #eventText{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .right-panel{position:absolute;left:0;right:0;bottom:0;height:var(--peek,54px);z-index:30;border-top:0;border-radius:14px 14px 0 0;
+    box-shadow:0 -6px 24px rgba(0,0,0,.55);transition:height .28s cubic-bezier(.2,.8,.2,1);overflow:hidden;display:flex;flex-direction:column}
+  .right-panel.dragging{transition:none}
+  body[data-sheet="half"] .right-panel{height:52%}
+  body[data-sheet="full"] .right-panel{height:calc(100% - 6px)}
+  .sheet-grip{display:flex;justify-content:center;align-items:center;width:100%;height:20px;padding:0;border:0;background:none;cursor:grab;touch-action:none;flex-shrink:0}
+  .sheet-grip i{display:block;width:42px;height:5px;border-radius:3px;background:#5d6a82}
+  .tab-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+  .tab-bar::-webkit-scrollbar{display:none}
+  .tab-btn{flex:0 0 auto;padding:7px 13px 9px;font-size:.8rem;min-height:36px}
+  .panel-content{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;min-height:0;overscroll-behavior:contain}
+}
