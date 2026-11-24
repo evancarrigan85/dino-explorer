@@ -104,7 +104,7 @@ builds, passes the checks and has been looked at.
   3–2.6 Ma) `landPath(t, fill)` leaves out today’s lakes and fills Hudson Bay and the Baltic (`PLUGS`, each riding the
   plate under its anchor): they are ice-age features. Big enclosed seas (Black Sea, Caspian) stay until 540 Ma.
   On the globe, for today only, `WorldMap.setGeoid(true)` shows **the real shape**: today’s gravity shape (the geoid,
-  `geoid-data.js` from `build_geoid.py`, EGM2008) with every bump 10,000× taller. It is a `d3.geoProjection` whose
+  `geoid-data.js` from `build_geoid.py`, EGM2008) with every bump drawn taller (10,000× by default; the card’s slider sets it, `WorldMap.setGeoidScale(x)`, 1 = real size). It is a `d3.geoProjection` whose
   points are pushed out or in by their height (`geoidRaw`), so land, labels, pins and taps all follow it; the light-and-
   shadow tiles are flat pictures and are left out. The Geology tab has the card and the switch (`toggleGeoid()`). From 540 Ma to 3 Ma it also draws **seas over the continents**
   (`seas-data.js`, from the Scotese & Wright 2018 PaleoDEMs — coast and shelf edge — and Kocsis &

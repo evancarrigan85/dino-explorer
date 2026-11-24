@@ -1158,6 +1158,7 @@ function bindExt() {
   document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) playScene(b.dataset.play); });
   document.addEventListener('click', e => { const b = e.target.closest('[data-story]'); if (b) { S.storyOpen = b.dataset.story; playStory(b.dataset.story); } });
   document.addEventListener('click', e => { if (e.target.closest('[data-geoid]')) toggleGeoid(); });
+  document.addEventListener('input', e => { if (e.target.id !== 'geoidScale') return; const x = geoidScaleOf(+e.target.value); WorldMap.setGeoidScale(x); const v = $('geoidScaleV'); if (v) v.textContent = geoidScaleText(x); });
 }
 
 // --- Stories: the Earth being made, played out on the map (Geology tab) ---
@@ -1491,7 +1492,7 @@ function playStory(id) {
 const GEOID_CARD = {
   blurb: 'Gravity is a little stronger in some places than others, so the level of the sea has hills and hollows up to about 100 m high. Make them 10,000 times taller and the Earth looks lumpy.',
   what: 'The Earth is not a perfect ball. Its spin makes it bulge at the equator: it is 43 km wider across the equator than from pole to pole. And the rock inside is heavier in some places than others, so gravity pulls a little harder there. If the sea could flow everywhere, even under the land, and lay perfectly still, its surface would not be smooth: about 107 m lower than the smooth shape south of Sri Lanka, and 86 m higher over New Guinea. That lumpy surface is called the geoid. When a map gives a mountain’s height above sea level, it means above the geoid.',
-  small: 'A bump of 100 m on a planet 12,742 km across is like a bump less than a fiftieth of the thickness of a sheet of paper on a football. So the globe here makes every bump 10,000 times taller. It leaves out the bulge at the equator: made 10,000 times bigger, that would squash the Earth flat.',
+  small: 'On a classroom globe 30 cm across, the bulge at the equator would be about 1 mm, and the biggest gravity bumps about two and a half thousandths of a millimetre — far thinner than a hair. So the globe here makes every bump taller: 10,000 times, unless you change it with the slider. At 1× — real size — it looks like a perfect ball. It leaves out the bulge at the equator: made 10,000 times bigger, that would squash the Earth flat.',
   know: 'From satellites. Two satellites called GRACE, launched in 2002, chased each other around the Earth about 220 km apart. As each one passed over heavier rock it was tugged a little, and the gap between them changed. Measuring that gap — together with gravity measured on land, from ships and planes, and the height of the sea measured from space — gives the gravity map used here, EGM2008.',
   debate: 'Why the deepest low lies south of India. One study points to hot, light rock rising from deep in the mantle beneath it; another asks whether old sea floor that sank deep into the mantle adds to it.',
   when: 'Today only. Nobody has a gravity map of the ancient Earth, so the lumps are not drawn for the past.',
@@ -1500,11 +1501,15 @@ function geoidHTML() {
   const on = WorldMap.geoid, open = on || S.geoidOpen;
   return `<div class="stories"><div class="list-h" style="padding:2px 4px 6px">🥔 The real shape of the Earth</div><div class="story${open ? ' open' : ''}"><div class="story-top"><span class="story-i">🥔</span><div><b>Not quite a ball</b><span>${esc(GEOID_CARD.blurb)}</span></div></div>
     <button class="watch" data-geoid="1">${on ? '■ Back to the round globe' : '▶ Show its gravity shape on the globe'}</button>
+    ${on ? `<div class="geo-scale"><label for="geoidScale">Bumps drawn <b id="geoidScaleV">${geoidScaleText(WorldMap.geoidScale)}</b></label><input type="range" id="geoidScale" min="0" max="1000" step="1" value="${Math.round(Math.log(WorldMap.geoidScale) / Math.log(20000) * 1000)}" aria-label="How many times taller the gravity bumps are drawn"><div class="gs-ends"><span>real size</span><span>20,000× taller</span></div></div>` : ''}
     ${open ? `<div class="label-sec"><h5>🌍 What is it?</h5>${esc(GEOID_CARD.what)}</div><div class="label-sec"><h5>🔬 Too small to see</h5>${esc(GEOID_CARD.small)}</div>
     <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(GEOID_CARD.know)}</div><div class="label-sec"><h5>❓ Still worked out</h5>${esc(GEOID_CARD.debate)}</div>
     <div class="found">🕰 <b>When:</b> ${esc(GEOID_CARD.when)}</div>${srcHTML('m:geoid')}` : '<button class="linkbtn" data-geoid-open="1">Read what it is and how we know</button>'}</div></div>`;
 }
 const gravityShown = () => WorldMap.geoid && WorldMap.mode === 'globe' && S.t <= 0.0001;
+/* the slider runs on a log scale, so 1×, 10×, 100× … each get room; values snap to two significant figures */
+const geoidScaleOf = v => { const x = Math.pow(20000, v / 1000); if (x < 1.5) return 1; const p = Math.pow(10, Math.floor(Math.log10(x)) - 1); return Math.round(x / p) * p; };
+const geoidScaleText = x => x <= 1 ? 'at real size (1×) — it looks like a perfect ball' : Math.round(x).toLocaleString('en') + '× taller than they are';
 function toggleGeoid(on = !WorldMap.geoid) {
   if (on) {
     if (S.story) stopStory(); if (S.scene) stopScene(); stopPlay(); cancelTween(); if (S.jr) endJourney();

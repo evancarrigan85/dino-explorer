@@ -413,6 +413,10 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 #fpEmoji{font-size:1.5rem;flex-shrink:0}
 #fpText{font-size:0.82rem;color:#d0ddf0;line-height:1.5}
 #fpText b{color:#fff}
+.geo-scale{margin:8px 2px 4px;font-size:0.8rem;color:#c4d0e2}
+.geo-scale b{color:#e8b75a}
+.geo-scale input[type=range]{width:100%;margin:6px 0 2px;accent-color:#e8b75a}
+.geo-scale .gs-ends{display:flex;justify-content:space-between;font-size:0.7rem;color:#8ea0bb}
 .crises .crisis{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-top:1px solid rgba(255,255,255,0.07);padding:9px 4px;color:inherit;cursor:pointer;font:inherit}
 .crises .crisis:hover{background:rgba(255,255,255,0.04)}
 .crises .cr-i{font-size:1.15rem;line-height:1.3}

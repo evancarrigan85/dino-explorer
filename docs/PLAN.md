@@ -36,7 +36,7 @@ network secret and for `api.phylopic.org` among the allowed hosts.
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each; then 13 smaller crises, each a sourced timeline event |
 | Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at 22 places (511 Ma → 1815 CE), each tied to a sourced event |
-| Checks | 282 passing, plus the benchmark ratchet (`tools/bench`) |
+| Checks | 283 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -545,7 +545,7 @@ The honest map runs out in steps; each step is said on the page.
 
 Research done in the planning session is written into each step, so none of it needs repeating.
 
-### 12.0 — The gravity shape at real size (small; no blockers)
+### 12.0 — The gravity shape at real size — **shipped 24 Nov 2026** (see Shipped)
 - In the Geology card “The real shape of the Earth”, a slider from 1× to 20,000× (default 10,000×), so a reader can
   shrink the bumps to real size and watch the lumpy globe become a perfect ball. `GEO_X` in `engine.js` becomes a
   setting (`WorldMap.setGeoidScale(x)`); `GEO_FIT` follows it; the legend reads “bumps N× taller”.
@@ -707,6 +707,15 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **24 Nov 2026 — The gravity shape at real size (Release 12.0).** The “real shape” card has a slider from real size to
+  20,000×, on a log scale so that 1×, 10×, 100× and so on each get room.
+  - At 1× the globe is a round ball; the legend and the card say how much taller the bumps are drawn.
+  - “Too small to see” now measures on a 30 cm classroom globe: the bulge at the equator about 1 mm, the biggest
+    gravity bumps about 0.0025 mm. Both are sums from the card’s own numbers.
+  - Fixed on the way: the globe’s colours dropped out near the edge at large stretches (the inverse projection
+    is now kept on the disc), and the paper behind the globe kept an old outline when only the stretch changed.
+  283 checks.
 
 - **23 Nov 2026 — No ice-age water on Nuna and Rodinia.** Evan saw Hudson Bay and the Great Lakes on the 1.7-billion-year-old
   continent. Before 540 Ma the land is today’s outline on its plates, so it carried today’s lakes and bays with it.

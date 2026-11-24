@@ -344,6 +344,11 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.click('#pane-geo [data-geoid]'); await p.waitForTimeout(900);
   ok('geoid: one tap turns to the globe, today, with the gravity shape showing and the animals stepping aside', await p.evaluate(() => WorldMap.mode === 'globe' && S.t === 0 && WorldMap.geoid && WorldMap._geoidShown() && WorldMap._markers().length === 0 && /Back to the round globe/.test(document.querySelector('#pane-geo [data-geoid]').textContent)));
   ok('geoid: the globe’s edge is lumpy — its farthest point more than 10% farther out than its nearest', await lumpy() > 1.1, String(await lumpy()));
+  { const slide = v => p.evaluate(v => { const s = document.getElementById('geoidScale'); s.value = v; s.dispatchEvent(new Event('input', { bubbles: true })); }, v);
+    await slide(0); await p.waitForTimeout(250); const real = await lumpy(), realTxt = await p.evaluate(() => WorldMap.geoidScale === 1 && /real size/.test(document.getElementById('geoidScaleV').textContent));
+    await slide(1000); await p.waitForTimeout(250); const big = await lumpy(), bigOk = await p.evaluate(() => WorldMap.geoidScale === 20000);
+    await slide(930); await p.waitForTimeout(250); const back = await p.evaluate(() => WorldMap.geoidScale);
+    ok('geoid: the slider shrinks the bumps to real size — a round ball — and stretches them to 20,000×', real < 1.001 && realTxt && big > 1.2 && bigOk && back === 10000, [real, realTxt, big, bigOk, back].join(' ')); }
   ok('geoid: the deepest low south of India, the highest high over New Guinea, Iceland high and Hudson Bay low, as EGM2008 has them', await p.evaluate(() => WorldMap.geoidAt(78, 4) < -95 && WorldMap.geoidAt(144, -4) > 70 && WorldMap.geoidAt(-20, 64) > 50 && WorldMap.geoidAt(-85, 60) < -30 && GEOID.peak[0] < -106 && GEOID.peak[1] > 85));
   ok('geoid: a tap on the lumpy globe still finds the place under the finger (Sri Lanka)', await p.evaluate(() => { const s = WorldMap._screen(80.7, 7.8), q = s && WorldMap.pickPresent(s[0], s[1]); return !!q && Math.abs(q.lon - 80.7) < 0.3 && Math.abs(q.lat - 7.8) < 0.3; }));
   await p.evaluate(() => setTime(10)); await p.waitForTimeout(300);

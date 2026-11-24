@@ -581,7 +581,9 @@ void main() {
   // Only on the globe and only for today: nobody has a gravity map of the ancient Earth. The bulge at the equator
   // (21 km of radius) is left out: at this size it would squash the globe flat. In this view the globe is a d3
   // projection whose every point is pushed out or in by its height, so the land, labels and pins all follow it.
-  const GEO_X = 10000, R_EARTH = 6371000, GEO_T = 0.0001, GEO_FIT = 1 / (1 + GEO_X * 86 / R_EARTH);
+  const R_EARTH = 6371000, GEO_T = 0.0001;
+  let geoX = 10000;                                      // how many times taller the bumps are drawn (the card’s slider: 1 = real size)
+  const geoFit = () => 1 / (1 + geoX * 86 / R_EARTH);     // shrink the globe so the highest bump still fits
   let geoidOn = false, projGeoid = false, geoRot = null, geoGrid = null;
   function geoidGrid() {
     if (geoGrid || typeof GEOID === 'undefined') return geoGrid;
@@ -601,12 +603,17 @@ void main() {
     return (G[y0 * w + x0] * (1 - fx) + G[y0 * w + x1] * fx) * (1 - fy) + (G[(y0 + 1) * w + x0] * (1 - fx) + G[(y0 + 1) * w + x1] * fx) * fy;
   }
   const geoidShows = () => geoidOn && mode === 'globe' && time <= GEO_T && !!geoidGrid();
-  const geoF = (l, p) => { const g = geoRot.invert([l * R2D, p * R2D]); return 1 + GEO_X * geoidAt(g[0], g[1]) / R_EARTH; };
+  const geoF = (l, p) => { const g = geoRot.invert([l * R2D, p * R2D]); return 1 + geoX * geoidAt(g[0], g[1]) / R_EARTH; };
   const orthoInv = (x, y) => { const z = Math.sqrt(x * x + y * y), c = Math.asin(z), sc = Math.sin(c), cc = Math.cos(c); return [Math.atan2(x * sc, z * cc), Math.asin(z && y * sc / z)]; };
   function geoidRaw(l, p) { const f = geoF(l, p), cp = Math.cos(p); return [cp * Math.sin(l) * f, Math.sin(p) * f]; }
-  geoidRaw.invert = (x, y) => {
-    let X = x / 1.05, Y = y / 1.05;
-    for (let i = 0; i < 4; i++) { const r = orthoInv(Math.max(-1, Math.min(1, X)), Math.max(-1, Math.min(1, Y))); if (r[1] !== r[1]) break; const f = geoF(r[0], r[1]); X = x / f; Y = y / f; }
+  geoidRaw.invert = (x, y) => {                          // undo the push: guess, see how far that spot is pushed, guess again
+    let X = x, Y = y;
+    for (let i = 0; i < 10; i++) {
+      const r0 = Math.hypot(X, Y), k = r0 > 0.9999 ? 0.9999 / r0 : 1;   // keep the guess on the globe's disc
+      const r = orthoInv(X * k, Y * k), f = geoF(r[0], r[1]), nX = x / f, nY = y / f;
+      const moved = Math.abs(nX - X) + Math.abs(nY - Y); X = nX; Y = nY;
+      if (moved < 1e-7) break;
+    }
     return orthoInv(X, Y);
   };
 
@@ -617,7 +624,7 @@ void main() {
     } else {
       proj = d3.geoOrthographic().rotate([rotL, rotP]).clipAngle(90).fitExtent([[pad, pad], [W - pad, H - pad]], { type: 'Sphere' });
       projGeoid = geoidShows();
-      if (projGeoid) { geoRot = d3.geoRotation([rotL, rotP]); proj = d3.geoProjection(geoidRaw).precision(1.5).clipAngle(90).rotate([rotL, rotP]).scale(proj.scale() * GEO_FIT).translate(proj.translate()); }
+      if (projGeoid) { geoRot = d3.geoRotation([rotL, rotP]); proj = d3.geoProjection(geoidRaw).precision(1.5).clipAngle(90).rotate([rotL, rotP]).scale(proj.scale() * geoFit()).translate(proj.translate()); }
     }
     baseScale = proj.scale(); baseT = proj.translate();
     applyView();
@@ -1315,14 +1322,14 @@ void main() {
     return [0, 1, 2].map(k => ca[k] + (cb[k] - ca[k]) * u);
   }
   function drawGeoid(c) {
-    const s = 3, gw = Math.ceil(W / s), gh = Math.ceil(H / s), key = [rotL.toFixed(2), rotP.toFixed(2), zoom.toFixed(3), W, H].join('|');
+    const s = 3, gw = Math.ceil(W / s), gh = Math.ceil(H / s), key = [rotL.toFixed(2), rotP.toFixed(2), zoom.toFixed(3), W, H, geoX].join('|');
     if (key !== gKey) {
       gKey = key;
       if (!gCv) { gCv = document.createElement('canvas'); gx = gCv.getContext('2d'); }
       gCv.width = gw; gCv.height = gh;
       const img = gx.createImageData(gw, gh), D = img.data, N = new Float32Array(gw * gh).fill(NaN);
       for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) { const ll = proj.invert([(i + 0.5) * s, (j + 0.5) * s]); if (ll && ll[0] === ll[0] && ll[1] === ll[1]) N[j * gw + i] = geoidAt(ll[0], ll[1]); }
-      const k = GEO_X / R_EARTH * proj.scale() / (2 * s);       // metres of geoid to the slope of the drawn bump
+      const k = geoX / R_EARTH * proj.scale() / (2 * s);       // metres of geoid to the slope of the drawn bump
       for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
         const n = N[j * gw + i]; if (n !== n) continue;
         const l = N[j * gw + Math.max(0, i - 1)], r = N[j * gw + Math.min(gw - 1, i + 1)], u = N[Math.max(0, j - 1) * gw + i], d = N[Math.min(gh - 1, j + 1) * gw + i];
@@ -1346,7 +1353,7 @@ void main() {
     const cx = (b[0][0] + b[1][0]) / 2, cy = (b[0][1] + b[1][1]) / 2, rad = Math.max(b[1][0] - b[0][0], b[1][1] - b[0][1]) / 2;
 
     // the sheet (paper + the globe's drop shadow) only changes with the view
-    const key = [mode, zoom.toFixed(3), panX | 0, panY | 0, W, H, projGeoid ? rotL.toFixed(2) + ',' + rotP.toFixed(2) : ''].join('|');
+    const key = [mode, zoom.toFixed(3), panX | 0, panY | 0, W, H, projGeoid ? rotL.toFixed(2) + ',' + rotP.toFixed(2) + ',' + geoX : ''].join('|');
     if (key !== sheetKey) {
       sheetKey = key;
       sctx.setTransform(1, 0, 0, 1, 0, 0); sctx.drawImage(paper, 0, 0);
@@ -1405,7 +1412,7 @@ void main() {
 
     // Ice Age: the continental shelves come out of the sea as the water drops
     const sl = seaLevel(t), iceNow = iceAt(t);
-    const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H, projGeoid].join('|');
+    const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, centerLon.toFixed(2), rotL.toFixed(2), rotP.toFixed(2), W, H, projGeoid && geoX].join('|');
     if (vk !== shelfKey) { shelfKey = vk; shelfP = {}; reliefP = {}; coverP = {}; riverP = null; iceP = {}; shelfRvP = null; }
     if (sl < -1 && SHELF_LV.length && !hideBox) {
       const lv = i => shelfP[i] || (shelfP[i] = geoP(SHELF_LV[i].geo));
@@ -1724,7 +1731,8 @@ void main() {
     const mid = x0 + w / 2, fs = narrow ? 9.5 : 11;
     if (!projGeoid) { text(c, 'The gravity shape is shown for today only', narrow ? x0 : W / 2, y + 6, fs, { italic: true, weight: 400, spacing: 0.3, align: narrow ? 'left' : 'center' }); boxes.push([narrow ? x0 : W / 2 - w / 2, y - 4, w, 20]); return; }
     c.fillStyle = 'rgba(246,231,190,0.86)'; c.strokeStyle = 'rgba(46,21,6,0.35)'; c.lineWidth = 0.8; c.beginPath(); c.roundRect ? c.roundRect(x0 - 8, y - 7, w + 16, 46, 5) : c.rect(x0 - 8, y - 7, w + 16, 46); c.fill(); c.stroke();
-    text(c, narrow ? 'Gravity shape · bumps ×10,000' : 'Today’s gravity shape · bumps 10,000× taller', mid, y + 4, fs, { spacing: 0.4 });
+    const nx = Math.round(geoX).toLocaleString('en');
+    text(c, geoX <= 1 ? (narrow ? 'Gravity shape · real size' : 'Today’s gravity shape · at real size') : narrow ? 'Gravity shape · bumps ×' + nx : 'Today’s gravity shape · bumps ' + nx + '× taller', mid, y + 4, fs, { spacing: 0.4 });
     const g = c.createLinearGradient(x0, 0, x0 + w, 0);
     GEO_RAMP.forEach(([n, col]) => g.addColorStop((n + 107) / 193, 'rgb(' + col.join(',') + ')'));
     c.fillStyle = g; c.fillRect(x0, y + 14, w, 7); c.strokeStyle = 'rgba(46,21,6,0.5)'; c.lineWidth = 0.8; c.strokeRect(x0, y + 14, w, 7);
@@ -2189,6 +2197,8 @@ void main() {
     get mode() { return mode; },
     /* today's gravity shape on the globe (see geoidAt) */
     setGeoid(on) { geoidOn = !!on; gKey = ''; setupProjection(); },
+    /* how many times taller the gravity bumps are drawn: 1 (real size) to 20,000 */
+    setGeoidScale(x) { geoX = Math.max(1, Math.min(20000, +x || 1)); gKey = ''; setupProjection(); },
     geoidAt,
     _geoidShown: () => projGeoid,
     _screen: (lon, lat) => project([lon, lat]),
@@ -2379,6 +2389,6 @@ void main() {
       polys.forEach((q, i) => { if (q.c[0] * P[0] + q.c[1] * P[1] + q.c[2] * P[2] < q.cosr - 0.02) return; if (ringContains(q.rings[0], P)) o.push(i + ':f' + q.f + '[' + q.hi + '..' + q.lo + ']'); }); return o.join(' '); },
   });
   // Object.assign copies a getter's value once; these must stay live (the globe button reads `mode`)
-  Object.defineProperties(api, { fxOn: { get: () => !!fxHook, configurable: true }, time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true }, backdrop: { get: () => backdrop, configurable: true }, terrain: { get: () => terOn && !!TER.gl && TER.st === 'ready', configurable: true }, geoid: { get: () => geoidOn, configurable: true } });
+  Object.defineProperties(api, { fxOn: { get: () => !!fxHook, configurable: true }, time: { get: () => time, configurable: true }, mode: { get: () => mode, configurable: true }, zoom: { get: () => zoom, configurable: true }, motion: { get: () => motion, configurable: true }, backdrop: { get: () => backdrop, configurable: true }, terrain: { get: () => terOn && !!TER.gl && TER.st === 'ready', configurable: true }, geoid: { get: () => geoidOn, configurable: true }, geoidScale: { get: () => geoX, configurable: true } });
   return api;
 })();
