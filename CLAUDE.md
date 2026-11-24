@@ -143,6 +143,11 @@ builds, passes the checks and has been looked at.
   top of the Insights tab; sources under `p:<epoch id>`. `AMBIENT` in `app.js` draws a story's picture
   on the map whenever the clock is inside it (the dry Mediterranean, 5.97–5.33 Ma; the Snowball Earth ice, 717–635 Ma,
   from `snowIce()`).
+  `data_sites.js` holds **life at the site** (`SITE_SCENES`; the older `SITES` in `data_periods.js` is the famous-sites
+  list): one fossil site at its own time, opened from its animals’ cards (`openSite()`), drawn in `drawSite()` — every
+  animal from the site’s paper, placed by role (air, bank, edge, sand, water), with a strip of bars showing known lengths
+  to scale beside a grown-up person; no bar where the length is not known; numbers stand in for names on phones. First
+  site: the Kem Kem, from Ibrahim et al. 2020 (ZooKeys; its full text is on Zenodo, record 19068755, CC BY 4.0).
   `data_survival.js` holds what helped people and what threatened them (“At this time” in the Humans
   tab): each entry has a window in Ma (`t`) or calendar years (`y`) and starts at its oldest evidence.
   `data_history.js` holds the empires, kingdoms and beliefs of the last 5,500 years, shown in the
@@ -155,7 +160,7 @@ builds, passes the checks and has been looked at.
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
   `p:` period id, `f:` food web, `x:` find id, `t:` family tree id, `j:` journey id, `e:` extinction id, `s:` story id, `k:` empire id, `b:` belief id,
-  `r:` trade route id, `w:` great work id, `v:` help or threat id (`data_survival.js`), `i:` inspiration id, `n:` timeline event id (the optional
+  `r:` trade route id, `w:` great work id, `v:` help or threat id (`data_survival.js`), `i:` inspiration id, `z:` site scene id (`data_sites.js`), `n:` timeline event id (the optional
   sixth element of an `EVENTS` entry; its papers show in the event’s popup, and the build refuses an id with no source), `m:` map layer
   (`plates|seas|terrain|sealevel|ice|rivers|climate|rocks|landcover|history|time|checks|sound|geoid`).
 

@@ -29,6 +29,7 @@ It checks every animal (fields present, dates inside its period, valid fossil si
 | `data_stories.js` | “Watch the Earth being made” stories in the Geology tab (the Great Lakes so far) |
 | `data_mammals.js` | The Age of Mammals, epoch by epoch: a chapter (title, map title, Insights) for each epoch from the Paleocene to the Pliocene; sources under `p:<epoch>` |
 | `data_history.js` | Empires, kingdoms and beliefs of the last 5,500 years (Humans tab) |
+| `data_sites.js` | Life at the site: one fossil site at its own time, every animal from the site’s paper, known lengths as bars to scale; sources under `z:<id>` |
 | `data_survival.js` | What helped people and what threatened them, by time (Humans tab, “At this time”); sources under `v:` |
 | `data_extinctions.js` | The Extinctions view: one entry per event, with its scene and its steps |
 | `data_trees.js` | The family trees: branches, the feature each one added, and which lineage paths hang on it |

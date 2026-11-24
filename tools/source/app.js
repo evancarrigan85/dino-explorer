@@ -559,6 +559,7 @@ function cardHTML(c, open) {
     L.push(findLinks(c));
     L.push(treeLink(c));
     L.push(kinLink(c));
+    L.push(siteLink(c));
     L.push(srcHTML(c.hom ? 'h:' + c.key : 'a:' + c.name));
     L.push(sec('🔎 How do we know?', esc(c.know || '')));
     L.push(sec('❓ Still debated', esc(c.debate || '')));
@@ -878,6 +879,79 @@ const treeLink = c => { if (c.hom) return ''; const h = treeOf(c); return h ? `<
 const KIN = (() => { const g = {}; ALL.forEach(c => { if (c.hom) return; for (let i = 2; i <= c.path.length; i++) { const k = c.path.slice(0, i).join(' › '); (g[k] = g[k] || []).push(c); } }); return g; })();
 const kinOf = c => { if (c.hom) return null; for (let i = c.path.length; i >= 2; i--) { const k = c.path.slice(0, i).join(' › '); if (KIN[k] && KIN[k].length >= 3) return { key: k, label: c.path[i - 1], list: KIN[k] }; } return null; };
 const kinLink = c => { const k = kinOf(c); return k ? `<div class="found">🕰 <b>Through time:</b> <button class="linkbtn" data-kin="${esc(k.key)}">All ${k.list.length} ${esc(k.label.toLowerCase())} through time →</button></div>` : ''; };
+// ── life at the site (data_sites.js): one fossil site at its own time, drawn from what was found there ──
+const SITE = Object.fromEntries(SITE_SCENES.map(s => [s.id, s]));
+const siteLink = c => { const s = SITE_SCENES.find(x => x.open.includes(c.name)); return s ? `<div class="found">🏞 <b>At the site:</b> <button class="linkbtn" data-site="${s.id}">See life at ${esc(s.name.replace(/^The /, 'the '))} →</button></div>` : ''; };
+function openSite(id) {
+  const s = SITE[id]; if (!s) return;
+  if (S.story) stopStory(); if (S.scene) stopScene(); stopPlay();
+  S.site = id;
+  const el = $('siteScene'), name = s.name.replace(/^The /, 'the ');
+  el.innerHTML = `<div class="ss-top"><b>🏞 Life at ${esc(name)}</b><span>${esc(s.where)} · ${esc(s.when)}</span><button data-site-close aria-label="Close">✕</button></div>
+    <div class="ss-blurb">${esc(s.blurb)}</div><canvas id="ssCv" aria-label="A picture of the animals found at this site"></canvas>
+    <div class="ss-cap">A picture built from the finds at this site. The bars show how long the animals were, to scale; those marked “size not known” have no bar, and the pictures themselves are not to scale. Poses and plants are guesses.</div>
+    <div class="ss-more"><div class="label-sec"><h5>🏞 The place</h5>${esc(s.setting)}</div><div class="label-sec"><h5>🪨 The rock</h5>${esc(s.rock)}</div><div class="label-sec"><h5>🌿 Plants</h5>${esc(s.plants)}</div>
+      <div class="label-sec"><h5>🦴 Who was found here</h5><ol class="ss-cast">${s.cast.map(c => `<li>${c.emoji} <b>${esc(c.name)}</b> — ${esc(c.note)} <i>(${esc(c.size)})</i></li>`).join('')}</ol></div>
+      <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(s.know)}</div><div class="label-sec"><h5>❓ Still debated</h5>${esc(s.debate)}</div>${srcHTML('z:' + id)}</div>`;
+  el.classList.add('show'); el.scrollTop = 0;
+  requestAnimationFrame(() => drawSite(s));
+}
+function closeSite() { S.site = null; $('siteScene').classList.remove('show'); }
+/* the picture: sky, far bank, river, sandbank, near bank, each animal in its place, then a strip of bars showing how long
+   the animals were, to scale, beside a grown-up person. The pictures themselves are not to scale (an emoji is as tall as
+   it is wide); an animal with no known length gets no bar. On a narrow screen numbers stand in for the names. */
+function drawSite(s) {
+  const cv = $('ssCv'); if (!cv) return;
+  const W = cv.clientWidth || 600, narrow = W < 560, known = s.cast.filter(a => a.len), strip = 26 + (known.length + 1) * (narrow ? 17 : 19);
+  const Hs = Math.round(Math.min(W * (narrow ? 0.62 : 0.5), 400)), H = Hs + strip, dpr = window.devicePixelRatio || 1;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+  const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const sky = c.createLinearGradient(0, 0, 0, Hs * 0.45); sky.addColorStop(0, '#f6dfae'); sky.addColorStop(1, '#ecc98d'); c.fillStyle = sky; c.fillRect(0, 0, W, Hs);
+  c.fillStyle = '#b79a63'; c.beginPath(); c.moveTo(0, Hs * 0.44); for (let x = 0; x <= W; x += W / 12) c.lineTo(x, Hs * (0.43 + 0.012 * Math.sin(x / W * 9))); c.lineTo(W, Hs * 0.5); c.lineTo(0, Hs * 0.5); c.fill();
+  for (const fx of [0.04, 0.1, 0.72, 0.95]) { const x = W * fx, y = Hs * 0.44, h = Hs * 0.14; c.fillStyle = '#4f6b3a'; c.beginPath(); c.moveTo(x, y - h); c.lineTo(x - h * 0.22, y); c.lineTo(x + h * 0.22, y); c.fill(); }
+  const wat = c.createLinearGradient(0, Hs * 0.48, 0, Hs * 0.86); wat.addColorStop(0, '#7aa6b3'); wat.addColorStop(1, '#3f6d82'); c.fillStyle = wat; c.fillRect(0, Hs * 0.48, W, Hs * 0.38);
+  c.strokeStyle = 'rgba(255,255,255,0.28)'; c.lineWidth = 1; for (let i = 0; i < 9; i++) { const y = Hs * (0.5 + i * 0.038), x0 = W * ((i * 0.37) % 1); c.beginPath(); c.moveTo(x0, y); c.lineTo(x0 + W * 0.12, y); c.stroke(); }
+  c.fillStyle = '#e5cd96'; c.beginPath(); c.ellipse(W * 0.7, Hs * 0.62, W * 0.13, Hs * 0.035, 0, 0, 7); c.fill();
+  c.fillStyle = '#c7a568'; c.beginPath(); c.moveTo(0, Hs * 0.86); for (let x = 0; x <= W; x += W / 10) c.lineTo(x, Hs * (0.86 - 0.01 * Math.cos(x / W * 7))); c.lineTo(W, Hs); c.lineTo(0, Hs); c.fill();
+  const SIZE = { bank: 0.07, edge: 0.085, air: 0.05, sand: 0.045, water: 0.048 };
+  const PLACE = { air: [[0.6, 0.2], [0.84, 0.13]], bank: [[0.2, 0.455], [0.4, 0.455], [0.52, 0.455], [0.63, 0.455]], edge: [[0.2, 0.93]], sand: [[0.7, 0.625]], water: [[0.46, 0.6], [0.58, 0.75], [0.84, 0.78], [0.33, 0.78], [0.94, 0.66]] };
+  const used = {}, drawn = {}, labels = [];
+  s.cast.forEach((a, n) => {
+    const i = used[a.zone] = (used[a.zone] || 0) + 1, p = PLACE[a.zone][i - 1] || PLACE[a.zone][0];
+    const x = W * p[0], y = Hs * p[1], px = Math.max(18, W * SIZE[a.zone]);
+    c.save(); c.font = `${px}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; c.textAlign = 'center'; c.textBaseline = 'bottom';
+    if (a.zone === 'water') c.globalAlpha = 0.8;
+    c.fillText(a.emoji, x, y); c.restore();
+    drawn[a.name] = { x, y, px };
+    labels.push([x, y + 2, a.name, a.size, n + 1]);
+  });
+  c.fillStyle = 'rgba(120,170,190,0.16)'; c.fillRect(0, Hs * 0.5, W, Hs * 0.36);
+  const boxes = [];
+  for (const [x, y, nm, sz, num] of labels) {
+    if (narrow) { c.beginPath(); c.arc(x + 9, y - 4, 8, 0, 7); c.fillStyle = 'rgba(46,26,8,0.85)'; c.fill(); c.fillStyle = '#fff'; c.font = '700 10px Inter,system-ui,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(num, x + 9, y - 4); continue; }
+    c.font = '700 11px Inter,system-ui,sans-serif'; const w1 = c.measureText(nm).width; c.font = 'italic 10px Inter,system-ui,sans-serif'; const w = Math.max(w1, c.measureText(sz).width) + 8;
+    let ty = y; for (let k = 0; k < 6 && boxes.some(b => x - w / 2 < b[0] + b[2] && x + w / 2 > b[0] && ty < b[1] + b[3] && ty + 26 > b[1]); k++) ty += 13;
+    boxes.push([x - w / 2, ty, w, 26]);
+    c.fillStyle = 'rgba(250,240,215,0.9)'; c.fillRect(x - w / 2, ty, w, 26);
+    c.textAlign = 'center'; c.textBaseline = 'top'; c.fillStyle = '#2e1a08'; c.font = '700 11px Inter,system-ui,sans-serif'; c.fillText(nm, x, ty + 1);
+    c.fillStyle = '#6a4a26'; c.font = 'italic 10px Inter,system-ui,sans-serif'; c.fillText(sz, x, ty + 14);
+  }
+  if (!narrow) { c.fillStyle = '#4f6b3a'; c.font = 'italic 10px Inter,system-ui,sans-serif'; c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText('conifers (from petrified wood)', W * 0.02, Hs * 0.235); }
+  // how long were they? bars to scale, longest first, with a grown-up person (about 1.7 m) for comparison
+  c.fillStyle = '#1b2230'; c.fillRect(0, Hs, W, strip);
+  c.fillStyle = '#e8b75a'; c.font = `700 ${narrow ? 11 : 12}px Inter,system-ui,sans-serif`; c.textAlign = 'left'; c.textBaseline = 'top';
+  c.fillText('How long were they? Bars to scale', 10, Hs + 7);
+  const rows = known.slice().sort((p, q) => q.len - p.len).map(a => [a.name, a.len, a.size]).concat([['a grown-up person', 1.7, 'about 1.7 m tall']]);
+  const nameW = narrow ? 112 : 150, unit = (W - nameW - 90) / Math.max(...rows.map(r => r[1])), bars = {};
+  rows.forEach(([nm, len, sz], i) => {
+    const y = Hs + 26 + i * (narrow ? 17 : 19);
+    c.fillStyle = '#d8e1ee'; c.font = `${narrow ? 10 : 11}px Inter,system-ui,sans-serif`; c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillText(nm, 10, y + 6);
+    c.fillStyle = nm === 'a grown-up person' ? '#9fb3d1' : '#e07a4c'; c.fillRect(nameW, y + 1, len * unit, 10);
+    c.fillStyle = '#9fb3d1'; c.font = `italic ${narrow ? 9.5 : 10}px Inter,system-ui,sans-serif`; c.fillText(sz, nameW + len * unit + 6, y + 6);
+    bars[nm] = len * unit;
+  });
+  S.siteDrawn = drawn; S.siteBars = bars;
+}
 const ageTag = t => t >= 1 ? (t >= 10 ? Math.round(t) : +t.toFixed(1)) + ' M' : t >= 0.0117 ? Math.round(t * 1000) + 'k' : 'today';
 function kinHTML() {
   const list = (KIN[S.kin] || []).slice().sort((a, b) => b.t[0] - a.t[0] || b.t[1] - a.t[1]); if (!list.length) return '';
@@ -1158,6 +1232,9 @@ function bindExt() {
   document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) playScene(b.dataset.play); });
   document.addEventListener('click', e => { const b = e.target.closest('[data-story]'); if (b) { S.storyOpen = b.dataset.story; playStory(b.dataset.story); } });
   document.addEventListener('click', e => { if (e.target.closest('[data-geoid]')) toggleGeoid(); });
+  document.addEventListener('click', e => { const st = e.target.closest('[data-site]'); if (st) { e.stopPropagation(); openSite(st.dataset.site); return; } if (e.target.closest('[data-site-close]')) closeSite(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.site) closeSite(); });
+  window.addEventListener('resize', () => { if (S.site) drawSite(SITE[S.site]); });
   document.addEventListener('input', e => { if (e.target.id !== 'geoidScale') return; const x = geoidScaleOf(+e.target.value); WorldMap.setGeoidScale(x); const v = $('geoidScaleV'); if (v) v.textContent = geoidScaleText(x); });
 }
 

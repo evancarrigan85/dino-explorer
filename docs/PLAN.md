@@ -29,14 +29,14 @@ network secret and for `api.phylopic.org` among the allowed hosts.
 | Timeline | **4,567 million years ago → today**: the Hadean, the four Archean eras and every Proterozoic period, each with its insights and sources. Before 1,800 Ma no map of the land exists, so none is drawn and the map says so in words |
 | Map | Plate motion **1,800 Ma → today** (Merdith et al. 2021 for the last billion years, Cao et al. 2024 before); **seas over the continents 540 → 3 Ma** (Kocsis & Scotese 2021, a map every 5 Myr); **ancient relief and sea depth** (Scotese & Wright 2018 PaleoDEMs, WebGL, blended between maps); Ice Age shorelines at 9 sea levels; ice sheets; today's mountains for the last 5 Ma; temperature readout and stripe (540 Ma → today); **the last 3.6 Ma from published records**: sea level (Lambeck 2014, Spratt & Lisiecki 2016, Berends 2021), ice sheets (PaleoMIST every 2,500 years to 80 ka, Batchelor et al. 2019 to 3.6 Ma), today’s rivers back to 3 Ma, and rivers traced across the dry sea floor |
 | Finds | 59 discovery stories, 16 from before 1800 (every one from 1500 on with a source), and “What this atlas borrows” |
-| References | 589, every one a published work confirmed in Crossref |
+| References | 594, every one a published work confirmed in Crossref |
 | Age of Mammals | Told epoch by epoch: Paleocene, Eocene, Oligocene, Miocene and Pliocene each have their own chapter (header, map title, Insights), with sources |
 | What helped and threatened people | 11 helps and 10 threats in the Humans tab (“At this time”), from 7 Ma to the Black Death, each with its papers and what is argued over |
 | History | 27 empires and kingdoms (25 sketched on the map) and 17 beliefs in six families, in the Humans tab; calendar years and a “Recorded history” zoom |
 | Extinctions | Their own tab: seven events, a severity chart, and a map scene for each; then 13 smaller crises, each a sourced timeline event |
 | Connection | “Your ancestor at this moment” bar under the map (26 steps, the birth of the Earth → today); four guided journeys |
 | Living map | Wakes behind drifting land, light on the water, eruptions and impacts at 22 places (511 Ma → 1815 CE), each tied to a sourced event |
-| Checks | 283 passing, plus the benchmark ratchet (`tools/bench`) |
+| Checks | 288 passing, plus the benchmark ratchet (`tools/bench`) |
 | Page | about 2.2 MB, one file (plus tiles loaded on demand: close-up terrain and coast, and 1.2 MB of ancient elevation maps) |
 | Name | **Before Us — a deep-time atlas of Earth, life and people** (title and header; repository and file names unchanged) |
 
@@ -583,7 +583,7 @@ Then:
    fallback. Credit every artist and licence in the card’s sources. Build to a packed sheet in the page, or to
    `tiles/` if it is large, with a check that every picture has a licence on the allowed list.
 
-### 12.2 — Life at the site: the Kem Kem first (no blockers; Release 10 step 2’s rules apply)
+### 12.2 — Life at the site: the Kem Kem first — **the Kem Kem shipped 24 Nov 2026** (see Shipped); next sites below
 - **Data.** A new `data_sites.js`, one record per site: `id`, `name`, `at` [lat, lon], `t` (Ma), `rock`,
   `setting`, `plants` (only where fossil plants or pollen are known), and `animals`. Each animal has `name`
   (must match the page’s animal list or the site’s source list), `role` (in the water / at the edge / on the
@@ -707,6 +707,21 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **24 Nov 2026 — Life at the Kem Kem rivers (Release 12.2, the first site).** The Spinosaurus and Carcharodontosaurus
+  cards open a scene over the map: the rivers of south-east Morocco about 100–95 million years ago.
+  - **Who is in it:** 13 animals, every one from Ibrahim et al. 2020. Four big meat-eating dinosaurs and
+    Rebbachisaurus are on the bank; Spinosaurus stands at the water’s edge; turtles sit on a sandbank. In the
+    water are Elosuchus, the sawfish-like Onchopristis, the giant coelacanth Axelrodichthys, a lungfish and a
+    gar; two pterosaurs fly overhead. The conifers come from the petrified wood.
+  - **Sizes:** a strip of bars shows the known lengths to scale beside a grown-up person. Animals with no known
+    length get no bar and say “size not known”; the pictures themselves are not to scale, and the caption says so.
+  - **Phones:** numbers stand in for the names, matching the numbered list below the picture.
+  - **Below the picture:** the place, the rock, the plants, who was found, how we know, and what is argued over
+    (“Stromer’s riddle”, and how much Spinosaurus swam, with both sides cited).
+  - **The source:** the paper’s full text came from its Zenodo copy (record 19068755, CC BY 4.0). PubMed
+    Central blocked automated reading with a CAPTCHA, which was not worked around.
+  5 new references (594). 288 checks.
 
 - **24 Nov 2026 — The gravity shape at real size (Release 12.0).** The “real shape” card has a slider from real size to
   20,000×, on a log scale so that 1×, 10×, 100× and so on each get room.

@@ -1444,7 +1444,8 @@
 ],
 "targets": [
 "a:Spinosaurus",
-"x:spinosaurus"
+"x:spinosaurus",
+"z:kemkem"
 ],
 "title_expected": "Tail-propelled aquatic locomotion in a theropod dinosaur",
 "type": "journal-article",
@@ -4694,7 +4695,8 @@
 "targets": [
 "x:spinosaurus",
 "a:Spinosaurus",
-"n:kemkem"
+"n:kemkem",
+"z:kemkem"
 ],
 "title_expected": "Semiaquatic adaptations in a giant predatory dinosaur",
 "type": "journal-article",
@@ -9993,7 +9995,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"n:kemkem"
+"n:kemkem",
+"z:kemkem"
 ],
 "first": "",
 "title_expected": "Geology and paleontology of the Upper Cretaceous Kem Kem Group of eastern Morocco"
@@ -10011,7 +10014,8 @@
 ],
 "type": "journal-article",
 "targets": [
-"n:kemkem"
+"n:kemkem",
+"z:kemkem"
 ],
 "first": "",
 "title_expected": "Unbalanced food web in a Late Cretaceous dinosaur assemblage"
@@ -10396,5 +10400,94 @@
 ],
 "first": "",
 "title_expected": "10Be dating of late Pleistocene megafloods and Cordilleran Ice Sheet retreat in the northwestern United States"
+},
+"hone2021": {
+"doi": "10.26879/1110",
+"title": "Evaluating the ecology of Spinosaurus: shoreline generalist or aquatic pursuit specialist?",
+"journal": "Palaeontologia Electronica",
+"year": 2021,
+"authors": [
+"Hone",
+"Holtz"
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem",
+"a:Spinosaurus"
+],
+"first": "",
+"title_expected": "Evaluating the ecology of Spinosaurus: shoreline generalist or aquatic pursuit specialist?"
+},
+"fabbri2022": {
+"doi": "10.1038/s41586-022-04528-0",
+"title": "Subaqueous foraging among carnivorous dinosaurs",
+"journal": "Nature",
+"year": 2022,
+"authors": [
+"Fabbri",
+"Navalón",
+"Benson",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem",
+"a:Spinosaurus"
+],
+"first": "",
+"title_expected": "Subaqueous foraging among carnivorous dinosaurs"
+},
+"sereno2022": {
+"doi": "10.7554/elife.80092",
+"title": "Spinosaurus is not an aquatic dinosaur",
+"journal": "eLife",
+"year": 2022,
+"authors": [
+"Sereno",
+"Myhrvold",
+"Henderson",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem",
+"a:Spinosaurus"
+],
+"first": "",
+"title_expected": "Spinosaurus is not an aquatic dinosaur"
+},
+"wilson2015": {
+"doi": "10.1080/02724634.2014.1000701",
+"title": "Osteology of Rebbachisaurus garasbae Lavocat, 1954, a diplodocoid (Dinosauria, Sauropoda) from the early Late Cretaceous–aged Kem Kem beds of southeastern Morocco",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 2015,
+"authors": [
+"Wilson",
+"Allain"
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem"
+],
+"first": "",
+"title_expected": "Osteology of Rebbachisaurus garasbae Lavocat, 1954, a diplodocoid (Dinosauria, Sauropoda) from the early Late Cretaceous-aged Kem Kem beds of southeastern Morocco"
+},
+"ibrahim2010": {
+"doi": "10.1371/journal.pone.0010875",
+"title": "A New Pterosaur (Pterodactyloidea: Azhdarchidae) from the Upper Cretaceous of Morocco",
+"journal": "PLoS ONE",
+"year": 2010,
+"authors": [
+"Ibrahim",
+"Unwin",
+"Martill",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem"
+],
+"first": "",
+"title_expected": "A new pterosaur (Pterodactyloidea: Azhdarchidae) from the Upper Cretaceous of Morocco"
 }
 }

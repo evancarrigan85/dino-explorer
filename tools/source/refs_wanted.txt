@@ -84,7 +84,7 @@ tschopp2015 | Tschopp | 2015 | A specimen-level phylogenetic analysis and taxono
 lambert2010 | Lambert | 2010 | The giant bite of a new raptorial sperm whale from the Miocene epoch of Peru | a:Livyatan, f:neogene
 erickson2004 | Erickson | 2004 | Gigantism and comparative life-history parameters of tyrannosaurid dinosaurs | a:Tyrannosaurus rex
 depalma2013 | DePalma | 2013 | Physical evidence of predatory behavior in Tyrannosaurus rex | a:Tyrannosaurus rex, a:Edmontosaurus, f:cretaceous
-ibrahim2020 | Ibrahim | 2020 | Tail-propelled aquatic locomotion in a theropod dinosaur | a:Spinosaurus, x:spinosaurus 
+ibrahim2020 | Ibrahim | 2020 | Tail-propelled aquatic locomotion in a theropod dinosaur | a:Spinosaurus, x:spinosaurus , z:kemkem
 xu2012 | Xu | 2012 | A gigantic feathered dinosaur from the Lower Cretaceous of China | a:Yutyrannus
 brown2017 | Brown | 2017 | An exceptionally preserved three-dimensional armored dinosaur reveals insights into coloration and Cretaceous predator-prey dynamics | a:Borealopelta, x:borealopelta 
 smithwick2017 | Smithwick | 2017 | Countershading and stripes in the theropod dinosaur Sinosauropteryx reveal heterogeneous habitats in the Early Cretaceous Jehol Biota | a:Sinosauropteryx
@@ -266,7 +266,7 @@ chen1998 | Chen | 1998 | An exceptionally well-preserved theropod dinosaur from 
 zhang2010 | Zhang | 2010 | Fossilized melanosomes and the colour of Cretaceous dinosaurs and birds | x:sinosauropteryx, a:Sinosauropteryx
 schweitzer2005 | Schweitzer | 2005 | Soft-tissue vessels and cellular preservation in Tyrannosaurus rex | x:softtissue, a:Tyrannosaurus rex
 xing2016 | Xing | 2016 | A feathered dinosaur tail with primitive plumage trapped in mid-Cretaceous amber | x:amber
-ibrahim2014 | Ibrahim | 2014 | Semiaquatic adaptations in a giant predatory dinosaur | x:spinosaurus, a:Spinosaurus, n:kemkem
+ibrahim2014 | Ibrahim | 2014 | Semiaquatic adaptations in a giant predatory dinosaur | x:spinosaurus, a:Spinosaurus, n:kemkem, z:kemkem
 richter2017 | Richter | 2017 | The age of the hominin fossils from Jebel Irhoud, Morocco, and the origins of the Middle Stone Age | x:irhoud, h:sapiens
 pigati2023 | Pigati | 2023 | Independent age estimates resolve the controversy of ancient human footprints at White Sands | x:whitesands
 krause2010 | Krause | 2010 | The complete mitochondrial DNA genome of an unknown hominin from southern Siberia | x:denisova, h:denisovan
@@ -590,8 +590,8 @@ sigurdsson1982 | Sigurdsson | 1982 | The eruption of Vesuvius in A.D. 79: recons
 oppenheimer2003 | Oppenheimer | 2003 | Climatic, environmental and human consequences of the largest known historic eruption: Tambora volcano (Indonesia) 1815 | n:tambora
 torsvik2009 | Torsvik | 2009 | A new scheme for the opening of the South Atlantic Ocean and the dissection of an Aptian salt basin | n:southatlantic
 rich1988 | Rich | 1988 | Evidence for low temperatures and biologic diversity in Cretaceous high latitudes of Australia | n:polardinos
-ibrahim2020b | Ibrahim | 2020 | Geology and paleontology of the Upper Cretaceous Kem Kem Group of eastern Morocco | n:kemkem | 10.3897/zookeys.928.47517
-lang2013 | Läng | 2013 | Unbalanced food web in a Late Cretaceous dinosaur assemblage | n:kemkem
+ibrahim2020b | Ibrahim | 2020 | Geology and paleontology of the Upper Cretaceous Kem Kem Group of eastern Morocco | n:kemkem, z:kemkem | 10.3897/zookeys.928.47517
+lang2013 | Läng | 2013 | Unbalanced food web in a Late Cretaceous dinosaur assemblage | n:kemkem, z:kemkem
 polcyn2014 | Polcyn | 2014 | Physical drivers of mosasaur evolution | n:mosasaurs
 mallon2012 | Mallon | 2012 | Megaherbivorous dinosaur turnover in the Dinosaur Park Formation (upper Campanian) of Alberta, Canada | n:dinopark
 druckenmiller2021 | Druckenmiller | 2021 | Nesting at extreme polar latitudes by non-avian dinosaurs | n:arcticnests
@@ -614,3 +614,8 @@ waitt1985 | Waitt | 1985 | Case for periodic, colossal jökulhlaups from Pleisto
 benito2003 | Benito | 2003 | Number and size of last-glacial Missoula floods in the Columbia River valley between the Pasco Basin, Washington, and Portland, Oregon | s:missoula
 baker2009 | Baker | 2009 | The Channeled Scabland: A Retrospective | s:missoula, n:missoula
 balbas2017 | Balbas | 2017 | 10Be dating of late Pleistocene megafloods and Cordilleran Ice Sheet retreat in the northwestern United States | s:missoula
+hone2021 | Hone | 2021 | Evaluating the ecology of Spinosaurus: shoreline generalist or aquatic pursuit specialist? | z:kemkem, a:Spinosaurus
+fabbri2022 | Fabbri | 2022 | Subaqueous foraging among carnivorous dinosaurs | z:kemkem, a:Spinosaurus
+sereno2022 | Sereno | 2022 | Spinosaurus is not an aquatic dinosaur | z:kemkem, a:Spinosaurus | 10.7554/eLife.80092
+wilson2015 | Wilson | 2015 | Osteology of Rebbachisaurus garasbae Lavocat, 1954, a diplodocoid (Dinosauria, Sauropoda) from the early Late Cretaceous-aged Kem Kem beds of southeastern Morocco | z:kemkem
+ibrahim2010 | Ibrahim | 2010 | A new pterosaur (Pterodactyloidea: Azhdarchidae) from the Upper Cretaceous of Morocco | z:kemkem
