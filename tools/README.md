@@ -56,6 +56,8 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `HILL_HAVE` + `tiles/relief/` (terrain light and shadow, 3 levels) | `build_hillshade.py` |
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
 | `SIL` + `tiles/sil/` (animal silhouettes for the site scenes, from PhyloPic, with artist and licence; CC0, public domain or CC BY only) | `build_silhouettes.py` (all of `WANT`), `--only k1,k2` (just those); needs Pillow and the two PhyloPic hosts |
+| `ICONS` (`icons-data.js`: the line icons the page uses) | `node tools/build_icons.mjs <lucide-static 1.70.0>/icon-nodes.json` after changing `icon_map.js` (install the package in any scratch folder with `npm i --ignore-scripts lucide-static@1.70.0`) |
+| `PAINT` (`paintings-data.js`) + `tiles/scenes/` (AI-painted landscapes behind the site scenes; no animals) | `python3 -I tools/paint.py site <id> [--n 3] [--pro] [--dry-run]`, look at every candidate, then `tools/paint.py choose <id> <n>`; needs the Gemini key as a network secret |
 | `SILA`, `SILI` + `tiles/sil/p/` (a silhouette for every animal card that has one: own, one member of the group, or a relative) | `build_silhouettes.py --animals cards.json picks.json [--resume]` (choose; `cards.json` is `[{n: name, path: [...]}]` from the page’s `ALL`, without the human family), look at every pick on contact sheets, correct `NAMES`/`GROUPS`/`BAD`, then `--fetch picks.json` (download once per drawing, 320 px, and write the data) |
 
 **Tiles beside the page.** `tiles/relief/` (about 3.3 MB of grey JPEGs) and `tiles/coast/` (about 1 MB of

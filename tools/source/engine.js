@@ -1096,6 +1096,10 @@ void main() {
   }
   // markers that arrive and leave: when each first appeared, where it was last drawn, and the ones just gone
   let born = {}, lastAt = {}, ghosts = [], animUntil = 0;
+  // emoji on the map are drawn by the app's icon painter when it has one (setIconPainter), else as text
+  let iconPaint = null;
+  const glyph = (c, e, x, y, px) => { if (iconPaint && iconPaint(c, e, x, y, px)) return; c.font = `${Math.round(px)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(e, x, y); };
+  const markText = (c, mk, x, y, r) => { c.font = `700 ${Math.round(r * (mk.length > 1 ? 0.82 : 1.05))}px Cinzel,Georgia,'Times New Roman',serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#3a2410'; c.fillText(mk, x, y + r * 0.06); };
   // small repeating marks that give each landscape its grain: clumps for forest, ticks for grass, grains for sand
   function coverTile(kind, ink) {
     const key = kind + ink; if (coverTiles[key]) return coverTiles[key];
@@ -1863,8 +1867,7 @@ void main() {
       const p = project(locate(P.at, t)); if (!p || !inView(p[0], p[1], 6)) continue;
       const r = 4.2 * zs;
       if (P.icon) {
-        c.font = `${Math.round(15 * zs)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
-        c.fillText(P.icon, p[0], p[1]);
+        glyph(c, P.icon, p[0], p[1], 15 * zs);
       } else {
         c.save(); c.translate(p[0], p[1]); c.rotate(Math.PI / 4);
         c.fillStyle = P.key === selected ? '#d8421a' : '#8a2b12'; c.strokeStyle = 'rgba(250,236,200,0.95)'; c.lineWidth = 1.2;
@@ -1899,7 +1902,7 @@ void main() {
       if (grow < 1) { c.save(); c.globalAlpha = grow; c.translate(q_[0], q_[1] + (1 - grow) * 9); c.scale(0.6 + 0.4 * grow, 0.6 + 0.4 * grow); c.translate(-q_[0], -q_[1]); }
       if (m.dim && !strong) { c.save(); c.globalAlpha *= 0.55; }      // a relative that is not alive at this moment
       const pic = m.pic ? m.pic() : null;    // a silhouette from the app, once it has loaded; the emoji until then
-      lastAt[m.key] = [q_[0], q_[1], r, m.emoji, !!pic];
+      lastAt[m.key] = [q_[0], q_[1], r, m.emoji, !!pic, pic, m.mark];
       if (q_ !== p && (q_[0] !== p[0] || q_[1] !== p[1])) {
         c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q_[0], q_[1]); c.strokeStyle = 'rgba(60,34,10,0.7)'; c.lineWidth = 1; c.stroke();
         c.beginPath(); c.arc(p[0], p[1], 2, 0, 7); c.fillStyle = 'rgba(60,34,10,0.9)'; c.fill();
@@ -1910,10 +1913,8 @@ void main() {
       if (pic) {                                // fitted so its corners stay inside the disc: long shapes use the full width
         const a = pic.width / pic.height, h = 1.74 * r / Math.sqrt(a * a + 1), w = a * h;
         c.drawImage(pic, q_[0] - w / 2, q_[1] - h / 2, w, h);
-      } else {
-        c.font = `${Math.round(r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
-        c.fillText(m.emoji, q_[0], q_[1] + r * 0.08);
-      }
+      } else if (m.mark) markText(c, m.mark, q_[0], q_[1], r);    // no picture: a lettered roundel, as on a printed map
+      else glyph(c, m.emoji, q_[0], q_[1] + r * 0.08, r * 1.25);
       if (m.dim && !strong) c.restore();
       if (m.tag) text(c, m.tag, q_[0], q_[1] + r + 6 * zs, 8.5 * zs, { align: 'center', spacing: 0.2, weight: 700, haloW: 3, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       if (grow < 1) c.restore();
@@ -1939,7 +1940,7 @@ void main() {
       hits.push({ x: bx, y: by, r: br + 4, more: cr });
     }
     for (const [sp, p, ly, sz, imp] of sparkLabels) {
-      c.font = `${Math.round(15 * zs)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(imp ? '☄️' : '🌋', p[0], p[1]);
+      glyph(c, imp ? '☄️' : '🌋', p[0], p[1], 15 * zs);
       text(c, sp.name, p[0], ly, sz, { weight: 700, spacing: 0.4, haloW: 3.6, color: imp ? '#7a1e08' : '#5a1608', font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       text(c, imp ? 'asteroid impact' : 'volcanic eruptions', p[0], ly + sz * 1.15, sz * 0.82, { weight: 500, spacing: 0.4, haloW: 3, color: '#4a2a14', italic: true, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
     }
@@ -1950,7 +1951,10 @@ void main() {
         const u = (nowMs - g.t) / 520;
         c.save(); c.globalAlpha = 0.85 * (1 - u) * (1 - u);
         c.beginPath(); c.arc(g.x, g.y + u * 7, g.r * (1 - 0.25 * u), 0, 7); c.fillStyle = 'rgba(214,200,170,0.9)'; c.fill(); c.lineWidth = 1; c.strokeStyle = 'rgba(70,40,12,0.6)'; c.stroke();
-        c.font = `${Math.round(g.r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(g.e, g.x, g.y + u * 7 + g.r * 0.08);
+        const gy = g.y + u * 7;
+        if (g.pic) { const a = g.pic.width / g.pic.height, h = 1.74 * g.r / Math.sqrt(a * a + 1); c.drawImage(g.pic, g.x - a * h / 2, gy - h / 2, a * h, h); }
+        else if (g.mark) markText(c, g.mark, g.x, gy, g.r);
+        else glyph(c, g.e, g.x, gy + g.r * 0.08, g.r * 1.25);
         c.restore();
       }
     }
@@ -2198,6 +2202,7 @@ void main() {
     /* turn the map to a present-day [lon, lat] */
     lookAtLL(lon, lat) { api.lookAt({ ll: [lon, lat] }); },
     /* Decorative motion on or off (tests and screenshots turn it off; so does the reader's reduced-motion setting). */
+    setIconPainter(fn) { iconPaint = fn; dirty = true; schedule(); },
     setMotion(on) { motion = !!on; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
     motion,
     get mode() { return mode; },
@@ -2272,7 +2277,7 @@ void main() {
         // a wholesale change (a new tab, a filter, a jump through time) is not an arrival or an extinction
         const added = l.markers.filter(m => !had.has(m.key)), gone = layers.markers.filter(m => !has.has(m.key));
         if (had.size && added.length <= 14) for (const m of added) born[m.key] = now;
-        if (gone.length <= 14) for (const m of gone) { const a = lastAt[m.key]; if (a) ghosts.push({ x: a[0], y: a[1], r: a[2], e: a[3], t: now }); }
+        if (gone.length <= 14) for (const m of gone) { const a = lastAt[m.key]; if (a) ghosts.push({ x: a[0], y: a[1], r: a[2], e: a[3], pic: a[5], mark: a[6], t: now }); }
         for (const m of gone) { delete born[m.key]; delete lastAt[m.key]; }
         if (added.length || gone.length) animUntil = now + 560;
       }

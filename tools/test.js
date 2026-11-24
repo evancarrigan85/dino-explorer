@@ -16,6 +16,15 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   let p = await open({ width: 1400, height: 900 });
   ok('loads at 150 MYA', await p.evaluate(() => S.t === 150 && S.period.id === 'jurassic'));
   ok('map engine has land', await p.evaluate(() => WorldMap.stats().polygons > 500));
+  // icons instead of emoji (icon_map.js, icons-data.js)
+  ok('icons: the header, tabs, buttons and map controls show drawn icons, not emoji', await p.evaluate(() => {
+    const emoji = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u, parts = ['header', '.tab-bar', '#timelineBar', '.map-ctl'].map(s => document.querySelector(s)).filter(Boolean);
+    return parts.length === 4 && parts.every(e => !emoji.test(e.innerText)) && document.querySelectorAll('.tab-bar svg.ico').length === 7 && document.querySelectorAll('.map-ctl svg.ico').length >= 4; }));
+  ok('icons: every mapped emoji has a drawn icon, and the map paints them as paths (not text)', await p.evaluate(() => {
+    const cv = document.createElement('canvas'), c = cv.getContext('2d'); return Object.values(EMOJI_ICON).every(n => ICONS[n]) && ['🦴', '🌋', '☄️', '🏛️'].every(e => paintIcon(c, e, 12, 12, 20)) && paintIcon(c, '🕌', 12, 12, 20) === false; }));
+  ok('icons: an animal with no picture gets a lettered roundel (Au for Australopithecus), on its card and its pin', await p.evaluate(() => {
+    const au = ALL.find(c => /^Australopithecus/.test(c.name)), mic = ALL.find(c => c.name === 'Dresser hot-spring microbes');
+    return monogram(au) === 'Au' && monogram(mic) === 'D' && /class="mono big"/.test(cardHTML(mic, false)) && /class="mono/.test(mini(mic)); }));
   ok('desktop: no sheet — the panel sits beside the map and the grip is hidden', await p.evaluate(() => !S.sheet && !document.body.dataset.sheet && getComputedStyle(document.getElementById('sheetGrip')).display === 'none'));
   ok('markers drawn', await p.evaluate(() => ALL.filter(c => alive(c, S.t)).length > 5));
   // timeline zoom: presets, wheel, brush

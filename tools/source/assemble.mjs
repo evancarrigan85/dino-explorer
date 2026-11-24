@@ -134,6 +134,11 @@ const { SITE_SCENES } = require('./data_sites.js');
 // silhouettes-data.js holds three constants: SIL (the scenes), SILI (every picture) and SILA (every animal card → picture)
 const silSrc = fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8');
 const silConst = name => { const i = silSrc.indexOf('const ' + name + ' = '); if (i < 0) return null; const a = silSrc.indexOf('{', i); return JSON.parse(silSrc.slice(a, silSrc.indexOf(';\n', a))); };
+{ // icons: every emoji in the table has a drawn icon, and every animal stand-in is that animal’s own silhouette
+  const { EMOJI_ICON, EMOJI_SIL } = require('./icon_map.js'), { ICONS } = require('./icons-data.js'), SA = silConst('SILA') || {};
+  for (const [e, n] of Object.entries(EMOJI_ICON)) if (!ICONS[n]) problems.push('icon_map: ' + e + ' wants icon ' + n + ', which icons-data.js does not have (run tools/build_icons.mjs)');
+  for (const [e, n] of Object.entries(EMOJI_SIL)) if (!SA[n] || SA[n][1] !== 0) problems.push('icon_map: ' + e + ' stands for ' + n + ', which has no silhouette of its own');
+}
 { const SILI = silConst('SILI'), SILA = silConst('SILA');
   if (SILA) {
     for (const [k, i] of Object.entries(SILI)) {
@@ -306,7 +311,7 @@ const rocks = fs.readFileSync(SRC + 'rocks-data.js', 'utf8').trim();
 const seas = fs.readFileSync(SRC + 'seas-data.js', 'utf8').trim();
 const demIndex = fs.readFileSync(SRC + 'dem-index.js', 'utf8').trim();
 const rivers = fs.readFileSync(SRC + 'rivers-data.js', 'utf8').trim();
-const quat = fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'quaternary-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'shelf-rivers-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'geoid-data.js', 'utf8').trim();
+const quat = fs.readFileSync(SRC + 'icon_map.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'icons-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'quaternary-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'shelf-rivers-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'geoid-data.js', 'utf8').trim();
 const hillIndex = fs.readFileSync(SRC + 'hill-index.js', 'utf8').trim();
 const coastIndex = fs.readFileSync(SRC + 'coast-index.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }

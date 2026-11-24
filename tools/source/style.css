@@ -708,3 +708,16 @@ header .logo,header h1{cursor:pointer}
   .tab-btn{flex:0 0 auto;padding:7px 13px 9px;font-size:.8rem;min-height:36px}
   .panel-content{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;min-height:0;overscroll-behavior:contain}
 }
+
+/* icons instead of emoji (icon_map.js): line icons, animal silhouettes and lettered roundels */
+.ico{display:inline-block;width:1.1em;height:1.1em;vertical-align:-.18em;flex-shrink:0;stroke-width:2}
+.ico-sil{background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;width:2em;height:1.25em;vertical-align:-.3em}
+.door-i .ico.ico-sil{width:60px;height:32px;background:#e8b75a}
+.mono{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#efe0b8;color:#3a2410;border:1px solid rgba(70,40,12,.55);
+  font:700 .74rem Cinzel,Georgia,'Times New Roman',serif;line-height:1;width:1.75em;height:1.75em;flex-shrink:0;letter-spacing:0}
+.mono.big{width:46px;height:46px;font-size:1.15rem}.mono.row{width:24px;height:24px;font-size:.7rem}.mono.mini{width:1.6em;height:1.6em;font-size:.66rem;vertical-align:-.3em}
+.sil-pic.mini{width:1.8em;height:1.1em;vertical-align:-.25em}
+#fpEmoji .sil-pic,#fpEmoji .mono{width:42px;height:30px}#fpEmoji .mono{width:34px;height:34px;font-size:.9rem}
+.door-i .ico{width:1.5em;height:1.5em;color:#e8b75a}
+.logo .ico,.door-globe .ico{color:#e8b75a;width:1.15em;height:1.15em}
+.tab-btn .ico{margin-right:3px}

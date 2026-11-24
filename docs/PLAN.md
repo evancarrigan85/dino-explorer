@@ -9,7 +9,29 @@ commit that builds, passes `node tools/test.js`, has been looked at on desktop a
 pushed to `main`. When a release ships, move it to "Shipped" with the date and the numbers, and
 correct anything below that turned out to be wrong. Where a step says **ask Evan**, stop and ask.
 
-## Next up (updated 24 Nov 2026 — start here)
+## Next up (updated 25 Nov 2026 — start here)
+
+**Evan, 25 Nov: “move away from the generic emoticons … we need a proper capability for the paintings of the landscape
+scenes.”** Two answers, in this order:
+1. **Painted landscapes — built, waiting for the key.** `tools/paint.py` paints the land, water, plants and light behind a
+   scene with Google’s image model (`gemini-3.1-flash-image`, ~$0.07 an image at 1K; `--pro` for `gemini-3-pro-image`,
+   ~$0.13). The prompt is built from the scene’s own `paint` brief in `data_sites.js` (a paraphrase of the paper: land,
+   water, plants, light, and what not to paint), with a fixed museum-painting style, a layout sketch so the page’s zones
+   still fit, and a hard ban on animals, people and text: **the animals stay the scientists’ silhouettes, on top, to
+   scale.** Caps per run (`PAINT_MAX_CALLS` 8, `PAINT_BUDGET_USD` 0.75), `--dry-run`, and a committed spend log
+   (`tools/paint/spend.jsonl`); the prompt sent is kept in `tools/paint/prompts/`. **Blocked on the key:** the form asking
+   for it was declined on 25 Nov. Evan adds it himself: the environment menu in the session’s title bar → Edit → Network
+   secrets, host `generativelanguage.googleapis.com`, header `x-goog-api-key`, no prefix. Then:
+   `python3 -I tools/paint.py site kemkem --n 3`; look at every candidate (no animals, plants as briefed, no grass, palms or
+   flowers, the far bank level where the bank animals stand); `tools/paint.py choose kemkem <n>` writes
+   `tiles/scenes/kemkem.webp` and `PAINT` (`paintings-data.js`). Still to write when the first painting exists: the page
+   draws `PAINT[id]` behind the silhouettes in `drawSite()` (cover-fit; the flat drawing stays as the fallback), a caption
+   saying it is an AI-made painting of the setting the papers describe, checked by eye, with the prompt one tap away, and
+   checks. After the Kem Kem: the next sites, then one landscape per period for the Insights tab.
+2. ~~Icons instead of emoji, pass 1~~ **shipped 25 Nov** (see Shipped). **Pass 2:** the data icons still drawn as emoji:
+   history and beliefs (choose each symbol with the same care as the text, never a stand-in from another faith), food-web
+   nodes and finds not in `icon_map.js` yet, the timeline’s rarer event icons. Extend the table and rebuild
+   (`node tools/build_icons.mjs <lucide-static 1.70.0>/icon-nodes.json`); the page changes everywhere at once.
 
 **25 Nov: the audit’s order, as Evan approved it (“proceed”).** (a) ~~Silhouettes on pins and cards~~ and (b) ~~the phone layout~~
 **shipped 25 Nov**; **(c) the polish release is next**: the share card (`og:image`, a fixed description), a real icon,
@@ -788,6 +810,17 @@ landLife 93.6% · facts 23/26. Next moves, best first:
    turn each into a fact with its sources. Aim for 60+.
 
 ## Shipped
+
+- **25 Nov 2026 — Icons instead of emoji, pass 1.** Evan: “move away from the generic emoticons.” The header, the tabs, the
+  timeline’s event marks, every button, the map’s controls, the front door, the chips and the card headings now use line
+  icons (Lucide 1.70.0, ISC licence, a release more than two weeks old; four drawn for this atlas in the same style:
+  volcano, meteor, mushroom, rock). One table (`icon_map.js`) maps each emoji to an icon, or, for an animal, to the
+  silhouette of a real animal from the cards (a fish chip shows a coelacanth); the page swaps them into everything it
+  draws, and the map paints the same icons on its canvas for places, eruptions and impacts. An emoji not in the table
+  stays as it is: beliefs and peoples are left alone on purpose until each symbol is chosen with care. Animals with no
+  silhouette, and the human family, get a **lettered roundel** in the atlas’s ink, as on a printed map (Au for
+  *Australopithecus*): no invented shape. The build refuses an icon that does not exist or a stand-in animal without
+  its own outline. Also in this commit, not yet used by the page: `tools/paint.py` (see Next up).
 
 - **25 Nov 2026 — The phone layout: the map has the screen, the panel is a sheet (the audit’s item 1).** On a phone the
   tab content used to sit about 7,900 px down a scrolling box under the map, so tapping a tab changed nothing you could

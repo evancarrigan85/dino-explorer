@@ -6,6 +6,7 @@
 // Fields: id, name, where, at [lat, lon today], t (Ma), when, open (animal cards that open the scene), blurb,
 //   setting, rock, plants, cast [{ name, sil (a key in SIL, silhouettes-data.js), emoji (used until the silhouette loads),
 //   zone: air | bank | edge | sand | water, len (m) or null, size, note }],
+//   paint { land, water, plants, light, not }: the painter’s brief for tools/paint.py (the landscape only, never animals),
 //   know, debate.
 // ==== life at the site ====
 const SITE_SCENES = [
@@ -30,6 +31,12 @@ const SITE_SCENES = [
       { name: 'Neoceratodus', sil: 'neoceratodus', emoji: '🐟', zone: 'water', len: null, size: 'size not known', note: 'a lungfish' },
       { name: 'Obaichthys', sil: 'obaichthys', emoji: '🐟', zone: 'water', len: null, size: 'size not known', note: 'a gar' },
     ],
+    // the painter’s brief (tools/paint.py): the same paper’s setting, as a painter needs it; what is not known is left out
+    paint: { land: 'a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles',
+      water: 'a broad, shallow, slow river, brownish-green, braided around a pale sandbank island',
+      plants: 'a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank; low leafy shrubs and small plants at the water’s edge; a few ferns',
+      light: 'a hot, hazy dry-season afternoon under a pale sky',
+      not: 'grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes' },
     know: 'Most fossils here are single bones and teeth, rolled along by the rivers and mixed together; the commonest of all are the teeth of the sawfish Onchopristis. Whole skeletons are very rare. The sandstones show which way the water flowed: north, toward a delta on the sea.',
     debate: '“Stromer’s riddle”: why so many big meat-eaters and so few plant-eaters? Perhaps many of the hunters lived on the rivers’ giant fish; perhaps the rivers mixed together bones from different times and places. And how much did Spinosaurus swim — a diving hunter, or a wader at the water’s edge? The picture shows it at the edge, which both sides allow.',
   },

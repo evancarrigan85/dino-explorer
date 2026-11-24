@@ -249,10 +249,10 @@ function updateMarkers(now) {
   if (S.tab === 'humans' && inHistory()) now = now.filter(c => c.hom);   // recorded history: the map is for empires and beliefs
   if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
   if (S.tab === 'life' && S.view === 'kin' && KIN[S.kin] && !S.story && !gravityShown()) {
-    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
+    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
     return;
   }
-  WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), name: c.name, sites: sitesOf(c) })) });
+  WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c) })) });
 }
 const placeCache = {};
 // cultures shown at the current moment: active now, with a little give so short-lived ones can be found
@@ -318,7 +318,7 @@ function select(key, o = {}) {
     } else look();
     if (o.fromMap) {
       if (!(S.tab === 'humans' && c.hom) && S.tab !== 'life') switchTab('life');
-      if (window.innerWidth < 768) showFact(c.emoji, '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
+      if (window.innerWidth < 768) showFact(mini(c), '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
     }
   }
   updateMarkers(); schedulePanel(0);
@@ -585,7 +585,7 @@ function cardHTML(c, open) {
     if (c.sites && c.sites.length) L.push(`<div class="found">📍 <b>Fossils found at:</b> ${c.sites.map(s => esc(s[2])).join(' · ')} <span style="opacity:.7">— shown on the map where those places were at the time.</span></div>`);
   }
   return `<div class="creature-card${open ? ' active' : ''}" data-key="${c.key}">
-    <div class="creature-top"><div class="creature-emoji">${picHTML(c, 'big') || c.emoji}${SIL_HTTP && silOf(c) && silOf(c).lv === 2 ? '<small class="sil-rel">a relative</small>' : ''}</div><div class="creature-title">
+    <div class="creature-top"><div class="creature-emoji">${picHTML(c, 'big') || monoHTML(c, 'big')}${SIL_HTTP && silOf(c) && silOf(c).lv === 2 ? '<small class="sil-rel">a relative</small>' : ''}</div><div class="creature-title">
       <div class="creature-name">${esc(c.name)}${c.nick ? `<i>${esc(c.nick)}</i>` : ''}</div>
       ${c.means ? `<div class="creature-means">“${esc(c.means)}”</div>` : ''}
       <div class="creature-size">${esc(c.size || '')}</div><div class="creature-lived">${esc(c.lived || '')}</div>
@@ -596,7 +596,7 @@ function cardHTML(c, open) {
     <div class="lineage">🧬 <b>${esc(c.path[0])}</b>${c.path.slice(1).map(s => ' › ' + esc(s)).join('')}</div>
     ${L.join('')}</div>`;
 }
-const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${picHTML(c, 'row') || c.emoji}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
+const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${picHTML(c, 'row') || monoHTML(c, 'row')}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
 // ── when each group lived: a range chart, oldest group at the top ──
 const EXT_LINES = [[445, 'End-Ordovician'], [372, 'Late Devonian'], [252, 'The Great Dying'], [201, 'End-Triassic'], [66, 'The asteroid']];
 function chartHTML() {
@@ -698,7 +698,7 @@ function bindLife() {
     S.scope = 'now'; S.q = ''; $('q').value = ''; document.querySelectorAll('#scopeSeg button').forEach(x => x.classList.toggle('on', x.dataset.scope === 'now'));
     if (!isFull() && (c.t[0] < S.win[1] || c.t[1] > S.win[0])) setWindow(T_MAX, 0, true);
     select(c.key, { keep: true });
-    showFact(c.emoji, '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
+    showFact(mini(c), '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
   });
   $('lifeList').addEventListener('click', e => {
     const hom = e.target.closest('[data-open-hom]'); if (hom) { switchTab('humans'); return; }
@@ -871,7 +871,7 @@ function treeHTML() {
       ${n.step ? `<div class="tn-step"><b>＋</b> ${esc(n.step)}</div>` : ''}${n.link ? `<div class="tn-link">${n.note ? esc(n.note) + ' ' : ''}<button class="linkbtn" data-tree="${n.link}">🌳 Open ${esc((TREES.find(t => t.id === n.link) || {}).title || '')} →</button></div>` : ''}
       ${isOpen ? `<div class="tn-body">${n.note ? `<p>${esc(n.note)}</p>` : ''}${n.debate ? `<p class="tn-deb">❓ ${esc(n.debate)}</p>` : ''}
         ${n.all.length ? `<p class="tn-when">${esc(fmtLong(n.t0).replace(' ago', ''))} → ${esc(fmtLong(n.t1))} · from the ${n.all.length} in this app</p>` : ''}
-        ${members.length ? `<div class="tn-mem">${members.map(c => `<button class="chip${c.key === S.sel ? ' on' : ''}${alive(c, S.t, pad) ? ' now' : ''}" data-key="${c.key}">${c.emoji} ${esc(c.name)}</button>`).join('')}</div>` : ''}
+        ${members.length ? `<div class="tn-mem">${members.map(c => `<button class="chip${c.key === S.sel ? ' on' : ''}${alive(c, S.t, pad) ? ' now' : ''}" data-key="${c.key}">${mini(c)} ${esc(c.name)}</button>`).join('')}</div>` : ''}
         ${n.auto ? `<p class="tn-when">${kids.length} groups branch from here — listed below.</p>` : !members.length && kids.length ? `<p class="tn-when">Its members are on the branches below.</p>` : ''}
         ${sel && n.own.includes(sel) ? cardHTML(sel, true) : ''}</div>` : ''}
     </div>${kids.filter(k => !k.trunk).map(row).join('')}${kids.filter(k => k.trunk).map(row).join('')}`;
@@ -906,7 +906,7 @@ function openSite(id) {
     <div class="ss-blurb">${esc(s.blurb)}</div><canvas id="ssCv" aria-label="A picture of the animals found at this site"></canvas>
     <div class="ss-cap">A picture built from the finds at this site. Animals with a known length are drawn to scale, and the bars below compare them with a person; the paler ones are marked “size not known” and are not to scale. Poses and plants are guesses.</div>
     <div class="ss-more"><div class="label-sec"><h5>🏞 The place</h5>${esc(s.setting)}</div><div class="label-sec"><h5>🪨 The rock</h5>${esc(s.rock)}</div><div class="label-sec"><h5>🌿 Plants</h5>${esc(s.plants)}</div>
-      <div class="label-sec"><h5>🦴 Who was found here</h5><ol class="ss-cast">${s.cast.map(c => `<li>${c.emoji} <b>${esc(c.name)}</b> — ${esc(c.note)} <i>(${esc(c.size)})</i>${c.sil && SIL[c.sil] && SIL[c.sil].level !== 'own' ? ` <span class="ss-rel">· drawn with the outline of ${SIL[c.sil].level === 'member' ? 'one member of the group' : 'a relative'}, <i>${esc(SIL[c.sil].of)}</i></span>` : ''}</li>`).join('')}</ol></div>
+      <div class="label-sec"><h5>🦴 Who was found here</h5><ol class="ss-cast">${s.cast.map(c => `<li>${SIL_HTTP && c.sil && SIL[c.sil] ? `<span class="ico ico-sil" aria-hidden="true" style="-webkit-mask-image:url(${SIL[c.sil].f});mask-image:url(${SIL[c.sil].f})"></span>` : c.emoji} <b>${esc(c.name)}</b> — ${esc(c.note)} <i>(${esc(c.size)})</i>${c.sil && SIL[c.sil] && SIL[c.sil].level !== 'own' ? ` <span class="ss-rel">· drawn with the outline of ${SIL[c.sil].level === 'member' ? 'one member of the group' : 'a relative'}, <i>${esc(SIL[c.sil].of)}</i></span>` : ''}</li>`).join('')}</ol></div>
       <div class="label-sec ss-credits"><h5>✒️ Silhouettes</h5>From <a href="https://www.phylopic.org" target="_blank" rel="noopener">PhyloPic</a>, free to use: ${s.cast.filter(c => c.sil && SIL[c.sil]).map(c => { const k = SIL[c.sil]; return `${esc(c.name)} by <a href="https://www.phylopic.org/images/${esc(k.img)}" target="_blank" rel="noopener">${esc(k.by)}</a> (<a href="${esc(k.licUrl)}" target="_blank" rel="noopener">${esc(k.lic)}</a>)`; }).join('; ')}.</div>
       <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(s.know)}</div><div class="label-sec"><h5>❓ Still debated</h5>${esc(s.debate)}</div>${srcHTML('z:' + id)}</div>`;
   el.classList.add('show'); el.scrollTop = 0;
@@ -1031,6 +1031,65 @@ function picCreditsHTML() {
   const rows = Object.entries(by).sort((a, b) => b[1].n - a[1].n || a[0].localeCompare(b[0]));
   return `<div class="sil-credits"><div class="insp-h"><b>The animal silhouettes</b> · PhyloPic</div><div class="insp-w">${Object.keys(SILI).length} drawings by ${rows.length} scientists and artists, used under CC0, public domain or CC BY. Each card names its artist and whether the outline is of the animal itself, one member of its group, or a relative.</div><div class="insp-b">${rows.map(([n, v]) => `${esc(n)} (${v.n}; ${[...v.lic].sort().map(l => `<a href="${LIC_URL[l]}" target="_blank" rel="noopener">${LIC_NAME[l]}</a>`).join(', ')})`).join(' · ')}</div></div>`;
 }
+/* Icons instead of emoji (icon_map.js → icons-data.js). ico(name) is an inline line icon; emo(e) is the icon, or the
+   silhouette of a real animal, standing for an emoji; iconize(root) swaps them into rendered text, and an observer does
+   it for everything the page draws later. An emoji not in the table stays as it is. Animals with no silhouette get a
+   lettered roundel (monogram), as on a printed map: no invented shape. */
+const ICON_ATTR = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+const ico = (n, cls) => ICONS[n] ? `<svg class="ico${cls ? ' ' + cls : ''}" ${ICON_ATTR}>${ICONS[n].map(([t, a]) => `<${t} ${Object.entries(a).map(([k, v]) => `${k}="${v}"`).join(' ')}/>`).join('')}</svg>` : '';
+const EMO_BASE = e => e.replace(/️/g, '');
+const EMO_I = {}, EMO_S = {};
+for (const [e, n] of Object.entries(EMOJI_ICON)) if (ICONS[n]) EMO_I[EMO_BASE(e)] = n;
+for (const [e, n] of Object.entries(EMOJI_SIL)) if (typeof SILA !== 'undefined' && SILA[n]) EMO_S[EMO_BASE(e)] = SILA[n][0];
+// every emoji matched here is really replaced (or the observer would chase its own tail): an animal stand-in falls back
+// to a line icon where its silhouette cannot load (a page opened from a file)
+const EMO_FALL = e => /^(🐟|🦈|🐋|🐬)$/u.test(e) ? 'fish' : /^(🐧|🦤|🦅|🦆)$/u.test(e) ? 'bird' : 'paw-print';
+const EMO_RE = new RegExp('(?:' + [...new Set([...Object.keys(EMO_I), ...Object.keys(EMO_S)])].sort((a, b) => b.length - a.length)
+  .map(e => e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\uFE0F?').join('|') + ')', 'gu');
+function emo(e) {
+  const b = EMO_BASE(e), k = SIL_HTTP && EMO_S[b];
+  if (k) return `<span class="ico ico-sil" aria-hidden="true" style="-webkit-mask-image:url(tiles/sil/p/${k}.png);mask-image:url(tiles/sil/p/${k}.png)"></span>`;
+  return EMO_I[b] ? ico(EMO_I[b]) : EMO_S[b] ? ico(EMO_FALL(b)) : e;
+}
+function iconize(root) {
+  if (!root) return;
+  if (root.nodeType === 3) root = root.parentNode;
+  if (!root || !root.nodeType || (root.closest && root.closest('script,style,textarea,option,select,svg,[data-noicon]'))) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => {
+    EMO_RE.lastIndex = 0; if (!EMO_RE.test(n.data)) return NodeFilter.FILTER_REJECT;
+    const p = n.parentElement; return p && !p.closest('script,style,textarea,option,select,svg,[data-noicon]') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; } });
+  const hits = []; while (w.nextNode()) hits.push(w.currentNode);
+  for (const n of hits) { const t = document.createElement('template'); EMO_RE.lastIndex = 0; t.innerHTML = esc(n.data).replace(EMO_RE, m => emo(m)); n.replaceWith(t.content); }
+}
+const HOM_MARK = { Homo: 'H', Australopithecus: 'Au', Paranthropus: 'P', Ardipithecus: 'Ar', Sahelanthropus: 'S', Orrorin: 'O', Kenyanthropus: 'K', Humans: 'H' };
+function monogram(c) {
+  const g = String(c.name || '').replace(/^[^A-Za-z]+/, '').split(/[\s(]/)[0] || '?';
+  return (c.hom || (c.path && c.path[0] === 'Human family')) ? (HOM_MARK[g] || g.charAt(0)) : g.charAt(0).toUpperCase();
+}
+const monoHTML = (c, cls) => `<span class="mono${cls ? ' ' + cls : ''}" aria-hidden="true">${esc(monogram(c))}</span>`;
+const mini = c => picHTML(c, 'mini') || monoHTML(c, 'mini');
+// the same icons on the map's canvas: Lucide shapes as paths, ink over a pale halo
+const icoPaths = {};
+function icoPath(n) {
+  if (icoPaths[n]) return icoPaths[n];
+  const p = new Path2D();
+  for (const [t, a] of ICONS[n]) {
+    if (t === 'path') p.addPath(new Path2D(a.d));
+    else if (t === 'circle') { p.moveTo(+a.cx + +a.r, +a.cy); p.arc(+a.cx, +a.cy, +a.r, 0, Math.PI * 2); }
+    else if (t === 'ellipse') { p.moveTo(+a.cx + +a.rx, +a.cy); p.ellipse(+a.cx, +a.cy, +a.rx, +a.ry, 0, 0, Math.PI * 2); }
+    else if (t === 'line') { p.moveTo(+a.x1, +a.y1); p.lineTo(+a.x2, +a.y2); }
+    else if (t === 'rect') { const x = +(a.x || 0), y = +(a.y || 0), wd = +a.width, ht = +a.height, r = +(a.rx || a.ry || 0); if (p.roundRect) p.roundRect(x, y, wd, ht, r); else p.rect(x, y, wd, ht); }
+    else if (t === 'polyline' || t === 'polygon') { const q = String(a.points).trim().split(/[\s,]+/).map(Number); for (let i = 0; i + 1 < q.length; i += 2) i ? p.lineTo(q[i], q[i + 1]) : p.moveTo(q[i], q[i + 1]); if (t === 'polygon') p.closePath(); }
+  }
+  return (icoPaths[n] = p);
+}
+function paintIcon(c, e, x, y, px) {
+  const n = EMO_I[EMO_BASE(e)]; if (!n) return false;
+  const p = icoPath(n), s = px * 1.05 / 24;
+  c.save(); c.translate(x - 12 * s, y - 12 * s); c.scale(s, s); c.lineCap = 'round'; c.lineJoin = 'round';
+  c.strokeStyle = 'rgba(250,240,215,0.92)'; c.lineWidth = 5.5; c.stroke(p); c.strokeStyle = '#3a2410'; c.lineWidth = 2; c.stroke(p);
+  c.restore(); return true;
+}
 const ageTag = t => t >= 1 ? (t >= 10 ? Math.round(t) : +t.toFixed(1)) + ' M' : t >= 0.0117 ? Math.round(t * 1000) + 'k' : 'today';
 function kinHTML() {
   const list = (KIN[S.kin] || []).slice().sort((a, b) => b.t[0] - a.t[0] || b.t[1] - a.t[1]); if (!list.length) return '';
@@ -1039,7 +1098,7 @@ function kinHTML() {
   for (const v of [t0, 500, 300, 200, 100, 66, 50, 30, 20, 10, 5, 2, 1, 0.5, 0.1, 0.01, 0]) if (v <= t0 && (!ticks.length || +x(v) - +x(ticks[ticks.length - 1][0]) >= (v ? 14 : 8))) ticks.push([v, v ? ageTag(v) : 'now']);
   const name = S.kin.split(' › ').pop(), now = list.filter(c => alive(c, S.t));
   const rows = list.map(c => `<div class="kin-row${alive(c, S.t) ? ' now' : ''}${S.sel === c.key ? ' sel' : ''}" data-key="${c.key}" title="${esc(c.name)} — ${esc(c.lived || '')}">
-    <span class="e">${c.emoji}</span><span class="kn">${esc(c.name)}<small>${esc(c.lived || '')}</small></span>
+    <span class="e">${mini(c)}</span><span class="kn">${esc(c.name)}<small>${esc(c.lived || '')}</small></span>
     <div class="kin-track"><div class="kin-bar" style="left:${x(c.t[0])}%;width:${Math.max(1, x(c.t[1]) - x(c.t[0]))}%"></div></div></div>`).join('');
   return `<div class="kin"><div class="kin-head"><button class="linkbtn" data-kin-back>← Back to the list</button>
     <div class="list-h">${esc(name)} through time<small>${list.length} on this site, from ${esc(ageTag(t0))} to ${esc(ageTag(Math.min(...list.map(c => c.t[1]))))} ago · ${now.length ? now.length + ' alive at this moment' : 'none alive at this moment'}</small></div></div>
@@ -1081,7 +1140,7 @@ function findHTML(f) {
     <dl class="facts"><dt>When</dt><dd>${esc(f.when)}</dd><dt>Who</dt><dd>${esc(f.who)}</dd><dt>Where</dt><dd>${esc(f.where)}</dd>${f.age != null ? `<dt>Fossil age</dt><dd>${esc(fmtLong(f.age))}</dd>` : ''}</dl>
     <div class="creature-fact">${esc(f.story)}</div>
     ${sec('🙃 What they got wrong', f.wrong)}${sec('🙋 Who gets left out', f.left)}${sec('❓ Still debated', f.debate)}${sec('💡 Why it mattered', f.mattered)}
-    ${c || h ? `<div class="found">${c ? `<button class="linkbtn" data-meet="${c.key}">${c.emoji} Meet ${esc(c.name)}</button> ` : ''}${h ? `<button class="linkbtn" data-meet="${h.key}" data-hom="1">🧍 Meet ${esc(shortName(h.name))}</button>` : ''}</div>` : ''}
+    ${c || h ? `<div class="found">${c ? `<button class="linkbtn" data-meet="${c.key}">${mini(c)} Meet ${esc(c.name)}</button> ` : ''}${h ? `<button class="linkbtn" data-meet="${h.key}" data-hom="1">🧍 Meet ${esc(shortName(h.name))}</button>` : ''}</div>` : ''}
     ${f.at ? `<div class="found">📍 <b>On the map:</b> ${f.age != null ? 'the pin marks the spot — carried back to where it was on Earth when this fossil was alive.' : 'the pin marks the place today.'}</div>` : ''}${srcHTML('x:' + f.id)}</div>`;
 }
 function renderFinds() {
@@ -1133,7 +1192,7 @@ const extLost = e => ALL.filter(c => !c.hom && c.t[1] <= e.lost[0] && c.t[1] >= 
 const extThrough = e => ALL.filter(c => !c.hom && c.t[0] > e.lost[0] && c.t[1] < e.lost[1] - (e.lost[0] - e.lost[1]) * 0.5).sort((a, b) => (b.t[0] - b.t[1]) - (a.t[0] - a.t[1]));
 function renderExt() {
   const sel = S.sel && S.sel.startsWith('ext:') && EXT[S.sel.slice(4)], five = EXTINCTIONS.filter(e => e.pct);
-  const chip = c => `<button class="chip" data-meet="${c.key}">${c.emoji} ${esc(c.name)}</button>`;
+  const chip = c => `<button class="chip" data-meet="${c.key}">${mini(c)} ${esc(c.name)}</button>`;
   const detail = e => {
     const x = extInfo(e), lost = extLost(e), thr = extThrough(e), playing = S.scene && S.scene.id === e.id;
     return `<div class="profile culture ext" data-key="ext:${e.id}"><h3 style="font-style:normal">${e.icon} ${esc(x.name)}</h3>
@@ -1281,7 +1340,10 @@ function playScene(id) {
         const t1 = sc.gone[v.c.key] || (sc.gone[v.c.key] = now), u = (now - t1) / 2200; if (u >= 1) continue;
         const p = g.pt(v.at); if (!p) continue;
         cx.beginPath(); cx.arc(p[0], p[1], 9 + 20 * u, 0, 7); cx.strokeStyle = `rgba(255,96,64,${0.85 * (1 - u)})`; cx.lineWidth = 2.4 * (1 - u) + 0.4; cx.stroke();
-        cx.globalAlpha = Math.max(0, 1 - u * 1.3); cx.font = '15px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(v.c.emoji, p[0], p[1] - 14 * u); cx.globalAlpha = 1;
+        cx.globalAlpha = Math.max(0, 1 - u * 1.3); { const sl = SIL_HTTP && silOf(v.c), pc = sl && pinPic(sl.k), y0 = p[1] - 14 * u;
+          if (pc) { const a = pc.width / pc.height, h = 26 / Math.sqrt(a * a + 1); cx.drawImage(pc, p[0] - a * h / 2, y0 - h / 2, a * h, h); }
+          else { cx.font = "700 13px Cinzel,Georgia,serif"; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillStyle = '#3a2410'; cx.fillText(monogram(v.c), p[0], y0); } }
+        cx.globalAlpha = 1;
       }
     });
   });
@@ -2006,7 +2068,7 @@ function updatePinCard() {
     for (const c of ALL) { if (!c.sites || !alive(c, S.t)) continue; let best = 1e9, lab = ''; for (const s of c.sites) { const d = KM(P.lat, P.lon, s[0], s[1]); if (d < best) { best = d; lab = s[2]; } } near.push([best, c, lab]); }
     near.sort((a, b) => a[0] - b[0]);
     const top = near.slice(0, 3);
-    if (top.length) html += `<div class="pc-near">${top[0][0] < 2000 ? 'Lived nearby' : 'Nearest fossils from this moment'}: ${top.map(([d, c]) => `<span data-key="${c.key}">${c.emoji} ${esc(c.name)}</span> (${years(Math.round(d / 10) * 10)} km)`).join(', ')}</div>`;
+    if (top.length) html += `<div class="pc-near">${top[0][0] < 2000 ? 'Lived nearby' : 'Nearest fossils from this moment'}: ${top.map(([d, c]) => `<span data-key="${c.key}">${mini(c)} ${esc(c.name)}</span> (${years(Math.round(d / 10) * 10)} km)`).join(', ')}</div>`;
     const w = WorldMap.seaAt(P.lat, P.lon, S.t);
     if (w === 'sea') html += '<div class="pc-sea">🌊 <b>Then it lay under the sea</b> — over the drowned edge of a continent, where sea creatures lived.</div>';
     else if (w === 'land') html += '<div class="pc-sea">🏝 <b>Then it was dry land</b>, on the maps of ancient seas.</div>';
@@ -2073,7 +2135,7 @@ let lastYou = null;
 function updateYou() {
   const y = youAt(S.t); if (y === lastYou) return; lastYou = y;
   const c = youLike(y);
-  $('youBar').innerHTML = `<span class="yb-k">🧬 Your ancestor at this moment</span><span class="yb-v"><b>${esc(y.what)}</b>${c ? ` — like ${esc(shortName(c.name))} ${c.emoji || ''}` : ''}</span><span class="yb-go">›</span>`;
+  $('youBar').innerHTML = `<span class="yb-k">🧬 Your ancestor at this moment</span><span class="yb-v"><b>${esc(y.what)}</b>${c ? ` — like ${esc(shortName(c.name))} ${mini(c)}` : ''}</span><span class="yb-go">›</span>`;
 }
 function openYou() {
   const y = youAt(S.t), c = youLike(y);
@@ -2183,7 +2245,7 @@ function bindDoor() {
 let factTimer = 0;
 function showFact(emoji, html, ms) {
   clearTimeout(factTimer);
-  $('fpEmoji').textContent = emoji; $('fpText').innerHTML = html;
+  $('fpEmoji').innerHTML = emoji; $('fpText').innerHTML = html;      // an icon, a picture or a roundel (never reader text)
   $('factPopup').classList.add('show');
   factTimer = setTimeout(closeFact, ms || 9000);
 }
@@ -2210,6 +2272,10 @@ function readHash() {
 
 function init() {
   WorldMap.init($('mapCanvas'), $('mapFx'));
+  WorldMap.setIconPainter(paintIcon);
+  iconize(document.body);
+  new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') iconize(m.target); else for (const n of m.addedNodes) if (n.nodeType === 1 || n.nodeType === 3) iconize(n); } })
+    .observe(document.body, { childList: true, subtree: true, characterData: true });
   WorldMap.onSeas = () => { updateClock(); updatePinCard(); };
   $('soundBtn').onclick = () => SoundOfTime.toggle();
   // backdrops: remembered on this device only

@@ -174,6 +174,13 @@ builds, passes the checks and has been looked at.
   so; an empire with `stages` has a sketch per date and the map switches between them — it never
   draws a border moving, because nothing here knows where it was in between. Beliefs are described in their
   followers' own terms (“Muslims hold that…”), never judged, and every one gets the same care.
+- **Icons, not emoji.** `icon_map.js` maps each emoji to a line icon (`EMOJI_ICON`; Lucide 1.70.0 shapes in
+  `icons-data.js`, built by `tools/build_icons.mjs`, plus four drawn here) or to a real animal’s silhouette (`EMOJI_SIL`).
+  `iconize()` swaps them into rendered text and a MutationObserver keeps doing it; `ico(name)` writes one; the map paints
+  them through `WorldMap.setIconPainter(paintIcon)`. Animals without a silhouette are lettered roundels (`monogram()`,
+  `monoHTML()`, `mark` on a marker). Unmapped emoji stay; never map a belief’s or a people’s symbol to a stand-in.
+- **Paintings** (`tools/paint.py`): AI-painted landscapes behind the site scenes, never animals; built from each scene’s
+  `paint` brief, capped, logged, every candidate checked by eye; see `docs/PLAN.md` › Next up.
 - Sources: `refs_wanted.txt` (what we want to cite, and which entries each paper supports) →
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,
@@ -185,7 +192,8 @@ builds, passes the checks and has been looked at.
 ## Network
 
 This environment reaches GitHub, npm, PyPI, Crossref, `zenodo.org` (allowed 17 Nov 2026),
-`api.phylopic.org` and `images.phylopic.org` (24 Nov 2026) and `api.pixellab.ai`. It does **not** reach `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
+`api.phylopic.org` and `images.phylopic.org` (24 Nov 2026) and `api.pixellab.ai`. `generativelanguage.googleapis.com` (the
+paintings) works once Evan saves the Gemini key as a network secret for it. It does **not** reach `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
 so, and the host has to be approved by Evan first. Public GitHub repositories can be cloned with
 `git clone` even though the GitHub API is scoped to this project — search them with
 `gh api -X GET search/repositories` first: that is how the ancient-coast data was found when the

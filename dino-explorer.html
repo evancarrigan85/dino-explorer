@@ -723,6 +723,19 @@ header .logo,header h1{cursor:pointer}
   .tab-btn{flex:0 0 auto;padding:7px 13px 9px;font-size:.8rem;min-height:36px}
   .panel-content{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;min-height:0;overscroll-behavior:contain}
 }
+
+/* icons instead of emoji (icon_map.js): line icons, animal silhouettes and lettered roundels */
+.ico{display:inline-block;width:1.1em;height:1.1em;vertical-align:-.18em;flex-shrink:0;stroke-width:2}
+.ico-sil{background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;width:2em;height:1.25em;vertical-align:-.3em}
+.door-i .ico.ico-sil{width:60px;height:32px;background:#e8b75a}
+.mono{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#efe0b8;color:#3a2410;border:1px solid rgba(70,40,12,.55);
+  font:700 .74rem Cinzel,Georgia,'Times New Roman',serif;line-height:1;width:1.75em;height:1.75em;flex-shrink:0;letter-spacing:0}
+.mono.big{width:46px;height:46px;font-size:1.15rem}.mono.row{width:24px;height:24px;font-size:.7rem}.mono.mini{width:1.6em;height:1.6em;font-size:.66rem;vertical-align:-.3em}
+.sil-pic.mini{width:1.8em;height:1.1em;vertical-align:-.25em}
+#fpEmoji .sil-pic,#fpEmoji .mono{width:42px;height:30px}#fpEmoji .mono{width:34px;height:34px;font-size:.9rem}
+.door-i .ico{width:1.5em;height:1.5em;color:#e8b75a}
+.logo .ico,.door-globe .ico{color:#e8b75a;width:1.15em;height:1.15em}
+.tab-btn .ico{margin-right:3px}
 </style>
 </head>
 <body>
@@ -857,7 +870,7 @@ header .logo,header h1{cursor:pointer}
   <div class="right-panel" id="rightPanel">
     <button class="sheet-grip" id="sheetGrip" aria-label="Open the panel" aria-expanded="false" aria-controls="panelContent"><i></i></button>
     <div class="tab-bar" role="tablist" aria-label="Panel views">
-      <button class="tab-btn active" data-tab="life" role="tab" aria-selected="true" aria-controls="pane-life" id="tab-life">🦕 Life</button>
+      <button class="tab-btn active" data-tab="life" role="tab" aria-selected="true" aria-controls="pane-life" id="tab-life">🐾 Life</button>
       <button class="tab-btn" data-tab="humans" role="tab" aria-selected="false" aria-controls="pane-humans" id="tab-humans">🧍 Humans</button>
       <button class="tab-btn" data-tab="insights" role="tab" aria-selected="false" aria-controls="pane-insights" id="tab-insights">🔎 Insights</button>
       <button class="tab-btn" data-tab="ext" role="tab" aria-selected="false" aria-controls="pane-ext" id="tab-ext">☠️ Extinctions</button>
@@ -976,6 +989,51 @@ const RIVERS_PACKED = "xSBPkoGyWPPJDVCLDTbrBxCDRCLGFCXELKLEJJPBrFjpK1JpBLZLbRrBP
 </script>
 <!-- ─── GENERATED: the last 3.6 million years — sea level, ice sheets, rivers on the dry sea floor. Rebuild with tools/build_quaternary.py, then tools/build_shelf_rivers.py — do not edit ─── -->
 <script>
+// Emoji → drawn icons. The page swaps every emoji it can find here for a line icon (Lucide, ISC licence; four drawn
+// for this atlas in the same style: volcano, meteor, mushroom, rock) or, for animals, for the silhouette of a real
+// animal from the cards (EMOJI_SIL, so a fish chip shows a fish that lived). An emoji not listed here stays as it is:
+// extend the table, rebuild (node tools/build_icons.mjs <lucide-static>/icon-nodes.json), and it changes everywhere.
+// Beliefs and peoples are left alone on purpose until each symbol can be chosen with the same care as the text.
+const EMOJI_ICON = {
+  // the page itself
+  '🌍': 'earth', '🌎': 'earth', '🌏': 'earth', '🌐': 'globe', '🗺': 'map', '🗺️': 'map', '📍': 'map-pin', '🧭': 'compass',
+  '▶': 'play', '▶️': 'play', '🔈': 'volume-2', '🔊': 'volume-2', '🎨': 'palette', '🔎': 'search', '🔍': 'search',
+  '📚': 'book-open', '📜': 'scroll', '❓': 'circle-question-mark', '❔': 'circle-question-mark', '🧬': 'dna', '🔬': 'microscope',
+  '👩‍🔬': 'microscope', '🧑‍🔬': 'microscope', '🏠': 'house', '📏': 'ruler', '🕰': 'hourglass', '🕰️': 'hourglass', '⏳': 'hourglass',
+  '✒️': 'pen-line', '🎲': 'dices', '📊': 'chart-gantt', '🤪': 'sparkles', '✨': 'sparkles', '💡': 'lightbulb',
+  '🎯': 'target', '⛏️': 'pickaxe', '⛏': 'pickaxe', '⚠️': 'triangle-exclamation-point', '🎬': 'clapperboard', '🧩': 'puzzle',
+  '🛡️': 'shield', '🛡': 'shield', '✕': 'x', '⟲': 'rotate-ccw', '🏞': 'mountain-snow', '🏞️': 'mountain-snow',
+  // the human story (the people themselves are lettered roundels, not icons)
+  '🧍': 'person-standing', '🚶': 'footprints', '👣': 'footprints', '🦴': 'bone', '☠️': 'skull', '💀': 'skull',
+  '🏛️': 'landmark', '🏛': 'landmark', '🏺': 'amphora', '🧱': 'brick-wall', '⛵': 'sailboat', '🌉': 'bridge',
+  '🍖': 'beef', '🥩': 'beef', '🌾': 'wheat', '🔥': 'flame',
+  // the Earth
+  '🌋': 'volcano', '☄️': 'meteor', '☄': 'meteor', '💥': 'meteor', '🪨': 'rock', '⛰': 'mountain', '⛰️': 'mountain',
+  '🌊': 'waves-horizontal', '🌡': 'thermometer', '🌡️': 'thermometer', '💨': 'wind', '🧊': 'snowflake', '❄️': 'snowflake',
+  '☀️': 'sun', '🌞': 'sun', '💧': 'droplet', '⚡': 'zap', '🫧': 'bubbles', '🌧': 'cloud-rain', '🌧️': 'cloud-rain',
+  // living things that are not animals, and small animals Lucide draws well
+  '🌿': 'leaf', '🌱': 'sprout', '🌳': 'trees', '🌲': 'tree-pine', '🌴': 'tree-palm', '🌸': 'flower-2', '🍄': 'mushroom',
+  '🦠': 'microscope', '🐚': 'shell', '🦐': 'shrimp', '🐌': 'snail', '🐛': 'worm', '🪲': 'bug', '🐜': 'bug',
+  '🐾': 'paw-print', '🐦': 'bird', '🪶': 'feather', '🐀': 'rat', '🐁': 'rat', '🐹': 'rat', '🐿': 'squirrel', '🐿️': 'squirrel',
+};
+// animal emoji → the card whose silhouette stands for it (only cards with the animal's own outline)
+const EMOJI_SIL = {
+  '🦕': 'Diplodocus', '🦖': 'Tyrannosaurus rex', '🐟': 'Coelacanth', '🦈': 'Great White Shark', '🐋': 'Blue Whale',
+  '🐬': 'Baiji (Yangtze River Dolphin)', '🦎': 'Komodo Dragon', '🐊': 'Saltwater Crocodile', '🐢': 'Archelon',
+  '🐍': 'Titanoboa', '🐘': 'African Elephant', '🦣': 'Woolly Mammoth', '🦏': 'Woolly Rhinoceros', '🦛': 'Malagasy Hippo',
+  '🦁': 'Cave Lion', '🐆': 'Saber-toothed Cat (Smilodon)', '🐅': 'Saber-toothed Cat (Smilodon)', '🐺': 'Dire Wolf (Aenocyon dirus)', '🐻': 'Cave Bear',
+  '🦌': 'Megaloceros (Irish Elk)', '🐪': 'Aepycamelus', '🦒': 'Samotherium', '🐴': 'Merychippus', '🐎': 'Merychippus',
+  '🐂': 'Aurochs', '🐗': 'Daeodon', '🐖': 'Daeodon', '🦥': 'Shasta Ground Sloth', '🦍': 'Gigantopithecus',
+  '🐒': 'Aegyptopithecus', '🦫': 'Castorocauda', '🦭': 'Caribbean Monk Seal', '🦇': 'Onychonycteris',
+  '🐧': 'Kumimanu', '🦤': 'Dodo (Raphus cucullatus)', '🦅': 'Argentavis', '🦆': 'Vegavis', '🦂': 'Mixopterus (Sea Scorpion)',
+  '🐸': 'Paracyclotosaurus', '🦑': 'Endoceras',
+};
+if (typeof module !== 'undefined') module.exports = { EMOJI_ICON, EMOJI_SIL };
+/* Line icons — GENERATED by tools/build_icons.mjs from Lucide 1.70.0 (ISC licence, lucide.dev) and four drawn
+   for this atlas (volcano, meteor, mushroom, rock). ICONS[name] = [[tag, attributes], ...] on a 24×24 grid, stroke 2. */
+const ICONS = {"amphora":[["path",{"d":"M10 2v5.632c0 .424-.272.795-.653.982A6 6 0 0 0 6 14c.006 4 3 7 5 8"}],["path",{"d":"M10 5H8a2 2 0 0 0 0 4h.68"}],["path",{"d":"M14 2v5.632c0 .424.272.795.652.982A6 6 0 0 1 18 14c0 4-3 7-5 8"}],["path",{"d":"M14 5h2a2 2 0 0 1 0 4h-.68"}],["path",{"d":"M18 22H6"}],["path",{"d":"M9 2h6"}]],"beef":[["path",{"d":"M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"}],["path",{"d":"m18.5 6 1.754 3.5a6.48 6.48 0 0 1-1.854 8.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"}],["circle",{"cx":"12.5","cy":"8.5","r":"2.5"}]],"bird":[["path",{"d":"M16 7h.01"}],["path",{"d":"M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"}],["path",{"d":"m20 7 2 .5-2 .5"}],["path",{"d":"M10 18v3"}],["path",{"d":"M14 17.75V21"}],["path",{"d":"M7 18a6 6 0 0 0 3.84-10.61"}]],"bone":[["path",{"d":"M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"}]],"book-open":[["path",{"d":"M12 5v16"}],["path",{"d":"M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"}]],"brick-wall":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M12 9v6"}],["path",{"d":"M16 15v6"}],["path",{"d":"M16 3v6"}],["path",{"d":"M3 15h18"}],["path",{"d":"M3 9h18"}],["path",{"d":"M8 15v6"}],["path",{"d":"M8 3v6"}]],"bridge":[["path",{"d":"M10 9.728V16"}],["path",{"d":"M14 9.728V16"}],["path",{"d":"M18 20V4"}],["path",{"d":"m22 11-4-4A7.5 7.5 0 0 1 6 7l-4 4"}],["path",{"d":"M22 16H2"}],["path",{"d":"M6 20V4"}]],"bubbles":[["path",{"d":"M7.001 15.085A1.5 1.5 0 0 1 9 16.5"}],["circle",{"cx":"18.5","cy":"8.5","r":"3.5"}],["circle",{"cx":"7.5","cy":"16.5","r":"5.5"}],["circle",{"cx":"7.5","cy":"4.5","r":"2.5"}]],"bug":[["path",{"d":"M12 20v-9"}],["path",{"d":"M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z"}],["path",{"d":"M14.12 3.88 16 2"}],["path",{"d":"M21 21a4 4 0 0 0-3.81-4"}],["path",{"d":"M21 5a4 4 0 0 1-3.55 3.97"}],["path",{"d":"M22 13h-4"}],["path",{"d":"M3 21a4 4 0 0 1 3.81-4"}],["path",{"d":"M3 5a4 4 0 0 0 3.55 3.97"}],["path",{"d":"M6 13H2"}],["path",{"d":"m8 2 1.88 1.88"}],["path",{"d":"M9 7.13V6a3 3 0 1 1 6 0v1.13"}]],"chart-gantt":[["path",{"d":"M10 6h8"}],["path",{"d":"M12 16h6"}],["path",{"d":"M3 3v16a2 2 0 0 0 2 2h16"}],["path",{"d":"M8 11h7"}]],"chevron-right":[["path",{"d":"m9 18 6-6-6-6"}]],"circle-question-mark":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"}],["path",{"d":"M12 17h.01"}]],"clapperboard":[["path",{"d":"m12.296 3.464 3.02 3.956"}],["path",{"d":"M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z"}],["path",{"d":"M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}],["path",{"d":"m6.18 5.276 3.1 3.899"}]],"cloud-rain":[["path",{"d":"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"}],["path",{"d":"M16 14v6"}],["path",{"d":"M8 14v6"}],["path",{"d":"M12 16v6"}]],"compass":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"}]],"dices":[["rect",{"width":"12","height":"12","x":"2","y":"10","rx":"2","ry":"2"}],["path",{"d":"m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"}],["path",{"d":"M6 18h.01"}],["path",{"d":"M10 14h.01"}],["path",{"d":"M15 6h.01"}],["path",{"d":"M18 9h.01"}]],"dna":[["path",{"d":"m10 16 1.5 1.5"}],["path",{"d":"m14 8-1.5-1.5"}],["path",{"d":"M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"}],["path",{"d":"m16.5 10.5 1 1"}],["path",{"d":"m17 6-2.891-2.891"}],["path",{"d":"M2 15c6.667-6 13.333 0 20-6"}],["path",{"d":"m20 9 .891.891"}],["path",{"d":"M3.109 14.109 4 15"}],["path",{"d":"m6.5 12.5 1 1"}],["path",{"d":"m7 18 2.891 2.891"}],["path",{"d":"M9 22c1.798-1.998 2.518-3.995 2.807-5.993"}]],"droplet":[["path",{"d":"M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"}]],"earth":[["path",{"d":"M21.54 15H17a2 2 0 0 0-2 2v4.54"}],["path",{"d":"M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"}],["path",{"d":"M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"}],["circle",{"cx":"12","cy":"12","r":"10"}]],"feather":[["path",{"d":"M14.086 18.412A2 2 0 0112.67 19H5v-7.672a2 2 0 01.586-1.414L11.75 3.75a6 6 0 118.49 8.49z"}],["path",{"d":"M16 8 2 22"}],["path",{"d":"M17.488 15H9"}]],"flame":[["path",{"d":"M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"}]],"flower-2":[["path",{"d":"M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"}],["circle",{"cx":"12","cy":"8","r":"2"}],["path",{"d":"M12 10v12"}],["path",{"d":"M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"}],["path",{"d":"M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"}]],"footprints":[["path",{"d":"M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"}],["path",{"d":"M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"}],["path",{"d":"M16 17h4"}],["path",{"d":"M4 13h4"}]],"git-fork":[["circle",{"cx":"12","cy":"18","r":"3"}],["circle",{"cx":"6","cy":"6","r":"3"}],["circle",{"cx":"18","cy":"6","r":"3"}],["path",{"d":"M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"}],["path",{"d":"M12 12v3"}]],"globe":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{"d":"M2 12h20"}]],"hourglass":[["path",{"d":"M5 22h14"}],["path",{"d":"M5 2h14"}],["path",{"d":"M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"}],["path",{"d":"M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"}]],"house":[["path",{"d":"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"}],["path",{"d":"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}]],"info":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 16v-4"}],["path",{"d":"M12 8h.01"}]],"landmark":[["path",{"d":"M10 18v-7"}],["path",{"d":"M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"}],["path",{"d":"M14 18v-7"}],["path",{"d":"M18 18v-7"}],["path",{"d":"M3 22h18"}],["path",{"d":"M6 18v-7"}]],"leaf":[["path",{"d":"M11 20a10 10 0 0010-10 25.9 25.9 0 00-1.04-7.281 1 1 0 00-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0011 20"}],["path",{"d":"M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13"}]],"lightbulb":[["path",{"d":"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"}],["path",{"d":"M9 18h6"}],["path",{"d":"M10 22h4"}]],"map":[["path",{"d":"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"}],["path",{"d":"M15 5.764v15"}],["path",{"d":"M9 3.236v15"}]],"map-pin":[["path",{"d":"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"}],["circle",{"cx":"12","cy":"10","r":"3"}]],"meteor":[["circle",{"cx":"8","cy":"16","r":"4"}],["path",{"d":"m11 13 8-8"}],["path",{"d":"m13.5 17 7-7"}],["path",{"d":"m7 10.5 7-7"}]],"microscope":[["path",{"d":"M6 18h8"}],["path",{"d":"M3 22h18"}],["path",{"d":"M14 22a7 7 0 1 0 0-14h-1"}],["path",{"d":"M9 14h2"}],["path",{"d":"M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"}],["path",{"d":"M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"}]],"minus":[["path",{"d":"M5 12h14"}]],"mountain":[["path",{"d":"m8 3 4 8 5-5 5 15H2L8 3z"}]],"mountain-snow":[["path",{"d":"m8 3 4 8 5-5 5 15H2L8 3z"}],["path",{"d":"M4.14 15.08c2.62-1.57 5.24-1.43 7.86.42 2.74 1.94 5.49 2 8.23.19"}]],"mushroom":[["path",{"d":"M4 12a8 8 0 0 1 16 0Z"}],["path",{"d":"M10 12v6a2 2 0 0 0 4 0v-6"}]],"palette":[["path",{"d":"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"}],["circle",{"cx":"13.5","cy":"6.5","r":".5","fill":"currentColor"}],["circle",{"cx":"17.5","cy":"10.5","r":".5","fill":"currentColor"}],["circle",{"cx":"6.5","cy":"12.5","r":".5","fill":"currentColor"}],["circle",{"cx":"8.5","cy":"7.5","r":".5","fill":"currentColor"}]],"paw-print":[["circle",{"cx":"11","cy":"4","r":"2"}],["circle",{"cx":"18","cy":"8","r":"2"}],["circle",{"cx":"20","cy":"16","r":"2"}],["path",{"d":"M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"}]],"pen-line":[["path",{"d":"M13 21h8"}],["path",{"d":"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}]],"person-standing":[["circle",{"cx":"12","cy":"5","r":"1"}],["path",{"d":"m9 20 3-6 3 6"}],["path",{"d":"m6 8 6 2 6-2"}],["path",{"d":"M12 10v4"}]],"pickaxe":[["path",{"d":"m14 13-8.381 8.38a1 1 0 0 1-3.001-3L11 9.999"}],["path",{"d":"M15.973 4.027A13 13 0 0 0 5.902 2.373c-1.398.342-1.092 2.158.277 2.601a19.9 19.9 0 0 1 5.822 3.024"}],["path",{"d":"M16.001 11.999a19.9 19.9 0 0 1 3.024 5.824c.444 1.369 2.26 1.676 2.603.278A13 13 0 0 0 20 8.069"}],["path",{"d":"M18.352 3.352a1.205 1.205 0 0 0-1.704 0l-5.296 5.296a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l5.296-5.296a1.205 1.205 0 0 0 0-1.704z"}]],"play":[["path",{"d":"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]],"plus":[["path",{"d":"M5 12h14"}],["path",{"d":"M12 5v14"}]],"puzzle":[["path",{"d":"M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"}]],"rat":[["path",{"d":"M13 22H4a2 2 0 0 1 0-4h12"}],["path",{"d":"M13.236 18a3 3 0 0 0-2.2-5"}],["path",{"d":"M16 9h.01"}],["path",{"d":"M16.82 3.94a3 3 0 1 1 3.237 4.868l1.815 2.587a1.5 1.5 0 0 1-1.5 2.1l-2.872-.453a3 3 0 0 0-3.5 3"}],["path",{"d":"M17 4.988a3 3 0 1 0-5.2 2.052A7 7 0 0 0 4 14.015 4 4 0 0 0 8 18"}]],"rock":[["path",{"d":"m4 19 2-8 5-4 6 2 3 10Z"}],["path",{"d":"m11 7 1 5 5-3"}]],"rotate-ccw":[["path",{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{"d":"M3 3v5h5"}]],"ruler":[["path",{"d":"M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"}],["path",{"d":"m14.5 12.5 2-2"}],["path",{"d":"m11.5 9.5 2-2"}],["path",{"d":"m8.5 6.5 2-2"}],["path",{"d":"m17.5 15.5 2-2"}]],"sailboat":[["path",{"d":"M10 2v15"}],["path",{"d":"M7 22a4 4 0 0 1-4-4 1 1 0 0 1 1-1h16a1 1 0 0 1 1 1 4 4 0 0 1-4 4z"}],["path",{"d":"M9.159 2.46a1 1 0 0 1 1.521-.193l9.977 8.98A1 1 0 0 1 20 13H4a1 1 0 0 1-.824-1.567z"}]],"scroll":[["path",{"d":"M19 17V5a2 2 0 0 0-2-2H4"}],["path",{"d":"M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"}]],"search":[["path",{"d":"m21 21-4.34-4.34"}],["circle",{"cx":"11","cy":"11","r":"8"}]],"shell":[["path",{"d":"M14 11a2 2 0 1 1-4 0 4 4 0 0 1 8 0 6 6 0 0 1-12 0 8 8 0 0 1 16 0 10 10 0 1 1-20 0 11.93 11.93 0 0 1 2.42-7.22 2 2 0 1 1 3.16 2.44"}]],"shield":[["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}]],"shrimp":[["path",{"d":"M10 2a3.28 3.28 0 003.227 1.798l6.17-.561A1 1 0 1119.614 8H8.5a6.44 6.44 0 00-5.63 9.75A6.5 6.5 0 008.5 21c1.38 0 2-.5 2.5-1"}],["path",{"d":"M10 8a8.5 8.5 0 000 8"}],["path",{"d":"M11 22c-.5-.5-1.12-1-2.5-1a1 1 0 010-5H12a7 7 0 007-7V8"}],["path",{"d":"M13 12h.01"}],["path",{"d":"M8 16c-2 0-4.5-4-4-6"}]],"skull":[["path",{"d":"m12.5 17-.5-1-.5 1h1z"}],["path",{"d":"M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"}],["circle",{"cx":"15","cy":"12","r":"1"}],["circle",{"cx":"9","cy":"12","r":"1"}]],"snail":[["path",{"d":"M2 13a6 6 0 1 0 12 0 4 4 0 1 0-8 0 2 2 0 0 0 4 0"}],["circle",{"cx":"10","cy":"13","r":"8"}],["path",{"d":"M2 21h12c4.4 0 8-3.6 8-8V7a2 2 0 1 0-4 0v6"}],["path",{"d":"M18 3 19.1 5.2"}],["path",{"d":"M22 3 20.9 5.2"}]],"snowflake":[["path",{"d":"m10 20-1.25-2.5L6 18"}],["path",{"d":"M10 4 8.75 6.5 6 6"}],["path",{"d":"m14 20 1.25-2.5L18 18"}],["path",{"d":"m14 4 1.25 2.5L18 6"}],["path",{"d":"m17 21-3-6h-4"}],["path",{"d":"m17 3-3 6 1.5 3"}],["path",{"d":"M2 12h6.5L10 9"}],["path",{"d":"m20 10-1.5 2 1.5 2"}],["path",{"d":"M22 12h-6.5L14 15"}],["path",{"d":"m4 10 1.5 2L4 14"}],["path",{"d":"m7 21 3-6-1.5-3"}],["path",{"d":"m7 3 3 6h4"}]],"sparkles":[["path",{"d":"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"}],["path",{"d":"M20 2v4"}],["path",{"d":"M22 4h-4"}],["circle",{"cx":"4","cy":"20","r":"2"}]],"sprout":[["path",{"d":"M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"}],["path",{"d":"M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"}],["path",{"d":"M5 21h14"}]],"squirrel":[["path",{"d":"M15.236 22a3 3 0 0 0-2.2-5"}],["path",{"d":"M16 20a3 3 0 0 1 3-3h1a2 2 0 0 0 2-2v-2a4 4 0 0 0-4-4V4"}],["path",{"d":"M18 13h.01"}],["path",{"d":"M18 6a4 4 0 0 0-4 4 7 7 0 0 0-7 7c0-5 4-5 4-10.5a4.5 4.5 0 1 0-9 0 2.5 2.5 0 0 0 5 0C7 10 3 11 3 17c0 2.8 2.2 5 5 5h10"}]],"sun":[["circle",{"cx":"12","cy":"12","r":"4"}],["path",{"d":"M12 2v2"}],["path",{"d":"M12 20v2"}],["path",{"d":"m4.93 4.93 1.41 1.41"}],["path",{"d":"m17.66 17.66 1.41 1.41"}],["path",{"d":"M2 12h2"}],["path",{"d":"M20 12h2"}],["path",{"d":"m6.34 17.66-1.41 1.41"}],["path",{"d":"m19.07 4.93-1.41 1.41"}]],"target":[["circle",{"cx":"12","cy":"12","r":"10"}],["circle",{"cx":"12","cy":"12","r":"6"}],["circle",{"cx":"12","cy":"12","r":"2"}]],"thermometer":[["path",{"d":"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"}]],"tree-palm":[["path",{"d":"M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4"}],["path",{"d":"M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3"}],["path",{"d":"M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35"}],["path",{"d":"M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14"}]],"tree-pine":[["path",{"d":"m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z"}],["path",{"d":"M12 22v-3"}]],"trees":[["path",{"d":"M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z"}],["path",{"d":"M7 16v6"}],["path",{"d":"M13 19v3"}],["path",{"d":"M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"}]],"triangle-exclamation-point":[["path",{"d":"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"}],["path",{"d":"M12 9v4"}],["path",{"d":"M12 17h.01"}]],"volcano":[["path",{"d":"M3 20 9 10h6l6 10Z"}],["path",{"d":"M12 7V3"}],["path",{"d":"m9 6-1.5-1.5"}],["path",{"d":"m15 6 1.5-1.5"}]],"volume-2":[["path",{"d":"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"}],["path",{"d":"M16 9a5 5 0 0 1 0 6"}],["path",{"d":"M19.364 18.364a9 9 0 0 0 0-12.728"}]],"waves-horizontal":[["path",{"d":"M2 12q2.5 2 5 0t5 0 5 0 5 0"}],["path",{"d":"M2 19q2.5 2 5 0t5 0 5 0 5 0"}],["path",{"d":"M2 5q2.5 2 5 0t5 0 5 0 5 0"}]],"wheat":[["path",{"d":"M2 22 16 8"}],["path",{"d":"M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z"}],["path",{"d":"M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z"}],["path",{"d":"M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z"}],["path",{"d":"M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z"}],["path",{"d":"M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z"}],["path",{"d":"M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z"}],["path",{"d":"M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z"}]],"wind":[["path",{"d":"M12.8 19.6A2 2 0 1 0 14 16H2"}],["path",{"d":"M17.5 8a2.5 2.5 0 1 1 2 4H2"}],["path",{"d":"M9.8 4.4A2 2 0 1 1 11 8H2"}]],"worm":[["path",{"d":"m19 12-1.5 3"}],["path",{"d":"M19.63 18.81 22 20"}],["path",{"d":"M6.47 8.23a1.68 1.68 0 0 1 2.44 1.93l-.64 2.08a6.76 6.76 0 0 0 10.16 7.67l.42-.27a1 1 0 1 0-2.73-4.21l-.42.27a1.76 1.76 0 0 1-2.63-1.99l.64-2.08A6.66 6.66 0 0 0 3.94 3.9l-.7.4a1 1 0 1 0 2.55 4.34z"}]],"x":[["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]],"zap":[["path",{"d":"M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"}]]};
+const ICON_SOURCE = 'Lucide 1.70.0';
+if (typeof module !== 'undefined') module.exports = { ICONS };
 /* Animal silhouettes from PhyloPic (phylopic.org) — GENERATED by tools/build_silhouettes.py. Each is CC0, public domain or CC BY, and its credit is shown wherever it is used. The pictures themselves are in tiles/sil/. */
 const SIL = {"spinosaurus":{"f":"tiles/sil/spinosaurus.png","w":512,"h":222,"by":"Tasman Dixon","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Spinosaurus aegyptiacus","level":"own","img":"0dd7eaf6-1caf-4579-9f42-340fa9f34c48"},"carcharodontosaurus":{"f":"tiles/sil/carcharodontosaurus.png","w":512,"h":175,"by":"Martin Kevil","lic":"CC BY 3.0","licUrl":"https://creativecommons.org/licenses/by/3.0/","of":"Carcharodontosaurus saharicus","level":"own","img":"84bfa110-4a5b-437e-b759-711c76f5eed8"},"deltadromeus":{"f":"tiles/sil/deltadromeus.png","w":512,"h":262,"by":"Jagged Fang Designs","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Deltadromeus agilis","level":"own","img":"e1bc809f-5585-4741-acd4-a88e6ef5a754"},"abelisaurid":{"f":"tiles/sil/abelisaurid.png","w":512,"h":165,"by":"Jagged Fang Designs","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Ekrixinatosaurus novasi","level":"member","img":"19095cb4-99be-4ffb-a0c2-9249ec26e88f"},"rebbachisaurus":{"f":"tiles/sil/rebbachisaurus.png","w":512,"h":114,"by":"Michael P. Taylor","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Limaysaurus tessonei","level":"relative","img":"80596e4b-3b9f-4521-9d4a-a1b2ab2a0098"},"siroccopteryx":{"f":"tiles/sil/siroccopteryx.png","w":512,"h":245,"by":"Julio Garza","lic":"CC BY 3.0","licUrl":"https://creativecommons.org/licenses/by/3.0/","of":"Pterodactylus antiquus","level":"relative","img":"97ce8bbd-68a1-4185-a23e-59dcad7d7f15"},"alanqa":{"f":"tiles/sil/alanqa.png","w":512,"h":375,"by":"jack liddle","lic":"CC BY 4.0","licUrl":"https://creativecommons.org/licenses/by/4.0/","of":"Phosphatodraco mauritanicus","level":"relative","img":"a70cf93c-0f86-487e-b9c8-c4f2b45ed0e0"},"sidenecked":{"f":"tiles/sil/sidenecked.png","w":512,"h":337,"by":"Dean Schnabel","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Araripemys arturi","level":"member","img":"215dda48-68c5-4f1c-893f-6eb00155d5fa"},"elosuchus":{"f":"tiles/sil/elosuchus.png","w":512,"h":468,"by":"Nobu Tamura (vectorized by T. Michael Keesey)","lic":"CC BY 3.0","licUrl":"https://creativecommons.org/licenses/by/3.0/","of":"Elosuchus cherifiensis","level":"own","img":"f9d7c657-5711-4d34-a653-aa2d13e8f51f"},"onchopristis":{"f":"tiles/sil/onchopristis.png","w":512,"h":169,"by":"Tyler Greenfield","lic":"CC BY 3.0","licUrl":"https://creativecommons.org/licenses/by/3.0/","of":"Onchopristis","level":"own","img":"118fc785-cebd-40a0-83a4-f77866eda898"},"axelrodichthys":{"f":"tiles/sil/axelrodichthys.png","w":512,"h":234,"by":"François-Louis PELISSIER","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Axelrodichthys","level":"own","img":"4b9a8105-c0a2-405f-a27e-42314dfd3f1f"},"neoceratodus":{"f":"tiles/sil/neoceratodus.png","w":512,"h":127,"by":"Roberto Díaz Sibaja","lic":"CC BY 3.0","licUrl":"https://creativecommons.org/licenses/by/3.0/","of":"Neoceratodus forsteri","level":"own","img":"3bfadee3-c4c5-408e-a1b8-e09bec80bc7f"},"obaichthys":{"f":"tiles/sil/obaichthys.png","w":512,"h":138,"by":"Lily Hughes","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Atractosteus spatula","level":"relative","img":"4b878d44-26e1-483e-8ef4-7879da69d1d7"},"trex":{"f":"tiles/sil/trex.png","w":512,"h":170,"by":"artrociraptor","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Tyrannosaurus rex","level":"own","img":"0c393043-8916-49b7-95df-5216285e7d17"},"triceratops":{"f":"tiles/sil/triceratops.png","w":512,"h":215,"by":"Jagged Fang Designs","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Triceratops prorsus","level":"own","img":"1ef8f3a2-6c8b-400e-ab01-cc26ed9d1a4d"},"stegosaurus":{"f":"tiles/sil/stegosaurus.png","w":512,"h":210,"by":"artrociraptor","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Stegosaurus stenops","level":"own","img":"caba4158-01c7-4dfe-a02c-b136852a4b68"},"brachiosaurus":{"f":"tiles/sil/brachiosaurus.png","w":512,"h":310,"by":"Michael P. Taylor","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Brachiosaurus altithorax","level":"own","img":"2431b273-7b21-482e-b971-70377686335d"},"velociraptor":{"f":"tiles/sil/velociraptor.png","w":512,"h":444,"by":"Tasman Dixon","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Velociraptor mongoliensis","level":"own","img":"9c50dadb-146e-472b-afe3-6224c80d4afa"},"mammoth":{"f":"tiles/sil/mammoth.png","w":512,"h":263,"by":"artrociraptor","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Mammuthus primigenius","level":"own","img":"e9ea8595-730d-47cc-b0d0-78d186d91bcd"},"smilodon":{"f":"tiles/sil/smilodon.png","w":512,"h":268,"by":"Steven Traver","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Smilodon fatalis","level":"own","img":"cc04733f-befe-4fbc-948c-9cfd9180c90f"},"dunkleosteus":{"f":"tiles/sil/dunkleosteus.png","w":512,"h":141,"by":"Jagged Fang Designs","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Dunkleosteus terrelli","level":"own","img":"10f1ff56-7b11-401a-9116-87f51706656a"},"anomalocaris":{"f":"tiles/sil/anomalocaris.png","w":512,"h":414,"by":"Xodroont","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Anomalocaris canadensis","level":"own","img":"7b35380d-cad0-4e6b-a3bd-20fc3a65da36"},"dimetrodon":{"f":"tiles/sil/dimetrodon.png","w":512,"h":304,"by":"Scott Hartman","lic":"CC BY 3.0","licUrl":"https://creativecommons.org/licenses/by/3.0/","of":"Dimetrodon grandis","level":"own","img":"ee7f1c8c-c98d-4611-aa4e-c112e86782e6"},"tiktaalik":{"f":"tiles/sil/tiktaalik.png","w":512,"h":150,"by":"Scott Hartman","lic":"CC0 1.0","licUrl":"https://creativecommons.org/publicdomain/zero/1.0/","of":"Ichthyostega","level":"relative","img":"f002b543-ff02-4f15-8fb5-49d150c287e7"}};
 // Every animal card: SILA[name] = [picture, level 0 own | 1 one member of the group | 2 a relative];
@@ -2636,6 +2694,12 @@ const SITE_SCENES = [
       { name: 'Neoceratodus', sil: 'neoceratodus', emoji: '🐟', zone: 'water', len: null, size: 'size not known', note: 'a lungfish' },
       { name: 'Obaichthys', sil: 'obaichthys', emoji: '🐟', zone: 'water', len: null, size: 'size not known', note: 'a gar' },
     ],
+    // the painter’s brief (tools/paint.py): the same paper’s setting, as a painter needs it; what is not known is left out
+    paint: { land: 'a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles',
+      water: 'a broad, shallow, slow river, brownish-green, braided around a pale sandbank island',
+      plants: 'a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank; low leafy shrubs and small plants at the water’s edge; a few ferns',
+      light: 'a hot, hazy dry-season afternoon under a pale sky',
+      not: 'grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes' },
     know: 'Most fossils here are single bones and teeth, rolled along by the rivers and mixed together; the commonest of all are the teeth of the sawfish Onchopristis. Whole skeletons are very rare. The sandstones show which way the water flowed: north, toward a delta on the sea.',
     debate: '“Stromer’s riddle”: why so many big meat-eaters and so few plant-eaters? Perhaps many of the hunters lived on the rivers’ giant fish; perhaps the rivers mixed together bones from different times and places. And how much did Spinosaurus swim — a diving hunter, or a wader at the water’s edge? The picture shows it at the edge, which both sides allow.',
   },
@@ -5498,6 +5562,10 @@ void main() {
   }
   // markers that arrive and leave: when each first appeared, where it was last drawn, and the ones just gone
   let born = {}, lastAt = {}, ghosts = [], animUntil = 0;
+  // emoji on the map are drawn by the app's icon painter when it has one (setIconPainter), else as text
+  let iconPaint = null;
+  const glyph = (c, e, x, y, px) => { if (iconPaint && iconPaint(c, e, x, y, px)) return; c.font = `${Math.round(px)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(e, x, y); };
+  const markText = (c, mk, x, y, r) => { c.font = `700 ${Math.round(r * (mk.length > 1 ? 0.82 : 1.05))}px Cinzel,Georgia,'Times New Roman',serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#3a2410'; c.fillText(mk, x, y + r * 0.06); };
   // small repeating marks that give each landscape its grain: clumps for forest, ticks for grass, grains for sand
   function coverTile(kind, ink) {
     const key = kind + ink; if (coverTiles[key]) return coverTiles[key];
@@ -6265,8 +6333,7 @@ void main() {
       const p = project(locate(P.at, t)); if (!p || !inView(p[0], p[1], 6)) continue;
       const r = 4.2 * zs;
       if (P.icon) {
-        c.font = `${Math.round(15 * zs)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
-        c.fillText(P.icon, p[0], p[1]);
+        glyph(c, P.icon, p[0], p[1], 15 * zs);
       } else {
         c.save(); c.translate(p[0], p[1]); c.rotate(Math.PI / 4);
         c.fillStyle = P.key === selected ? '#d8421a' : '#8a2b12'; c.strokeStyle = 'rgba(250,236,200,0.95)'; c.lineWidth = 1.2;
@@ -6301,7 +6368,7 @@ void main() {
       if (grow < 1) { c.save(); c.globalAlpha = grow; c.translate(q_[0], q_[1] + (1 - grow) * 9); c.scale(0.6 + 0.4 * grow, 0.6 + 0.4 * grow); c.translate(-q_[0], -q_[1]); }
       if (m.dim && !strong) { c.save(); c.globalAlpha *= 0.55; }      // a relative that is not alive at this moment
       const pic = m.pic ? m.pic() : null;    // a silhouette from the app, once it has loaded; the emoji until then
-      lastAt[m.key] = [q_[0], q_[1], r, m.emoji, !!pic];
+      lastAt[m.key] = [q_[0], q_[1], r, m.emoji, !!pic, pic, m.mark];
       if (q_ !== p && (q_[0] !== p[0] || q_[1] !== p[1])) {
         c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q_[0], q_[1]); c.strokeStyle = 'rgba(60,34,10,0.7)'; c.lineWidth = 1; c.stroke();
         c.beginPath(); c.arc(p[0], p[1], 2, 0, 7); c.fillStyle = 'rgba(60,34,10,0.9)'; c.fill();
@@ -6312,10 +6379,8 @@ void main() {
       if (pic) {                                // fitted so its corners stay inside the disc: long shapes use the full width
         const a = pic.width / pic.height, h = 1.74 * r / Math.sqrt(a * a + 1), w = a * h;
         c.drawImage(pic, q_[0] - w / 2, q_[1] - h / 2, w, h);
-      } else {
-        c.font = `${Math.round(r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
-        c.fillText(m.emoji, q_[0], q_[1] + r * 0.08);
-      }
+      } else if (m.mark) markText(c, m.mark, q_[0], q_[1], r);    // no picture: a lettered roundel, as on a printed map
+      else glyph(c, m.emoji, q_[0], q_[1] + r * 0.08, r * 1.25);
       if (m.dim && !strong) c.restore();
       if (m.tag) text(c, m.tag, q_[0], q_[1] + r + 6 * zs, 8.5 * zs, { align: 'center', spacing: 0.2, weight: 700, haloW: 3, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       if (grow < 1) c.restore();
@@ -6341,7 +6406,7 @@ void main() {
       hits.push({ x: bx, y: by, r: br + 4, more: cr });
     }
     for (const [sp, p, ly, sz, imp] of sparkLabels) {
-      c.font = `${Math.round(15 * zs)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(imp ? '☄️' : '🌋', p[0], p[1]);
+      glyph(c, imp ? '☄️' : '🌋', p[0], p[1], 15 * zs);
       text(c, sp.name, p[0], ly, sz, { weight: 700, spacing: 0.4, haloW: 3.6, color: imp ? '#7a1e08' : '#5a1608', font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       text(c, imp ? 'asteroid impact' : 'volcanic eruptions', p[0], ly + sz * 1.15, sz * 0.82, { weight: 500, spacing: 0.4, haloW: 3, color: '#4a2a14', italic: true, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
     }
@@ -6352,7 +6417,10 @@ void main() {
         const u = (nowMs - g.t) / 520;
         c.save(); c.globalAlpha = 0.85 * (1 - u) * (1 - u);
         c.beginPath(); c.arc(g.x, g.y + u * 7, g.r * (1 - 0.25 * u), 0, 7); c.fillStyle = 'rgba(214,200,170,0.9)'; c.fill(); c.lineWidth = 1; c.strokeStyle = 'rgba(70,40,12,0.6)'; c.stroke();
-        c.font = `${Math.round(g.r * 1.25)}px ${EMOJI}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000'; c.fillText(g.e, g.x, g.y + u * 7 + g.r * 0.08);
+        const gy = g.y + u * 7;
+        if (g.pic) { const a = g.pic.width / g.pic.height, h = 1.74 * g.r / Math.sqrt(a * a + 1); c.drawImage(g.pic, g.x - a * h / 2, gy - h / 2, a * h, h); }
+        else if (g.mark) markText(c, g.mark, g.x, gy, g.r);
+        else glyph(c, g.e, g.x, gy + g.r * 0.08, g.r * 1.25);
         c.restore();
       }
     }
@@ -6600,6 +6668,7 @@ void main() {
     /* turn the map to a present-day [lon, lat] */
     lookAtLL(lon, lat) { api.lookAt({ ll: [lon, lat] }); },
     /* Decorative motion on or off (tests and screenshots turn it off; so does the reader's reduced-motion setting). */
+    setIconPainter(fn) { iconPaint = fn; dirty = true; schedule(); },
     setMotion(on) { motion = !!on; trailLife = 0; liveUntil = 0; if (tctx) tctx.clearRect(0, 0, trail.width, trail.height); dirty = true; schedule(); },
     motion,
     get mode() { return mode; },
@@ -6674,7 +6743,7 @@ void main() {
         // a wholesale change (a new tab, a filter, a jump through time) is not an arrival or an extinction
         const added = l.markers.filter(m => !had.has(m.key)), gone = layers.markers.filter(m => !has.has(m.key));
         if (had.size && added.length <= 14) for (const m of added) born[m.key] = now;
-        if (gone.length <= 14) for (const m of gone) { const a = lastAt[m.key]; if (a) ghosts.push({ x: a[0], y: a[1], r: a[2], e: a[3], t: now }); }
+        if (gone.length <= 14) for (const m of gone) { const a = lastAt[m.key]; if (a) ghosts.push({ x: a[0], y: a[1], r: a[2], e: a[3], pic: a[5], mark: a[6], t: now }); }
         for (const m of gone) { delete born[m.key]; delete lastAt[m.key]; }
         if (added.length || gone.length) animUntil = now + 560;
       }
@@ -7053,10 +7122,10 @@ function updateMarkers(now) {
   if (S.tab === 'humans' && inHistory()) now = now.filter(c => c.hom);   // recorded history: the map is for empires and beliefs
   if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
   if (S.tab === 'life' && S.view === 'kin' && KIN[S.kin] && !S.story && !gravityShown()) {
-    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
+    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
     return;
   }
-  WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), name: c.name, sites: sitesOf(c) })) });
+  WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c) })) });
 }
 const placeCache = {};
 // cultures shown at the current moment: active now, with a little give so short-lived ones can be found
@@ -7122,7 +7191,7 @@ function select(key, o = {}) {
     } else look();
     if (o.fromMap) {
       if (!(S.tab === 'humans' && c.hom) && S.tab !== 'life') switchTab('life');
-      if (window.innerWidth < 768) showFact(c.emoji, '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
+      if (window.innerWidth < 768) showFact(mini(c), '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
     }
   }
   updateMarkers(); schedulePanel(0);
@@ -7389,7 +7458,7 @@ function cardHTML(c, open) {
     if (c.sites && c.sites.length) L.push(`<div class="found">📍 <b>Fossils found at:</b> ${c.sites.map(s => esc(s[2])).join(' · ')} <span style="opacity:.7">— shown on the map where those places were at the time.</span></div>`);
   }
   return `<div class="creature-card${open ? ' active' : ''}" data-key="${c.key}">
-    <div class="creature-top"><div class="creature-emoji">${picHTML(c, 'big') || c.emoji}${SIL_HTTP && silOf(c) && silOf(c).lv === 2 ? '<small class="sil-rel">a relative</small>' : ''}</div><div class="creature-title">
+    <div class="creature-top"><div class="creature-emoji">${picHTML(c, 'big') || monoHTML(c, 'big')}${SIL_HTTP && silOf(c) && silOf(c).lv === 2 ? '<small class="sil-rel">a relative</small>' : ''}</div><div class="creature-title">
       <div class="creature-name">${esc(c.name)}${c.nick ? `<i>${esc(c.nick)}</i>` : ''}</div>
       ${c.means ? `<div class="creature-means">“${esc(c.means)}”</div>` : ''}
       <div class="creature-size">${esc(c.size || '')}</div><div class="creature-lived">${esc(c.lived || '')}</div>
@@ -7400,7 +7469,7 @@ function cardHTML(c, open) {
     <div class="lineage">🧬 <b>${esc(c.path[0])}</b>${c.path.slice(1).map(s => ' › ' + esc(s)).join('')}</div>
     ${L.join('')}</div>`;
 }
-const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${picHTML(c, 'row') || c.emoji}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
+const rowHTML = (c, isAlive, tree) => `<div class="crow${isAlive ? ' alive' : ''}" data-key="${c.key}"><span class="e">${picHTML(c, 'row') || monoHTML(c, 'row')}</span><span class="n">${esc(c.name)}<small>${esc(tree ? c.size || '' : c.path.slice(1).join(' › ') || c.path[0])}</small></span><span class="w">${esc(c.lived || '')}</span></div>`;
 // ── when each group lived: a range chart, oldest group at the top ──
 const EXT_LINES = [[445, 'End-Ordovician'], [372, 'Late Devonian'], [252, 'The Great Dying'], [201, 'End-Triassic'], [66, 'The asteroid']];
 function chartHTML() {
@@ -7502,7 +7571,7 @@ function bindLife() {
     S.scope = 'now'; S.q = ''; $('q').value = ''; document.querySelectorAll('#scopeSeg button').forEach(x => x.classList.toggle('on', x.dataset.scope === 'now'));
     if (!isFull() && (c.t[0] < S.win[1] || c.t[1] > S.win[0])) setWindow(T_MAX, 0, true);
     select(c.key, { keep: true });
-    showFact(c.emoji, '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
+    showFact(mini(c), '<b>' + esc(c.name) + '</b> — ' + esc(c.fact));
   });
   $('lifeList').addEventListener('click', e => {
     const hom = e.target.closest('[data-open-hom]'); if (hom) { switchTab('humans'); return; }
@@ -7675,7 +7744,7 @@ function treeHTML() {
       ${n.step ? `<div class="tn-step"><b>＋</b> ${esc(n.step)}</div>` : ''}${n.link ? `<div class="tn-link">${n.note ? esc(n.note) + ' ' : ''}<button class="linkbtn" data-tree="${n.link}">🌳 Open ${esc((TREES.find(t => t.id === n.link) || {}).title || '')} →</button></div>` : ''}
       ${isOpen ? `<div class="tn-body">${n.note ? `<p>${esc(n.note)}</p>` : ''}${n.debate ? `<p class="tn-deb">❓ ${esc(n.debate)}</p>` : ''}
         ${n.all.length ? `<p class="tn-when">${esc(fmtLong(n.t0).replace(' ago', ''))} → ${esc(fmtLong(n.t1))} · from the ${n.all.length} in this app</p>` : ''}
-        ${members.length ? `<div class="tn-mem">${members.map(c => `<button class="chip${c.key === S.sel ? ' on' : ''}${alive(c, S.t, pad) ? ' now' : ''}" data-key="${c.key}">${c.emoji} ${esc(c.name)}</button>`).join('')}</div>` : ''}
+        ${members.length ? `<div class="tn-mem">${members.map(c => `<button class="chip${c.key === S.sel ? ' on' : ''}${alive(c, S.t, pad) ? ' now' : ''}" data-key="${c.key}">${mini(c)} ${esc(c.name)}</button>`).join('')}</div>` : ''}
         ${n.auto ? `<p class="tn-when">${kids.length} groups branch from here — listed below.</p>` : !members.length && kids.length ? `<p class="tn-when">Its members are on the branches below.</p>` : ''}
         ${sel && n.own.includes(sel) ? cardHTML(sel, true) : ''}</div>` : ''}
     </div>${kids.filter(k => !k.trunk).map(row).join('')}${kids.filter(k => k.trunk).map(row).join('')}`;
@@ -7710,7 +7779,7 @@ function openSite(id) {
     <div class="ss-blurb">${esc(s.blurb)}</div><canvas id="ssCv" aria-label="A picture of the animals found at this site"></canvas>
     <div class="ss-cap">A picture built from the finds at this site. Animals with a known length are drawn to scale, and the bars below compare them with a person; the paler ones are marked “size not known” and are not to scale. Poses and plants are guesses.</div>
     <div class="ss-more"><div class="label-sec"><h5>🏞 The place</h5>${esc(s.setting)}</div><div class="label-sec"><h5>🪨 The rock</h5>${esc(s.rock)}</div><div class="label-sec"><h5>🌿 Plants</h5>${esc(s.plants)}</div>
-      <div class="label-sec"><h5>🦴 Who was found here</h5><ol class="ss-cast">${s.cast.map(c => `<li>${c.emoji} <b>${esc(c.name)}</b> — ${esc(c.note)} <i>(${esc(c.size)})</i>${c.sil && SIL[c.sil] && SIL[c.sil].level !== 'own' ? ` <span class="ss-rel">· drawn with the outline of ${SIL[c.sil].level === 'member' ? 'one member of the group' : 'a relative'}, <i>${esc(SIL[c.sil].of)}</i></span>` : ''}</li>`).join('')}</ol></div>
+      <div class="label-sec"><h5>🦴 Who was found here</h5><ol class="ss-cast">${s.cast.map(c => `<li>${SIL_HTTP && c.sil && SIL[c.sil] ? `<span class="ico ico-sil" aria-hidden="true" style="-webkit-mask-image:url(${SIL[c.sil].f});mask-image:url(${SIL[c.sil].f})"></span>` : c.emoji} <b>${esc(c.name)}</b> — ${esc(c.note)} <i>(${esc(c.size)})</i>${c.sil && SIL[c.sil] && SIL[c.sil].level !== 'own' ? ` <span class="ss-rel">· drawn with the outline of ${SIL[c.sil].level === 'member' ? 'one member of the group' : 'a relative'}, <i>${esc(SIL[c.sil].of)}</i></span>` : ''}</li>`).join('')}</ol></div>
       <div class="label-sec ss-credits"><h5>✒️ Silhouettes</h5>From <a href="https://www.phylopic.org" target="_blank" rel="noopener">PhyloPic</a>, free to use: ${s.cast.filter(c => c.sil && SIL[c.sil]).map(c => { const k = SIL[c.sil]; return `${esc(c.name)} by <a href="https://www.phylopic.org/images/${esc(k.img)}" target="_blank" rel="noopener">${esc(k.by)}</a> (<a href="${esc(k.licUrl)}" target="_blank" rel="noopener">${esc(k.lic)}</a>)`; }).join('; ')}.</div>
       <div class="label-sec"><h5>🔎 How do we know?</h5>${esc(s.know)}</div><div class="label-sec"><h5>❓ Still debated</h5>${esc(s.debate)}</div>${srcHTML('z:' + id)}</div>`;
   el.classList.add('show'); el.scrollTop = 0;
@@ -7835,6 +7904,65 @@ function picCreditsHTML() {
   const rows = Object.entries(by).sort((a, b) => b[1].n - a[1].n || a[0].localeCompare(b[0]));
   return `<div class="sil-credits"><div class="insp-h"><b>The animal silhouettes</b> · PhyloPic</div><div class="insp-w">${Object.keys(SILI).length} drawings by ${rows.length} scientists and artists, used under CC0, public domain or CC BY. Each card names its artist and whether the outline is of the animal itself, one member of its group, or a relative.</div><div class="insp-b">${rows.map(([n, v]) => `${esc(n)} (${v.n}; ${[...v.lic].sort().map(l => `<a href="${LIC_URL[l]}" target="_blank" rel="noopener">${LIC_NAME[l]}</a>`).join(', ')})`).join(' · ')}</div></div>`;
 }
+/* Icons instead of emoji (icon_map.js → icons-data.js). ico(name) is an inline line icon; emo(e) is the icon, or the
+   silhouette of a real animal, standing for an emoji; iconize(root) swaps them into rendered text, and an observer does
+   it for everything the page draws later. An emoji not in the table stays as it is. Animals with no silhouette get a
+   lettered roundel (monogram), as on a printed map: no invented shape. */
+const ICON_ATTR = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+const ico = (n, cls) => ICONS[n] ? `<svg class="ico${cls ? ' ' + cls : ''}" ${ICON_ATTR}>${ICONS[n].map(([t, a]) => `<${t} ${Object.entries(a).map(([k, v]) => `${k}="${v}"`).join(' ')}/>`).join('')}</svg>` : '';
+const EMO_BASE = e => e.replace(/️/g, '');
+const EMO_I = {}, EMO_S = {};
+for (const [e, n] of Object.entries(EMOJI_ICON)) if (ICONS[n]) EMO_I[EMO_BASE(e)] = n;
+for (const [e, n] of Object.entries(EMOJI_SIL)) if (typeof SILA !== 'undefined' && SILA[n]) EMO_S[EMO_BASE(e)] = SILA[n][0];
+// every emoji matched here is really replaced (or the observer would chase its own tail): an animal stand-in falls back
+// to a line icon where its silhouette cannot load (a page opened from a file)
+const EMO_FALL = e => /^(🐟|🦈|🐋|🐬)$/u.test(e) ? 'fish' : /^(🐧|🦤|🦅|🦆)$/u.test(e) ? 'bird' : 'paw-print';
+const EMO_RE = new RegExp('(?:' + [...new Set([...Object.keys(EMO_I), ...Object.keys(EMO_S)])].sort((a, b) => b.length - a.length)
+  .map(e => e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\uFE0F?').join('|') + ')', 'gu');
+function emo(e) {
+  const b = EMO_BASE(e), k = SIL_HTTP && EMO_S[b];
+  if (k) return `<span class="ico ico-sil" aria-hidden="true" style="-webkit-mask-image:url(tiles/sil/p/${k}.png);mask-image:url(tiles/sil/p/${k}.png)"></span>`;
+  return EMO_I[b] ? ico(EMO_I[b]) : EMO_S[b] ? ico(EMO_FALL(b)) : e;
+}
+function iconize(root) {
+  if (!root) return;
+  if (root.nodeType === 3) root = root.parentNode;
+  if (!root || !root.nodeType || (root.closest && root.closest('script,style,textarea,option,select,svg,[data-noicon]'))) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => {
+    EMO_RE.lastIndex = 0; if (!EMO_RE.test(n.data)) return NodeFilter.FILTER_REJECT;
+    const p = n.parentElement; return p && !p.closest('script,style,textarea,option,select,svg,[data-noicon]') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; } });
+  const hits = []; while (w.nextNode()) hits.push(w.currentNode);
+  for (const n of hits) { const t = document.createElement('template'); EMO_RE.lastIndex = 0; t.innerHTML = esc(n.data).replace(EMO_RE, m => emo(m)); n.replaceWith(t.content); }
+}
+const HOM_MARK = { Homo: 'H', Australopithecus: 'Au', Paranthropus: 'P', Ardipithecus: 'Ar', Sahelanthropus: 'S', Orrorin: 'O', Kenyanthropus: 'K', Humans: 'H' };
+function monogram(c) {
+  const g = String(c.name || '').replace(/^[^A-Za-z]+/, '').split(/[\s(]/)[0] || '?';
+  return (c.hom || (c.path && c.path[0] === 'Human family')) ? (HOM_MARK[g] || g.charAt(0)) : g.charAt(0).toUpperCase();
+}
+const monoHTML = (c, cls) => `<span class="mono${cls ? ' ' + cls : ''}" aria-hidden="true">${esc(monogram(c))}</span>`;
+const mini = c => picHTML(c, 'mini') || monoHTML(c, 'mini');
+// the same icons on the map's canvas: Lucide shapes as paths, ink over a pale halo
+const icoPaths = {};
+function icoPath(n) {
+  if (icoPaths[n]) return icoPaths[n];
+  const p = new Path2D();
+  for (const [t, a] of ICONS[n]) {
+    if (t === 'path') p.addPath(new Path2D(a.d));
+    else if (t === 'circle') { p.moveTo(+a.cx + +a.r, +a.cy); p.arc(+a.cx, +a.cy, +a.r, 0, Math.PI * 2); }
+    else if (t === 'ellipse') { p.moveTo(+a.cx + +a.rx, +a.cy); p.ellipse(+a.cx, +a.cy, +a.rx, +a.ry, 0, 0, Math.PI * 2); }
+    else if (t === 'line') { p.moveTo(+a.x1, +a.y1); p.lineTo(+a.x2, +a.y2); }
+    else if (t === 'rect') { const x = +(a.x || 0), y = +(a.y || 0), wd = +a.width, ht = +a.height, r = +(a.rx || a.ry || 0); if (p.roundRect) p.roundRect(x, y, wd, ht, r); else p.rect(x, y, wd, ht); }
+    else if (t === 'polyline' || t === 'polygon') { const q = String(a.points).trim().split(/[\s,]+/).map(Number); for (let i = 0; i + 1 < q.length; i += 2) i ? p.lineTo(q[i], q[i + 1]) : p.moveTo(q[i], q[i + 1]); if (t === 'polygon') p.closePath(); }
+  }
+  return (icoPaths[n] = p);
+}
+function paintIcon(c, e, x, y, px) {
+  const n = EMO_I[EMO_BASE(e)]; if (!n) return false;
+  const p = icoPath(n), s = px * 1.05 / 24;
+  c.save(); c.translate(x - 12 * s, y - 12 * s); c.scale(s, s); c.lineCap = 'round'; c.lineJoin = 'round';
+  c.strokeStyle = 'rgba(250,240,215,0.92)'; c.lineWidth = 5.5; c.stroke(p); c.strokeStyle = '#3a2410'; c.lineWidth = 2; c.stroke(p);
+  c.restore(); return true;
+}
 const ageTag = t => t >= 1 ? (t >= 10 ? Math.round(t) : +t.toFixed(1)) + ' M' : t >= 0.0117 ? Math.round(t * 1000) + 'k' : 'today';
 function kinHTML() {
   const list = (KIN[S.kin] || []).slice().sort((a, b) => b.t[0] - a.t[0] || b.t[1] - a.t[1]); if (!list.length) return '';
@@ -7843,7 +7971,7 @@ function kinHTML() {
   for (const v of [t0, 500, 300, 200, 100, 66, 50, 30, 20, 10, 5, 2, 1, 0.5, 0.1, 0.01, 0]) if (v <= t0 && (!ticks.length || +x(v) - +x(ticks[ticks.length - 1][0]) >= (v ? 14 : 8))) ticks.push([v, v ? ageTag(v) : 'now']);
   const name = S.kin.split(' › ').pop(), now = list.filter(c => alive(c, S.t));
   const rows = list.map(c => `<div class="kin-row${alive(c, S.t) ? ' now' : ''}${S.sel === c.key ? ' sel' : ''}" data-key="${c.key}" title="${esc(c.name)} — ${esc(c.lived || '')}">
-    <span class="e">${c.emoji}</span><span class="kn">${esc(c.name)}<small>${esc(c.lived || '')}</small></span>
+    <span class="e">${mini(c)}</span><span class="kn">${esc(c.name)}<small>${esc(c.lived || '')}</small></span>
     <div class="kin-track"><div class="kin-bar" style="left:${x(c.t[0])}%;width:${Math.max(1, x(c.t[1]) - x(c.t[0]))}%"></div></div></div>`).join('');
   return `<div class="kin"><div class="kin-head"><button class="linkbtn" data-kin-back>← Back to the list</button>
     <div class="list-h">${esc(name)} through time<small>${list.length} on this site, from ${esc(ageTag(t0))} to ${esc(ageTag(Math.min(...list.map(c => c.t[1]))))} ago · ${now.length ? now.length + ' alive at this moment' : 'none alive at this moment'}</small></div></div>
@@ -7885,7 +8013,7 @@ function findHTML(f) {
     <dl class="facts"><dt>When</dt><dd>${esc(f.when)}</dd><dt>Who</dt><dd>${esc(f.who)}</dd><dt>Where</dt><dd>${esc(f.where)}</dd>${f.age != null ? `<dt>Fossil age</dt><dd>${esc(fmtLong(f.age))}</dd>` : ''}</dl>
     <div class="creature-fact">${esc(f.story)}</div>
     ${sec('🙃 What they got wrong', f.wrong)}${sec('🙋 Who gets left out', f.left)}${sec('❓ Still debated', f.debate)}${sec('💡 Why it mattered', f.mattered)}
-    ${c || h ? `<div class="found">${c ? `<button class="linkbtn" data-meet="${c.key}">${c.emoji} Meet ${esc(c.name)}</button> ` : ''}${h ? `<button class="linkbtn" data-meet="${h.key}" data-hom="1">🧍 Meet ${esc(shortName(h.name))}</button>` : ''}</div>` : ''}
+    ${c || h ? `<div class="found">${c ? `<button class="linkbtn" data-meet="${c.key}">${mini(c)} Meet ${esc(c.name)}</button> ` : ''}${h ? `<button class="linkbtn" data-meet="${h.key}" data-hom="1">🧍 Meet ${esc(shortName(h.name))}</button>` : ''}</div>` : ''}
     ${f.at ? `<div class="found">📍 <b>On the map:</b> ${f.age != null ? 'the pin marks the spot — carried back to where it was on Earth when this fossil was alive.' : 'the pin marks the place today.'}</div>` : ''}${srcHTML('x:' + f.id)}</div>`;
 }
 function renderFinds() {
@@ -7937,7 +8065,7 @@ const extLost = e => ALL.filter(c => !c.hom && c.t[1] <= e.lost[0] && c.t[1] >= 
 const extThrough = e => ALL.filter(c => !c.hom && c.t[0] > e.lost[0] && c.t[1] < e.lost[1] - (e.lost[0] - e.lost[1]) * 0.5).sort((a, b) => (b.t[0] - b.t[1]) - (a.t[0] - a.t[1]));
 function renderExt() {
   const sel = S.sel && S.sel.startsWith('ext:') && EXT[S.sel.slice(4)], five = EXTINCTIONS.filter(e => e.pct);
-  const chip = c => `<button class="chip" data-meet="${c.key}">${c.emoji} ${esc(c.name)}</button>`;
+  const chip = c => `<button class="chip" data-meet="${c.key}">${mini(c)} ${esc(c.name)}</button>`;
   const detail = e => {
     const x = extInfo(e), lost = extLost(e), thr = extThrough(e), playing = S.scene && S.scene.id === e.id;
     return `<div class="profile culture ext" data-key="ext:${e.id}"><h3 style="font-style:normal">${e.icon} ${esc(x.name)}</h3>
@@ -8085,7 +8213,10 @@ function playScene(id) {
         const t1 = sc.gone[v.c.key] || (sc.gone[v.c.key] = now), u = (now - t1) / 2200; if (u >= 1) continue;
         const p = g.pt(v.at); if (!p) continue;
         cx.beginPath(); cx.arc(p[0], p[1], 9 + 20 * u, 0, 7); cx.strokeStyle = `rgba(255,96,64,${0.85 * (1 - u)})`; cx.lineWidth = 2.4 * (1 - u) + 0.4; cx.stroke();
-        cx.globalAlpha = Math.max(0, 1 - u * 1.3); cx.font = '15px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(v.c.emoji, p[0], p[1] - 14 * u); cx.globalAlpha = 1;
+        cx.globalAlpha = Math.max(0, 1 - u * 1.3); { const sl = SIL_HTTP && silOf(v.c), pc = sl && pinPic(sl.k), y0 = p[1] - 14 * u;
+          if (pc) { const a = pc.width / pc.height, h = 26 / Math.sqrt(a * a + 1); cx.drawImage(pc, p[0] - a * h / 2, y0 - h / 2, a * h, h); }
+          else { cx.font = "700 13px Cinzel,Georgia,serif"; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillStyle = '#3a2410'; cx.fillText(monogram(v.c), p[0], y0); } }
+        cx.globalAlpha = 1;
       }
     });
   });
@@ -8810,7 +8941,7 @@ function updatePinCard() {
     for (const c of ALL) { if (!c.sites || !alive(c, S.t)) continue; let best = 1e9, lab = ''; for (const s of c.sites) { const d = KM(P.lat, P.lon, s[0], s[1]); if (d < best) { best = d; lab = s[2]; } } near.push([best, c, lab]); }
     near.sort((a, b) => a[0] - b[0]);
     const top = near.slice(0, 3);
-    if (top.length) html += `<div class="pc-near">${top[0][0] < 2000 ? 'Lived nearby' : 'Nearest fossils from this moment'}: ${top.map(([d, c]) => `<span data-key="${c.key}">${c.emoji} ${esc(c.name)}</span> (${years(Math.round(d / 10) * 10)} km)`).join(', ')}</div>`;
+    if (top.length) html += `<div class="pc-near">${top[0][0] < 2000 ? 'Lived nearby' : 'Nearest fossils from this moment'}: ${top.map(([d, c]) => `<span data-key="${c.key}">${mini(c)} ${esc(c.name)}</span> (${years(Math.round(d / 10) * 10)} km)`).join(', ')}</div>`;
     const w = WorldMap.seaAt(P.lat, P.lon, S.t);
     if (w === 'sea') html += '<div class="pc-sea">🌊 <b>Then it lay under the sea</b> — over the drowned edge of a continent, where sea creatures lived.</div>';
     else if (w === 'land') html += '<div class="pc-sea">🏝 <b>Then it was dry land</b>, on the maps of ancient seas.</div>';
@@ -8877,7 +9008,7 @@ let lastYou = null;
 function updateYou() {
   const y = youAt(S.t); if (y === lastYou) return; lastYou = y;
   const c = youLike(y);
-  $('youBar').innerHTML = `<span class="yb-k">🧬 Your ancestor at this moment</span><span class="yb-v"><b>${esc(y.what)}</b>${c ? ` — like ${esc(shortName(c.name))} ${c.emoji || ''}` : ''}</span><span class="yb-go">›</span>`;
+  $('youBar').innerHTML = `<span class="yb-k">🧬 Your ancestor at this moment</span><span class="yb-v"><b>${esc(y.what)}</b>${c ? ` — like ${esc(shortName(c.name))} ${mini(c)}` : ''}</span><span class="yb-go">›</span>`;
 }
 function openYou() {
   const y = youAt(S.t), c = youLike(y);
@@ -8987,7 +9118,7 @@ function bindDoor() {
 let factTimer = 0;
 function showFact(emoji, html, ms) {
   clearTimeout(factTimer);
-  $('fpEmoji').textContent = emoji; $('fpText').innerHTML = html;
+  $('fpEmoji').innerHTML = emoji; $('fpText').innerHTML = html;      // an icon, a picture or a roundel (never reader text)
   $('factPopup').classList.add('show');
   factTimer = setTimeout(closeFact, ms || 9000);
 }
@@ -9014,6 +9145,10 @@ function readHash() {
 
 function init() {
   WorldMap.init($('mapCanvas'), $('mapFx'));
+  WorldMap.setIconPainter(paintIcon);
+  iconize(document.body);
+  new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') iconize(m.target); else for (const n of m.addedNodes) if (n.nodeType === 1 || n.nodeType === 3) iconize(n); } })
+    .observe(document.body, { childList: true, subtree: true, characterData: true });
   WorldMap.onSeas = () => { updateClock(); updatePinCard(); };
   $('soundBtn').onclick = () => SoundOfTime.toggle();
   // backdrops: remembered on this device only
