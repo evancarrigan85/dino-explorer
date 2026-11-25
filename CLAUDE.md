@@ -67,6 +67,8 @@ python3 -I tools/verify_refs.py --audit               # re-fetch every stored DO
 node tools/bench/bench.js [--update]                  # score the map against independent evidence
 node tools/review_geometry.js                         # walk the timeline: jumps, gaps, labels, terrain fit
 node tools/perf/perf.js [--json out.json]             # time load, idle, drag, zoom, scrub, play, tabs (desktop + phone)
+cd app && npm run dev                                 # the new app (Step 3), at http://localhost:5173/#/site/kemkem
+cd app && npm run build && node scripts/check.cjs     # build it and run its checks
 ```
 
 One-time setup in a fresh container: `npm i -D playwright` is not needed in Claude cloud sessions

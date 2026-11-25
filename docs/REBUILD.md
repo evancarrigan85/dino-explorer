@@ -107,7 +107,14 @@ Each step ends with everything passing and the live site still working. The old 
    One file per kind in `content/`, with schemas; `assemble.mjs` reads from there
    so the old page keeps working. A check proves the page’s data is identical before and after (every animal, field,
    source). `original.html`, `old.js` and `data_fix.js` go.
-3. **The new app beside the old.** React + TypeScript + Vite, using `engine/` and `content/`. Port screen by screen
+3. **The new app beside the old — started 25 Nov** (`app/`: Vite 8, React 19, TypeScript, three.js 0.187 through
+   @react-three/fiber 9 and drei 10, exact versions pinned). First screen: the **living Kem Kem scene**
+   (`#/site/kemkem`; see “Living scenes” above): land shaped from the brief, flowing water with waves, glints, depth,
+   foam and caustics, monkey-puzzle trees, shrubs and ferns in the wind, drifting high cloud, the 13 animals as
+   silhouettes to scale with labels, eye-level and fly-over views, tap an animal to fly to it and read its card, and a
+   panel with the place, rock, plants, how we know, what is debated, what is a guess and the 9 papers. 60 fps on
+   Evan’s Mac (desktop GPU); `node app/scripts/check.cjs` (after `npm run build` in `app/`): 17 passed. Not yet: the
+   map, the tabs, real addresses, a phone measured on real hardware. The plan as written: React + TypeScript + Vite, using `engine/` and `content/`. Port screen by screen
    against a parity list (every tab, view, scene, story, journey, the quiz, the pin, the sheet on phones), porting the
    matching checks from `tools/test.js` as each one lands. Real addresses for every view; old `#150mya/…` links still work.
 4. **Switch over.** CI on GitHub Actions; preview links; the new app replaces the old at the same address
@@ -127,6 +134,37 @@ fps; idle 0 frames after 3 s; tab switch ≤ 60 ms; first paint ≤ 1 s; site sc
   before Steps 1–2: to ship it, merge `main` into it, keep main’s `assemble.mjs` and re-add the painting check, rebuild.
 - The era painting guide and the hominin figures (both discussed 25 Nov) are content and design work: they can be
   planned now and built into the new app.
+
+## Living scenes: zoom into the place itself (Evan, 25 Nov)
+
+Evan: “a visualization and pathway to good information, charming, engaging … zoom into the terrain and zoom around,
+kind of like a city view of that environment … cutting-edge water animation, vegetation moving.” He pointed at the
+“SimCity AI” project in the news — most likely **Isometric NYC** (Andy Coenen, Jan 2026: a zoomable SimCity-style map of
+New York, real map tiles restyled by an image model), possibly Google’s **Project Genie** (a world model that invents a
+walkable world in real time). The difference matters here: Isometric NYC *restyles real data*; Genie *invents*. Before
+Us can only do the first — every hill, plant and animal in a scene must come from the site’s papers.
+
+**What a living scene is.** A 3D diorama of one fossil site at its own time, opened from the map (the map zooms to the
+pin and the scene takes over), that the reader can orbit, zoom and fly over like a city view:
+- **Land** shaped from the scene’s brief (`paint` in `data_sites.js`): the river, the sandbank, the level far bank —
+  a reconstruction of the setting the paper describes, said so on screen. Deterministic (seeded by the scene id).
+- **Water** as good as a browser can do it: flowing in the direction the sandstones show, small waves and glints,
+  the colour of the brief (brownish-green, shallow), depth shading, foam along the banks, light patterns (caustics)
+  on the shallow bed.
+- **Plants** only those in the brief (monkey-puzzle conifers, ferns, low shrubs), instanced by the thousand, moving in
+  the wind: gusts travel across the scene; tall trees sway slowly, ferns quickly.
+- **Animals** stay the scientists’ silhouettes, standing in the scene like cut-outs in a museum diorama, **to scale**
+  where the length is known (paler where it is not), each one tappable for its card. Motion that claims nothing:
+  pterosaurs gliding in slow circles, fish drifting under the surface, land animals still. Walking, hunting or
+  any behaviour waits for a sourced 3D reconstruction — **ask Evan** before adding any.
+- **A pathway to the evidence**: everything on screen opens what it is and how we know (the site’s paper, the
+  silhouette’s artist and licence, “what is a guess”).
+- Rules as on the map: everything a function of the data and the clock (seeded, never `Math.random`), still for
+  readers who ask for reduced motion, paused when hidden, a phone budget (fewer plants, no shadows if needed).
+
+**How:** three.js through React (`@react-three/fiber`), in the new app (`app/`). WebGL2 now; WebGPU when phones have it.
+The Gemini paintings can become the distant backdrop of a scene (painted sky and far horizon, 3D foreground — the way
+museum dioramas are built). The Kem Kem is the first; then one scene per period.
 
 ## Features for the new app (from comparing with the World History Encyclopedia app, 25 Nov)
 
