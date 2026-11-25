@@ -10,13 +10,17 @@ says the picture is AI-made, names the model and shows what it was asked for.
     python3 -I tools/paint.py site kemkem [--n 3] [--pro] [--size 1K|2K] [--dry-run]   # make candidates
     python3 -I tools/paint.py choose kemkem 2          # candidate 2 becomes tiles/scenes/kemkem.webp
     python3 -I tools/paint.py spent                    # what the log says was spent
+    python3 -I tools/paint.py check                    # is the key accepted, and can it see the image models? (free)
 
 THE API (checked against Google's docs in Sep 2026 for Groundwork's px/gemini.py, which this follows): the Interactions
 API, POST /v1beta/interactions; the image comes back in `steps[].content[]`; output is set by a top-level
 `response_format` with `image_size` "1K"/"2K" (capital K) and an `aspect_ratio`; only JPEG is returned.
 
-THE KEY is a network secret on the environment (header x-goog-api-key, host generativelanguage.googleapis.com): the
-proxy puts it on the request, so this script sends a placeholder unless GEMINI_API_KEY is set. Never write it in a file.
+THE KEY: on a Mac, `export GEMINI_API_KEY=...` in the shell (Groundwork already does); in a cloud session, a network
+secret on the environment (header x-goog-api-key, host generativelanguage.googleapis.com) that the proxy puts on the
+request, so this script then sends a placeholder. Never write it in a file. Newer Google keys start "AQ." rather than
+"AIza"; `check` tries the x-goog-api-key header and then Authorization: Bearer, and says which one this key needs
+(set PAINT_AUTH=bearer if it is the second).
 
 WHAT STOPS A RUNAWAY BILL (the lesson Groundwork paid $25 for on 19 Sep 2026):
   PAINT_MAX_CALLS   default 8      calls one run may make
@@ -103,8 +107,7 @@ def call(body):
         t = next(x['text'] for x in body['input'] if x['type'] == 'text')
         print('  DRY RUN  %s %s ~$%.3f  (%d chars of prompt, %d reference image)  — not sent' % (what['model'], what['size'], usd, len(t), what['refs']))
         return None
-    req = urllib.request.Request(ENDPOINT, data=json.dumps(body).encode(), method='POST',
-                                 headers={'x-goog-api-key': os.environ.get('GEMINI_API_KEY', 'put-on-by-the-proxy'), 'Content-Type': 'application/json'})
+    req = urllib.request.Request(ENDPOINT, data=json.dumps(body).encode(), method='POST', headers=dict(auth(), **{'Content-Type': 'application/json'}))
     t0 = time.time()
     try:
         with urllib.request.urlopen(req, timeout=240) as r: resp = json.loads(r.read().decode())
@@ -114,6 +117,26 @@ def call(body):
         log(dict(what, http=0, error=str(e)[:200])); sys.exit('gemini: %s — the request went out and may have been billed' % e)
     log(dict(what, http=200, ms=int((time.time() - t0) * 1000), usage=resp.get('usage')))
     return resp
+
+
+def auth(how=None):
+    key = os.environ.get('GEMINI_API_KEY', 'put-on-by-the-proxy')
+    return {'Authorization': 'Bearer ' + key} if (how or os.environ.get('PAINT_AUTH', '')) == 'bearer' else {'x-goog-api-key': key}
+
+
+def check():
+    """A free call (list the models) to see whether the key works, and how it must be sent."""
+    if DRY: print('  DRY RUN: would GET /v1beta/models with the key (free). Not sent.'); return
+    for how in ('header', 'bearer'):
+        req = urllib.request.Request('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000', headers=auth(how))
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r: names = [m.get('name', '') for m in json.loads(r.read().decode()).get('models', [])]
+        except urllib.error.HTTPError as e:
+            print('  %s: refused (%s) %s' % ('x-goog-api-key' if how == 'header' else 'Authorization: Bearer', e.code, e.read().decode('utf-8', 'replace')[:160].replace('\n', ' '))); continue
+        print('  the key works, sent as %s; %d models visible' % ('x-goog-api-key' if how == 'header' else 'Authorization: Bearer (set PAINT_AUTH=bearer)', len(names)))
+        for m in (MODEL, MODEL_PRO): print('    %-26s %s' % (m, 'visible' if any(n.endswith('/' + m) for n in names) else 'NOT visible (billing? region? name changed?)'))
+        return
+    sys.exit('  the key was refused both ways: check it was copied whole, and that its project has billing turned on')
 
 
 def images(resp):
@@ -173,4 +196,5 @@ if __name__ == '__main__':
     if a[0] == 'site': site(a[1], int(opt('--n', 3)), '--pro' in sys.argv, opt('--size', '1K'))
     elif a[0] == 'choose': choose(a[1], a[2])
     elif a[0] == 'spent': spent()
+    elif a[0] == 'check': check()
     else: sys.exit(__doc__)

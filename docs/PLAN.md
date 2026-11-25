@@ -11,6 +11,19 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 ## Next up (updated 25 Nov 2026 — start here)
 
+**Hand-off, 25 Nov: Evan is moving to a local session on his Mac mini.** Everything is on `main`. On the Mac:
+1. `cd` into the dino-explorer clone (or `git clone https://github.com/evancarrigan85/dino-explorer.git`), then
+   `git checkout main && git pull`.
+2. Once: `npm i -D playwright && npx playwright install chromium` (for `node tools/test.js`) and `pip3 install pillow`
+   (for `tools/paint.py`). The painter reads `GEMINI_API_KEY` from the shell, as Groundwork does; Evan’s new key starts
+   `AQ.` rather than `AIza`, so it may need sending as a Bearer token.
+3. `python3 -I tools/paint.py check` (free): does the key work, which way must it be sent (if Bearer, use
+   `PAINT_AUTH=bearer` on every run), and are the image models visible?
+4. `python3 -I tools/paint.py site kemkem --n 3` (~$0.20, capped at $0.75); look at every candidate in
+   `tools/paint/candidates/kemkem/`; `tools/paint.py choose kemkem <n>`; then write the page side (item 1 below).
+After the paintings: the polish release (battery, share card, home screen and offline, tap targets, a shorter phone
+timeline, clean address, self-hosted fonts), then the card rewrite, a period per session.
+
 **Evan, 25 Nov: “move away from the generic emoticons … we need a proper capability for the paintings of the landscape
 scenes.”** Two answers, in this order:
 1. **Painted landscapes — built, waiting for the key.** `tools/paint.py` paints the land, water, plants and light behind a
