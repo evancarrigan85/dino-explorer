@@ -17,17 +17,19 @@ import type { Site } from './types';
 
 const reduceMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const PHONE = typeof window !== 'undefined' && window.innerWidth < 768;
-const VIEWS = PHONE ? {
-  eye: { pos: new THREE.Vector3(3, 3.0, 36), target: new THREE.Vector3(-13, 4, 4) },
-  air: { pos: new THREE.Vector3(40, 120, 150), target: new THREE.Vector3(-5, 0, -25) },
-} : {
-  eye: { pos: new THREE.Vector3(6, 3.4, 46), target: new THREE.Vector3(-10, 3, -30) },
-  air: { pos: new THREE.Vector3(70, 95, 120), target: new THREE.Vector3(0, 0, -30) },
-};
+type View = { pos: THREE.Vector3; target: THREE.Vector3 };
+// The scenes are seen from the sky (Evan, 25 Nov: "stay with the sky view … the ground level ones are bad"): an
+// overview of the whole place, and the reader can turn, tilt and zoom within the sky but never come down to the ground.
+const OVERVIEW: View = PHONE
+  ? { pos: new THREE.Vector3(30, 175, 95), target: new THREE.Vector3(-5, 0, -35) }
+  : { pos: new THREE.Vector3(75, 100, 125), target: new THREE.Vector3(0, 0, -28) };
+const SKY = { minDistance: 45, maxDistance: 420, minPolar: Math.PI * 0.12, maxPolar: Math.PI * 0.36, clearance: 20 };
 
-/** Runs the scene's clock (still for reduced motion), keeps the camera above the ground, and glides between views. */
+/** Runs the scene's clock (still for reduced motion), keeps the camera in the sky, and glides between views. */
 function Director({ land, goal, onArrive, controls }: { land: Land; goal: { pos: THREE.Vector3; target: THREE.Vector3 } | null; onArrive: () => void; controls: React.RefObject<OrbitImpl | null> }) {
   const { camera } = useThree(), still = useMemo(reduceMotion, []);
+  // for the checks (app/scripts/check.cjs): how high the camera is above the ground under it
+  useEffect(() => { (window as unknown as { __sky: () => number }).__sky = () => camera.position.y - land.height(camera.position.x, camera.position.z); }, [camera, land]);
   useFrame((_, dt) => {
     if (!still) clock.value += Math.min(dt, 0.1);
     const c = controls.current;
@@ -36,7 +38,7 @@ function Director({ land, goal, onArrive, controls }: { land: Land; goal: { pos:
       camera.position.lerp(goal.pos, k); c.target.lerp(goal.target, k);
       if (camera.position.distanceTo(goal.pos) < 0.3) onArrive();
     }
-    const floor = land.height(camera.position.x, camera.position.z) + 1.4;
+    const floor = land.height(camera.position.x, camera.position.z) + SKY.clearance;
     if (camera.position.y < floor) camera.position.y = floor;
     c?.update();
   });
@@ -48,35 +50,30 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
   const seed = useMemo(() => hashString(site.id), [site.id]);
   const land = useMemo(() => makeLand(seed), [seed]);
   const placed = useMemo(() => placeAnimals(site, land), [site, land]);
-  const views = useMemo(() => {
-    const hero = placed.find(p => p.c.zone === 'edge' && p.known) ?? placed.find(p => p.c.zone === 'edge');
-    if (!hero) return VIEWS;
-    // looking past it across the river; on a phone (a tall, narrow view) from further back, so it fits
-    const t = phone ? new THREE.Vector3(hero.pos.x + 1, 3.6, hero.pos.z - 14) : new THREE.Vector3(hero.pos.x + 6, 3.2, hero.pos.z - 30);
-    const pos = phone ? new THREE.Vector3(hero.pos.x + 7, 3.4, hero.pos.z + 60) : new THREE.Vector3(hero.pos.x + 22, 3.4, hero.pos.z + 32);
-    pos.y = Math.max(pos.y, land.height(pos.x, pos.z) + 1.8);
-    return { eye: { pos, target: t }, air: VIEWS.air };
-  }, [placed, land, phone]);
+  // the fly-in: from high above and further out, down to the overview
+  const start = useMemo(() => OVERVIEW.target.clone().add(OVERVIEW.pos.clone().sub(OVERVIEW.target).multiplyScalar(1.9)), []);
   const [selected, setSelected] = useState<string | null>(null);
   const [labels, setLabels] = useState(true);
   const [panel, setPanel] = useState(false);
-  const [goal, setGoal] = useState<{ pos: THREE.Vector3; target: THREE.Vector3 } | null>(reduceMotion() ? null : 'eye' as never);
+  const [goal, setGoal] = useState<View | null>(reduceMotion() ? null : OVERVIEW);
   const controls = useRef<OrbitImpl | null>(null);
   const sel = site.cast.find(c => c.name === selected);
 
+  /** fly to an animal: still from the sky, keeping the direction the reader is looking from, closer in */
   const focus = (name: string) => {
     setSelected(name); setPanel(true);
-    const p = placed.find(x => x.c.name === name); if (!p) return;
-    const t = p.pos.clone().setY(Math.max(p.pos.y, 0) + p.h * 0.5), back = Math.max(10, p.w * 1.6);
-    const from = new THREE.Vector3(t.x + back * 0.35, t.y + back * 0.35, t.z + back);
-    from.y = Math.max(from.y, land.height(from.x, from.z) + 2);
-    setGoal({ pos: from, target: t });
+    const p = placed.find(x => x.c.name === name), c = controls.current; if (!p || !c) return;
+    const t = p.pos.clone().setY(Math.max(p.pos.y, 0) + (p.c.zone === 'air' ? 0 : p.h * 0.4));
+    const from = c.object.position.clone().sub(c.target); from.y = 0; if (from.lengthSq() < 1) from.set(0, 0, 1); from.normalize();
+    const dist = Math.min(110, Math.max(SKY.minDistance + 5, p.w * 5)), tilt = Math.PI * 0.27;
+    const pos = t.clone().add(from.multiplyScalar(dist * Math.sin(tilt))).add(new THREE.Vector3(0, dist * Math.cos(tilt), 0));
+    setGoal({ pos, target: t });
   };
   useEffect(() => { document.title = 'Life at ' + site.name.replace(/^The /, 'the ') + ' · Before Us'; }, [site]);
 
   return <div className="site">
     <Canvas shadows={phone ? false : 'percentage'} dpr={phone ? [1, 1.6] : [1, 2]} gl={{ antialias: true, powerPreference: 'high-performance' }}
-      camera={{ position: reduceMotion() ? views.eye.pos.toArray() : views.air.pos.toArray(), fov: phone ? 55 : 45, near: 0.2, far: 2500 }}
+      camera={{ position: reduceMotion() ? OVERVIEW.pos.toArray() : start.toArray(), fov: phone ? 55 : 45, near: 0.5, far: 2500 }}
       onPointerMissed={() => setSelected(null)}
       onCreated={({ gl, scene }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.05; scene.fog = new THREE.Fog(LIGHT.haze, LIGHT.fogNear, LIGHT.fogFar); }}>
       <Sky />
@@ -87,9 +84,10 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
       <Water land={land} phone={phone} />
       <Plants land={land} seed={seed} phone={phone} />
       <Suspense fallback={null}><Animals site={site} land={land} selected={selected} onSelect={focus} labels={labels} phone={phone} /></Suspense>
-      <OrbitControls ref={controls as never} makeDefault enableDamping dampingFactor={0.08} minDistance={4} maxDistance={420} maxPolarAngle={Math.PI * 0.495}
-        target={views.eye.target.toArray()} onStart={() => setGoal(null)} />
-      <Director land={land} goal={(goal as unknown) === 'eye' ? views.eye : goal} onArrive={() => setGoal(null)} controls={controls} />
+      <OrbitControls ref={controls as never} makeDefault enableDamping dampingFactor={0.08} minDistance={SKY.minDistance} maxDistance={SKY.maxDistance}
+        minPolarAngle={SKY.minPolar} maxPolarAngle={SKY.maxPolar} screenSpacePanning={false}
+        target={OVERVIEW.target.toArray()} onStart={() => setGoal(null)} />
+      <Director land={land} goal={goal} onArrive={() => setGoal(null)} controls={controls} />
     </Canvas>
 
     <header className="bar">
@@ -97,8 +95,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
       <div><b>Life at {site.name.replace(/^The /, 'the ')}</b><span>{site.where} · {site.when}</span><em>{site.blurb}</em></div>
     </header>
     <div className="views">
-      <button onClick={() => setGoal(views.eye)}>Eye level</button>
-      <button onClick={() => setGoal(views.air)}>Fly over</button>
+      <button onClick={() => { setSelected(null); setGoal(OVERVIEW); }}>Overview</button>
       <button onClick={() => setLabels(v => !v)}>{labels ? 'Hide names' : 'Names'}</button>
       <button onClick={() => setPanel(v => !v)}>{panel ? 'Close' : 'About this place'}</button>
     </div>

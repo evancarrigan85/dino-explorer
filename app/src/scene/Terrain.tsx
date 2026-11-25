@@ -41,7 +41,7 @@ export function Terrain({ land, seed, phone }: { land: Land; seed: number; phone
       const far = z < land.riverZ(x);
       if (h < -0.05) c.copy(C.bed).lerp(C.bedDeep, smoothstep(0, 1.7, -h));
       else if (h < 0.25) c.copy(C.wet).lerp(C.dry, smoothstep(-0.05, 0.25, h));
-      else if (far && h > 0.35 && h < 2.0) {
+      else if (far && h > 0.35 && z > land.farBankZ(x) - 2.5) {
         // the sandstone face: bands of red and paler rock, as layers laid down by the river
         const band = 0.5 + 0.5 * Math.sin(h * 9.0 + fbm(x * 0.05, z * 0.05, 2, seed) * 2.0);
         c.copy(C.red).lerp(C.redPale, band);
@@ -78,7 +78,8 @@ if (vWorld.y < 0.02) {
   vec2 q = vWorld.xz * 0.42 - vec2(uTime * 0.35, 0.0);
   float ca = cLayer(q, uTime * 0.9) * 0.6 + cLayer(q * 1.37 + 3.1, uTime * 1.1) * 0.4;
   float depth = clamp(-vWorld.y, 0.0, 2.0);
-  totalEmissiveRadiance += vec3(1.0, 0.95, 0.8) * pow(ca, 2.0) * 0.22 * smoothstep(0.0, 0.25, depth) * (1.0 - depth / 2.2);
+  float near = 1.0 - smoothstep(35.0, 120.0, distance(cameraPosition, vWorld));
+  totalEmissiveRadiance += vec3(1.0, 0.95, 0.8) * pow(ca, 2.0) * 0.22 * near * smoothstep(0.0, 0.25, depth) * (1.0 - depth / 2.2);
 }`);
     };
     return { geometry: geo, material: mat };

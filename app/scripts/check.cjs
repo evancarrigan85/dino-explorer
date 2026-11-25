@@ -27,8 +27,18 @@ srv.listen(0, '127.0.0.1', async () => {
     const card = await p.locator('.panel').innerText();
     ok(dev + ': choosing an animal shows its size, whether it is to scale, and its silhouette credit and licence', /about 17 m/.test(card) && /drawn to scale/.test(card) && /Silhouette by/.test(card) && /CC0|CC BY/.test(card));
     await p.click('.panel .x'); await p.waitForTimeout(200);
+    await p.click('text=Overview'); await p.waitForTimeout(3500);               // back to the whole place, so every name is on screen
+    await p.locator('.tag').nth(2).click(); await p.waitForTimeout(2500);        // the third animal's label: Carcharodontosaurus
+    ok(dev + ': tapping a name opens that animal’s card (not the place)', (await p.locator('.panel h2').count()) === 1 && /Carcharodontosaurus/.test(await p.locator('.panel h2').innerText()));
+    await p.click('.panel .x'); await p.waitForTimeout(200);
     ok(dev + ': the panel closes from its own button', await p.locator('.panel').count() === 0);
-    await p.click('text=Fly over'); await p.waitForTimeout(3000);
+    await p.click('text=Overview'); await p.waitForTimeout(3000);
+    ok(dev + ': only the sky view: no eye-level button', await p.locator('text=Eye level').count() === 0);
+    { const box = await p.locator('.site canvas').boundingBox(); await p.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      for (let i = 0; i < 30; i++) { await p.mouse.wheel(0, -240); await p.waitForTimeout(25); }   // try hard to zoom down to the ground
+      await p.waitForTimeout(1500);
+      const h = await p.evaluate(() => window.__sky());
+      ok(dev + ': zooming in as far as it goes still leaves the camera in the sky (at least 19 m up)', h >= 19, h.toFixed(1)); }
     ok(dev + ': no errors', errs.length === 0, errs.join(' | '));
     await p.close();
   }

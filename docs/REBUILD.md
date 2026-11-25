@@ -145,7 +145,9 @@ walkable world in real time). The difference matters here: Isometric NYC *restyl
 Us can only do the first — every hill, plant and animal in a scene must come from the site’s papers.
 
 **What a living scene is.** A 3D diorama of one fossil site at its own time, opened from the map (the map zooms to the
-pin and the scene takes over), that the reader can orbit, zoom and fly over like a city view:
+pin and the scene takes over), **seen from the sky** like a city view: the reader turns, tilts and zooms but never comes
+down to the ground (Evan, 25 Nov: “stay with the sky view … the ground level ones are bad”; the camera keeps at least
+20 m up and between 22° and 65° from straight down, and the animals’ cut-outs lean back to face it):
 - **Land** shaped from the scene’s brief (`paint` in `data_sites.js`): the river, the sandbank, the level far bank —
   a reconstruction of the setting the paper describes, said so on screen. Deterministic (seeded by the scene id).
 - **Water** as good as a browser can do it: flowing in the direction the sandstones show, small waves and glints,

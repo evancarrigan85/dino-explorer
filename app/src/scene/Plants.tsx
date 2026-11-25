@@ -67,7 +67,7 @@ function leafTexture(): THREE.CanvasTexture {
   let s = 7; const r = () => ((s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296);
   for (let i = 0; i < 90; i++) {
     const x = 16 + r() * 96, y = 16 + r() * 96, d = Math.hypot(x - 64, y - 64); if (d > 52) continue;
-    const v = Math.floor(r() * 3); g.fillStyle = ['#56693a', '#64783f', '#4a5e33'][v];
+    const v = Math.floor(r() * 3); g.fillStyle = ['#6b8146', '#7b904c', '#5d7240'][v];
     g.beginPath(); g.ellipse(x, y, 7 + r() * 5, 3.5 + r() * 2, r() * 3.14, 0, 7); g.fill();
   }
   const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t;
@@ -75,6 +75,7 @@ function leafTexture(): THREE.CanvasTexture {
 function shrubGeo(): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 5; i++) { const g = new THREE.PlaneGeometry(1.6, 1.3); g.translate(0, 0.62, 0); g.rotateY(i * 0.63); g.rotateZ((i - 2) * 0.12); parts.push(g); }
+  for (let i = 0; i < 3; i++) { const g = new THREE.PlaneGeometry(1.7, 1.7); g.rotateX(-Math.PI / 2 + (i - 1) * 0.35); g.rotateY(i * 1.1); g.translate(0, 0.95 + i * 0.12, 0); parts.push(g); }   // the crown, seen from above
   const m = mergeGeometries(parts)!; m.computeVertexNormals(); return m;
 }
 
@@ -100,7 +101,7 @@ export function Plants({ land, seed, phone }: { land: Land; seed: number; phone:
       const patch = 0.5 + 0.5 * fbm(x * 0.05, z * 0.05, 3, seed + 21);
       const p = (edge * 1.4 + bank) * patch * 0.12;
       if (r() > p) continue;
-      const place = { x, z, y, s: 0.6 + r() * 0.9, ry: r() * 6.28 };
+      const place = { x, z, y, s: 0.8 + r() * 1.1, ry: r() * 6.28 };
       if (r() < 0.22) ferns.push(place); else shrubs.push(place);
     }
     return { trees, shrubs, ferns };
