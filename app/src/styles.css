@@ -19,6 +19,7 @@ a { color: var(--link); }
 .units { margin-left: auto; flex-shrink: 0; display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; align-self: flex-start; }
 .units button { min-width: 44px; height: 36px; border: 0; background: var(--panel); color: var(--muted); cursor: pointer; font-weight: 600; }
 .units button.on { background: var(--gold); color: #2e1a08; }
+.panel .prompt summary { cursor: pointer; color: var(--link); } .panel .prompt div { white-space: pre-wrap; font-size: 0.74rem; color: var(--muted); background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px; margin-top: 4px; }
 .panel .basis { font-size: 0.82rem; color: var(--ink); background: rgba(255, 255, 255, 0.05); padding: 6px 8px; border-radius: 8px; }
 .bar b { display: block; color: #fff; } .bar span { color: var(--gold); font-size: 0.8rem; } .bar em { display: block; color: var(--muted); font-size: 0.8rem; max-width: 560px; }
 .back { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: #fff; cursor: pointer; }

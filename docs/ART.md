@@ -11,6 +11,24 @@ of — never from inventing what the papers do not hold. Every element in a scen
 in `data_sites.js`, a paraphrase of its papers), a general fact of the world (water ripples, sand dries paler, clouds
 cast shadows), or named on screen as a guess.
 
+## Knight's manner, today's science (Evan, 25 Nov)
+
+Evan: “Charles Knight style but today's interpretations.” So the house manner for painted surfaces is **Charles R.
+Knight's** — oil on canvas, confident brushwork, warm golden naturalistic light, soft haze, ochres, siennas, olive greens
+and dusty blues, calm dignified realism — and the **content is today's science**: the land, water, plants and climate
+from the site's papers, never the science of Knight's day. Knight died in 1953, so his name may go in a prompt
+(`KNIGHT` in `tools/paint.py`; `ground --style knight`); a living artist's never.
+
+- **The ground** of the Kem Kem is painted this way (Gemini 3 Pro Image, from the scene's own guide map; of two
+  candidates one slipped into perspective with cliffs the brief rules out and was refused).
+- **The Earth opening** may not be repainted by the image model: asked to keep every coast, it drew the continents of
+  97 million years ago closer to today's (only 76–89 % of land and sea agreed with the map; all four refused by
+  `choose-earth`). So `earth-brush` builds it instead: **shapes and colours from this atlas's own map**, softened by an
+  oil-paint brush filter, with **only the brushwork** (light and shade) of the Knight-manner repaint, and only where that
+  repaint agrees with the map about land and sea. Every coast and shallow sea is exactly as mapped; the page says how.
+- Animals stay the scientists' silhouettes. Painting animals in Knight's manner — with today's reconstructions — would
+  change a rule of the atlas: ask Evan first.
+
 ## Who we learn from
 
 We study these artists and traditions, credit them, and never copy a work. **We never name a living artist in an
@@ -58,5 +76,5 @@ monkey-puzzle foliage `#33472b` · haze `#e6d8b8` · silhouettes `#3a2410` (land
 ## Still to do
 
 - Add the inspirations above to Finds › “What this atlas borrows” with sources (`i:<id>` targets, verified).
-- With Evan’s go-ahead: public-domain Knight paintings (pre-1929) as reference pictures for the painter, credited.
+- Public-domain Knight paintings (pre-1929) as reference pictures for the painter: not needed so far (his manner is named in the prompt); ask Evan before downloading any.
 - More of the brief’s plants as recognisable 3D kinds (ferns with fronds, leafy shrubs), and the pond at Oum Tkout.

@@ -11,4 +11,5 @@ export interface Site {
   cast: CastMember[]; paint: { land: string; water: string; plants: string; light: string; not: string };
   know: string; debate: string; sil: Record<string, Silhouette>; papers: Paper[];
   ground: { f: string; model: string; made: string; prompt: string; strips: string[] } | null;
+  earth: { method: string } | null;
 }

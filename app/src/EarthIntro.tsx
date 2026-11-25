@@ -11,13 +11,13 @@ export function EarthIntro({ site, onDone }: { site: Site; onDone: () => void })
     return () => t.forEach(clearTimeout);
   }, [onDone]);
   return <div className={'earth s' + stage} onClick={onDone} role="dialog" aria-label={'The Earth ' + site.when}>
-    <img className="globe" src={`earth/${site.id}-1.jpg`} alt="" />
-    <img className="region" src={`earth/${site.id}-2.jpg`} alt="" />
+    <img className="globe" src={`earth/${site.id}-1${site.earth ? '-painted' : ''}.jpg`} alt="" />
+    <img className="region" src={`earth/${site.id}-2${site.earth ? '-painted' : ''}.jpg`} alt="" />
     <div className="pin" aria-hidden="true" />
     <div className="cap">
       <b>The Earth {site.when}</b>
       <span>{site.name.replace(/^The /, 'the ').replace(/^./, c => c.toUpperCase())}, in what is now {site.where}</span>
-      <small>Continents, seas and mountains from this atlas’s map · tap to skip</small>
+      <small>Continents, seas and mountains from this atlas’s map{site.earth ? ', painted in the manner of Charles R. Knight' : ''} · tap to skip</small>
     </div>
   </div>;
 }
@@ -25,6 +25,6 @@ export function EarthIntro({ site, onDone }: { site: Site; onDone: () => void })
 /** a small round view of the Earth at that time, with the site marked: tap to see the opening again */
 export function WhereOnEarth({ site, onOpen }: { site: Site; onOpen: () => void }) {
   return <button className="where" onClick={onOpen} aria-label="Where on Earth: show the opening again">
-    <img src={`earth/${site.id}-1.jpg`} alt="" /><span>Where on Earth</span>
+    <img src={`earth/${site.id}-1${site.earth ? '-painted' : ''}.jpg`} alt="" /><span>Where on Earth</span>
   </button>;
 }

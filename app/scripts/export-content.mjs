@@ -24,7 +24,10 @@ const sites = SITE_SCENES.map(s => {
   // the painted ground (tools/paint.py ground / choose-ground), if this site has one
   const gj = path.join(PUB, 'ground', s.id + '.json');
   const ground = fs.existsSync(gj) ? JSON.parse(fs.readFileSync(gj, 'utf8')) : null;
-  return { ...s, sil, papers, ground };
+  // the Earth opening, painted (tools/paint.py earth-brush), if this site has it
+  const ej = path.join(PUB, 'earth', s.id + '-1-painted.json');
+  const earth = fs.existsSync(ej) ? JSON.parse(fs.readFileSync(ej, 'utf8')) : null;
+  return { ...s, sil, papers, ground, earth };
 });
 fs.writeFileSync(path.join(OUT, 'sites.json'), JSON.stringify(sites, null, 1));
 console.log('content: ' + sites.length + ' site scene(s), ' + sites.reduce((n, s) => n + Object.keys(s.sil).length, 0) + ' silhouettes');

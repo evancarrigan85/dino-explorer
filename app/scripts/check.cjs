@@ -17,6 +17,7 @@ srv.listen(0, '127.0.0.1', async () => {
     ok(dev + ': the home page lists the Kem Kem scene', await p.locator('a.card[href="#/site/kemkem"]').count() === 1);
     await p.click('a.card[href="#/site/kemkem"]'); await p.waitForTimeout(600);
     ok(dev + ': the scene opens on the Earth at that time, zooming to the site, and says so', await p.locator('.earth img.globe').count() === 1 && /The Earth about 100–95 million years ago/.test(await p.locator('.earth .cap').innerText()));
+    ok(dev + ': the opening uses the painted Earth (the map’s own coasts)', /kemkem-1-painted\.jpg/.test(await p.locator('.earth img.globe').getAttribute('src')));
     await p.waitForTimeout(6000);
     ok(dev + ': the opening ends by itself, and Where on Earth brings it back', await p.locator('.earth').count() === 0 && await p.locator('.where').count() === 1);
     { const shot = await p.locator('.site canvas').screenshot();         // a blank or flat picture compresses to almost nothing
@@ -27,6 +28,7 @@ srv.listen(0, '127.0.0.1', async () => {
     ok(dev + ': the title says where and when', /Kem Kem/.test(await p.locator('.bar b').innerText()) && /100–95 million years ago/.test(await p.locator('.bar span').innerText()));
     await p.click('text=About this place'); await p.waitForTimeout(300);
     const panel = await p.locator('.panel').innerText();
+    ok(dev + ': the panel says how the pictures were made: the Earth from the map in Knight’s manner, the ground painted by AI from the scene’s map, the prompt one tap away', /the pictures/i.test(panel) && /Charles R\. Knight/.test(panel) && /painted by AI/.test(panel) && await p.locator('.panel details.prompt').count() === 1);
     ok(dev + ': the panel gives the place, how we know, what is debated, what is a guess, and the papers with DOIs', ['The place', 'How do we know?', 'Still debated', 'What is a guess', 'Sources'].every(h => panel.toLowerCase().includes(h.toLowerCase())) && await p.locator('.panel .papers a[href^="https://doi.org/"]').count() >= 8);
     await p.locator('.panel .cast button', { hasText: 'Spinosaurus' }).click(); await p.waitForTimeout(2500);
     const card = await p.locator('.panel').innerText();

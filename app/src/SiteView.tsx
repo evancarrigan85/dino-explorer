@@ -144,6 +144,10 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
         <h3>How do we know?</h3><p>{site.know}</p>
         <h3>Still debated</h3><p>{site.debate}</p>
         <h3>What is a guess</h3><p>The exact shape of the river, banks and sandbank; where each plant stands; the animals’ poses and where they stand. The kinds of land, water and plants come from the papers below. Every animal is drawn to scale: most sizes come from papers; where none gives one, the animal’s card says whose estimate it is, or that it is a guess from living relatives.</p>
+        <h3>The pictures</h3>
+        <p>{site.earth && <>The Earth at the start is this atlas’s own map of that time — every coast and shallow sea as the science has it — given a painted look in the manner of Charles R. Knight (1874–1953). </>}
+          {site.ground && <>The ground is painted by AI ({site.ground.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.ground.model}){/Charles R\. Knight/.test(site.ground.prompt) ? ' in the manner of Charles R. Knight, drawn with today’s science,' : ''} from this scene’s own map, and checked by eye; the scene lays its texture over the land, so the river and banks keep their shape. No animal is painted: they are the scientists’ silhouettes.</>}</p>
+        {site.ground && <details className="prompt"><summary>What the painter was asked</summary><div>{site.ground.prompt}</div></details>}
         <h3>Sources</h3>
         <ul className="papers">{site.papers.map(p => <li key={p.key}>{p.authors[0]}{p.authors.length > 1 ? ' et al.' : ''} ({p.year}). {p.title}. <i>{p.journal}</i>. <a href={'https://doi.org/' + p.doi} target="_blank" rel="noopener">doi:{p.doi}</a></li>)}</ul>
       </section>}
