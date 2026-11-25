@@ -1,0 +1,71 @@
+[
+{
+  "name": "Acritarch",
+  "emoji": "🦠",
+  "diet": "filter",
+  "size": "~0.1-0.2 mm",
+  "habitat": "Frozen ocean waters",
+  "lived": "720–635 MYA",
+  "t": [720,635],
+  "g": "micro",
+  "c": "Microbes › Single-celled plankton",
+  "fact": "Microscopic single-celled organisms that survived Snowball Earth! These tiny creatures are found in rocks worldwide. Their fossils prove that even when Earth was a frozen ball of ice, life persisted in the oceans.",
+  "sites": [[79,18,"Svalbard, Norway"],[-31.3,138.6,"Flinders Ranges, Australia"]]
+},
+{
+  "name": "Stromatolite",
+  "emoji": "🦠",
+  "diet": "filter",
+  "size": "Millimeter to meter-scale mats",
+  "habitat": "Shallow frozen seas",
+  "lived": "720–635 MYA",
+  "t": [720,635],
+  "g": "micro",
+  "c": "Microbes › Mat-building bacteria",
+  "fact": "Cyanobacterial mats that carpeted Snowball Earth coastal shallows. By releasing oxygen through photosynthesis for billions of years, their ancestors literally built the atmosphere we breathe today.",
+  "sites": [[-31.3,138.7,"Flinders Ranges, Australia"],[36.2,-116.8,"Death Valley, California"]]
+},
+{
+  "name": "Vendotaenia",
+  "emoji": "🌿",
+  "diet": "herb",
+  "size": "Up to 50 cm",
+  "habitat": "Cold shallow seas",
+  "lived": "700–540 MYA",
+  "t": [700,540],
+  "g": "plant",
+  "c": "Plants › Algae",
+  "fact": "Ribbon-like colonial algae found as carbonized films in rocks worldwide. One of the earliest complex multicellular organisms, showing that life was experimenting with larger body forms long before the Cambrian explosion.",
+  "sites": [[65.5,39.7,"White Sea, Russia"],[-26.6,16.5,"Nama Group, Namibia"],[30.8,111,"Yangtze Gorges, China"]]
+},
+{
+  "name": "Earliest Sponges",
+  "emoji": "🪸",
+  "diet": "filter",
+  "size": "1-5 cm",
+  "habitat": "Cold deep ocean floor",
+  "lived": "660–635 MYA",
+  "t": [660,635],
+  "g": "invert",
+  "c": "Invertebrates › Sponges",
+  "fact": "The oldest hint of animal life is not a body but a chemical. Rocks in Oman more than 635 million years old contain a fat molecule (24-isopropylcholestane) made today mainly by sponges — a sign that simple filter-feeding animals may already have been pumping water through their bodies under the ice of Snowball Earth.",
+  "know": "Geochemists crushed drill cores of ancient rock and found steranes — the durable remains of cell-membrane fats. This particular one is the signature of demosponges (Love and colleagues, 2009).",
+  "debate": "Some algae can make similar molecules, so not everyone accepts these as animal fossils. The oldest undisputed sponge body fossils are younger — Ediacaran to Cambrian.",
+  "sites": [[20,57.5,"Huqf, Oman — sponge “chemical fossils”"]]
+},
+{
+  "name": "Otavia",
+  "emoji": "🫧",
+  "diet": "filter",
+  "size": "Under 1 mm",
+  "habitat": "Shallow sea",
+  "lived": "~760–550 MYA (if confirmed)",
+  "t": [760,550],
+  "g": "invert",
+  "c": "Invertebrates › Sponges",
+  "fact": "A microscopic hollow ball with holes in its wall, found in Namibian rocks laid down before, during and after Snowball Earth.",
+  "debate": "Its discoverers (2012) proposed it as a sponge — which would make it the oldest animal of all. Many specialists think it could be a protist or simply a mineral grain.",
+  "weird": 1,
+  "sites": [[-19.6,17.3,"Otavi Group, Namibia"]]
+}
+]

@@ -1,0 +1,17 @@
+[
+{
+  "name": "Francevillian fossils",
+  "emoji": "🧩",
+  "diet": "unknown",
+  "size": "Up to 12 cm across",
+  "habitat": "Shallow sea",
+  "lived": "~2,100 MYA",
+  "t": [2110,2090],
+  "g": "invert",
+  "c": "Invertebrates › Puzzling early life",
+  "fact": "Flat, lobed shapes up to 12 cm across in 2.1-billion-year-old shale in Gabon. Their finders think they were colonies of living things that grew in a regular way — the oldest large life by more than a billion years.",
+  "debate": "Others think the shapes were made by minerals growing in the mud, or by microbial mats, not by many-celled life.",
+  "weird": 1,
+  "sites": [[-1.6,13.5,"Franceville, Gabon"]]
+}
+]

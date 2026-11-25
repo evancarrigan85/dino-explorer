@@ -12,7 +12,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 ## Next up (updated 25 Nov 2026 — start here)
 
 **25 Nov, later: the rebuild comes first — read `docs/REBUILD.md`.** Evan wants the site moved off the one-generated-page
-build into an app that can grow (“professional grade”). Step 0 (measuring) and **Step 1 (engine speed) shipped 25 Nov**; **Step 2, content out of the patch layers, is next.**
+build into an app that can grow (“professional grade”). Steps 0 (measuring), **1 (engine speed) and 2 (content in `content/`) shipped 25 Nov**; **Step 3, the new app, is next.**
 Content work below goes on in the data files; no new screens on the old app. The Kem Kem painting is built and tested
 locally but **held by Evan — do not ship it until he says.** The hand-off steps just below are done (clone, key check,
 first painting).
@@ -225,7 +225,7 @@ the Ice Age). Still thin, and next in line — re-run the count before choosing:
 - **Paleogene and Neogene** in Australia, Africa and East Asia; **Quaternary** Africa and India.
 - North America is over-represented everywhere, because most famous fossils are from there. Say so
   on the page rather than hide it: empty map is partly empty science.
-Each new animal goes in `tools/source/data_gaps.js` with the paper that described it.
+Each new animal goes in its period’s file in `content/animals/` with the paper that described it.
 
 ## Release 1 — Finish the sources (no blockers; start here)
 
@@ -248,7 +248,7 @@ Do not hunt for them; cite a modern redescription instead. Books (Mayor's *The F
 Rudwick on Cuvier) may be in Crossref as `book` — the checker accepts that type.
 
 **While there:** every card's facts get re-read against the paper just attached. Where they disagree,
-the paper wins and the card is corrected in `data_fix.js` / the relevant `data_*.js`.
+the paper wins and the card is corrected in `content/animals/<period>.json` (or the relevant `data_*.js`).
 
 **Done when.** Coverage table above is 100% for finds, periods, food webs, drowned, cultures and
 dinosaurs; `--audit` exits 0; the "All sources" panel count matches. Expect roughly 250–350 more

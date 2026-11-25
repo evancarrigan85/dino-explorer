@@ -1,0 +1,57 @@
+[
+{
+  "name": "Ourasphaira",
+  "emoji": "🍄",
+  "diet": "absorb",
+  "size": "Threads under 1 mm",
+  "habitat": "Shallow sea near the shore",
+  "lived": "~1,000–900 MYA",
+  "t": [1000,900],
+  "g": "micro",
+  "c": "Microbes › Fungi",
+  "fact": "The oldest known fungus: a tangle of tiny threads with round swellings, a billion years old. Its cell walls contain chitin, the same tough material as in mushrooms today. Fungi are close cousins of animals.",
+  "know": "Scientists dissolved the rock in acid to free the fossils, then used light to read the chemistry of their walls: the signal of chitin, which algae do not make.",
+  "sites": [[70.9,-115.5,"Shaler Supergroup, Arctic Canada"]]
+},
+{
+  "name": "Proterocladus",
+  "emoji": "🌿",
+  "diet": "sun",
+  "size": "About 2 mm",
+  "habitat": "Shallow sea floor",
+  "lived": "~1,000 MYA",
+  "t": [1000,950],
+  "g": "plant",
+  "c": "Plants › Algae",
+  "fact": "A green seaweed about a billion years old, with branching threads divided into cells. It is the oldest known member of the green algae — the group that later gave rise to every land plant.",
+  "sites": [[39.6,121.6,"Nanfen Formation, Dalian, China"]]
+},
+{
+  "name": "Possible sponge (Little Dal reefs)",
+  "emoji": "🧽",
+  "diet": "filter",
+  "size": "Tubes a fraction of a millimetre wide",
+  "habitat": "Reefs built by microbes",
+  "lived": "~890 MYA",
+  "t": [890,880],
+  "g": "invert",
+  "c": "Invertebrates › Sponges",
+  "fact": "A network of tiny tubes inside reefs built by microbes, 890 million years old. It looks like the skeleton of a sponge. If it is one, animals are about 350 million years older than the first clear fossils.",
+  "debate": "Networks like this can also form in other ways, and no chemical traces of sponges are known from rocks this old. Many scientists are not convinced.",
+  "weird": 1,
+  "sites": [[64.5,-129.5,"Little Dal Group, Mackenzie Mountains, Canada"]]
+},
+{
+  "name": "Vase-shaped microfossils",
+  "emoji": "🏺",
+  "diet": "pred",
+  "size": "About 0.1 mm",
+  "habitat": "Shallow sea",
+  "lived": "~750–730 MYA",
+  "t": [750,730],
+  "g": "micro",
+  "c": "Microbes › Amoebae",
+  "fact": "Single cells that built tiny vase-shaped shells to live in, like some amoebae in ponds today. They are among the oldest fossils of cells that ate other cells.",
+  "sites": [[36.2,-111.9,"Chuar Group, Grand Canyon, Arizona"]]
+}
+]

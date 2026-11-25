@@ -10,21 +10,19 @@ The page is built from `tools/source/` with one command:
 node tools/source/assemble.mjs dino-explorer.html
 ```
 
-It checks every animal (fields present, dates inside its period, valid fossil sites) and prints a count. Where to edit:
+It checks every animal (fields known and present, dates inside its period, valid fossil sites) and prints a count. Until 25 Nov 2026 the animals and periods were spread over the original page (`original.html`) and six files of additions and corrections; they were merged once into `content/` (the page built from it was byte-for-byte the same) and those files removed — `git log -- tools/source/data_fix.js` has the history. Where to edit:
 
 | File | Holds |
 |---|---|
-| `data_new.js`, `data_more.js` | Animals added since the rebuild (one row each in `data_more.js`) |
-| `data_fix.js` | Dates, fossil sites and corrections for the original animals (kept in `original.html`) |
-| `data_class.js` | Lineage (family-tree path) for every animal |
+| **`content/animals/<period id>.json`** | **Every animal, one file per period** (the period it is listed under): name, emoji, diet, size, habitat, lived, `t` [first, last] Ma, `g` kind, `c` lineage path, means, fact, know, debate, taxonomy, discovery, keyResearchers, citation, `weird`, `sites` [[lat, lon, label]]. An unknown or empty field stops the build. To add an animal, add an object to its period’s file |
+| **`content/periods.json`** | **The periods**, oldest first: name, dates (`start`, `end`, ICS December 2024, rounded), descriptions, map title, `lifeNote` for a span with no named fossil, and the Insights panel (`insight`, with `ext` for a mass extinction) |
+| **`content/geology.json`** | The geology cards (Geology tab) and where each is pinned (`at`, or null) |
+| `data_class.js` | The lineage path shown for each group of the human family |
 | `data_hominins.js` | The human family and its turning points |
-| `data_periods.js` | Period insights, museum notes, fossil sites, map labels |
+| `data_periods.js` | Famous fossil sites (Insights tab pins), map labels, oceans, Ice Age notes |
 | `data_time.js` | Epochs, ages and timeline events (an event with an id, its sixth element, cites its papers under `n:<id>`) |
 | `data_cultures.js`, `data_drowned.js`, `data_foodweb.js` | Ways of life, drowned sites, food webs |
 | `data_finds.js` | The Finds tab: the history of fossil discovery |
-| `data_early.js` | Life before the Cryogenian, from the birth of the Earth to 720 Ma, period by period; a span with no named fossil is empty on purpose, and its `lifeNote` in `data_periods.js` says why |
-| `data_gaps.js` | Animals added to fill regions and periods the map had nothing in |
-| `data_roots.js` | Proto-mammals, early mammals and dinosaurs added with the family trees |
 | `data_you.js` | The reader's own line through time, eruptions and impacts on the map (`SPARKS`; each names, as its ninth element, the timeline event that carries its sources), the drift journey |
 | `data_stories.js` | “Watch the Earth being made” stories in the Geology tab (the Great Lakes so far) |
 | `data_mammals.js` | The Age of Mammals, epoch by epoch: a chapter (title, map title, Insights) for each epoch from the Paleocene to the Pliocene; sources under `p:<epoch>` |

@@ -1,17 +1,10 @@
 // ============================================================
 // THE TIME SCALE — what appears on the timeline as you zoom in
 // ============================================================
-// Period boundaries follow the International Chronostratigraphic Chart
-// (ICS, December 2024 edition), rounded. Older books give slightly different
-// numbers — for example 145 rather than 143 million years for the start of
-// the Cretaceous — because the dates are refined as rocks are re-measured.
-const PERIOD_BOUNDS = {
-  hadean: [4567, 4031], eoarchean: [4031, 3600], paleoarchean: [3600, 3200], mesoarchean: [3200, 2800], neoarchean: [2800, 2500], siderian: [2500, 2300], rhyacian: [2300, 2050], orosirian: [2050, 1800], statherian: [1800, 1600], calymmian: [1600, 1400], ectasian: [1400, 1200], stenian: [1200, 1000], tonian: [1000, 720], cryogenian: [720, 635], ediacaran: [635, 539], cambrian: [539, 487], ordovician: [487, 443],
-  silurian: [443, 420], devonian: [420, 359], carboniferous: [359, 299], permian: [299, 252],
-  triassic: [252, 201], jurassic: [201, 143], cretaceous: [143, 66], paleogene: [66, 23],
-  neogene: [23, 2.58], quaternary: [2.58, 0.0117], holocene: [0.0117, 0],
-};
-
+// Period boundaries follow the International Chronostratigraphic Chart (ICS, December 2024 edition), rounded; they are
+// the `start` and `end` of each period in content/periods.json. Older books give slightly different numbers — for
+// example 145 rather than 143 million years for the start of the Cretaceous — because the dates are refined as rocks
+// are re-measured.
 // Epochs (rank 1) and ages (rank 2): [name, start, end, rank]. Million years ago.
 const DIVS = [
   // Cryogenian — no formal subdivisions; the two great glaciations stand in
@@ -223,4 +216,4 @@ const EVENTS = [
   [0.00025, 5, '🏭', 'The Industrial Revolution', 'CO₂ begins to climb from 280 parts per million toward today’s 420-plus.'],
   [0.00021, 5, '🌋', 'Tambora', 'The largest eruption in recorded history, in Indonesia. Its haze cooled the world: 1816 was “the year without a summer”.', 'tambora'],
 ];
-if (typeof module !== 'undefined') module.exports = { PERIOD_BOUNDS, DIVS, EVENTS };
+if (typeof module !== 'undefined') module.exports = { DIVS, EVENTS };

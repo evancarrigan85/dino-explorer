@@ -1,0 +1,43 @@
+[
+{
+  "name": "Gaoyuzhuang seaweeds",
+  "emoji": "🌿",
+  "diet": "sun",
+  "size": "Ribbons up to about 30 cm long",
+  "habitat": "Shallow sea floor",
+  "lived": "~1,560 MYA",
+  "t": [1565,1555],
+  "g": "plant",
+  "c": "Plants › Algae",
+  "fact": "Long, flat ribbons up to 30 cm long and 8 cm wide, 1.56 billion years old — the oldest living things big enough to see with your own eyes. Their regular shapes and cells show they were many-celled seaweeds.",
+  "sites": [[40.15,118.3,"Gaoyuzhuang Formation, Qianxi, China"]]
+},
+{
+  "name": "Rafatazmia",
+  "emoji": "🔴",
+  "diet": "sun",
+  "size": "Threads under 0.1 mm wide",
+  "habitat": "Shallow sea",
+  "lived": "~1,600 MYA",
+  "t": [1610,1590],
+  "g": "plant",
+  "c": "Plants › Algae",
+  "fact": "Tiny threads of cells in 1.6-billion-year-old rocks in India, with walls and structures inside that look like those of red seaweeds. If they are red algae, they are the oldest.",
+  "debate": "Bacteria can make threads that look like this, and the structures inside the cells are hard to read. Many scientists think it is too old to be a red alga.",
+  "weird": 1,
+  "sites": [[25.2,80.9,"Chitrakoot, India"]]
+},
+{
+  "name": "Tappania",
+  "emoji": "🦠",
+  "diet": "filter",
+  "size": "Under 0.2 mm",
+  "habitat": "Coastal sea",
+  "lived": "~1,500–1,400 MYA",
+  "t": [1500,1400],
+  "g": "micro",
+  "c": "Microbes › Single cells with walls",
+  "fact": "A single cell with branching arms growing out of its wall — a complex cell with a nucleus, perhaps an early fungus or alga. Its shape could change as it grew, which bacteria cannot do.",
+  "sites": [[-15.5,134.5,"Roper Group, Northern Territory, Australia"]]
+}
+]

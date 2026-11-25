@@ -19,7 +19,7 @@ and where something is a guess, a sketch or still argued over, the page says so.
 
 ## The rules that have already cost time
 
-1. **`dino-explorer.html` is generated. Never edit it.** Edit `tools/source/*` and run
+1. **`dino-explorer.html` is generated. Never edit it.** Edit `content/` (animals, periods, geology cards) or `tools/source/*` and run
    `node tools/source/assemble.mjs dino-explorer.html`. The build validates the data and prints
    `PROBLEMS:` and exits 1 if anything is wrong; a release with problems does not ship.
 2. **Nothing is done until `node tools/test.js` prints `N passed, 0 failed`.** Add a check for every
@@ -83,8 +83,8 @@ builds, passes the checks and has been looked at.
 
 ## How the page fits together
 
-- `tools/source/assemble.mjs` reads the original page (`original.html`, via `old.js`), applies the
-  corrections in `data_fix.js`, merges every `data_*.js` file, validates, and writes one HTML file
+- `tools/source/assemble.mjs` reads the animals, periods and geology cards from `content/` (one JSON file per kind;
+  animals one file per period), merges the `data_*.js` modules, validates, and writes one HTML file
   with everything inlined: styles, markup, d3-geo, plate data, shelf data, relief data, the map
   engine, the app and the quiz.
 - **A tap on the map never moves the map or the time.** Selections made from the map set `noLook`,

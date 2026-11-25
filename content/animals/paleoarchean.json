@@ -1,0 +1,41 @@
+[
+{
+  "name": "Dresser hot-spring microbes",
+  "emoji": "🦠",
+  "diet": "sun",
+  "size": "Microscopic",
+  "habitat": "Hot springs on land",
+  "lived": "~3,480 MYA",
+  "t": [3490,3470],
+  "g": "micro",
+  "c": "Microbes › Mat-building bacteria",
+  "fact": "Signs of microbes in the rock of hot springs that bubbled on land in the Pilbara of Western Australia — perhaps the oldest signs of life on land.",
+  "sites": [[-21.1,119.6,"Dresser Formation, Pilbara, Australia"]]
+},
+{
+  "name": "Strelley Pool stromatolites",
+  "emoji": "🪸",
+  "diet": "sun",
+  "size": "Cones and domes, centimetres high",
+  "habitat": "Shallow sea",
+  "lived": "~3,430 MYA",
+  "t": [3440,3420],
+  "g": "micro",
+  "c": "Microbes › Mat-building bacteria",
+  "fact": "A reef of stromatolites of many shapes — cones, domes, egg-crate patterns — built by microbes in a shallow sea 3.43 billion years ago, in what is now Western Australia.",
+  "sites": [[-21.2,119.4,"Strelley Pool, Pilbara, Australia"]]
+},
+{
+  "name": "Moodies river mats",
+  "emoji": "🦠",
+  "diet": "sun",
+  "size": "Mats a few millimetres thick",
+  "habitat": "Riverbanks and shores",
+  "lived": "~3,220 MYA",
+  "t": [3225,3215],
+  "g": "micro",
+  "c": "Microbes › Mat-building bacteria",
+  "fact": "Wrinkled mats of microbes preserved beside old rivers in South Africa, 3.22 billion years old: life on land.",
+  "sites": [[-25.9,31,"Moodies Group, Barberton, South Africa"]]
+}
+]

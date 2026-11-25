@@ -97,7 +97,14 @@ Each step ends with everything passing and the live site still working. The old 
      after the last touch (already planned in `PLAN.md` › polish).
    - **Done when** (`tools/perf/perf.js`, phone): scrub ≥ 45 fps with ≤ 5 % late frames, Play ≥ 50 fps, idle asks for
      0 frames after 3 s, and `tools/test.js` and the benchmark still pass.
-2. **Content out of the patch layers.** One file per kind in `content/`, with schemas; `assemble.mjs` reads from there
+2. **Content out of the patch layers — shipped 25 Nov.** `content/periods.json`, `content/animals/<period>.json` (745
+   animals, 28 files) and `content/geology.json` hold the merged records; `assemble.mjs` reads them and refuses an
+   unknown or empty field; `original.html`, `old.js`, `data_fix.js`, `data_new.js`, `data_more.js`, `data_cenozoic.js`,
+   `data_early.js`, `data_roots.js`, `data_gaps.js`, `PERIOD_BOUNDS`, `LINEAGE` and `G_FIX` are gone. Proof: the page
+   built from `content/` was byte-for-byte the page built from the patch layers (the only later change is one comment).
+   The other data modules (history, sites, stories, finds …) were already one file per kind and stay in
+   `tools/source/` until Step 3 moves them. The original plan for this step:
+   One file per kind in `content/`, with schemas; `assemble.mjs` reads from there
    so the old page keeps working. A check proves the page’s data is identical before and after (every animal, field,
    source). `original.html`, `old.js` and `data_fix.js` go.
 3. **The new app beside the old.** React + TypeScript + Vite, using `engine/` and `content/`. Port screen by screen
@@ -116,7 +123,8 @@ fps; idle 0 frames after 3 s; tab switch ≤ 60 ms; first paint ≤ 1 s; site sc
 - **Content work goes on** in the data files (cards, events, sources, paintings): it moves to `content/` mechanically in
   Step 2. **No new screens on the old app** — they would have to be built twice.
 - The Kem Kem painting (`tiles/scenes/kemkem.webp`, `paintings-data.js`, the caption and checks) is built and tested on
-  Evan’s Mac but **held by Evan** (25 Nov): do not ship it until he says.
+  Evan’s Mac but **held by Evan** (25 Nov): do not ship it until he says. It is on the branch `kemkem-painting`, made
+  before Steps 1–2: to ship it, merge `main` into it, keep main’s `assemble.mjs` and re-add the painting check, rebuild.
 - The era painting guide and the hominin figures (both discussed 25 Nov) are content and design work: they can be
   planned now and built into the new app.
 
