@@ -157,6 +157,14 @@ const silConst = name => { const i = silSrc.indexOf('const ' + name + ' = '); if
       for (const c of st.cast || []) if (c.sil && !SIL[c.sil]) problems.push('site ' + st.id + ': ' + c.name + ' wants silhouette ' + c.sil + ', which silhouettes-data.js does not have');
       for (const k in SIL) if (!fs.existsSync(SRC + '../../' + SIL[k].f)) problems.push('silhouette ' + k + ': ' + SIL[k].f + ' is missing'); }
   }
+  { // paintings (tools/paint.py choose): each belongs to a site here and its picture is in tiles/scenes
+    const psrc = fs.readFileSync(SRC + 'paintings-data.js', 'utf8'), a = psrc.indexOf('{', psrc.indexOf('const PAINT = ')), PAINT = JSON.parse(psrc.slice(a, psrc.lastIndexOf('}') + 1));
+    for (const [k, v] of Object.entries(PAINT)) {
+      if (!SITE_SCENES.some(x => x.id === k)) problems.push('painting ' + k + ': no site scene has that id');
+      if (!fs.existsSync(SRC + '../../' + v.f)) problems.push('painting ' + k + ': ' + v.f + ' is missing');
+      if (!v.prompt || !v.model) problems.push('painting ' + k + ': the prompt and model must be kept, the page shows them');
+    }
+  }
   const ssrc = fs.readFileSync(SRC + 'data_sites.js', 'utf8');
   data += ssrc.slice(ssrc.indexOf('// ===='), ssrc.indexOf("if (typeof module")).trim() + '\n';
 }
@@ -311,7 +319,7 @@ const rocks = fs.readFileSync(SRC + 'rocks-data.js', 'utf8').trim();
 const seas = fs.readFileSync(SRC + 'seas-data.js', 'utf8').trim();
 const demIndex = fs.readFileSync(SRC + 'dem-index.js', 'utf8').trim();
 const rivers = fs.readFileSync(SRC + 'rivers-data.js', 'utf8').trim();
-const quat = fs.readFileSync(SRC + 'icon_map.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'icons-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'quaternary-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'shelf-rivers-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'geoid-data.js', 'utf8').trim();
+const quat = fs.readFileSync(SRC + 'icon_map.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'icons-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'silhouettes-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'paintings-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'quaternary-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'shelf-rivers-data.js', 'utf8').trim() + '\n' + fs.readFileSync(SRC + 'geoid-data.js', 'utf8').trim();
 const hillIndex = fs.readFileSync(SRC + 'hill-index.js', 'utf8').trim();
 const coastIndex = fs.readFileSync(SRC + 'coast-index.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }

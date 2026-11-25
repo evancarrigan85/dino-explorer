@@ -904,7 +904,7 @@ function openSite(id) {
   const el = $('siteScene'), name = s.name.replace(/^The /, 'the ');
   el.innerHTML = `<div class="ss-top"><b>🏞 Life at ${esc(name)}</b><span>${esc(s.where)} · ${esc(s.when)}</span><button data-site-close aria-label="Close">✕</button></div>
     <div class="ss-blurb">${esc(s.blurb)}</div><canvas id="ssCv" aria-label="A picture of the animals found at this site"></canvas>
-    <div class="ss-cap">A picture built from the finds at this site. Animals with a known length are drawn to scale, and the bars below compare them with a person; the paler ones are marked “size not known” and are not to scale. Poses and plants are guesses.</div>
+    <div class="ss-cap">A picture built from the finds at this site. Animals with a known length are drawn to scale, and the bars below compare them with a person; the paler ones are marked “size not known” and are not to scale. Poses and plants are guesses.</div>${paintCap(id)}
     <div class="ss-more"><div class="label-sec"><h5>🏞 The place</h5>${esc(s.setting)}</div><div class="label-sec"><h5>🪨 The rock</h5>${esc(s.rock)}</div><div class="label-sec"><h5>🌿 Plants</h5>${esc(s.plants)}</div>
       <div class="label-sec"><h5>🦴 Who was found here</h5><ol class="ss-cast">${s.cast.map(c => `<li>${SIL_HTTP && c.sil && SIL[c.sil] ? `<span class="ico ico-sil" aria-hidden="true" style="-webkit-mask-image:url(${SIL[c.sil].f});mask-image:url(${SIL[c.sil].f})"></span>` : c.emoji} <b>${esc(c.name)}</b> — ${esc(c.note)} <i>(${esc(c.size)})</i>${c.sil && SIL[c.sil] && SIL[c.sil].level !== 'own' ? ` <span class="ss-rel">· drawn with the outline of ${SIL[c.sil].level === 'member' ? 'one member of the group' : 'a relative'}, <i>${esc(SIL[c.sil].of)}</i></span>` : ''}</li>`).join('')}</ol></div>
       <div class="label-sec ss-credits"><h5>✒️ Silhouettes</h5>From <a href="https://www.phylopic.org" target="_blank" rel="noopener">PhyloPic</a>, free to use: ${s.cast.filter(c => c.sil && SIL[c.sil]).map(c => { const k = SIL[c.sil]; return `${esc(c.name)} by <a href="https://www.phylopic.org/images/${esc(k.img)}" target="_blank" rel="noopener">${esc(k.by)}</a> (<a href="${esc(k.licUrl)}" target="_blank" rel="noopener">${esc(k.lic)}</a>)`; }).join('; ')}.</div>
@@ -916,6 +916,20 @@ function closeSite() { S.site = null; $('siteScene').classList.remove('show'); }
 /* the picture: sky, far bank, river, sandbank, near bank, each animal in its place, then a strip of bars showing how long
    the animals were, to scale, beside a grown-up person. The pictures themselves are not to scale (an emoji is as tall as
    it is wide); an animal with no known length gets no bar. On a narrow screen numbers stand in for the names. */
+/* Paintings of the scenes (paintings-data.js, files in tiles/scenes; made by tools/paint.py): the land, water, plants and
+   light only, never animals. Until one loads, and for a site without one, the flat drawing stays. */
+const paintImgs = {};
+function paintImg(id, onload) {
+  const p = typeof PAINT !== 'undefined' && PAINT[id]; if (!p) return null;
+  let im = paintImgs[id];
+  if (!im) { im = paintImgs[id] = new Image(); im.onload = () => onload && onload(); im.src = p.f; }
+  return im.complete && im.naturalWidth ? im : null;
+}
+const PAINT_MODEL = { 'gemini-3-pro-image': 'Google’s Gemini 3 Pro Image', 'gemini-3.1-flash-image': 'Google’s Gemini 3.1 Flash Image' };
+function paintCap(id) {
+  const p = typeof PAINT !== 'undefined' && PAINT[id]; if (!p) return '';
+  return `<details class="ss-paint"><summary>The landscape is a painting made by AI (${esc(PAINT_MODEL[p.model] || p.model)}) from the setting the scientists describe, and checked by eye against it. It shows the land, water, plants and light only; the animals are the scientists’ outlines, placed on top. <u>What the painter was asked</u></summary><div class="ss-prompt">${esc(p.prompt)}</div></details>`;
+}
 /* PhyloPic silhouettes (silhouettes-data.js, files in tiles/sil): loaded once, then tinted to the ink they are drawn in */
 const silImgs = {}, silTint = {};
 function silImg(key, onload) {
@@ -936,6 +950,12 @@ function drawSite(s) {
   const Hs = Math.round(Math.min(W * (narrow ? 0.62 : 0.5), 400)), H = Hs + strip, dpr = window.devicePixelRatio || 1;
   cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
   const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const pim = paintImg(s.id, () => { if (S.site === s.id) drawSite(s); });
+  S.sitePainted = !!pim;
+  if (pim) {                                                     // cover-fit: fill the scene, crop evenly; the painting's far bank sits where the bank animals stand
+    const sc = Math.max(W / pim.naturalWidth, Hs / pim.naturalHeight), dw = pim.naturalWidth * sc, dh = pim.naturalHeight * sc;
+    c.drawImage(pim, (W - dw) / 2, (Hs - dh) / 2, dw, dh);
+  } else {
   const sky = c.createLinearGradient(0, 0, 0, Hs * 0.45); sky.addColorStop(0, '#f6dfae'); sky.addColorStop(1, '#ecc98d'); c.fillStyle = sky; c.fillRect(0, 0, W, Hs);
   c.fillStyle = '#b79a63'; c.beginPath(); c.moveTo(0, Hs * 0.44); for (let x = 0; x <= W; x += W / 12) c.lineTo(x, Hs * (0.43 + 0.012 * Math.sin(x / W * 9))); c.lineTo(W, Hs * 0.5); c.lineTo(0, Hs * 0.5); c.fill();
   for (const fx of [0.04, 0.1, 0.72, 0.95]) { const x = W * fx, y = Hs * 0.44, h = Hs * 0.14; c.fillStyle = '#4f6b3a'; c.beginPath(); c.moveTo(x, y - h); c.lineTo(x - h * 0.22, y); c.lineTo(x + h * 0.22, y); c.fill(); }
@@ -943,10 +963,11 @@ function drawSite(s) {
   c.strokeStyle = 'rgba(255,255,255,0.28)'; c.lineWidth = 1; for (let i = 0; i < 9; i++) { const y = Hs * (0.5 + i * 0.038), x0 = W * ((i * 0.37) % 1); c.beginPath(); c.moveTo(x0, y); c.lineTo(x0 + W * 0.12, y); c.stroke(); }
   c.fillStyle = '#e5cd96'; c.beginPath(); c.ellipse(W * 0.7, Hs * 0.62, W * 0.13, Hs * 0.035, 0, 0, 7); c.fill();
   c.fillStyle = '#c7a568'; c.beginPath(); c.moveTo(0, Hs * 0.86); for (let x = 0; x <= W; x += W / 10) c.lineTo(x, Hs * (0.86 - 0.01 * Math.cos(x / W * 7))); c.lineTo(W, Hs); c.lineTo(0, Hs); c.fill();
+  }
   const SIZE = { bank: 0.07, edge: 0.085, air: 0.05, sand: 0.045, water: 0.048 }, picUnit = W * 0.26 / Math.max(...s.cast.map(a => a.len || 0));
   const PLACE = { air: [[0.6, 0.2], [0.84, 0.13]], bank: [[0.2, 0.455], [0.4, 0.455], [0.52, 0.455], [0.63, 0.455]], edge: [[0.2, 0.93]], sand: [[0.7, 0.625]], water: [[0.46, 0.6], [0.58, 0.75], [0.84, 0.78], [0.33, 0.78], [0.94, 0.66]] };
   const used = {}, drawn = {}, labels = [], later = [];
-  const tint = () => { c.fillStyle = 'rgba(120,170,190,0.16)'; c.fillRect(0, Hs * 0.5, W, Hs * 0.36); };
+  const tint = () => { c.fillStyle = pim ? 'rgba(120,170,190,0.1)' : 'rgba(120,170,190,0.16)'; c.fillRect(0, Hs * 0.5, W, Hs * 0.36); };
   s.cast.forEach((a, n) => {
     const i = used[a.zone] = (used[a.zone] || 0) + 1, p = PLACE[a.zone][i - 1] || PLACE[a.zone][0];
     const x = W * p[0], y = Hs * p[1], px = Math.max(18, W * SIZE[a.zone]);

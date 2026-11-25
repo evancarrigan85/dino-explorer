@@ -427,6 +427,8 @@ header .sub{font-size:0.68rem;color:var(--muted);margin-top:1px;white-space:nowr
 .site-scene .ss-blurb{padding:8px 12px 6px;font-size:0.82rem;line-height:1.45}
 .site-scene canvas,.map-area .site-scene canvas{position:relative;inset:auto;left:auto;top:auto;display:block;width:100%;height:auto;background:#ecc98d}
 .site-scene .ss-cap{padding:6px 12px;font-size:0.74rem;font-style:italic;color:#e8b75a;border-bottom:1px solid rgba(255,255,255,0.08)}
+.site-scene .ss-paint{padding:6px 12px;font-size:0.74rem;color:#9fb3d1;border-bottom:1px solid rgba(255,255,255,0.08)}.site-scene .ss-paint summary{cursor:pointer;line-height:1.45}.site-scene .ss-paint u{color:#9fc8ff}
+.site-scene .ss-prompt{margin-top:6px;white-space:pre-wrap;font-size:0.72rem;line-height:1.45;color:#c9d3e2;background:rgba(255,255,255,0.04);padding:8px;border-radius:6px}
 .site-scene .ss-more{padding:4px 12px 14px;font-size:0.8rem;line-height:1.5}
 .site-scene .ss-rel{color:#9fb3d1;font-size:0.74rem}.site-scene .ss-credits{font-size:0.74rem;color:#9fb3d1}.site-scene .ss-credits a{color:#9fc8ff}
 .site-scene .ss-cast{margin:4px 0 0;padding-left:18px}.site-scene .ss-cast li{margin:2px 0}.site-scene .ss-cast i{color:#9fb3d1}
