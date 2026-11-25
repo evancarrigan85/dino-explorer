@@ -1,8 +1,14 @@
-export interface CastMember { name: string; sil?: string; emoji: string; zone: 'air' | 'bank' | 'edge' | 'sand' | 'water'; len: number | null; size: string; note: string }
+export interface Size { k: 'about' | 'upto' | 'ormore' | 'past' | 'range'; a: number; b?: number; m?: 'wingspan' | 'shell' }
+export interface SizeBasis { k: 'paper' | 'museum' | 'popular' | 'relatives'; ref?: string; url?: string; text: string }
+export interface CastMember {
+  name: string; sil?: string; emoji: string; zone: 'air' | 'bank' | 'edge' | 'sand' | 'water';
+  len: number; sz: Size; size: string; basis?: SizeBasis; note: string;
+}
 export interface Silhouette { f: string; w: number; h: number; by: string; lic: string; licUrl: string; of: string; level: 'own' | 'member' | 'relative'; img: string }
 export interface Paper { key: string; doi: string; title: string; journal: string; year: number; authors: string[] }
 export interface Site {
-  id: string; name: string; where: string; when: string; blurb: string; setting: string; rock: string; plants: string;
+  id: string; name: string; where: string; at: [number, number]; t: number; when: string; blurb: string; setting: string; rock: string; plants: string;
   cast: CastMember[]; paint: { land: string; water: string; plants: string; light: string; not: string };
   know: string; debate: string; sil: Record<string, Silhouette>; papers: Paper[];
+  ground: { f: string; model: string; made: string; prompt: string; strips: string[] } | null;
 }

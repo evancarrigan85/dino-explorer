@@ -9,6 +9,8 @@ says the picture is AI-made, names the model and shows what it was asked for.
 
     python3 -I tools/paint.py site kemkem [--n 3] [--pro] [--size 1K|2K] [--dry-run]   # make candidates
     python3 -I tools/paint.py choose kemkem 2          # candidate 2 becomes tiles/scenes/kemkem.webp
+    python3 -I tools/paint.py ground kemkem --guide g.png [--n 2] [--pro] [--size 2K]   # the ground of a living scene
+    python3 -I tools/paint.py choose-ground kemkem 1   # candidate 1 becomes the scene's ground swatches (app/public/ground/)
     python3 -I tools/paint.py spent                    # what the log says was spent
     python3 -I tools/paint.py check                    # is the key accepted, and can it see the image models? (free)
 
@@ -30,7 +32,7 @@ Every call (made, failed or refused) is one line in tools/paint/spend.jsonl, whi
 never the image.
 """
 import sys, os, io, json, time, base64, hashlib, subprocess, urllib.request, urllib.error
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HERE = os.path.join(ROOT, 'tools', 'paint')
@@ -147,6 +149,73 @@ def images(resp):
     return out
 
 
+# The ground of a living scene (app/): the site's land seen from straight above, repainted richly from the app's own
+# guide map (#/guide/<site>: the same land the 3D scene is built from), so every boundary stays where the scene has it.
+# The trees, animals and moving water are added by the scene; the painting is the ground and the river bed only.
+GROUND_STYLE = ('A richly detailed natural-history painting of a landscape seen from directly above, in the tradition of the '
+                'hand-painted relief maps and museum diorama backgrounds of the twentieth century: gouache and watercolour on '
+                'warm paper, natural earthy colours, soft hazy afternoon light, and fine, careful texture everywhere — '
+                'grains and small pebbles on the gravel bars, ripple marks left by the current on the low sand, darker damp '
+                'sand along every edge of the water, silt swirls and sand waves on the bed of the shallow river showing '
+                'through brownish-green water, layered reddish sandstone on the face of the far bank, a few small low green '
+                'plants near the water. Calm, documentary and precise, not dramatic or cinematic.')
+GROUND_LAYOUT = ('The attached picture is the guide map of this place, seen from straight above. Keep EVERY boundary exactly '
+                 'where it is in the guide: blue is water (darker blue is deeper), beige is sand, the darker grey-brown patches '
+                 'are gravel bars, the red band is the sandstone face of the far bank, the light brown above it is the level top '
+                 'of the far bank. Do not move, add or remove any river channel, bank, island or bar. Repaint everything: do not '
+                 'copy the guide\'s flat colours.')
+GROUND_NEVER = ('Seen from straight above only: no horizon, no sky, no perspective. NO trees or tall plants (they are added '
+                'separately), no tree shadows, NO animals of any kind, no footprints, no people, no buildings, no text, '
+                'labels, border or frame.')
+
+
+def ground(sid, guide, n, pro, size):
+    s = scenes().get(sid) or sys.exit('no scene ' + sid)
+    p = s.get('paint') or sys.exit('scene %s has no `paint` brief' % sid)
+    text = '\n'.join([GROUND_STYLE, GROUND_LAYOUT, 'The place: %s, %s.' % (s['where'], s['when']),
+                      'Land: %s.' % p['land'], 'Water: %s.' % p['water'], 'Light: %s.' % p['light'],
+                      'Do not paint: %s.' % p['not'], GROUND_NEVER])
+    d = os.path.join(CAND, sid + '-ground'); os.makedirs(d, exist_ok=True)
+    os.makedirs(os.path.join(HERE, 'prompts'), exist_ok=True)
+    open(os.path.join(HERE, 'prompts', sid + '-ground.txt'), 'w').write(text)
+    body = {'model': MODEL_PRO if pro else MODEL,
+            'input': [{'type': 'text', 'text': text}, {'type': 'image', 'mime_type': 'image/png', 'data': base64.b64encode(open(guide, 'rb').read()).decode()}],
+            'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': size, 'aspect_ratio': '16:9'}}
+    have = len([f for f in os.listdir(d) if f.endswith('.jpg')])
+    for i in range(n):
+        for b in images(call(body)):
+            have += 1; fn = os.path.join(d, '%d.jpg' % have); open(fn, 'wb').write(b)
+            json.dump({'model': body['model'], 'size': size, 'prompt': text, 'made': time.strftime('%Y-%m-%d')}, open(fn[:-4] + '.json', 'w'))
+            print('  candidate', fn)
+    print('  this run: %d call(s), ~$%.2f' % (_calls, _spent))
+
+
+def choose_ground(sid, k):
+    """Turn a ground painting into the swatches a scene paints its land with. The image model keeps the guide's layout
+    only roughly (the river drifts and changes shape), so the painting is not laid on the land as a whole: it is cut into
+    four strips — the sand on top of the far bank, the layered sandstone of its face, the river bed, the near shore with
+    its ripples and gravel — and the scene paints each zone of its own land with its strip, tiled along the river. The
+    land's shape stays exactly the scene's; the painting gives the surface."""
+    src = os.path.join(CAND, sid + '-ground', '%s.jpg' % k); meta = json.load(open(src[:-4] + '.json'))
+    im = Image.open(src).convert('RGB').resize((1600, 900), Image.LANCZOS); W, H = im.size
+    px = im.load()
+    rows = [sum(1 for x in range(0, W, 4) if px[x, y][0] - px[x, y][1] > 55 and px[x, y][0] > 120) / (W / 4) for y in range(H)]
+    band = [y for y, f in enumerate(rows) if f > 0.35] or sys.exit('no sandstone band found in this painting: choose another')
+    r0, r1 = min(band), max(band)
+    strips = {'top': (max(10, int(r0 * 0.12)), r0 - 10), 'stone': (r0 + 4, r1 - 4), 'bed': (r1 + 30, int(r1 + 0.45 * (H - r1))), 'near': (int(H * 0.84), H - 8)}
+    atlas = Image.new('RGB', (2048, 2048))
+    for i, key in enumerate(['top', 'stone', 'bed', 'near']):
+        y0, y1 = strips[key]
+        if y1 - y0 < 20: sys.exit('the %s strip is too thin (%d rows): choose another painting' % (key, y1 - y0))
+        atlas.paste(im.crop((0, y0, W, y1)).resize((2048, 512), Image.LANCZOS), (0, i * 512))
+    out = os.path.join(ROOT, 'app', 'public', 'ground'); os.makedirs(out, exist_ok=True)
+    dst = os.path.join(out, sid + '.webp'); atlas.save(dst, 'WEBP', quality=86, method=6)
+    json.dump({'f': 'ground/%s.webp' % sid, 'strips': ['top', 'stone', 'bed', 'near'], 'rows': strips, 'model': meta['model'], 'made': meta['made'],
+               'prompt': meta['prompt'], 'candidate': int(k), 'sha': hashlib.sha256(open(dst, 'rb').read()).hexdigest()[:12]},
+              open(os.path.join(out, sid + '.json'), 'w'), ensure_ascii=False, indent=1)
+    print('  %s ← candidate %s: strips %s (%d KB)' % (dst, k, strips, os.path.getsize(dst) // 1024))
+
+
 def site(sid, n, pro, size):
     s = scenes().get(sid) or sys.exit('no scene ' + sid)
     text = prompt_for(s)
@@ -195,6 +264,8 @@ if __name__ == '__main__':
     if not a: sys.exit(__doc__)
     if a[0] == 'site': site(a[1], int(opt('--n', 3)), '--pro' in sys.argv, opt('--size', '1K'))
     elif a[0] == 'choose': choose(a[1], a[2])
+    elif a[0] == 'ground': ground(a[1], opt('--guide', None) or sys.exit('--guide <png> is needed'), int(opt('--n', 2)), '--pro' in sys.argv, opt('--size', '2K'))
+    elif a[0] == 'choose-ground': choose_ground(a[1], a[2])
     elif a[0] == 'spent': spent()
     elif a[0] == 'check': check()
     else: sys.exit(__doc__)

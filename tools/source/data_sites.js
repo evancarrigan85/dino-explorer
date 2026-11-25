@@ -1,11 +1,14 @@
 // Life at the site: a picture of one fossil site at its own time, built from what was found there.
 // Rules (docs/PLAN.md, Release 10 step 2 and 12.2): every animal drawn was found at the site (its paper says so);
-// an animal with a known size is drawn to scale (len, metres, from the paper or from the animal's card on this
-// site); one without is drawn small and marked “size not known”; a herd only with a bonebed or trackways; plants
+// every animal has a size and is drawn to scale (Evan, 25 Nov 2026: “we can't have size unknown”): `len` is the length
+// drawn, in metres; `sz` the size in words-to-be; `basis` says where an estimate comes from when the site's own papers
+// do not give it — a paper (`ref`, verified), a museum, published estimates that vary, or a guess from living relatives,
+// named; the page shows it beside the size. A herd only with a bonebed or trackways; plants
 // only where fossil plants are known; the caption says what is guessed. Sources: refs_wanted.txt target z:<id>.
 // Fields: id, name, where, at [lat, lon today], t (Ma), when, open (animal cards that open the scene), blurb,
 //   setting, rock, plants, cast [{ name, sil (a key in SIL, silhouettes-data.js), emoji (used until the silhouette loads),
-//   zone: air | bank | edge | sand | water, len (m) or null, size, note }],
+//   zone: air | bank | edge | sand | water, len (m, drawn), sz { k: about | upto | ormore | past | range, a, b (m),
+//   m: wingspan | shell (else length) }, basis { k: paper | museum | popular | relatives, ref, url, text }, note }],
 //   paint { land, water, plants, light, not }: the painter’s brief for tools/paint.py (the landscape only, never animals),
 //   know, debate.
 // ==== life at the site ====
@@ -17,19 +20,28 @@ const SITE_SCENES = [
     rock: 'River sandstones and pebble beds of the Gara Sbaa and Douira formations, and the mud of an old pond at Oum Tkout.',
     plants: 'Pieces of petrified wood, probably from conifers related to monkey-puzzle trees, and leaves of flowering plants and other plants from the pond.',
     cast: [
-      { name: 'Siroccopteryx', sil: 'siroccopteryx', emoji: '🪶', zone: 'air', len: 4, size: 'wingspan 4 m or more', note: 'a big pterosaur, known from its snout' },
-      { name: 'Alanqa', sil: 'alanqa', emoji: '🪶', zone: 'air', len: null, size: 'size not known', note: 'a large pterosaur' },
-      { name: 'Carcharodontosaurus', sil: 'carcharodontosaurus', emoji: '🦖', zone: 'bank', len: 12.5, size: '12–12.5 m', note: 'a giant meat-eater' },
-      { name: 'Deltadromeus', sil: 'deltadromeus', emoji: '🦖', zone: 'bank', len: null, size: 'size not known', note: 'a large meat-eater' },
-      { name: 'an abelisaurid', sil: 'abelisaurid', emoji: '🦖', zone: 'bank', len: null, size: 'size not known', note: 'a mid- to large-sized meat-eater; its name is not known' },
-      { name: 'Rebbachisaurus', sil: 'rebbachisaurus', emoji: '🦕', zone: 'bank', len: null, size: 'size not known', note: 'a long-necked plant-eater — one of very few plant-eaters found here' },
-      { name: 'Spinosaurus', sil: 'spinosaurus', emoji: '🦖', zone: 'edge', len: 17, size: 'about 17 m', note: 'at the water’s edge — how much it swam is argued over' },
-      { name: 'side-necked turtles', sil: 'sidenecked', emoji: '🐢', zone: 'sand', len: null, size: 'size not known', note: 'on a sandbank' },
-      { name: 'Elosuchus', sil: 'elosuchus', emoji: '🐊', zone: 'water', len: null, size: 'size not known', note: 'a big, long-snouted, fish-eating relative of crocodiles' },
-      { name: 'Onchopristis', sil: 'onchopristis', emoji: '🦈', zone: 'water', len: null, size: 'size not known', note: 'a large sawfish-like ray: its teeth are the commonest fossil here' },
-      { name: 'Axelrodichthys', sil: 'axelrodichthys', emoji: '🐟', zone: 'water', len: 4, size: 'may have grown past 4 m', note: 'a giant coelacanth' },
-      { name: 'Neoceratodus', sil: 'neoceratodus', emoji: '🐟', zone: 'water', len: null, size: 'size not known', note: 'a lungfish' },
-      { name: 'Obaichthys', sil: 'obaichthys', emoji: '🐟', zone: 'water', len: null, size: 'size not known', note: 'a gar' },
+      { name: 'Siroccopteryx', sil: 'siroccopteryx', emoji: '🪶', zone: 'air', len: 4, sz: { k: 'ormore', a: 4, m: 'wingspan' }, note: 'a big pterosaur, known from its snout' },
+      { name: 'Alanqa', sil: 'alanqa', emoji: '🪶', zone: 'air', len: 4, sz: { k: 'about', a: 4, b: 6, m: 'wingspan' }, note: 'a large pterosaur',
+        basis: { k: 'paper', ref: 'ibrahim2010', text: 'most of its jaws come from animals about 3–4 m across; one neck bone may be from one of about 6 m' } },
+      { name: 'Carcharodontosaurus', sil: 'carcharodontosaurus', emoji: '🦖', zone: 'bank', len: 12.5, sz: { k: 'range', a: 12, b: 12.5 }, note: 'a giant meat-eater' },
+      { name: 'Deltadromeus', sil: 'deltadromeus', emoji: '🦖', zone: 'bank', len: 8, sz: { k: 'about', a: 8 }, note: 'a large meat-eater',
+        basis: { k: 'museum', url: 'https://www.nhm.ac.uk/discover/dino-directory/deltadromeus.html', text: 'the Natural History Museum’s estimate for its one partial skeleton; the bones are too few to be sure' } },
+      { name: 'an abelisaurid', sil: 'abelisaurid', emoji: '🦖', zone: 'bank', len: 9, sz: { k: 'upto', a: 9 }, note: 'a mid- to large-sized meat-eater; its name is not known',
+        basis: { k: 'paper', ref: 'chiarenza2016', text: 'from a thigh bone: as big as the largest abelisaurids, such as Carnotaurus' } },
+      { name: 'Rebbachisaurus', sil: 'rebbachisaurus', emoji: '🦕', zone: 'bank', len: 14, sz: { k: 'range', a: 14, b: 20 }, note: 'a long-necked plant-eater — one of very few plant-eaters found here',
+        basis: { k: 'popular', ref: 'wilson2015', text: 'published estimates of its length run from 14 to 20 m (drawn at 14 m); its bones show it weighed about 8–12 tonnes' } },
+      { name: 'Spinosaurus', sil: 'spinosaurus', emoji: '🦖', zone: 'edge', len: 17, sz: { k: 'about', a: 17 }, note: 'at the water’s edge — how much it swam is argued over' },
+      { name: 'side-necked turtles', sil: 'sidenecked', emoji: '🐢', zone: 'sand', len: 0.45, sz: { k: 'range', a: 0.3, b: 0.6, m: 'shell' }, note: 'on a sandbank',
+        basis: { k: 'relatives', text: 'a guess from related side-necked turtles of the time: the Kem Kem turtles are known mostly from skulls' } },
+      { name: 'Elosuchus', sil: 'elosuchus', emoji: '🐊', zone: 'water', len: 7.7, sz: { k: 'upto', a: 7.7 }, note: 'a big, long-snouted, fish-eating relative of crocodiles',
+        basis: { k: 'paper', ref: 'meunier2017', text: 'estimated from a skull about 1.1 m long' } },
+      { name: 'Onchopristis', sil: 'onchopristis', emoji: '🦈', zone: 'water', len: 3, sz: { k: 'range', a: 2, b: 4 }, note: 'a large sawfish-like ray: its teeth are the commonest fossil here',
+        basis: { k: 'paper', ref: 'villalobos2021', text: 'from the length of its saw, compared with living sawfish' } },
+      { name: 'Axelrodichthys', sil: 'axelrodichthys', emoji: '🐟', zone: 'water', len: 4, sz: { k: 'past', a: 4 }, note: 'a giant coelacanth' },
+      { name: 'Neoceratodus', sil: 'neoceratodus', emoji: '🐟', zone: 'water', len: 1.3, sz: { k: 'range', a: 1, b: 1.5 }, note: 'a lungfish',
+        basis: { k: 'relatives', text: 'a guess from its living relative, the Australian lungfish; no fossil of it gives its length' } },
+      { name: 'Obaichthys', sil: 'obaichthys', emoji: '🐟', zone: 'water', len: 1.5, sz: { k: 'range', a: 1, b: 2 }, note: 'a gar',
+        basis: { k: 'relatives', text: 'a guess from living gars; no fossil of it gives its length' } },
     ],
     // the painter’s brief (tools/paint.py): the same paper’s setting, as a painter needs it; what is not known is left out
     paint: { land: 'a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles',
@@ -41,4 +53,22 @@ const SITE_SCENES = [
     debate: '“Stromer’s riddle”: why so many big meat-eaters and so few plant-eaters? Perhaps many of the hunters lived on the rivers’ giant fish; perhaps the rivers mixed together bones from different times and places. And how much did Spinosaurus swim — a diving hunter, or a wader at the water’s edge? The picture shows it at the edge, which both sides allow.',
   },
 ];
-if (typeof module !== 'undefined') module.exports = { SITE_SCENES };
+// The size in words, from the numbers, in metric or imperial units. The page writes `size` from it; the new app (app/)
+// has the same function in app/src/size.ts and its checks hold the two to the same words.
+function sizeText(c, units) {
+  const z = c.sz; if (!z) return c.size || '';
+  const imp = units === 'imperial', top = Math.max(z.a, z.b || 0);
+  const unit = imp ? (top * 3.28084 < 3 ? 'in' : 'ft') : (top < 1 ? 'cm' : 'm');
+  const num = m => {
+    if (unit === 'in') return String(Math.round(m * 39.3701));
+    if (unit === 'ft') { const ft = m * 3.28084; return String(ft < 10 ? Math.round(ft * 2) / 2 : Math.round(ft)); }
+    if (unit === 'cm') return String(Math.round(m * 20) * 5);
+    return String(m < 10 ? Math.round(m * 10) / 10 : Math.round(m * 2) / 2);
+  };
+  const u = ' ' + unit, a = num(z.a) + u;
+  const t = z.k === 'range' ? num(z.a) + '–' + num(z.b) + u : z.k === 'upto' ? 'up to ' + a : z.k === 'ormore' ? a + ' or more'
+    : z.k === 'past' ? 'may have grown past ' + a : 'about ' + a + (z.b ? ', perhaps up to ' + num(z.b) + u : '');
+  return (z.m ? z.m + ' ' : '') + t;
+}
+for (const s of SITE_SCENES) for (const c of s.cast) c.size = sizeText(c, 'metric');
+if (typeof module !== 'undefined') module.exports = { SITE_SCENES, sizeText };

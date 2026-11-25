@@ -126,7 +126,11 @@ const silConst = name => { const i = silSrc.indexOf('const ' + name + ' = '); if
 { const ok = new Set(['air', 'bank', 'edge', 'sand', 'water']);
   for (const st of SITE_SCENES) {
     if (!st.cast || !st.cast.length) problems.push('site ' + st.id + ': no animals');
-    for (const c of st.cast || []) { if (!ok.has(c.zone)) problems.push('site ' + st.id + ': ' + c.name + ' has no zone'); if (c.len == null && c.size !== 'size not known') problems.push('site ' + st.id + ': ' + c.name + ' has no length, so its size must say “size not known”'); }
+    for (const c of st.cast || []) { if (!ok.has(c.zone)) problems.push('site ' + st.id + ': ' + c.name + ' has no zone'); const refKeys = new Set(Object.keys(JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8'))));
+      if (!(c.len > 0) || !c.sz || !(c.sz.a > 0)) problems.push('site ' + st.id + ': ' + c.name + ' needs a size (len and sz) — “size not known” is not allowed; give the best estimate and its basis');
+      if (c.basis && !['paper', 'museum', 'popular', 'relatives'].includes(c.basis.k)) problems.push('site ' + st.id + ': ' + c.name + ': unknown basis ' + c.basis.k);
+      if (c.basis && c.basis.ref && !refKeys.has(c.basis.ref)) problems.push('site ' + st.id + ': ' + c.name + ': its size cites ' + c.basis.ref + ', which is not a verified reference (refs.json)');
+      if (c.basis && !c.basis.text) problems.push('site ' + st.id + ': ' + c.name + ': its size basis needs words for the page'); }
     for (const n of st.open || []) if (!allNames.has(n)) problems.push('site ' + st.id + ': opens from ' + n + ', which is not an animal here');
     { const SIL = silConst('SIL');
       for (const c of st.cast || []) if (c.sil && !SIL[c.sil]) problems.push('site ' + st.id + ': ' + c.name + ' wants silhouette ' + c.sil + ', which silhouettes-data.js does not have');

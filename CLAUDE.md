@@ -16,6 +16,7 @@ and where something is a guess, a sketch or still argued over, the page says so.
    top unfinished release unless Evan says otherwise. Update it when a release ships.
 2. `tools/README.md` — where each kind of content lives and how the generated blocks are rebuilt.
 3. `docs/REBUILD.md` — the move to an app that can grow (Evan, 25 Nov). It comes before new screens.
+4. `docs/ART.md` — how scenes are drawn: artist references, the painted ground, the palette. Scenes are seen from the sky only.
 
 ## The rules that have already cost time
 

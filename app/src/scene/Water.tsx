@@ -5,7 +5,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { BOUNDS, WATER_LEVEL, type Land } from './land';
-import { clock, LIGHT, SKY_GLSL, skyUniforms } from './shared';
+import { clock, LIGHT, SKY_GLSL, skyUniforms, WIND, CLOUD_GLSL } from './shared';
 
 function heightTexture(land: Land): THREE.DataTexture {
   // the ground's height under the water, -2.5..+1.5 m in one byte, for the water's depth
@@ -31,8 +31,9 @@ precision highp float;
 varying vec3 vWorld;
 uniform float uTime; uniform sampler2D uHeight; uniform vec4 uBounds; uniform vec2 uFlow;
 uniform vec3 uShallow; uniform vec3 uDeep; uniform vec3 uFogColor; uniform float uFogNear; uniform float uFogFar;
-uniform float uDetail;
+uniform float uDetail; uniform vec2 uWindDir;
 ${SKY_GLSL}
+${CLOUD_GLSL}
 
 float hsh(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vnoise(vec2 p) {
@@ -96,6 +97,8 @@ void main() {
   float foam = edge * smoothstep(0.5, 0.8, fn) * (0.5 + 0.35 * sin(uTime * 1.3 + vWorld.x * 0.2));
   foam += (1.0 - smoothstep(0.05, 0.5, depth)) * smoothstep(0.68, 0.85, fn) * 0.22;
 
+  float cs = cloudShadow(vWorld.xz, uTime);
+  body *= 1.0 - 0.25 * cs; sun *= 1.0 - 0.85 * cs;
   vec3 col = mix(body, refl * 0.82, F * 0.72) + sun;
   col = mix(col, vec3(0.86, 0.83, 0.76), clamp(foam, 0.0, 0.6));
   float alpha = clamp(mix(clear, 1.0, F) + foam * 0.6, 0.0, 1.0) * smoothstep(-0.02, 0.06, depth);
@@ -118,7 +121,7 @@ export function Water({ land, phone }: { land: Land; phone: boolean }) {
         uFlow: { value: new THREE.Vector2(Math.cos(land.flowAngle), Math.sin(land.flowAngle)).multiplyScalar(0.9) },
         uShallow: { value: new THREE.Color('#8b8a5e') }, uDeep: { value: new THREE.Color('#4f5a3d') },
         uFogColor: { value: LIGHT.haze }, uFogNear: { value: LIGHT.fogNear }, uFogFar: { value: LIGHT.fogFar },
-        uDetail: { value: phone ? 0.6 : 1 },
+        uDetail: { value: phone ? 0.6 : 1 }, uWindDir: { value: WIND.dir },
       },
     });
     return { geometry: geo, material: mat };

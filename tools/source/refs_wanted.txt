@@ -618,4 +618,8 @@ hone2021 | Hone | 2021 | Evaluating the ecology of Spinosaurus: shoreline genera
 fabbri2022 | Fabbri | 2022 | Subaqueous foraging among carnivorous dinosaurs | z:kemkem, a:Spinosaurus
 sereno2022 | Sereno | 2022 | Spinosaurus is not an aquatic dinosaur | z:kemkem, a:Spinosaurus | 10.7554/eLife.80092
 wilson2015 | Wilson | 2015 | Osteology of Rebbachisaurus garasbae Lavocat, 1954, a diplodocoid (Dinosauria, Sauropoda) from the early Late Cretaceous-aged Kem Kem beds of southeastern Morocco | z:kemkem
+# sizes for every animal at the Kem Kem (Evan, 25 Nov: "we can't have size unknown")
+chiarenza2016 | Chiarenza | 2016 | A large abelisaurid (Dinosauria, Theropoda) from Morocco and comments on the Cenomanian theropods from North Africa | z:kemkem | 10.7717/peerj.1754
+meunier2017 | Meunier | 2017 | Revision and phylogenetic affinities of Elosuchus (Crocodyliformes) | z:kemkem | 10.1111/zoj.12448
+villalobos2021 | Villalobos-Segura | 2021 | The skeletal remains of the euryhaline sclerorhynchoid Onchopristis (Elasmobranchii) from the 'Mid'-Cretaceous and their palaeontological implications | z:kemkem | 10.1093/zoolinnean/zlaa166
 ibrahim2010 | Ibrahim | 2010 | A new pterosaur (Pterodactyloidea: Azhdarchidae) from the Upper Cretaceous of Morocco | z:kemkem

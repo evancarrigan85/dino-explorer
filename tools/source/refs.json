@@ -10489,5 +10489,55 @@
 ],
 "first": "",
 "title_expected": "A new pterosaur (Pterodactyloidea: Azhdarchidae) from the Upper Cretaceous of Morocco"
+},
+"chiarenza2016": {
+"doi": "10.7717/peerj.1754",
+"title": "A large abelisaurid (Dinosauria, Theropoda) from Morocco and comments on the Cenomanian theropods from North Africa",
+"journal": "PeerJ",
+"year": 2016,
+"authors": [
+"Chiarenza",
+"Cau"
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem"
+],
+"first": "",
+"title_expected": "A large abelisaurid (Dinosauria, Theropoda) from Morocco and comments on the Cenomanian theropods from North Africa"
+},
+"meunier2017": {
+"doi": "10.1111/zoj.12448",
+"title": "Revision and phylogenetic affinities of Elosuchus (Crocodyliformes)",
+"journal": "Zoological Journal of the Linnean Society",
+"year": 2016,
+"authors": [
+"Meunier",
+"Larsson"
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem"
+],
+"first": "",
+"title_expected": "Revision and phylogenetic affinities of Elosuchus (Crocodyliformes)"
+},
+"villalobos2021": {
+"doi": "10.1093/zoolinnean/zlaa166",
+"title": "The skeletal remains of the euryhaline sclerorhynchoid † Onchopristis (Elasmobranchii) from the ‘Mid’-Cretaceous and their palaeontological implications",
+"journal": "Zoological Journal of the Linnean Society",
+"year": 2021,
+"authors": [
+"Villalobos-Segura",
+"Kriwet",
+"Vullo",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"z:kemkem"
+],
+"first": "",
+"title_expected": "The skeletal remains of the euryhaline sclerorhynchoid Onchopristis (Elasmobranchii) from the 'Mid'-Cretaceous and their palaeontological implications"
 }
 }

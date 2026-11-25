@@ -168,6 +168,13 @@ down to the ground (Evan, 25 Nov: “stay with the sky view … the ground level
 The Gemini paintings can become the distant backdrop of a scene (painted sky and far horizon, 3D foreground — the way
 museum dioramas are built). The Kem Kem is the first; then one scene per period.
 
+**Added 25 Nov (Evan: “what about the earth itself … we can't have size unknown … a metric imperial toggle … more
+richly drawn, use artist references”):** each scene opens on this atlas’s globe at the site’s time and zooms in (“Where on
+Earth” replays it); every animal has a size with its basis (paper, museum, published range, or a guess from relatives —
+the build refuses “size not known”; three new papers verified); metres or feet (remembered on the device); the ground is
+painted from the scene’s own guide map and worn as swatches, with ripple marks, gravel bars, drift logs, drifting cloud
+shadows and a museum-model finish. See `docs/ART.md`.
+
 ## Features for the new app (from comparing with the World History Encyclopedia app, 25 Nov)
 
 Evan pointed at the World History Encyclopedia iPhone app (a non-profit; human-written, expert-reviewed). What to take:

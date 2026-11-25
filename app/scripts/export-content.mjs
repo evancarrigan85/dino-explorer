@@ -21,7 +21,10 @@ const sites = SITE_SCENES.map(s => {
     fs.copyFileSync(path.join(ROOT, k.f), path.join(PUB, 'sil', path.basename(k.f)));
   }
   const papers = Object.entries(refs).filter(([, r]) => (r.targets || []).includes('z:' + s.id)).map(([key, r]) => ({ key, doi: r.doi, title: r.title, journal: r.journal, year: r.year, authors: r.authors }));
-  return { ...s, sil, papers };
+  // the painted ground (tools/paint.py ground / choose-ground), if this site has one
+  const gj = path.join(PUB, 'ground', s.id + '.json');
+  const ground = fs.existsSync(gj) ? JSON.parse(fs.readFileSync(gj, 'utf8')) : null;
+  return { ...s, sil, papers, ground };
 });
 fs.writeFileSync(path.join(OUT, 'sites.json'), JSON.stringify(sites, null, 1));
 console.log('content: ' + sites.length + ' site scene(s), ' + sites.reduce((n, s) => n + Object.keys(s.sil).length, 0) + ' silhouettes');

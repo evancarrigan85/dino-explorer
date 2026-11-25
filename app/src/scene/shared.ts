@@ -12,11 +12,22 @@ export const LIGHT = {
   zenith: new THREE.Color('#a7b9c9'),
   horizon: new THREE.Color('#ece0c4'),
   haze: new THREE.Color('#e6d8b8'),
-  fogNear: 70,
-  fogFar: 560,
+  fogNear: 200,
+  fogFar: 900,
 };
 
 export const WIND = { dir: new THREE.Vector2(0.86, 0.5).normalize() };
+
+/** GLSL: how much a cloud shadow covers a point of ground (0..1); the shadows drift with the wind. Needs uTime, uWindDir. */
+export const CLOUD_GLSL = /* glsl */ `
+float cHsh(vec2 p) { return fract(sin(dot(p, vec2(41.3, 289.1))) * 15731.743); }
+float cNoi(vec2 p) { vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(cHsh(i), cHsh(i + vec2(1, 0)), u.x), mix(cHsh(i + vec2(0, 1)), cHsh(i + vec2(1, 1)), u.x), u.y); }
+float cloudShadow(vec2 xz, float t) {
+  vec2 p = xz * 0.0065 - uWindDir * t * 0.03;
+  float n = cNoi(p) * 0.6 + cNoi(p * 2.3 + 5.1) * 0.3 + cNoi(p * 5.7 + 1.7) * 0.1;
+  return smoothstep(0.52, 0.68, n);
+}`;
 
 /** GLSL: the sky's colour in a direction (world space). */
 export const SKY_GLSL = /* glsl */ `

@@ -1,6 +1,6 @@
 // The animals of the site: the scientists' silhouettes (PhyloPic), standing in the scene like cut-outs in a museum
-// diorama. A known length is drawn to scale (a pterosaur's width is its wingspan, so it is seen from below); an animal
-// whose size is not known is paler and not to scale, and its label says so. Movement claims nothing: pterosaurs glide in
+// diorama. Every animal has a size (from a paper, a museum, or a guess from relatives, said in its card) and is drawn to
+// scale (a pterosaur's width is its wingspan, so it is seen from below). Movement claims nothing: pterosaurs glide in
 // slow circles, fish drift under the surface, everything on land stands still.
 import { useMemo, useRef } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import { type Land } from './land';
 import { clock, LIGHT } from './shared';
 import type { Site, CastMember } from '../types';
+import { sizeText, type Units } from '../size';
 
 const INK = { land: new THREE.Color('#3a2410'), water: new THREE.Color('#1c3a3c') };
 const DEFAULT_W: Record<string, number> = { bank: 5.5, edge: 6, sand: 0.9, water: 1.8, air: 4 };
@@ -48,7 +49,7 @@ function place(site: Site, land: Land): Placed[] {
   });
 }
 
-function Animal({ p, site, selected, onSelect, labels, phone }: { p: Placed; site: Site; selected: boolean; onSelect: (n: string) => void; labels: boolean; phone: boolean }) {
+function Animal({ p, site, selected, onSelect, labels, phone, units }: { p: Placed; site: Site; selected: boolean; onSelect: (n: string) => void; labels: boolean; phone: boolean; units: Units }) {
   const sil = p.c.sil ? site.sil[p.c.sil] : undefined;
   const tex = useLoader(THREE.TextureLoader, sil ? sil.f : 'sil/spinosaurus.png');
   const flat = p.c.zone === 'water' || p.c.zone === 'air';
@@ -80,7 +81,7 @@ function Animal({ p, site, selected, onSelect, labels, phone }: { p: Placed; sit
   const label = labels && <Html position={[0, flat ? 1.2 : p.h + 0.8, 0]} center zIndexRange={[20, 0]}>
     <button ref={tag} className={'tag' + (selected ? ' on' : '') + (p.known ? '' : ' unk')}
       onPointerDown={e => e.stopPropagation()} onPointerUp={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); onSelect(p.c.name); }}>
-      {phone ? <b>{p.n}</b> : <><b>{p.c.name}</b><i>{p.c.size}</i></>}
+      {phone ? <b>{p.n}</b> : <><b>{p.c.name}</b><i>{sizeText(p.c, units)}</i></>}
     </button>
   </Html>;
 
@@ -107,7 +108,7 @@ function Animal({ p, site, selected, onSelect, labels, phone }: { p: Placed; sit
 
 export function placeAnimals(site: Site, land: Land) { return place(site, land); }
 
-export function Animals({ site, land, selected, onSelect, labels, phone }: { site: Site; land: Land; selected: string | null; onSelect: (n: string) => void; labels: boolean; phone: boolean }) {
+export function Animals({ site, land, selected, onSelect, labels, phone, units }: { site: Site; land: Land; selected: string | null; onSelect: (n: string) => void; labels: boolean; phone: boolean; units: Units }) {
   const placed = useMemo(() => place(site, land), [site, land]);
-  return <group>{placed.map(p => <Animal key={p.c.name} p={p} site={site} selected={selected === p.c.name} onSelect={onSelect} labels={labels} phone={phone} />)}</group>;
+  return <group>{placed.map(p => <Animal key={p.c.name} p={p} site={site} selected={selected === p.c.name} onSelect={onSelect} labels={labels} phone={phone} units={units} />)}</group>;
 }
