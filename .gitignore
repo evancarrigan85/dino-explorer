@@ -1,3 +1,4 @@
 # candidates waiting for a look (tools/paint.py); the chosen one goes to tiles/scenes
 tools/paint/candidates/
 __pycache__/
+node_modules/

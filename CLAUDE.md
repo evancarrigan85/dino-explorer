@@ -15,6 +15,7 @@ and where something is a guess, a sketch or still argued over, the page says so.
 1. `docs/PLAN.md` — what is done, what is next, in order, with the steps for each release. Pick the
    top unfinished release unless Evan says otherwise. Update it when a release ships.
 2. `tools/README.md` — where each kind of content lives and how the generated blocks are rebuilt.
+3. `docs/REBUILD.md` — the move to an app that can grow (Evan, 25 Nov). It comes before new screens.
 
 ## The rules that have already cost time
 
@@ -65,6 +66,7 @@ python3 -I tools/verify_refs.py --only key1,key2      # re-check particular refe
 python3 -I tools/verify_refs.py --audit               # re-fetch every stored DOI; fails on preprints
 node tools/bench/bench.js [--update]                  # score the map against independent evidence
 node tools/review_geometry.js                         # walk the timeline: jumps, gaps, labels, terrain fit
+node tools/perf/perf.js [--json out.json]             # time load, idle, drag, zoom, scrub, play, tabs (desktop + phone)
 ```
 
 One-time setup in a fresh container: `npm i -D playwright` is not needed in Claude cloud sessions
@@ -193,7 +195,7 @@ builds, passes the checks and has been looked at.
 
 This environment reaches GitHub, npm, PyPI, Crossref, `zenodo.org` (allowed 17 Nov 2026),
 `api.phylopic.org` and `images.phylopic.org` (24 Nov 2026) and `api.pixellab.ai`. `generativelanguage.googleapis.com` (the
-paintings) works once Evan saves the Gemini key as a network secret for it. It does **not** reach `www.earthbyte.org` or `paleobiodb.org`; releases in `docs/PLAN.md` that need them say
+paintings) works once Evan saves the Gemini key as a network secret for it. Cloud sessions do **not** reach `www.earthbyte.org` or `paleobiodb.org`; **Evan’s Mac (local sessions, since 25 Nov) reaches both, and `macrostrat.org`**. Elsewhere, releases in `docs/PLAN.md` that need them say
 so, and the host has to be approved by Evan first. Public GitHub repositories can be cloned with
 `git clone` even though the GitHub API is scoped to this project — search them with
 `gh api -X GET search/repositories` first: that is how the ancient-coast data was found when the

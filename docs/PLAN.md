@@ -11,6 +11,12 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 ## Next up (updated 25 Nov 2026 — start here)
 
+**25 Nov, later: the rebuild comes first — read `docs/REBUILD.md`.** Evan wants the site moved off the one-generated-page
+build into an app that can grow (“professional grade”). Step 0 (measuring) is done; **Step 1, engine speed, is next.**
+Content work below goes on in the data files; no new screens on the old app. The Kem Kem painting is built and tested
+locally but **held by Evan — do not ship it until he says.** The hand-off steps just below are done (clone, key check,
+first painting).
+
 **Hand-off, 25 Nov: Evan is moving to a local session on his Mac mini.** Everything is on `main`. On the Mac:
 1. `cd` into the dino-explorer clone (or `git clone https://github.com/evancarrigan85/dino-explorer.git`), then
    `git checkout main && git pull`.
@@ -788,7 +794,7 @@ environment’s network settings.
 ## Release 8 — Real fossil occurrences (needs one host approved)
 
 Show every recorded fossil of a selected animal or group as dots, from the Paleobiology Database
-(`paleobiodb.org`, CC-BY; not reachable today — **ask Evan**). Fetch at build time, thin, pack, and
+(`paleobiodb.org`, CC BY 4.0; reachable from Evan’s Mac since 25 Nov, not from cloud sessions — see `docs/REBUILD.md` › Sources). Fetch at build time, thin, pack, and
 cite PBDB plus the date of download. Use it also to audit our hand-entered fossil sites.
 
 ## Release 9 — The game (not started; needs Evan's go-ahead)
