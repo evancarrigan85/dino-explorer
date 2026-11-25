@@ -14,6 +14,7 @@ import { Sky } from './scene/Sky';
 import { Plants } from './scene/Plants';
 import { Animals, placeAnimals, type AnimalStyle } from './scene/Animals';
 import { EarthIntro, WhereOnEarth } from './EarthIntro';
+import { PaintingView } from './PaintingView';
 import { Logs } from './scene/Logs';
 import { Look } from './scene/Look';
 import type { Site } from './types';
@@ -60,7 +61,10 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
   const [labels, setLabels] = useState(true);
   const [units, setUnitsState] = useState<Units>(initialUnits);
   const [style, setStyle] = useState<AnimalStyle>('outline');
-  const [painting, setPainting] = useState(false);
+  // how the site is seen: its painting (with things to find), or the living 3D scene to explore at true scale
+  const [mode, setMode] = useState<'painting' | '3d'>(site.painting && site.spots?.length ? 'painting' : '3d');
+  const [hints, setHints] = useState(true);
+  const [pending, setPending] = useState<string | null>(null);     // an animal to fly to once the 3D scene is up
   const STYLES: [AnimalStyle, string][] = [['outline', 'Outlines'], ['paint-outline', 'Painted in outline'], ['paint-free', 'Painted freely']];
   const anyPainted = site.cast.some(c => c.painted);
   const setUnits = (u: Units) => { setUnitsState(u); saveUnits(u); };
@@ -70,6 +74,8 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
   const [goal, setGoal] = useState<View | null>(null);
   const endIntro = useCallback(() => { setIntro(false); if (!reduceMotion()) setGoal(OVERVIEW); }, []);
   const controls = useRef<OrbitImpl | null>(null);
+  const bar = useRef<HTMLElement>(null), [barH, setBarH] = useState(96);
+  useEffect(() => { const el = bar.current; if (!el) return; const f = () => setBarH(el.offsetHeight); f(); const ro = new ResizeObserver(f); ro.observe(el); return () => ro.disconnect(); }, []);
   const sel = site.cast.find(c => c.name === selected);
 
   /** fly to an animal: still from the sky, keeping the direction the reader is looking from, closer in */
@@ -83,9 +89,15 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
     setGoal({ pos, target: t });
   };
   useEffect(() => { document.title = 'Life at ' + site.name.replace(/^The /, 'the ') + ' · Before Us'; }, [site]);
+  useEffect(() => {                                                 // "See it to scale in 3D": wait for the scene, then fly there
+    if (!pending || mode !== '3d') return; let id = 0;
+    const go = () => { if (controls.current) { focus(pending); setPending(null); } else id = requestAnimationFrame(go); };
+    id = requestAnimationFrame(go); return () => cancelAnimationFrame(id);
+  });
 
-  return <div className="site">
-    <Canvas shadows={phone ? false : 'percentage'} dpr={phone ? [1, 1.6] : [1, 2]} gl={{ antialias: true, powerPreference: 'high-performance' }}
+  return <div className="site" style={{ ['--barH' as string]: barH + 'px' }}>
+    {mode === 'painting' && <PaintingView site={site} units={units} hints={hints} onOpen3D={name => { setMode('3d'); setGoal(null); if (name) setPending(name); }} />}
+    {mode === '3d' && <Canvas shadows={phone ? false : 'percentage'} dpr={phone ? [1, 1.6] : [1, 2]} gl={{ antialias: true, powerPreference: 'high-performance' }}
       camera={{ position: reduceMotion() ? OVERVIEW.pos.toArray() : start.toArray(), fov: phone ? 55 : 45, near: 0.5, far: 2500 }}
       onPointerMissed={() => setSelected(null)}
       onCreated={({ gl, scene }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.05; scene.fog = new THREE.Fog(LIGHT.haze, LIGHT.fogNear, LIGHT.fogFar); }}>
@@ -103,36 +115,32 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
         minPolarAngle={SKY.minPolar} maxPolarAngle={SKY.maxPolar} screenSpacePanning={false}
         target={OVERVIEW.target.toArray()} onStart={() => setGoal(null)} />
       <Director land={land} goal={goal} onArrive={() => setGoal(null)} controls={controls} />
-    </Canvas>
+    </Canvas>}
 
-    <header className="bar">
+    <header className="bar" ref={bar}>
       <button className="back" onClick={onBack} aria-label="Back">←</button>
-      <div><b>Life at {site.name.replace(/^The /, 'the ')}</b><span>{site.where} · {site.when}</span><em>{site.blurb}</em></div>
+      <div><b>Life at {site.name.replace(/^The /, 'the ')}</b><span>{site.where} · {site.when}</span>{mode === 'painting' ? <em className="ai">{phone ? 'Painted by AI in Knight’s manner · see About' : 'A painting by AI in the manner of Charles R. Knight, from this place’s 3D reconstruction · “About this place” says where it differs from the evidence'}</em> : <em>{site.blurb}</em>}</div>
       <div className="units" role="group" aria-label="Units">
         <button className={units === 'metric' ? 'on' : ''} aria-pressed={units === 'metric'} onClick={() => setUnits('metric')}>m</button>
         <button className={units === 'imperial' ? 'on' : ''} aria-pressed={units === 'imperial'} onClick={() => setUnits('imperial')}>ft</button>
       </div>
     </header>
     <div className="views">
+      {mode === 'painting' ? <>
+        <button onClick={() => { setMode('3d'); setGoal(OVERVIEW); }}>Explore in 3D</button>
+        <button onClick={() => setHints(h => !h)} aria-pressed={!hints}>{hints ? 'Hide hints' : 'Show hints'}</button>
+        <button onClick={() => setPanel(v => !v)}>{panel ? 'Close' : 'About this place'}</button>
+      </> : <>
+      {site.painting && site.spots?.length ? <button onClick={() => { setMode('painting'); setSelected(null); }}>Painting</button> : null}
       <button onClick={() => { setSelected(null); setGoal(OVERVIEW); }}>Overview</button>
       {anyPainted && <button className="style" title="How the animals are drawn" onClick={() => setStyle(STYLES[(STYLES.findIndex(x => x[0] === style) + 1) % STYLES.length][0])}>{STYLES.find(x => x[0] === style)![1]}</button>}
-      {site.painting && <button onClick={() => setPainting(true)}>Painting</button>}
       <button onClick={() => setLabels(v => !v)}>{labels ? 'Hide names' : 'Names'}</button>
       <button onClick={() => setPanel(v => !v)}>{panel ? 'Close' : 'About this place'}</button>
+      </>}
     </div>
     <WhereOnEarth site={site} onOpen={() => { setPanel(false); setIntro(true); }} />
     {intro && <EarthIntro site={site} onDone={endIntro} />}
-    {painting && site.painting && <div className="painting" role="dialog" aria-label="A painting of this place">
-      <img src={site.painting.f} alt={'A painting of ' + site.name.replace(/^The /, 'the ') + ', seen from the sky'} />
-      <div className="pcap">
-        <button className="x" onClick={() => setPainting(false)} aria-label="Close">✕</button>
-        <b>A painting of this place</b>
-        <p>Painted by AI ({site.painting.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.painting.model}) in the manner of Charles R. Knight, from this scene’s own view from the sky, with the animals as they are reconstructed today.</p>
-        <p className="differs"><b>Where it differs from the evidence:</b> {site.painting.differs}</p>
-        <details className="prompt"><summary>What the painter was asked</summary><div>{site.painting.prompt}</div></details>
-      </div>
-    </div>}
-    <p className="note">A reconstruction from the site’s papers: the river, the plants and the light follow what they describe; the exact shape of the ground is illustrative. Animals are scientists’ silhouettes, to scale where the length is known.</p>
+    {mode === '3d' && <p className="note">A reconstruction from the site’s papers: the river, the plants and the light follow what they describe; the exact shape of the ground is illustrative. Every animal is drawn to scale.</p>}
 
     {panel && <aside className="panel">
       <button className="x" onClick={() => setPanel(false)} aria-label="Close">✕</button>
@@ -162,6 +170,8 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
         <h3>Still debated</h3><p>{site.debate}</p>
         <h3>What is a guess</h3><p>The exact shape of the river, banks and sandbank; where each plant stands; the animals’ poses and where they stand. The kinds of land, water and plants come from the papers below. Every animal is drawn to scale: most sizes come from papers; where none gives one, the animal’s card says whose estimate it is, or that it is a guess from living relatives.</p>
         <h3>The pictures</h3>
+        {site.painting && <p>The painting of this place is by AI ({site.painting.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.painting.model}) in the manner of Charles R. Knight, made from this scene’s own 3D view from the sky, with the animals as they are reconstructed today, then corrected where it strayed. <span className="differs"><b>Where it still differs from the evidence:</b> {site.painting.differs}</span></p>}
+        {site.painting && <details className="prompt"><summary>What the painter of the scene was asked</summary><div>{site.painting.prompt}</div></details>}
         <p>{site.earth && <>The Earth at the start is this atlas’s own map of that time — every coast and shallow sea as the science has it — given a painted look in the manner of Charles R. Knight (1874–1953). </>}
           {site.ground && <>The ground is painted by AI ({site.ground.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.ground.model}){/Charles R\. Knight/.test(site.ground.prompt) ? ' in the manner of Charles R. Knight, drawn with today’s science,' : ''} from this scene’s own map, and checked by eye; the scene lays its texture over the land, so the river and banks keep their shape. No animal is painted: they are the scientists’ silhouettes.</>}</p>
         {site.ground && <details className="prompt"><summary>What the painter was asked</summary><div>{site.ground.prompt}</div></details>}

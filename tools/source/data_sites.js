@@ -54,6 +54,26 @@ const SITE_SCENES = [
       plants: 'a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank; low leafy shrubs and small plants at the water’s edge; a few ferns',
       light: 'a hot, hazy dry-season afternoon under a pale sky',
       not: 'grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes' },
+    // things to find in the painting of this place (app: the painting is how a site is seen, Evan, 25 Nov 2026: “the
+    // whole scene as one painting should be the way we look at those sites … hotspots … for collecting everything”).
+    // x, y, r: centre and radius as a share of the painting's width/height (app/public/painted/scene-kemkem.jpg,
+    // candidate 4; a new painting means placing them again). An animal spot names cast members; a place spot takes its
+    // words from this site's own fields (from) or says them (text), always from the papers above.
+    spots: [
+      { id: 'spinosaurus', x: 0.42, y: 0.63, r: 0.06, cast: ['Spinosaurus'] },
+      { id: 'carcharodontosaurus', x: 0.705, y: 0.41, r: 0.04, cast: ['Carcharodontosaurus'] },
+      { id: 'deltadromeus', x: 0.785, y: 0.435, r: 0.028, cast: ['Deltadromeus'] },
+      { id: 'pterosaurs', x: 0.79, y: 0.085, r: 0.045, cast: ['Siroccopteryx', 'Alanqa'], title: 'Pterosaurs' },
+      { id: 'fish', x: 0.585, y: 0.695, r: 0.035, cast: ['Onchopristis', 'Axelrodichthys', 'Neoceratodus', 'Obaichthys', 'Elosuchus'], title: 'In the water' },
+      { id: 'trees', x: 0.49, y: 0.2, r: 0.04, title: 'Monkey-puzzle conifers', from: 'plants' },
+      { id: 'sandstone', x: 0.37, y: 0.29, r: 0.03, title: 'The reddish sandstone', from: 'rock' },
+      { id: 'river', x: 0.21, y: 0.32, r: 0.04, title: 'The river', from: 'setting' },
+      { id: 'sandbank', x: 0.74, y: 0.62, r: 0.045, title: 'A sandbank', text: 'The rivers here ran in wide channels around big sandbanks, which moved with every flood.' },
+      { id: 'logs', x: 0.535, y: 0.53, r: 0.022, title: 'Drift logs', text: 'Trunks carried and buried by the rivers: pieces of petrified wood, probably from conifers related to monkey-puzzle trees, are most of what is known of the plants here.' },
+      { id: 'gravel', x: 0.08, y: 0.87, r: 0.04, title: 'Gravel bars', text: 'The rock here is river sandstone and pebble beds: gravel the rivers dropped where they slowed.' },
+      { id: 'ripples', x: 0.31, y: 0.8, r: 0.04, title: 'Ripple marks', text: 'The sandstones here keep the marks of the current that laid them down: they show the water flowed north, toward a delta on the sea.' },
+      { id: 'plants', x: 0.235, y: 0.552, r: 0.02, title: 'Plants by the water', text: 'Low leafy plants at the water’s edge: leaves of flowering plants, and of plants from an old pond, are found in the rock here.' },
+    ],
     know: 'Most fossils here are single bones and teeth, rolled along by the rivers and mixed together; the commonest of all are the teeth of the sawfish Onchopristis. Whole skeletons are very rare. The sandstones show which way the water flowed: north, toward a delta on the sea.',
     debate: '“Stromer’s riddle”: why so many big meat-eaters and so few plant-eaters? Perhaps many of the hunters lived on the rivers’ giant fish; perhaps the rivers mixed together bones from different times and places. And how much did Spinosaurus swim — a diving hunter, or a wader at the water’s edge? The picture shows it at the edge, which both sides allow.',
   },

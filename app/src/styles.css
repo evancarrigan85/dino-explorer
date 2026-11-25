@@ -20,6 +20,25 @@ a { color: var(--link); }
 .units button { min-width: 44px; height: 36px; border: 0; background: var(--panel); color: var(--muted); cursor: pointer; font-weight: 600; }
 .units button.on { background: var(--gold); color: #2e1a08; }
 .panel .prompt summary { cursor: pointer; color: var(--link); } .panel .prompt div { white-space: pre-wrap; font-size: 0.74rem; color: var(--muted); background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px; margin-top: 4px; }
+.pview { position: absolute; inset: var(--barH, 96px) 0 0 0; overflow: hidden; touch-action: none; cursor: grab; background: #0b0f18; user-select: none; }
+.pview:active { cursor: grabbing; }
+.pview .layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.pview .layer img { width: 100%; height: 100%; display: block; pointer-events: none; }
+.spot { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed rgba(255, 244, 214, 0.55); background: rgba(255, 244, 214, 0.06);
+  cursor: pointer; padding: 0; min-width: 34px; min-height: 34px; animation: spot 2.6s ease-in-out infinite; }
+.spot.quiet { border-color: transparent; background: transparent; animation: none; }
+.spot.on, .spot:hover { border: 2px solid var(--gold); background: rgba(232, 183, 90, 0.16); animation: none; }
+.spot.found { border: 2px solid rgba(232, 183, 90, 0.8); background: transparent; animation: none; }
+@keyframes spot { 50% { box-shadow: 0 0 0 6px rgba(255, 244, 214, 0.12); } }
+@media (prefers-reduced-motion: reduce) { .spot { animation: none; } }
+.spot .tip { position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); white-space: nowrap; padding: 3px 8px; border-radius: 8px;
+  background: rgba(250, 240, 215, 0.95); color: #2e1a08; font-size: 12px; font-weight: 700; pointer-events: none; }
+.found-btn { position: absolute; z-index: 45; left: 16px; top: calc(var(--barH) + 12px); min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1px solid var(--gold); background: var(--panel); color: var(--gold); font-weight: 700; cursor: pointer; }
+.tray { position: absolute; z-index: 55; left: 16px; top: calc(var(--barH) + 60px); width: min(320px, calc(100% - 32px)); max-height: 60%; overflow: auto; padding: 12px 14px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); font-size: 0.85rem; }
+.tray ul { list-style: none; padding: 0; margin: 8px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+.tray li span { color: var(--muted); } .tray li.got button { color: var(--gold); font-weight: 600; } .tray .small { font-size: 0.78rem; }
+.panel.spotcard section + section { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 6px; }
+.panel .differs { color: #f3d9a8; }
 .painting { position: absolute; inset: 0; z-index: 70; background: #070a12; display: flex; align-items: center; justify-content: center; }
 .painting img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .painting .pcap { position: absolute; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); max-width: 640px; padding: 12px 14px; border-radius: 12px; background: var(--panel); font-size: 0.82rem; max-height: 45%; overflow: auto; }
@@ -65,6 +84,7 @@ a { color: var(--link); }
   .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 55%; border-radius: 16px 16px 0 0; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
   .note { display: none; }
   .bar em { display: none; }
+  .bar em.ai { display: block; font-size: 0.7rem; }
   .tag { padding: 2px 7px; border-radius: 12px; }
 }
 @media (prefers-color-scheme: light) { /* the scene is a picture: the frame stays dark in both themes */ }

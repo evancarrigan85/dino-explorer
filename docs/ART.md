@@ -40,6 +40,11 @@ from the site's papers, never the science of Knight's day. Knight died in 1953, 
   far-bank dinosaurs about twice too big and gave the pterosaurs Pteranodon crests. `choose-scene` will not keep a
   painting without `--differs`, and the page shows that account beside it (“Painting” button).
 
+- **The painting is the main view** of a site (Evan, 25 Nov). So it must be as right as a painting can be: the kept
+  Kem Kem painting was sent back once with plain corrections (`scene-fix`: far-bank dinosaurs half the size, no
+  Pteranodon crests, Spinosaurus at the water's edge); of two corrected versions, one blew the pterosaurs up to giants and
+  was refused. What still differs is listed on screen. Its 13 spots are placed by eye on a percentage grid.
+
 ## Who we learn from
 
 We study these artists and traditions, credit them, and never copy a work. **We never name a living artist in an

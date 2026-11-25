@@ -20,6 +20,28 @@ srv.listen(0, '127.0.0.1', async () => {
     ok(dev + ': the opening uses the painted Earth (the map’s own coasts)', /kemkem-1-painted\.jpg/.test(await p.locator('.earth img.globe').getAttribute('src')));
     await p.waitForTimeout(6000);
     ok(dev + ': the opening ends by itself, and Where on Earth brings it back', await p.locator('.earth').count() === 0 && await p.locator('.where').count() === 1);
+    // the painting is how a site is seen: spots to find, hover for a name, tap to read and collect
+    ok(dev + ': after the opening comes the painting of the place, with 13 things to find and the AI note in the title bar', await p.locator('.pview img').count() === 1 && await p.locator('.spot').count() === 13 && /Painted by AI|A painting by AI/.test(await p.locator('.bar em.ai').innerText()));
+    ok(dev + ': it opens on the leading animal (Spinosaurus in view)', await p.evaluate(() => { const r = document.querySelector('.spot[aria-label$="Spinosaurus"]').getBoundingClientRect(); return r.left > 0 && r.right < innerWidth && r.top > 0 && r.bottom < innerHeight; }));
+    ok(dev + ': nothing is found yet', /Found 0 of 13/.test(await p.locator('.found-btn').innerText()));
+    if (!mob) { await p.hover('.spot[aria-label$="Spinosaurus"]'); await p.waitForTimeout(150);
+      ok(dev + ': hovering a spot shows its name', /Spinosaurus/.test(await p.locator('.spot.on .tip').innerText())); }
+    await p.click('.spot[aria-label$="Spinosaurus"]'); await p.waitForTimeout(400);
+    { const c = await p.locator('.spotcard').innerText();
+      ok(dev + ': tapping it opens its card (size, today’s reconstruction, a way to see it to scale in 3D) and collects it', /Spinosaurus/.test(c) && /As reconstructed today/.test(c) && /See it to scale in 3D/.test(c) && /Found 1 of 13/.test(await p.locator('.found-btn').innerText())); }
+    await p.click('.spotcard .x'); await p.waitForTimeout(150);
+    await p.locator('.spot[aria-label$="The river"]').dispatchEvent('click'); await p.waitForTimeout(300);   // off-screen on a phone until you pan
+    ok(dev + ': a place spot uses the site’s own words (the river: “flowing north to a delta on the Tethys Sea”)', /delta on the Tethys Sea/.test(await p.locator('.spotcard').innerText()));
+    await p.click('.spotcard .x'); await p.click('.found-btn'); await p.waitForTimeout(200);
+    ok(dev + ': the tray lists what is found and keeps the rest a mystery', /✓ Spinosaurus/.test(await p.locator('.tray').innerText()) && /✓ The river/.test(await p.locator('.tray').innerText()) && (await p.locator('.tray li span').count()) === 11);
+    await p.click('.found-btn');
+    await p.reload(); await p.waitForTimeout(800); await p.click('.earth').catch(() => {}); await p.waitForTimeout(600);
+    ok(dev + ': what you found is remembered on this device', /Found 2 of 13/.test(await p.locator('.found-btn').innerText()));
+    // "See it to scale in 3D" goes to the living scene and flies to the animal
+    await p.locator('.spot[aria-label$="Carcharodontosaurus"]').dispatchEvent('click'); await p.waitForTimeout(300);   // on a phone it is off-screen until you pan
+    await p.click('.spotcard button:has-text("See it to scale in 3D")'); await p.waitForTimeout(4000);
+    ok(dev + ': “See it to scale in 3D” opens the 3D scene on that animal', await p.locator('.site canvas').count() === 1 && /Carcharodontosaurus/.test(await p.locator('.panel h2').innerText().catch(() => '')));
+    await p.click('.panel .x').catch(() => {}); await p.click('text=Overview'); await p.waitForTimeout(3500);
     { const shot = await p.locator('.site canvas').screenshot();         // a blank or flat picture compresses to almost nothing
       ok(dev + ': the scene draws (the picture has detail)', shot.length > 60000, String(shot.length)); }
     ok(dev + ': every animal of the site is in the scene with a label (13)', await p.locator('.tag').count() === 13, String(await p.locator('.tag').count()));
@@ -28,7 +50,7 @@ srv.listen(0, '127.0.0.1', async () => {
     ok(dev + ': the title says where and when', /Kem Kem/.test(await p.locator('.bar b').innerText()) && /100–95 million years ago/.test(await p.locator('.bar span').innerText()));
     await p.click('text=About this place'); await p.waitForTimeout(300);
     const panel = await p.locator('.panel').innerText();
-    ok(dev + ': the panel says how the pictures were made: the Earth from the map in Knight’s manner, the ground painted by AI from the scene’s map, the prompt one tap away', /the pictures/i.test(panel) && /Charles R\. Knight/.test(panel) && /painted by AI/.test(panel) && await p.locator('.panel details.prompt').count() === 1);
+    ok(dev + ': the panel says how the pictures were made: the Earth from the map in Knight’s manner, the ground painted by AI from the scene’s map, the prompt one tap away', /the pictures/i.test(panel) && /Charles R\. Knight/.test(panel) && /painted by AI/.test(panel) && await p.locator('.panel details.prompt').count() >= 2);
     ok(dev + ': the panel gives the place, how we know, what is debated, what is a guess, and the papers with DOIs', ['The place', 'How do we know?', 'Still debated', 'What is a guess', 'Sources'].every(h => panel.toLowerCase().includes(h.toLowerCase())) && await p.locator('.panel .papers a[href^="https://doi.org/"]').count() >= 8);
     await p.locator('.panel .cast button', { hasText: 'Spinosaurus' }).click(); await p.waitForTimeout(2500);
     const card = await p.locator('.panel').innerText();
@@ -67,10 +89,12 @@ srv.listen(0, '127.0.0.1', async () => {
       const got2 = await p.evaluate(() => performance.getEntriesByType('resource').map(r => r.name).filter(n => /painted\/.*-free\.png/.test(n)).length);
       ok(dev + ': “painted freely” loads the free paintings (3)', /painted freely/i.test(await btn.innerText()) && got2 >= 3, String(got2));
       await btn.click(); await p.waitForTimeout(300);
+      await p.click('text=About this place'); await p.waitForTimeout(300);
+      const cap = await p.locator('.panel').innerText();
+      ok(dev + ': About this place says who painted the scene, in whose manner, and where it still differs from the evidence', /in the manner of Charles R\. Knight/.test(cap) && /still differs from the evidence/i.test(cap) && /a little large/.test(cap));
+      await p.click('.panel .x'); await p.waitForTimeout(200);
       await p.click('.views button:has-text("Painting")'); await p.waitForTimeout(600);
-      const cap = await p.locator('.painting .pcap').innerText();
-      ok(dev + ': the scene painting says who painted it, in whose manner, and where it differs from the evidence', /Charles R\. Knight/.test(cap) && /differs from the evidence/i.test(cap) && /Pteranodon/.test(cap) && await p.locator('.painting img').count() === 1);
-      await p.click('.painting .x'); await p.waitForTimeout(200); }
+      ok(dev + ': “Painting” goes back to the painting, with what was found kept', await p.locator('.pview img').count() === 1 && await p.locator('.site canvas').count() === 0 && /Found 3 of 13/.test(await p.locator('.found-btn').innerText())); }
     ok(dev + ': no errors', errs.length === 0, errs.join(' | '));
     await p.close();
   }

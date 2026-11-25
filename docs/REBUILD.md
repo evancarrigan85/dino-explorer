@@ -175,6 +175,15 @@ the build refuses “size not known”; three new papers verified); metres or fe
 painted from the scene’s own guide map and worn as swatches, with ripple marks, gravel bars, drift logs, drifting cloud
 shadows and a museum-model finish. See `docs/ART.md`.
 
+**The painting is how a site is seen (Evan, 25 Nov: “the whole scene as one painting should be the way that we look at
+those sites … hotspots … for collecting everything on the scenes”).** After the Earth opening, a site opens on its
+painting (Knight’s manner, made from the 3D view, corrected where it strayed; what still differs is said in “About this
+place”), zoomable and pannable like a map, opening on its leading animal. Every animal and every part of the place is a
+spot (`spots` in `data_sites.js`: position on the painting, and the cast members or the site’s own words): hover shows its
+name, tap opens its card and collects it; “Found n of 13” keeps what you found on this device; hints can be hidden for a
+real search. “Explore in 3D” (or “See it to scale in 3D” on an animal’s card) opens the living 3D scene at true sizes.
+A new painting means placing its spots again (by eye, on a grid; `tools/paint.py scene-fix` corrects a painting).
+
 ## Features for the new app (from comparing with the World History Encyclopedia app, 25 Nov)
 
 Evan pointed at the World History Encyclopedia iPhone app (a non-profit; human-written, expert-reviewed). What to take:
