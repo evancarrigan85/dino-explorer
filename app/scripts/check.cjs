@@ -57,6 +57,20 @@ srv.listen(0, '127.0.0.1', async () => {
       await p.waitForTimeout(1500);
       const h = await p.evaluate(() => window.__sky());
       ok(dev + ': zooming in as far as it goes still leaves the camera in the sky (at least 19 m up)', h >= 19, h.toFixed(1)); }
+    // the approaches: painted animals two ways, and the scene as one painting with what it gets wrong
+    { const btn = p.locator('.views button.style');
+      ok(dev + ': the animals can be shown three ways, starting with the scientists’ outlines', /outlines/i.test(await btn.innerText()));
+      await btn.click(); await p.waitForTimeout(2500);
+      const got = await p.evaluate(() => performance.getEntriesByType('resource').map(r => r.name).filter(n => /painted\/.*-outline\.png/.test(n)).length);
+      ok(dev + ': “painted in outline” loads the painted dinosaurs (3)', /painted in outline/i.test(await btn.innerText()) && got >= 3, String(got));
+      await btn.click(); await p.waitForTimeout(2500);
+      const got2 = await p.evaluate(() => performance.getEntriesByType('resource').map(r => r.name).filter(n => /painted\/.*-free\.png/.test(n)).length);
+      ok(dev + ': “painted freely” loads the free paintings (3)', /painted freely/i.test(await btn.innerText()) && got2 >= 3, String(got2));
+      await btn.click(); await p.waitForTimeout(300);
+      await p.click('.views button:has-text("Painting")'); await p.waitForTimeout(600);
+      const cap = await p.locator('.painting .pcap').innerText();
+      ok(dev + ': the scene painting says who painted it, in whose manner, and where it differs from the evidence', /Charles R\. Knight/.test(cap) && /differs from the evidence/i.test(cap) && /Pteranodon/.test(cap) && await p.locator('.painting img').count() === 1);
+      await p.click('.painting .x'); await p.waitForTimeout(200); }
     ok(dev + ': no errors', errs.length === 0, errs.join(' | '));
     await p.close();
   }

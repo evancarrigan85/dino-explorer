@@ -26,8 +26,19 @@ from the site's papers, never the science of Knight's day. Knight died in 1953, 
   `choose-earth`). So `earth-brush` builds it instead: **shapes and colours from this atlas's own map**, softened by an
   oil-paint brush filter, with **only the brushwork** (light and shade) of the Knight-manner repaint, and only where that
   repaint agrees with the map about land and sea. Every coast and shallow sea is exactly as mapped; the page says how.
-- Animals stay the scientists' silhouettes. Painting animals in Knight's manner — with today's reconstructions — would
-  change a rule of the atlas: ask Evan first.
+- **Animals, painted (Evan, 25 Nov: “proceed … a few dinosaurs and the scene in a few different approaches”).** Three
+  dinosaurs with their own outlines — Spinosaurus, Carcharodontosaurus, Deltadromeus — each with a `look` brief in
+  `data_sites.js` (today’s reconstruction, colours “not known”). Two approaches, both kept so they can be compared on
+  screen (the scene’s “Outlines / Painted in outline / Painted freely” switch):
+  - **in outline** (`animal --approach outline`): the scientists’ own silhouette is the shape guide; the painting is cut
+    to that exact outline and refused below 80 % overlap (got 94, 93, 89 %). The shape is the scientists’.
+  - **freely** (`--approach free`): from the brief alone; livelier, but the shape is the model’s guess (its Spinosaurus
+    went down on all fours and grew a fish-like tail fin, both still argued over). The card says so.
+  From the sky the painted animals are pale against the sand; the dark outlines read better at a distance.
+- **The scene as one painting** (`scene`, from the 3D overview, `app/scripts/scene-guide.cjs`): of two, one turned the
+  far bank into cliffs and moved and enlarged the animals (refused); the kept one follows the composition but drew the
+  far-bank dinosaurs about twice too big and gave the pterosaurs Pteranodon crests. `choose-scene` will not keep a
+  painting without `--differs`, and the page shows that account beside it (“Painting” button).
 
 ## Who we learn from
 

@@ -1,0 +1,12 @@
+{
+ "filled_px": 1434,
+ "iou": 0.937,
+ "f": "painted/spinosaurus-outline.png",
+ "w": 1024,
+ "h": 444,
+ "approach": "outline",
+ "model": "gemini-3-pro-image",
+ "prompt": "The attached picture is the scientists' outline (silhouette) of Spinosaurus, seen from the side.\nPaint this animal alive, filling EXACTLY this outline: keep every edge where it is (snout, jaws, head, neck, back, legs, feet, arms, tail); add nothing outside it and leave none of it empty.\nPainted in the manner of Charles R. Knight (1874–1953), the American natural-history muralist: oil on canvas, confident visible brushwork, warm golden naturalistic light, soft atmospheric haze, a palette of ochres, siennas, olive greens and dusty blues, calm and dignified realism. Keep his warmth and his eye for the real world, but follow TODAY's science, not the science of his time: paint the land, water, plants and climate exactly as described here.\nHow Spinosaurus is reconstructed today: a long, low theropod with short hind legs, a long narrow crocodile-like snout with cone-shaped teeth, a tall sail of long spines along its back, and a deep, paddle-like tail with tall spines above and below; scaly skin; its colours are not known, so muted earth tones.\nWarm afternoon light from the upper left, as in the rest of the scene. A plain, flat, pure white background: no ground, no shadow, no scenery, no other animals, no text, labels, border or frame.",
+ "made": "2026-11-25",
+ "candidate": 1
+}

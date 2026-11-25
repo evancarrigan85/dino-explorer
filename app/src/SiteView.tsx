@@ -12,7 +12,7 @@ import { Terrain } from './scene/Terrain';
 import { Water } from './scene/Water';
 import { Sky } from './scene/Sky';
 import { Plants } from './scene/Plants';
-import { Animals, placeAnimals } from './scene/Animals';
+import { Animals, placeAnimals, type AnimalStyle } from './scene/Animals';
 import { EarthIntro, WhereOnEarth } from './EarthIntro';
 import { Logs } from './scene/Logs';
 import { Look } from './scene/Look';
@@ -59,6 +59,10 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [labels, setLabels] = useState(true);
   const [units, setUnitsState] = useState<Units>(initialUnits);
+  const [style, setStyle] = useState<AnimalStyle>('outline');
+  const [painting, setPainting] = useState(false);
+  const STYLES: [AnimalStyle, string][] = [['outline', 'Outlines'], ['paint-outline', 'Painted in outline'], ['paint-free', 'Painted freely']];
+  const anyPainted = site.cast.some(c => c.painted);
   const setUnits = (u: Units) => { setUnitsState(u); saveUnits(u); };
   const [panel, setPanel] = useState(false);
   // the opening: the Earth at that time, zooming in; the scene's own fly-in starts when it ends
@@ -94,7 +98,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
       <Plants land={land} seed={seed} phone={phone} />
       <Logs land={land} seed={seed} phone={phone} />
       <Look phone={phone} />
-      <Suspense fallback={null}><Animals site={site} land={land} selected={selected} onSelect={focus} labels={labels} phone={phone} units={units} /></Suspense>
+      <Suspense fallback={null}><Animals site={site} land={land} selected={selected} onSelect={focus} labels={labels} phone={phone} units={units} style={style} /></Suspense>
       <OrbitControls ref={controls as never} makeDefault enableDamping dampingFactor={0.08} minDistance={SKY.minDistance} maxDistance={SKY.maxDistance}
         minPolarAngle={SKY.minPolar} maxPolarAngle={SKY.maxPolar} screenSpacePanning={false}
         target={OVERVIEW.target.toArray()} onStart={() => setGoal(null)} />
@@ -111,11 +115,23 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
     </header>
     <div className="views">
       <button onClick={() => { setSelected(null); setGoal(OVERVIEW); }}>Overview</button>
+      {anyPainted && <button className="style" title="How the animals are drawn" onClick={() => setStyle(STYLES[(STYLES.findIndex(x => x[0] === style) + 1) % STYLES.length][0])}>{STYLES.find(x => x[0] === style)![1]}</button>}
+      {site.painting && <button onClick={() => setPainting(true)}>Painting</button>}
       <button onClick={() => setLabels(v => !v)}>{labels ? 'Hide names' : 'Names'}</button>
       <button onClick={() => setPanel(v => !v)}>{panel ? 'Close' : 'About this place'}</button>
     </div>
     <WhereOnEarth site={site} onOpen={() => { setPanel(false); setIntro(true); }} />
     {intro && <EarthIntro site={site} onDone={endIntro} />}
+    {painting && site.painting && <div className="painting" role="dialog" aria-label="A painting of this place">
+      <img src={site.painting.f} alt={'A painting of ' + site.name.replace(/^The /, 'the ') + ', seen from the sky'} />
+      <div className="pcap">
+        <button className="x" onClick={() => setPainting(false)} aria-label="Close">✕</button>
+        <b>A painting of this place</b>
+        <p>Painted by AI ({site.painting.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.painting.model}) in the manner of Charles R. Knight, from this scene’s own view from the sky, with the animals as they are reconstructed today.</p>
+        <p className="differs"><b>Where it differs from the evidence:</b> {site.painting.differs}</p>
+        <details className="prompt"><summary>What the painter was asked</summary><div>{site.painting.prompt}</div></details>
+      </div>
+    </div>}
     <p className="note">A reconstruction from the site’s papers: the river, the plants and the light follow what they describe; the exact shape of the ground is illustrative. Animals are scientists’ silhouettes, to scale where the length is known.</p>
 
     {panel && <aside className="panel">
@@ -124,6 +140,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
         <button className="link" onClick={() => setSelected(null)}>← The place</button>
         <h2>{sel.name}</h2>
         <p className="size">{sizeText(sel, units)} · drawn to scale</p>
+        {sel.look && style !== 'outline' && sel.painted && <p className="basis"><b>{style === 'paint-outline' ? 'Painted in its outline' : 'Painted freely'}:</b> as reconstructed today — {sel.look.text}. By AI in the manner of Charles R. Knight{style === 'paint-outline' && sel.painted.outline?.iou ? `; it fills the scientists’ outline (${Math.round(sel.painted.outline.iou * 100)}% match)` : style === 'paint-free' ? '; its shape is the painter’s, not a scientist’s outline' : ''}.</p>}
         {sel.basis && <p className="basis"><b>{BASIS_WORDS[sel.basis.k]}:</b> {sel.basis.text}{(() => {
           const paper = sel.basis.ref ? site.papers.find(p => p.key === sel.basis!.ref) : undefined;
           return paper ? <> — <a href={'https://doi.org/' + paper.doi} target="_blank" rel="noopener">{paper.authors[0]}{paper.authors.length > 1 ? ' et al.' : ''} {paper.year}</a></>
@@ -148,6 +165,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
         <p>{site.earth && <>The Earth at the start is this atlas’s own map of that time — every coast and shallow sea as the science has it — given a painted look in the manner of Charles R. Knight (1874–1953). </>}
           {site.ground && <>The ground is painted by AI ({site.ground.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.ground.model}){/Charles R\. Knight/.test(site.ground.prompt) ? ' in the manner of Charles R. Knight, drawn with today’s science,' : ''} from this scene’s own map, and checked by eye; the scene lays its texture over the land, so the river and banks keep their shape. No animal is painted: they are the scientists’ silhouettes.</>}</p>
         {site.ground && <details className="prompt"><summary>What the painter was asked</summary><div>{site.ground.prompt}</div></details>}
+        {anyPainted && <p>Some animals can also be shown painted (the “Animals” button), two ways: <b>in outline</b> — painted inside the scientists’ own silhouette and cut to it, so the shape is theirs; or <b>freely</b> — painted from today’s description alone, so the shape is the painter’s guess. Both by AI in Knight’s manner; colours are not known for any of them.</p>}
         <h3>Sources</h3>
         <ul className="papers">{site.papers.map(p => <li key={p.key}>{p.authors[0]}{p.authors.length > 1 ? ' et al.' : ''} ({p.year}). {p.title}. <i>{p.journal}</i>. <a href={'https://doi.org/' + p.doi} target="_blank" rel="noopener">doi:{p.doi}</a></li>)}</ul>
       </section>}

@@ -2,7 +2,7 @@
 // diorama. Every animal has a size (from a paper, a museum, or a guess from relatives, said in its card) and is drawn to
 // scale (a pterosaur's width is its wingspan, so it is seen from below). Movement claims nothing: pterosaurs glide in
 // slow circles, fish drift under the surface, everything on land stands still.
-import { useMemo, useRef } from 'react';
+import { Suspense, useMemo, useRef } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -10,6 +10,9 @@ import { type Land } from './land';
 import { clock, LIGHT } from './shared';
 import type { Site, CastMember } from '../types';
 import { sizeText, type Units } from '../size';
+
+/** how the animals are drawn: the scientists' outlines, painted inside those outlines, or painted freely */
+export type AnimalStyle = 'outline' | 'paint-outline' | 'paint-free';
 
 const INK = { land: new THREE.Color('#3a2410'), water: new THREE.Color('#1c3a3c') };
 const DEFAULT_W: Record<string, number> = { bank: 5.5, edge: 6, sand: 0.9, water: 1.8, air: 4 };
@@ -49,9 +52,11 @@ function place(site: Site, land: Land): Placed[] {
   });
 }
 
-function Animal({ p, site, selected, onSelect, labels, phone, units }: { p: Placed; site: Site; selected: boolean; onSelect: (n: string) => void; labels: boolean; phone: boolean; units: Units }) {
+function Animal({ p, site, selected, onSelect, labels, phone, units, style }: { p: Placed; site: Site; selected: boolean; onSelect: (n: string) => void; labels: boolean; phone: boolean; units: Units; style: AnimalStyle }) {
   const sil = p.c.sil ? site.sil[p.c.sil] : undefined;
   const tex = useLoader(THREE.TextureLoader, sil ? sil.f : 'sil/spinosaurus.png');
+  // a painted version, if this animal has one in the chosen approach (others keep their outline)
+  const pa = style === 'paint-outline' ? p.c.painted?.outline : style === 'paint-free' ? p.c.painted?.free : null;
   const flat = p.c.zone === 'water' || p.c.zone === 'air';
   const mat = useMemo(() => cutoutMaterial(tex, p.c.zone === 'water' && p.pos.y < -0.1 ? INK.water : INK.land, p.c.zone === 'water' && p.pos.y < -0.1 ? (p.known ? 0.55 : 0.42) : p.known ? 1 : 0.62), [tex, p]);
   const g = useRef<THREE.Group>(null), stand = useRef<THREE.Group>(null), body = useRef<THREE.Mesh>(null), tag = useRef<HTMLButtonElement>(null);
@@ -93,9 +98,10 @@ function Animal({ p, site, selected, onSelect, labels, phone, units }: { p: Plac
       </mesh>
     ) : <>
       <group ref={stand}>
-        <mesh material={mat} position={[0, p.h / 2, 0]} renderOrder={6} onClick={e => { e.stopPropagation(); onSelect(p.c.name); }}>
-          <planeGeometry args={[p.w, p.h]} />
-        </mesh>
+        {pa ? <Suspense fallback={null}><PaintedBody f={pa.f} w={p.w} h={p.w * pa.h / pa.w} onClick={() => onSelect(p.c.name)} /></Suspense>
+          : <mesh material={mat} position={[0, p.h / 2, 0]} renderOrder={6} onClick={e => { e.stopPropagation(); onSelect(p.c.name); }}>
+            <planeGeometry args={[p.w, p.h]} />
+          </mesh>}
       </group>
       {/* a soft shadow where it stands */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]} renderOrder={2}>
@@ -106,9 +112,16 @@ function Animal({ p, site, selected, onSelect, labels, phone, units }: { p: Plac
   </group>;
 }
 
+/** a painted animal, standing where its outline would: the picture's width is its length, to scale */
+function PaintedBody({ f, w, h, onClick }: { f: string; w: number; h: number; onClick: () => void }) {
+  const t = useLoader(THREE.TextureLoader, f);
+  const m = useMemo(() => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.3, side: THREE.DoubleSide }); }, [t]);
+  return <mesh material={m} position={[0, h / 2, 0]} renderOrder={6} onClick={e => { e.stopPropagation(); onClick(); }}><planeGeometry args={[w, h]} /></mesh>;
+}
+
 export function placeAnimals(site: Site, land: Land) { return place(site, land); }
 
-export function Animals({ site, land, selected, onSelect, labels, phone, units }: { site: Site; land: Land; selected: string | null; onSelect: (n: string) => void; labels: boolean; phone: boolean; units: Units }) {
+export function Animals({ site, land, selected, onSelect, labels, phone, units, style }: { site: Site; land: Land; selected: string | null; onSelect: (n: string) => void; labels: boolean; phone: boolean; units: Units; style: AnimalStyle }) {
   const placed = useMemo(() => place(site, land), [site, land]);
-  return <group>{placed.map(p => <Animal key={p.c.name} p={p} site={site} selected={selected === p.c.name} onSelect={onSelect} labels={labels} phone={phone} units={units} />)}</group>;
+  return <group>{placed.map(p => <Animal key={p.c.name} p={p} site={site} selected={selected === p.c.name} onSelect={onSelect} labels={labels} phone={phone} units={units} style={style} />)}</group>;
 }

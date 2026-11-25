@@ -326,6 +326,143 @@ def earth_brush(sid):
         print('  %s (texture from %s, %.1f%% agreement)' % (dst, used, 100 * best_agree) if used else '  %s (brush filter only)' % dst)
 
 
+# Animals in Knight's manner, as reconstructed today (Evan, 25 Nov: "do a few dinosaurs ... in a few different approaches").
+# Two approaches, to compare:
+#   outline — the scientists' own silhouette (PhyloPic, the same one the scene draws) is the shape guide; the painting is
+#             cut to that exact outline, and refused if the painted animal strays from it (IoU below 0.8);
+#   free    — painted from the brief alone, side on; cut out from its plain background. Its shape is the model's.
+# The brief is `look` in data_sites.js; colours are not known and the brief says so. Never the only picture of an animal:
+# the page says which approach a picture is, by which model, and keeps the silhouette's credit.
+def _animal(sid, name):
+    s = scenes().get(sid) or sys.exit('no scene ' + sid)
+    c = next((c for c in s['cast'] if c['name'] == name), None) or sys.exit('no animal %s at %s' % (name, sid))
+    if not c.get('look'): sys.exit('%s has no `look` brief in data_sites.js' % name)
+    return s, c
+
+
+def _outline_guide(key):
+    """the silhouette as a black shape on white, centred in 16:9, and where it sits (to cut the painting back out)"""
+    sil = Image.open(os.path.join(ROOT, 'tiles', 'sil', key + '.png')).convert('LA')
+    W, H = 1600, 900; sc = min(W * 0.84 / sil.width, H * 0.74 / sil.height)
+    w, h = round(sil.width * sc), round(sil.height * sc); x, y = (W - w) // 2, (H - h) // 2
+    alpha = sil.getchannel('A').resize((w, h), Image.LANCZOS)
+    g = Image.new('L', (W, H), 255); g.paste(0, (x, y, x + w, y + h), alpha)
+    return g.convert('RGB'), (x, y, w, h), alpha
+
+
+def animal(sid, name, approach, n, pro):
+    s, c = _animal(sid, name)
+    bg = 'A plain, flat, pure white background: no ground, no shadow, no scenery, no other animals, no text, labels, border or frame.'
+    if approach == 'outline':
+        guide, _, _ = _outline_guide(c['sil'])
+        text = '\n'.join(['The attached picture is the scientists\' outline (silhouette) of %s, seen from the side.' % name,
+                          'Paint this animal alive, filling EXACTLY this outline: keep every edge where it is (snout, jaws, head, '
+                          'neck, back, legs, feet, arms, tail); add nothing outside it and leave none of it empty.', KNIGHT,
+                          'How %s is reconstructed today: %s.' % (name, c['look']['text']),
+                          'Warm afternoon light from the upper left, as in the rest of the scene. ' + bg])
+        inp = [{'type': 'text', 'text': text}, {'type': 'image', 'mime_type': 'image/png', 'data': base64.b64encode(_png(guide)).decode()}]
+    else:
+        text = '\n'.join(['Paint %s alive, seen exactly from the side, the whole animal from the tip of the snout to the tip of '
+                          'the tail, filling most of the picture\'s width.' % name, KNIGHT,
+                          'How %s is reconstructed today: %s.' % (name, c['look']['text']),
+                          'Warm afternoon light from the upper left. ' + bg])
+        inp = [{'type': 'text', 'text': text}]
+    d = os.path.join(CAND, sid + '-animals'); os.makedirs(d, exist_ok=True); os.makedirs(os.path.join(HERE, 'prompts'), exist_ok=True)
+    open(os.path.join(HERE, 'prompts', '%s-%s-%s.txt' % (sid, c['sil'], approach)), 'w').write(text)
+    body = {'model': MODEL_PRO if pro else MODEL, 'input': inp,
+            'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': '2K' if pro else '1K', 'aspect_ratio': '16:9'}}
+    for i in range(n):
+        for b in images(call(body)):
+            k = len([f for f in os.listdir(d) if f.startswith('%s-%s-' % (c['sil'], approach)) and f.endswith('.jpg')]) + 1
+            fn = os.path.join(d, '%s-%s-%d.jpg' % (c['sil'], approach, k)); open(fn, 'wb').write(b)
+            json.dump({'model': body['model'], 'prompt': text, 'approach': approach, 'animal': name, 'made': time.strftime('%Y-%m-%d')}, open(fn[:-4] + '.json', 'w'))
+            print('  candidate', fn)
+    print('  this run: %d call(s), ~$%.2f' % (_calls, _spent))
+
+
+def _png(im):
+    b = io.BytesIO(); im.save(b, 'PNG'); return b.getvalue()
+
+
+def choose_animal(sid, name, approach, k):
+    """Cut a painted animal out for the scene. outline: the painting is cut to the silhouette's exact outline, if the
+    painted animal fills it (IoU >= 0.8); free: cut from its white background."""
+    import numpy as np
+    s, c = _animal(sid, name)
+    src = os.path.join(CAND, sid + '-animals', '%s-%s-%s.jpg' % (c['sil'], approach, k)); meta = json.load(open(src[:-4] + '.json'))
+    im = Image.open(src).convert('RGB').resize((1600, 900), Image.LANCZOS); a = np.asarray(im).astype(int)
+    painted = (np.abs(a - 255).sum(2) > 60)                             # not the white background
+    out_dir = os.path.join(ROOT, 'app', 'public', 'painted'); os.makedirs(out_dir, exist_ok=True)
+    dst = os.path.join(out_dir, '%s-%s.png' % (c['sil'], approach)); info = {}
+    if approach == 'outline':
+        _, (x, y, w, h), alpha = _outline_guide(c['sil'])
+        sil = np.zeros((900, 1600), bool); sil[y:y + h, x:x + w] = np.asarray(alpha) > 128
+        iou = float((painted & sil).sum() / max(1, (painted | sil).sum()))
+        print('  outline agreement (IoU): %.1f%%' % (100 * iou))
+        if iou < 0.8: sys.exit('  refused: the painted animal strays from the scientists\' outline (needs 80%). Choose another or paint again.')
+        crop = np.asarray(im.crop((x, y, x + w, y + h))).astype(np.float64)
+        inside = np.asarray(alpha).astype(np.float64) / 255
+        gap = (np.abs(crop - 255).sum(2) <= 60) & (inside > 0.5)          # inside the outline but left unpainted
+        if gap.any():                                                      # fill from the paint around it (normalised blur)
+            ok_ = (~gap & (inside > 0.5)).astype(np.float64)
+            blur = lambda z, r: np.asarray(Image.fromarray(np.uint8(np.clip(z, 0, 255))).filter(ImageFilter.GaussianBlur(r))).astype(np.float64)
+            for r in (3, 8, 20):
+                num = np.stack([blur(crop[..., i] * ok_, r) for i in range(3)], 2); den = blur(ok_ * 255, r)[..., None] / 255
+                fill = num / np.maximum(den, 1e-3); crop = np.where((gap & (den[..., 0] > 0.05))[..., None], fill, crop)
+            info['filled_px'] = int(gap.sum())
+        rgba = Image.fromarray(np.uint8(np.clip(crop, 0, 255))).convert('RGBA'); rgba.putalpha(alpha)
+        info['iou'] = round(iou, 3)
+    else:
+        ys, xs = np.where(painted); x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
+        m = Image.fromarray((painted * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(5)).filter(ImageFilter.GaussianBlur(1.0))
+        rgba = im.convert('RGBA'); rgba.putalpha(m); rgba = rgba.crop((x0, y0, x1, y1))
+    if rgba.width > 1024: rgba = rgba.resize((1024, round(rgba.height * 1024 / rgba.width)), Image.LANCZOS)
+    rgba.save(dst, 'PNG', optimize=True)
+    json.dump(dict(info, f='painted/%s-%s.png' % (c['sil'], approach), w=rgba.width, h=rgba.height, approach=approach, model=meta['model'],
+                   prompt=meta['prompt'], made=meta['made'], candidate=int(k)), open(dst[:-4] + '.json', 'w'), ensure_ascii=False, indent=1)
+    print('  %s ← candidate %s (%dx%d)' % (dst, k, rgba.width, rgba.height))
+
+
+# The whole scene as one painting, made from the scene's own overview (a screenshot of the 3D scene: its river, banks,
+# trees and animals where and as large as they are), repainted in Knight's manner with the animals as reconstructed today.
+def scene_paint(sid, guide, n, pro):
+    s = scenes().get(sid) or sys.exit('no scene ' + sid)
+    p = s['paint']; looks = '; '.join('%s: %s' % (c['name'], c['look']['text']) for c in s['cast'] if c.get('look'))
+    text = '\n'.join(['The attached picture is a 3D reconstruction of %s, %s, %s, seen from the sky.' % (s['name'].replace('The ', 'the '), s['where'], s['when']),
+                      'Repaint it as ONE oil painting. ' + KNIGHT,
+                      'Keep the composition EXACTLY: the river and its sandbanks, the low red sandstone face of the far bank, every '
+                      'monkey-puzzle tree, and every animal where it is and as large as it is (the dark shapes are the animals).',
+                      'Paint the dark shapes as the living animals, as reconstructed today: %s. The small shapes under the water '
+                      'are fish; the shapes in the air are pterosaurs.' % looks,
+                      'Land: %s. Water: %s. Plants: %s. Light: %s. Do not paint: %s.' % (p['land'], p['water'], p['plants'], p['light'], p['not']),
+                      'No text, labels, border or frame.'])
+    d = os.path.join(CAND, sid + '-scene'); os.makedirs(d, exist_ok=True); os.makedirs(os.path.join(HERE, 'prompts'), exist_ok=True)
+    open(os.path.join(HERE, 'prompts', sid + '-scene.txt'), 'w').write(text)
+    body = {'model': MODEL_PRO if pro else MODEL,
+            'input': [{'type': 'text', 'text': text}, {'type': 'image', 'mime_type': 'image/png', 'data': base64.b64encode(open(guide, 'rb').read()).decode()}],
+            'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': '2K' if pro else '1K', 'aspect_ratio': '16:9'}}
+    for i in range(n):
+        for b in images(call(body)):
+            k = len([f for f in os.listdir(d) if f.endswith('.jpg')]) + 1
+            fn = os.path.join(d, '%d.jpg' % k); open(fn, 'wb').write(b)
+            json.dump({'model': body['model'], 'prompt': text, 'made': time.strftime('%Y-%m-%d')}, open(fn[:-4] + '.json', 'w'))
+            print('  candidate', fn)
+    print('  this run: %d call(s), ~$%.2f' % (_calls, _spent))
+
+
+def choose_scene(sid, k, differs):
+    """A scene painting is kept only with a plain account of where it differs from the evidence (--differs "..."):
+    the page shows it beside the picture, as the atlas does for old reconstructions."""
+    if not differs: sys.exit('say where the painting differs from the evidence: --differs "..." (or "nothing we can see")')
+    src = os.path.join(CAND, sid + '-scene', '%s.jpg' % k); meta = json.load(open(src[:-4] + '.json'))
+    out_dir = os.path.join(ROOT, 'app', 'public', 'painted'); os.makedirs(out_dir, exist_ok=True)
+    dst = os.path.join(out_dir, 'scene-%s.jpg' % sid)
+    Image.open(src).convert('RGB').resize((1920, 1080), Image.LANCZOS).save(dst, 'JPEG', quality=86)
+    json.dump({'f': 'painted/scene-%s.jpg' % sid, 'model': meta['model'], 'prompt': meta['prompt'], 'made': meta['made'], 'candidate': int(k),
+               'differs': differs}, open(dst[:-4] + '.json', 'w'), ensure_ascii=False, indent=1)
+    print('  %s ← candidate %s' % (dst, k))
+
+
 def choose_ground(sid, k):
     """Turn a ground painting into the swatches a scene paints its land with. The image model keeps the guide's layout
     only roughly (the river drifts and changes shape), so the painting is not laid on the land as a whole: it is cut into
@@ -404,6 +541,10 @@ if __name__ == '__main__':
     elif a[0] == 'earth': earth(a[1], int(opt('--n', 1)), '--pro' in sys.argv)
     elif a[0] == 'choose-earth': choose_earth(a[1], a[2], a[3])
     elif a[0] == 'earth-brush': earth_brush(a[1])
+    elif a[0] == 'animal': animal(a[1], a[2], opt('--approach', 'outline'), int(opt('--n', 1)), '--pro' in sys.argv)
+    elif a[0] == 'choose-animal': choose_animal(a[1], a[2], a[3], a[4])
+    elif a[0] == 'scene': scene_paint(a[1], opt('--guide', None) or sys.exit('--guide <png> is needed'), int(opt('--n', 2)), '--pro' in sys.argv)
+    elif a[0] == 'choose-scene': choose_scene(a[1], a[2], opt('--differs', None))
     elif a[0] == 'choose-ground': choose_ground(a[1], a[2])
     elif a[0] == 'spent': spent()
     elif a[0] == 'check': check()
