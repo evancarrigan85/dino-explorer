@@ -71,7 +71,24 @@ failing push cannot go live. **Preview links**: every branch gets its own addres
 
 Each step ends with everything passing and the live site still working. The old page stays live until Step 4.
 
-1. **Engine speed (carries straight into the new app).**
+1. **Engine speed — shipped 25 Nov** (numbers in `tools/perf/after-step1.json`). What was done, and how it differed from
+   the plan below: a second profile showed the seas were the cost only at a *new* 5-Myr stage, so instead of shipping
+   traced outlines as files, **the tracing and thinning run in a Web Worker** (`SW` in `engine.js`; built from the
+   page’s own `seaTrace`/`seaThin`, so the outlines are identical — checked for four stages); while a stage is on its
+   way the loop draws the nearest one traced (≤ 4 steps, ≤ 12 under a moving hand) and redraws when it comes; anything
+   drawn outside the loop (`WorldMap._draw`, review hooks) still traces on the spot. The timeline slider now gives
+   **light frames while the hand moves** (`WorldMap.interact()`), as map drags always did. Hudson Bay and the Baltic are
+   re-attached only when the time crosses a plate break (`ageKey`, exact). Every fossil site and dated rock is tied to its
+   plate **in idle moments after load** (`warmSites`, `warmRocks`) instead of the first time the clock reaches it. **Play**
+   moves the map on about 30 times a second. **Decorations** (water light, clouds, eruptions, the chosen pin’s ring) run
+   at ~30 fps and **only while someone is exploring** (14 s after the last touch, as designed), then rest, drawn still:
+   **0 frames and 0 % CPU at rest** (was 60 frames a second forever). Results on the phone settings: scrub **20 → 51
+   fps, late frames 41 % → 1 %**; Play 36 → 43 fps, late 10 % → 1 % (the 50 fps budget is not met as counted, because
+   the map now changes 30 times a second by design; revisit with the renderer in Step 5); desktop scrub 56 → 60 fps.
+   Settled frames are pixel-identical to before at five times on desktop and phone; benchmark unchanged; 308 checks pass.
+   Still open: the 67 ms hitch when a hand lets go of the map (the full redraw), and slow tabs on phones (Humans 126 ms,
+   Finds 87 ms) — both belong to Step 3.
+   The original plan for this step, kept for the record:
    - Trace the seas outlines at build time (`build_seas.py` or a node step) and ship them per 5-Myr step, instead of
      `seaTrace` on the main thread; fetch them as needed.
    - Move the per-time geometry (plates carrying the coast, sea, ice) into a Web Worker; the map shows the last finished

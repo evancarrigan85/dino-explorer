@@ -12,7 +12,7 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 ## Next up (updated 25 Nov 2026 — start here)
 
 **25 Nov, later: the rebuild comes first — read `docs/REBUILD.md`.** Evan wants the site moved off the one-generated-page
-build into an app that can grow (“professional grade”). Step 0 (measuring) is done; **Step 1, engine speed, is next.**
+build into an app that can grow (“professional grade”). Step 0 (measuring) and **Step 1 (engine speed) shipped 25 Nov**; **Step 2, content out of the patch layers, is next.**
 Content work below goes on in the data files; no new screens on the old app. The Kem Kem painting is built and tested
 locally but **held by Evan — do not ship it until he says.** The hand-off steps just below are done (clone, key check,
 first painting).

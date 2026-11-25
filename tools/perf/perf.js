@@ -47,9 +47,12 @@ async function run(b, label, vp, mobile, port) {
   R.load.heapMB = +((await busy()).heap / 1048576).toFixed(0);
   R.webgl = await p.evaluate(() => { const g = document.createElement('canvas').getContext('webgl'); const d = g && g.getExtension('WEBGL_debug_renderer_info'); return g ? (d ? g.getParameter(d.UNMASKED_RENDERER_WEBGL) : 'webgl') : 'none'; });
 
-  // 2. sitting still for 5 s: how busy is the page when nobody touches it?
+  // 2. sitting still for 5 s, soon after the last touch: how busy is the page when nobody touches it?
   { const a = await busy(), r0 = await p.evaluate(() => window.__raf); await p.waitForTimeout(5000); const z = await busy(), r1 = await p.evaluate(() => window.__raf);
     R.idle = { busyPct: +(100 * (z.task - a.task) / 5000).toFixed(1), framesAsked: r1 - r0 }; }
+  // 2b. and once the exploring has stopped (the water and eruptions come to rest 14 s after the last touch)
+  { await p.waitForTimeout(9000); const a = await busy(), r0 = await p.evaluate(() => window.__raf); await p.waitForTimeout(5000); const z = await busy(), r1 = await p.evaluate(() => window.__raf);
+    R.rest = { busyPct: +(100 * (z.task - a.task) / 5000).toFixed(1), framesAsked: r1 - r0 }; }
 
   const box = await p.locator('#mapCanvas').boundingBox(), cx = box.x + box.width / 2, cy = box.y + box.height / 2;
   const scenario = async (name, fn) => {

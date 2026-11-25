@@ -1,0 +1,217 @@
+{
+ "when": "2026-11-25T03:00:08.518Z",
+ "page": {
+  "kb": 2371,
+  "gzipKb": 922
+ },
+ "desktop": {
+  "label": "desktop 1400×900",
+  "load": {
+   "domReady": 344,
+   "load": 347,
+   "fcp": 216,
+   "longTasks": 1,
+   "longestTask": 103,
+   "blockedMs": 53,
+   "heapMB": 32
+  },
+  "webgl": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+  "idle": {
+   "busyPct": 2.9,
+   "framesAsked": 100
+  },
+  "rest": {
+   "busyPct": 0,
+   "framesAsked": 0
+  },
+  "drag": {
+   "frames": 161,
+   "fps": 59,
+   "p50": 16.7,
+   "p95": 16.8,
+   "worst": 67,
+   "janky": 1,
+   "ms": 2339,
+   "scriptMs": 106,
+   "layoutMs": 14,
+   "longTasks": 1,
+   "longestTask": 69
+  },
+  "zoom": {
+   "frames": 108,
+   "fps": 60,
+   "p50": 16.7,
+   "p95": 16.8,
+   "worst": 17,
+   "janky": 0,
+   "ms": 1424,
+   "scriptMs": 88,
+   "layoutMs": 3,
+   "longTasks": 0,
+   "longestTask": 0
+  },
+  "scrub": {
+   "frames": 187,
+   "fps": 60,
+   "p50": 16.7,
+   "p95": 16.7,
+   "worst": 33,
+   "janky": 0,
+   "ms": 2747,
+   "scriptMs": 1112,
+   "layoutMs": 50,
+   "longTasks": 0,
+   "longestTask": 0
+  },
+  "play": {
+   "frames": 208,
+   "fps": 60,
+   "p50": 16.7,
+   "p95": 16.7,
+   "worst": 17,
+   "janky": 0,
+   "ms": 3078,
+   "scriptMs": 1648,
+   "layoutMs": 66,
+   "longTasks": 0,
+   "longestTask": 0
+  },
+  "tabs": {
+   "life": 22,
+   "humans": 44,
+   "insights": 32,
+   "ext": 37,
+   "finds": 41,
+   "quiz": 32,
+   "geo": 30
+  },
+  "site": 28,
+  "fullFrame": {
+   "0 Ma": 6,
+   "0.02 Ma": 7,
+   "3 Ma": 6,
+   "90 Ma": 11,
+   "250 Ma": 8,
+   "700 Ma": 2,
+   "1500 Ma": 2
+  },
+  "globeDrag": {
+   "frames": 203,
+   "fps": 59,
+   "p50": 16.7,
+   "p95": 16.8,
+   "worst": 33,
+   "janky": 0,
+   "ms": 3056,
+   "scriptMs": 1317,
+   "layoutMs": 7,
+   "longTasks": 0,
+   "longestTask": 0
+  }
+ },
+ "phone": {
+  "label": "phone 390×844, CPU 4× slower",
+  "load": {
+   "domReady": 922,
+   "load": 923,
+   "fcp": 248,
+   "longTasks": 2,
+   "longestTask": 362,
+   "blockedMs": 440,
+   "heapMB": 26
+  },
+  "webgl": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+  "idle": {
+   "busyPct": 1.6,
+   "framesAsked": 111
+  },
+  "rest": {
+   "busyPct": 0,
+   "framesAsked": 0
+  },
+  "drag": {
+   "frames": 161,
+   "fps": 59,
+   "p50": 16.7,
+   "p95": 16.7,
+   "worst": 67,
+   "janky": 1,
+   "ms": 2337,
+   "scriptMs": 88,
+   "layoutMs": 17,
+   "longTasks": 1,
+   "longestTask": 76
+  },
+  "zoom": {
+   "frames": 108,
+   "fps": 59,
+   "p50": 16.7,
+   "p95": 16.8,
+   "worst": 33,
+   "janky": 0,
+   "ms": 1423,
+   "scriptMs": 100,
+   "layoutMs": 4,
+   "longTasks": 0,
+   "longestTask": 0
+  },
+  "scrub": {
+   "frames": 223,
+   "fps": 51,
+   "p50": 16.7,
+   "p95": 33.4,
+   "worst": 67,
+   "janky": 1,
+   "ms": 3949,
+   "scriptMs": 2526,
+   "layoutMs": 144,
+   "longTasks": 3,
+   "longestTask": 71
+  },
+  "play": {
+   "frames": 159,
+   "fps": 43,
+   "p50": 16.7,
+   "p95": 33.4,
+   "worst": 50,
+   "janky": 1,
+   "ms": 3333,
+   "scriptMs": 3255,
+   "layoutMs": 130,
+   "longTasks": 0,
+   "longestTask": 0
+  },
+  "tabs": {
+   "life": 58,
+   "humans": 126,
+   "insights": 81,
+   "ext": 47,
+   "finds": 87,
+   "quiz": 64,
+   "geo": 68
+  },
+  "site": 57,
+  "fullFrame": {
+   "0 Ma": 10,
+   "0.02 Ma": 14,
+   "3 Ma": 12,
+   "90 Ma": 24,
+   "250 Ma": 25,
+   "700 Ma": 7,
+   "1500 Ma": 6
+  },
+  "globeDrag": {
+   "frames": 204,
+   "fps": 49,
+   "p50": 16.7,
+   "p95": 33.4,
+   "worst": 33,
+   "janky": 0,
+   "ms": 3753,
+   "scriptMs": 1795,
+   "layoutMs": 18,
+   "longTasks": 0,
+   "longestTask": 0
+  }
+ }
+}

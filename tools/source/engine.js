@@ -339,9 +339,67 @@ const WorldMap = (() => {
     for (let g = 0; g < N; g++) { const k = SEA.cell[g]; if (k < 0) continue; V[g] = SEA.val[k * S + s]; F[g] = SEA.fam[k]; }
     // M: the continent and its drowned edge (1–3); L: land (2–3); R: land the sea reached at its highest (3)
     const M = seaTrace(V, F, 1), L = seaTrace(V, F, 2), R = seaTrace(V, F, 3);
-    c = { M: [M], L: [L], R: [R] };                // thinner copies are made when a view first asks for them
+    return seaKeep(s, { M: [M], L: [L], R: [R] });   // thinner copies are made when a view first asks for them
+  }
+  function seaKeep(s, c) {
     if (SEA.cache.size > 30) SEA.cache.delete(SEA.cache.keys().next().value);
     SEA.cache.set(s, c); return c;
+  }
+  /* Tracing a stage costs 50–150 ms on a phone, so where the browser allows it, it runs in a background worker and a
+     hand on the timeline never waits for it. Until the stage asked for arrives, a frame drawn by the loop shows the
+     nearest stage already traced (at most 4 steps of 5 Myr away, 12 while a hand is moving, carried on the plates to the right time) and the map
+     redraws when the right one comes. The worker runs this same seaTrace on the same grids, so its outlines are
+     identical (tools/test.js checks). With no worker (a page opened from a file, an old browser), or for anything drawn
+     outside the loop (WorldMap._draw, the review hooks), the stage is traced on the spot, as before. */
+  const SW = { w: null, busy: -1, want: -1, ahead: -1, failed: false, made: 0 };
+  let seaLoop = false;                                 // true while the frame loop draws: only then may a stage come late
+  function seaWorker() {
+    if (SW.w || SW.failed) return SW.w;
+    if (typeof Worker === 'undefined' || typeof Blob === 'undefined' || typeof URL === 'undefined' || !URL.createObjectURL) { SW.failed = true; return null; }
+    try {
+      const src = 'const GW = ' + GW + ', GH = ' + GH + ', SK = GW * GH * 2, sNext = new Int32Array(SK), sStamp = new Int32Array(SK), sPt = new Float32Array(SK * 3);\n' +
+        'let sRun = 0; const SEA = {}; let D = null;\n' + seaTrace.toString() + '\n' + thinRing.toString() + '\n' + seaThin.toString() + '\n' +
+        // d3.geoArea of one ring, as d3-geo computes it (area.js), for the thinning's safety check
+        'const d3 = { geoArea(o) { const c = o.coordinates[0], R = Math.PI / 180, Q = Math.PI / 4; let sum = 0, l0, cp0, sp0;\n' +
+        '  for (let i = 0; i < c.length; i++) { let l = c[i][0] * R, f = c[i][1] * R / 2 + Q; const cp = Math.cos(f), sp = Math.sin(f);\n' +
+        '    if (i) { const dl = l - l0, sd = dl >= 0 ? 1 : -1, ad = sd * dl, k = sp0 * sp; sum += Math.atan2(k * sd * Math.sin(ad), cp0 * cp + k * Math.cos(ad)); }\n' +
+        '    l0 = l; cp0 = cp; sp0 = sp; }\n' +
+        '  return 2 * (sum < 0 ? 2 * Math.PI + sum : sum); } };\n' + ringArea.toString() + '\n' +
+        'onmessage = e => { const m = e.data; if (m.init) { D = m; return; }\n' +
+        '  const s = m.s, N = GW * GH, V = new Uint8Array(N), F = new Int16Array(N).fill(-1), S = D.S;\n' +
+        '  for (let g = 0; g < N; g++) { const k = D.cell[g]; if (k < 0) continue; V[g] = D.val[k * S + s]; F[g] = D.fam[k]; }\n' +
+        '  const T = [1, 2, 3].map(lv => { const a = seaTrace(V, F, lv); return [a, seaThin(a, 0.3), seaThin(a, 0.8)]; }), tr = new Set();\n' +
+        '  for (const x of T) for (const y of x) for (const p of y) for (const r of p.rings) tr.add(r.buffer);\n' +
+        '  postMessage({ s, M: T[0], L: T[1], R: T[2] }, [...tr]); };';
+      const w = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+      w.onmessage = e => {
+        const { s, M, L, R } = e.data; SW.busy = -1; SW.made++;
+        if (!SEA.cache.has(s)) seaKeep(s, { M, L, R });   // each with its two thinner copies already made
+        if (s === seaStep(time) && seaFade(time) > 0) { dirty = true; schedule(); }
+        seaNext();
+      };
+      w.onerror = e => { if (e && e.preventDefault) e.preventDefault(); SW.failed = true; SW.w = null; SW.busy = -1; try { w.terminate(); } catch (x) {} dirty = true; schedule(); };
+      w.postMessage({ init: true, cell: SEA.cell, val: SEA.val, fam: SEA.fam, S: SEA.S });
+      SW.w = w;
+    } catch (e) { SW.failed = true; SW.w = null; }
+    return SW.w;
+  }
+  function seaNext() {                                 // one stage at a time: the one wanted now, else the next one ahead
+    if (!SW.w || SW.busy >= 0) return;
+    let s = -1;
+    if (SW.want >= 0 && !SEA.cache.has(SW.want)) s = SW.want;
+    else if (SW.ahead >= 0 && SW.ahead < SEA.S && !SEA.cache.has(SW.ahead)) s = SW.ahead;
+    SW.want = -1; if (s === SW.ahead) SW.ahead = -1;
+    if (s < 0) return;
+    SW.busy = s; SW.w.postMessage({ s });
+  }
+  function seaPick(st) {
+    const c = SEA.cache.get(st); if (c) return c;
+    if (seaLoop && seaWorker()) {
+      SW.want = st; seaNext();
+      for (let d = 1, dmax = lite ? 12 : 4; d <= dmax; d++) { const n = SEA.cache.get(st - d) || SEA.cache.get(st + d); if (n) return n; }   // a hand moving fast may outrun the worker: up to 60 Myr away until it stops
+    }
+    return seaStage(st);
   }
   /* How strongly the seas show at time t: from 540 million years ago (where the maps begin) to the
      start of the Ice Age, when today's coasts and the Ice Age shorelines take over. */
@@ -1177,7 +1235,16 @@ void main() {
   ].map(P => { let ring = P.ring.concat([P.ring[0]]); if (d3.geoArea({ type: 'Polygon', coordinates: [ring] }) > 2 * Math.PI) ring = ring.slice().reverse(); return { ...P, ring, xyz: ring.map(([lo, la]) => toXYZ(la, lo)), tt: NaN, f: -1 }; });
   const holeArea = xyz => { const r = []; for (let i = 0; i < xyz.length; i += 3) r.push([Math.atan2(xyz[i + 1], xyz[i]) * R2D, Math.asin(Math.max(-1, Math.min(1, xyz[i + 2]))) * R2D]); if (r.length < 4) return 0; r.push(r[0]); const a = d3.geoArea({ type: 'Polygon', coordinates: [r] }); return Math.min(a, 4 * Math.PI - a); };
   /* the family a basin rides at time t: the plate under its anchor, on the shore */
-  function plugFam(P, t) { if (P.tt !== t) { P.tt = t; const a = attach(P.anchor[0], P.anchor[1], t); P.f = a ? a.f : -1; } return P.f; }
+  /* attach() depends on the age only through which plate families still exist then (their last ages) and whether the
+     age is past the join of the two models, so the answer is the same for every age between two of those breaks:
+     ask again only when the time crosses one. */
+  let ENDS = null;
+  function ageKey(age) {
+    if (!ENDS) ENDS = [...new Set(fams.map(f => f.t[f.t.length - 1]))].sort((a, b) => a - b);
+    let lo = 0, hi = ENDS.length; while (lo < hi) { const m = (lo + hi) >> 1; if (ENDS[m] < age) lo = m + 1; else hi = m; }
+    return (age <= JOIN ? 'y' : 'n') + lo;
+  }
+  function plugFam(P, t) { const k = ageKey(t); if (P.tt !== k) { P.tt = k; const a = attach(P.anchor[0], P.anchor[1], t); P.f = a ? a.f : -1; } return P.f; }
   function landPath(t, fill = false) {
     const path = new Path2D(); sink.p = path;
     const st = proj.stream(sink);
@@ -1240,10 +1307,13 @@ void main() {
     const k = seaFade(t);
     if (k <= 0 || !SEA.P || hideBox) return null;
     if (SEA.st !== 'ready') { seaLoad(); return null; }
-    const st = seaStep(t), c = seaStage(st);
+    const st = seaStep(t), c = seaPick(st);
     if (SEA.last !== undefined && SEA.last !== st) {             // time is moving: trace the next map while the reader looks at this one
       const nx = st + Math.sign(st - SEA.last);
-      if (nx >= 0 && nx < SEA.S && !SEA.cache.has(nx)) setTimeout(() => { if (!SEA.cache.has(nx)) seaStage(nx); }, 16);
+      if (nx >= 0 && nx < SEA.S && !SEA.cache.has(nx)) {
+        if (SW.w) { SW.ahead = nx; seaNext(); }
+        else setTimeout(() => { if (!SEA.cache.has(nx)) seaStage(nx); }, 16);
+      }
     }
     SEA.last = st;
     const pxPerDeg = proj.scale() * D2R * (mode === 'flat' ? 0.86 : 1);      // the same choice of detail as the land
@@ -1493,6 +1563,7 @@ void main() {
     }
     // deep time: the land near each dated rock takes the look of the climate that rock records
     if (layers.rocks.length && t > 0.009) {
+      warmRocks();
       const order = [2, 0, 1, 3];
       for (const k of order) for (const R of layers.rocks) {
         if (R.k !== k || t > R.from || t < R.to) continue;
@@ -2055,7 +2126,7 @@ void main() {
     // eruptions glow and breathe; impacts send out rings
     for (const sp of sparksNow()) {
       const p = project(locate(sp.at, time)); if (!p) continue;
-      const zs = Math.min(1.8, 0.75 + zoom * 0.25), R = (sp.r || 26) * zs, sec = now / 1000;
+      const zs = Math.min(1.8, 0.75 + zoom * 0.25), R = (sp.r || 26) * zs, sec = decoNow(now) / 1000;
       if (sp.kind === 'impact') {
         const g = fctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], R * 0.7);
         g.addColorStop(0, 'rgba(255,250,225,0.95)'); g.addColorStop(0.35, 'rgba(255,190,90,0.55)'); g.addColorStop(1, 'rgba(255,120,40,0)');
@@ -2072,22 +2143,46 @@ void main() {
     }
     if (fxHook) { fctx.save(); fxHook(fctx, fxHelp, now); fctx.restore(); fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'source-over'; }
     if (!rings.length) return;
-    const k = (now % 1700) / 1700;
+    const k = motion ? (decoNow(now) % 1700) / 1700 : 0.25;     // at rest, the ring stays drawn, a little way out
     for (const [x, y, r] of rings) {
       fctx.beginPath(); fctx.arc(x, y, r + 3 + k * 16, 0, 7);
       fctx.strokeStyle = `rgba(200,62,20,${0.8 * (1 - k)})`; fctx.lineWidth = 2; fctx.stroke();
     }
   }
 
-  // ── loop ───────────────────────────────────────────────────────────
-  function schedule() { if (!raf) raf = requestAnimationFrame(tick); }
-  function tick() {
-    raf = 0;
-    if (dirty) { clearTimeout(settle); draw(); } else if (viewDirty && snap) drawQuick(); else drawFx();
-    if (document.hidden) return;
-    if ((trailLife > 0 || performance.now() < animUntil) && !dirty && !lite) dirty = true;             // keep fading the wake after the land stops — but not under a moving hand
-    if (rings.length || trailLife > 0 || (fxHook && !fxStill) || performance.now() < animUntil || (motion && (performance.now() < liveUntil || sparksNow().length))) schedule();
+  /* Tie every dated rock to its plate in idle moments (each is otherwise tied the first time the clock reaches it,
+     which made a hand on the timeline wait), once per list of rocks. */
+  let rocksWarm = null;
+  function warmRocks() {
+    const list = layers.rocks; if (rocksWarm === list) return; rocksWarm = list; let i = 0;
+    const later = f => window.requestIdleCallback ? requestIdleCallback(f, { timeout: 3000 }) : setTimeout(() => f(null), 60);
+    const step = dl => {
+      if (rocksWarm !== list) return;
+      do { const R = list[i++]; if (R && R.at === undefined) { R.at = attach(R.lat, R.lon, (R.from + R.to) / 2); if (R.at.f < 0) R.at = null; } }
+      while (i < list.length && dl && dl.timeRemaining() > 4);
+      if (i < list.length) later(step);
+    };
+    later(step);
   }
+  // ── loop ───────────────────────────────────────────────────────────
+  /* The loop. Frames that change the map (a new time, a move, a fading wake, pins coming and going, a scene) run at the
+     screen's rate. Frames that only decorate (light on the water, clouds, an eruption breathing, the ring round the
+     chosen pin) run at about 30 a second, and only while someone is exploring (liveUntil, 14 s after the last touch);
+     then they come to rest, drawn still, and the page asks for no frames at all until something changes. */
+  let fxTimer = 0;
+  function schedule() { if (fxTimer) { clearTimeout(fxTimer); fxTimer = 0; } if (!raf) raf = requestAnimationFrame(tick); }
+  function scheduleDeco() { if (!raf && !fxTimer) fxTimer = setTimeout(() => { fxTimer = 0; schedule(); }, 33); }
+  function tick() {
+    raf = 0; seaLoop = true;
+    try { if (dirty) { clearTimeout(settle); draw(); } else if (viewDirty && snap) drawQuick(); else drawFx(); }
+    finally { seaLoop = false; }
+    if (document.hidden) return;
+    const now = performance.now();
+    if ((trailLife > 0 || now < animUntil) && !dirty && !lite) dirty = true;             // keep fading the wake after the land stops — but not under a moving hand
+    if (trailLife > 0 || (fxHook && !fxStill) || now < animUntil) schedule();
+    else if (motion && now < liveUntil + 40) scheduleDeco();
+  }
+  const decoNow = now => motion ? Math.min(now, liveUntil) : 0;   // decorations stop where the exploring stopped
   function resize() {
     const r = canvas.getBoundingClientRect();
     if (!r.width || !r.height) return;
@@ -2193,6 +2288,8 @@ void main() {
     },
     get time() { return time; },
     setTime(t) { t = Math.max(0, Math.min(EARTH_AGE, t)); if (t !== time) { time = t; dirty = true; wake(); schedule(); } },
+    /* a hand is moving something (the timeline): light frames until it stops, then the full picture 160 ms later */
+    interact() { interact(); },
     /* A scene to draw over the map every frame, or null to stop. Called as fn(ctx, helpers, now). */
     setFx(fn, o) { fxHook = fn || null; fxStill = !!(o && o.still); schedule(); },
     /* hide the drawn North American ice sheet while a story draws its own, retreating one */
@@ -2288,7 +2385,14 @@ void main() {
     redraw() { dirty = true; schedule(); },
     resize,
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
-    _draw: () => { lite = false; draw(); }, _drawLite: () => { lite = true; draw(); lite = false; }, _interact: interact, _isLite: () => lite, _bannerLines: () => bannerLines, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
+    _draw: () => { lite = false; draw(); }, _drawLite: () => { lite = true; draw(); lite = false; },
+    _seaWorker: () => ({ on: !!SW.w, failed: SW.failed, made: SW.made, busy: SW.busy, cached: [...SEA.cache.keys()] }),
+    _rest() { liveUntil = performance.now() - 100; schedule(); },   // as if the last touch was 14 s ago
+    _plugCheck(ts) { return ts.every(t => PLUGS.every(P => { const a = attach(P.anchor[0], P.anchor[1], t); return plugFam(P, t) === (a ? a.f : -1); })); },
+    _seaTraceBoth(s) {                                 // the worker's outlines for stage s, and this page's, for the check
+      return new Promise(res => { const w = seaWorker(); if (!w) return res(null); SEA.cache.delete(s);
+        const done = () => { const a = SEA.cache.get(s); SEA.cache.delete(s); const b = seaStage(s); for (const x of [b.M, b.L, b.R]) { x[1] = seaThin(x[0], 0.3); x[2] = seaThin(x[0], 0.8); } res({ a, b }); };
+        const was = w.onmessage; w.onmessage = e => { was(e); if (e.data.s === s) { w.onmessage = was; done(); } }; SW.want = s; seaNext(); }); }, _interact: interact, _isLite: () => lite, _bannerLines: () => bannerLines, _ctx: () => ctx, _hill: () => Object.values(hillImg).filter(h => h.ok).length, _fullDraws: () => fullDraws,   
     /* Which land pieces cover a present-day point (for checks): 'index:family[from..to]' list. */
     /* How much of the continents was under the sea at t, in percent (and today), from the same maps; null where there are none. */
     seaShare(t) { if (!SEA.P || seaFade(t) <= 0) return null; const i = seaStep(t); return { pct: SEA.P.share[i] / 10, high: SEA.P.high[i] / 10, today: SEA.P.share[0] / 10, map: i * SEA.P.step }; },

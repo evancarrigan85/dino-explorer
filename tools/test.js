@@ -16,6 +16,13 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   let p = await open({ width: 1400, height: 900 });
   ok('loads at 150 MYA', await p.evaluate(() => S.t === 150 && S.period.id === 'jurassic'));
   ok('map engine has land', await p.evaluate(() => WorldMap.stats().polygons > 500));
+  // speed (docs/REBUILD.md, Step 1): the seas traced in a worker, light frames under a hand on the timeline, rest when idle
+  const seaW = await p.evaluate(async () => { const flat = c => ['M', 'L', 'R'].flatMap(k => [0, 1, 2].map(l => c[k][l])).map(z => z.map(x => x.f + ':' + x.rings.map(a => Array.from(a).join(',')).join(';')).join('|')).join('#');
+    const out = []; for (const st of [2, 25, 60, 104]) { const r = await WorldMap._seaTraceBoth(st); out.push(r ? flat(r.a) === flat(r.b) && r.a.M[0].length > 0 : 'no worker'); } return out; });
+  ok('speed: the background worker traces the seas exactly as the page does, thin copies included (4 stages)', seaW.every(x => x === true), JSON.stringify(seaW));
+  ok('speed: Hudson Bay and the Baltic ride the same plate whether asked afresh or remembered between breaks', await p.evaluate(() => WorldMap._plugCheck([0, 0.5, 2, 3, 3.3, 12, 66, 150, 251, 444, 541, 999.5, 1000, 1050, 1500, 1799])));
+  ok('speed: a hand on the timeline gets light frames, and the full picture follows when it stops', await p.evaluate(() => new Promise(res => { const sl = document.getElementById('timeSlider'); sl.value = 4000; sl.dispatchEvent(new Event('input')); const a = WorldMap._isLite(); setTime(150); setTimeout(() => res(a && !WorldMap._isLite()), 400); })));
+  ok('speed: once nobody is exploring, the map asks for no more frames', await p.evaluate(() => new Promise(res => { WorldMap._rest(); setTimeout(() => { let n = 0; const r = window.requestAnimationFrame; window.requestAnimationFrame = f => { n++; return r(f); }; setTimeout(() => { window.requestAnimationFrame = r; res(n === 0); }, 700); }, 300); })));
   // icons instead of emoji (icon_map.js, icons-data.js)
   ok('icons: the header, tabs, buttons and map controls show drawn icons, not emoji', await p.evaluate(() => {
     const emoji = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u, parts = ['header', '.tab-bar', '#timelineBar', '.map-ctl'].map(s => document.querySelector(s)).filter(Boolean);

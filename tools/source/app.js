@@ -352,12 +352,13 @@ function startPlay() {
   cancelTween();
   let x = posOf(S.t); if (x > 0.998) x = 0;
   S.playing = true; $('playBtn').textContent = '⏸ Pause';
-  let last = performance.now(); const dur = isFull() ? 110 : 50;
+  let last = performance.now(), lastSet = 0; const dur = isFull() ? 110 : 50;
   const step = now => {
     if (!S.playing) return;
     x += Math.min(0.1, (now - last) / 1000) / dur; last = now;
     if (x >= 1) { setTime(S.win[1]); stopPlay(); return; }
-    setTime(timeAt(x), { fast: true });
+    // the map moves on about 30 times a second: smooth for a slow drift, and each new picture has time to finish
+    if (now - lastSet >= 30) { lastSet = now; setTime(timeAt(x), { fast: true }); }
     playRaf = requestAnimationFrame(step);
   };
   playRaf = requestAnimationFrame(step);
@@ -444,7 +445,7 @@ function bindTimeline() {
   $('tlIn').onclick = () => zoomAbout(S.t, posOf(S.t), 0.5);
   $('tlOut').onclick = () => zoomAbout(S.t, posOf(S.t), 2);
   const sl = $('timeSlider');
-  sl.addEventListener('input', () => { stopPlay(); cancelTween(); setTime(timeAt(sl.value / 10000), { fast: true, fromSlider: true }); });
+  sl.addEventListener('input', () => { stopPlay(); cancelTween(); WorldMap.interact(); setTime(timeAt(sl.value / 10000), { fast: true, fromSlider: true }); });   // light frames while the hand moves
   sl.addEventListener('change', () => schedulePanel(0));
   const det = $('tlDetail'), xIn = cx => { const r = $('rowPeriods').getBoundingClientRect(); return clamp((cx - r.left) / r.width, 0, 1); };
   det.addEventListener('wheel', e => { e.preventDefault(); const x = xIn(e.clientX); zoomAbout(timeAt(x), x, e.deltaY < 0 ? 0.72 : 1 / 0.72); }, { passive: false });
@@ -2367,5 +2368,14 @@ function init() {
     openDoor();
   }
   renderPanel();
+  warmSites();
+}
+/* Tie every fossil site to its plate in idle moments after the page opens (sitesOf caches it), so moving through time
+   never waits for an animal's first appearance. */
+function warmSites() {
+  const list = ALL.filter(c => !c._s && c.sites && c.sites.length); let i = 0;
+  const later = f => window.requestIdleCallback ? requestIdleCallback(f, { timeout: 3000 }) : setTimeout(() => f(null), 60);
+  const step = dl => { do { if (!list[i]._s) sitesOf(list[i]); i++; } while (i < list.length && dl && dl.timeRemaining() > 4); if (i < list.length) later(step); };
+  if (list.length) later(step);
 }
 init();
