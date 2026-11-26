@@ -735,6 +735,15 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     ok('silhouettes: “What this atlas borrows” credits every artist, and every drawing is CC0, public domain or CC BY', cr);
     await ctx.close(); srv.close();
   }
+  { // a first visit, with the welcome screen up and nothing remembered: the page starts without an error, and the living finish draws
+    const ctx2 = await b.newContext({ viewport: { width: 1200, height: 800 } }), q = await ctx2.newPage(), errs2 = [];
+    q.on('pageerror', e => errs2.push(e.message));
+    await q.goto('file://' + require('path').join(__dirname, '..', 'dino-explorer.html') + '#150mya'); await q.waitForTimeout(2500);
+    ok('start-up: a first visit (welcome screen up) starts without an error', errs2.length === 0, errs2.join(' | '));
+    await q.evaluate(() => { try { closeDoor(); } catch (e) {} }); await q.waitForTimeout(1200);
+    const fin2 = await q.evaluate(() => WorldMap._finish());
+    ok('start-up: after the welcome screen the living finish draws the sea and the land', errs2.length === 0 && fin2.drawn[0] > 0 && fin2.drawn[2] > 0, JSON.stringify(fin2) + ' ' + errs2.join(' | '));
+    await ctx2.close(); }
   ok('terrain: off when the page is opened from a file (browsers will not load its data there)', await (async () => { const q = await open({ width: 900, height: 700 }, '#90mya'); await q.waitForTimeout(1500); const r = await q.evaluate(() => !WorldMap.terrain && WorldMap._ter().drawn === 0); await q.close(); return r; })());
   ok('silhouettes: off when the page is opened from a file (the map could not read its own pixels), so the emoji stay', await (async () => { const q = await open({ width: 900, height: 700 }, '#150mya'); await q.waitForTimeout(1200); const r = await q.evaluate(() => !SIL_HTTP && !document.querySelector('.sil-pic') && Object.values(WorldMap._pins()).every(v => !v)); await q.close(); return r; })());
   ok('no console errors', errs.length === 0, '\n    ' + errs.slice(0, 8).join('\n    '));

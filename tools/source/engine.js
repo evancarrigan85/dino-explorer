@@ -1629,6 +1629,7 @@ void main() {
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.imageSmoothingEnabled = true; c.globalAlpha = 0.6; c.drawImage(gCv, 0, 0, canvas.width, canvas.height); c.restore();
   }
   function draw() {
+    if (!proj || !W) { dirty = true; return; }        // not laid out yet (behind the welcome screen): the first resize draws it
     if (mode === 'globe' && geoidShows() !== projGeoid) setupProjection();
     dirty = false; stamp++; fullDraws++;
     const t0 = performance.now();
