@@ -9,7 +9,7 @@
   "t": [350,330],
   "g": "fish",
   "c": "Fishes › Lobe-finned fishes",
-  "fact": "Possibly the largest freshwater fish of the Devonian with teeth the size of bananas. A lobe-finned predator related to the ancestors of land vertebrates, Rhizodus lurked in river channels and could ambush prey from the shallows like a modern crocodile.",
+  "fact": "One of the largest freshwater fish that ever lived: a lobe-finned hunter up to about 7 m long, with fangs as long as a banana, in the rivers and swamps of the early Carboniferous. Lobe-finned fish are the group that land animals came from.",
   "sites": [[55.9,-3.13,"Gilmerton, Edinburgh"]]
 },
 {
@@ -22,7 +22,7 @@
   "t": [305,299],
   "g": "invert",
   "c": "Invertebrates › Arthropods › Insects",
-  "fact": "The biggest insect that EVER lived — a dragonfly with a wingspan like a seagull! It was a fierce predator of smaller insects and possibly small amphibians. High oxygen is what let insects grow this enormous.",
+  "fact": "One of the largest insects ever: a griffinfly, a relative of dragonflies, with wings as wide as a seagull’s. It hunted other insects in flight. Why insects could grow so big then is argued over: more oxygen in the air may have helped, and so may the lack of flying hunters — birds had not yet evolved.",
   "sites": [[46.29,2.74,"Commentry, France"]]
 },
 {
@@ -35,7 +35,7 @@
   "t": [345,299],
   "g": "invert",
   "c": "Invertebrates › Arthropods › Millipede relatives",
-  "fact": "A millipede as big as a car! Totally harmless — it just ate rotting plants and fungi. It was the biggest land invertebrate in all of history. Imagine encountering this on a forest path!",
+  "fact": "A millipede relative as long as a small car — the largest arthropod that ever lived on land. It probably ate plants and rotting matter; exactly what is not known.",
   "know": "The largest arthropod that ever lived — a millipede relative up to 2.6 m long. For over 150 years no head had been found; in 2024, CT scans of juveniles from France finally showed one, with stalked eyes.",
   "sites": [[55.45,-1.59,"Howick Bay, England"],[45.7,-64.45,"Joggins, Nova Scotia"],[46.67,4.37,"Montceau-les-Mines, France"]]
 },
@@ -49,7 +49,7 @@
   "t": [318,312],
   "g": "reptile",
   "c": "Reptiles › Early reptiles",
-  "fact": "One of the FIRST true reptiles! Unlike amphibians, it could lay eggs on dry land without returning to water. A tiny lizard-like animal that started a lineage leading to every reptile, dinosaur, and mammal that ever lived.",
+  "fact": "One of the oldest known reptiles, about 312 million years old, found inside the hollow stumps of fossil trees at Joggins in Nova Scotia. It looked like a small lizard. Reptiles, birds and mammals all come from animals that laid eggs on land; Hylonomus is among the oldest on the reptile side of that family.",
   "sites": [[45.7,-64.45,"Joggins, Nova Scotia"]]
 },
 {
@@ -62,7 +62,7 @@
   "t": [303,299],
   "g": "amphib",
   "c": "Amphibians & early tetrapods › Temnospondyls",
-  "fact": "A giant amphibian built like a flat, stocky crocodile. It was the top predator in many swampy environments. But it still had to lay eggs in water — the key weakness that reptiles would soon overcome forever.",
+  "fact": "A big amphibian built like a flat, stocky crocodile, up to about 2 m long, and one of the top hunters of its swamps. Like frogs today, it probably had to return to water to lay its eggs.",
   "sites": [[33.6,-99.3,"Texas Red Beds, USA"],[36.2,-106.4,"El Cobre Canyon, New Mexico"]]
 },
 {
@@ -75,7 +75,7 @@
   "t": [318,299],
   "g": "invert",
   "c": "Invertebrates › Molluscs › Snails",
-  "fact": "The first land snails with lungs instead of gills! They could breathe air and hydrate themselves in water. Still around today, they show how a sea creature can invade land and stick around for 360 million years.",
+  "fact": "Among the oldest land snails known: tiny shells found at Joggins in Nova Scotia, some inside hollow fossil tree stumps. They breathed air, like garden snails today.",
   "sites": [[45.7,-64.45,"Joggins, Nova Scotia"]]
 },
 {
@@ -88,7 +88,7 @@
   "t": [359,299],
   "g": "plant",
   "c": "Plants › Club-moss trees",
-  "fact": "A scale tree - not a true tree but a giant club moss taller than a 10-story building. When these giants fell into swampy soil they did not fully rot because fungi had not yet evolved to digest lignin, slowly becoming the coal seams we burn today. Every piece of coal is fossilized Carboniferous forest.",
+  "fact": "A scale tree: a giant relative of today’s little club mosses, up to 30 m tall, its trunk covered in a diamond pattern of leaf scars. Its swamp forests made much of the world’s coal. One idea was that wood could not rot then because fungi had not yet learned to break it down; later work argued that wet, sinking ground explains the coal better, and the question is still discussed.",
   "sites": [[45.7,-64.45,"Joggins, Nova Scotia"],[55.88,-4.33,"Fossil Grove, Glasgow"],[41.3,-88.3,"Mazon Creek, Illinois"]]
 },
 {
@@ -101,7 +101,7 @@
   "t": [339,337],
   "g": "amphib",
   "c": "Amphibians & early tetrapods › Reptile-like tetrapods",
-  "fact": "Nicknamed Lizzie, Westlothiana is one of the earliest known amniotes - animals that lay eggs on land without needing water. This tiny reptile-like creature represents the point where vertebrate life finally broke its dependence on water for reproduction.",
+  "fact": "Nicknamed “Lizzie”, it was hailed as the oldest reptile when it was found in Scotland in the 1980s. Study of its bones now puts it just outside the amniotes — close to the animals that lay eggs on land, but not yet one of them.",
   "sites": [[55.92,-3.62,"East Kirkton, Scotland"]]
 },
 {
@@ -114,7 +114,7 @@
   "t": [303,299],
   "g": "amphib",
   "c": "Amphibians & early tetrapods › Temnospondyls",
-  "fact": "A massive temnospondyl amphibian with a broad flat skull and powerful jaws. Like a modern giant salamander scaled up to the size of an alligator, Edops lurked at the water's edge and ambushed fish, smaller amphibians, and early reptiles.",
+  "fact": "A big, broad-headed amphibian, up to about 2 m long, with powerful jaws: a hunter at the water’s edge, a little like a giant salamander.",
   "sites": [[33.6,-99.3,"Texas Red Beds, USA"]]
 },
 {
@@ -127,7 +127,7 @@
   "t": [304,300],
   "g": "reptile",
   "c": "Reptiles › Early reptiles",
-  "fact": "The earliest known diapsid reptile - the ancestor of all lizards, snakes, crocodiles, dinosaurs, and birds. Slender and lizard-like, Petrolacosaurus was a fast insect-hunter. Its skull design was so successful that 80% of living reptiles still use it.",
+  "fact": "One of the oldest known diapsids — reptiles with two openings in the skull behind each eye, the group that includes lizards, snakes, crocodiles, dinosaurs and birds. It was not their ancestor but an early relative on a side branch: slender, long-legged and lizard-like.",
   "sites": [[38.28,-95.24,"Garnett, Kansas"]]
 },
 {
@@ -140,7 +140,7 @@
   "t": [335,299],
   "g": "plant",
   "c": "Plants › Club-moss trees",
-  "fact": "A giant club moss cousin of Lepidodendron with vertical rows of hexagonal leaf scars on its trunk. Sigillaria had a single crown of long grass-like leaves at the top. Its fossils are found on every continent, proving the Carboniferous coal swamps were truly global.",
+  "fact": "A giant club-moss tree, cousin of Lepidodendron, with its leaf scars in straight rows up the trunk and a tuft of long, narrow leaves at the top. It grew in the coal swamps, including their drier parts.",
   "sites": [[45.7,-64.45,"Joggins, Nova Scotia"],[51.5,7.2,"Ruhr coalfield, Germany"]]
 },
 {

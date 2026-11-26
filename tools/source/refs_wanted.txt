@@ -628,3 +628,22 @@ turner2007 | Turner | 2007 | Feather quill knobs in the dinosaur Velociraptor | 
 fowler2011 | Fowler | 2011 | The predatory ecology of Deinonychus and the origin of flapping in birds | a:Velociraptor, a:Deinonychus
 bennett1992 | Bennett | 1992 | Sexual dimorphism of Pteranodon and other pterosaurs, with comments on cranial crests | a:Pteranodon
 anderson2007 | Anderson | 2007 | Feeding mechanics and bite force modelling of the skull of Dunkleosteus terrelli, an ancient apex predator | a:Dunkleosteus
+andrews1985 | Andrews | 1985 | Rhizodont crossopterygian fish from the Dinantian of Foulden, Berwickshire, Scotland, with a re-evaluation of this group | a:Rhizodus
+clapham2012 | Clapham | 2012 | Environmental and biotic controls on the evolutionary history of insect body size | a:Meganeura
+davies2022 | Davies | 2022 | The largest arthropod in Earth history: insights from newly discovered Arthropleura remains (Serpukhovian Stainmore Formation, Northumberland, England) | a:Arthropleura
+carroll1964 | Carroll | 1964 | The earliest reptiles | a:Hylonomus
+pawley2006 | Pawley | 2006 | The appendicular skeleton of Eryops megacephalus Cope, 1877 (Temnospondyli: Eryopoidea) from the Lower Permian of North America | a:Eryops
+falconlang2006 | Falcon-Lang | 2006 | The Pennsylvanian tropical biome reconstructed from the Joggins Formation of Nova Scotia, Canada | a:Hylonomus, a:Dendrerpeton, a:Sigillaria, a:Calamites
+floudas2012 | Floudas | 2012 | The Paleozoic origin of enzymatic lignin decomposition reconstructed from 31 fungal genomes | a:Lepidodendron
+nelsen2016 | Nelsen | 2016 | Delayed fungal evolution did not cause the Paleozoic peak in coal production | a:Lepidodendron
+smithson1994 | Smithson | 1994 | Westlothiana lizziae from the Viséan of East Kirkton, West Lothian, Scotland, and the amniote stem | a:Westlothiana
+romer1942 | Romer | 1942 | Edops, a primitive rhachitomous amphibian from the Texas red beds | a:Edops
+reisz1977 | Reisz | 1977 | Petrolacosaurus, the oldest known diapsid reptile | a:Petrolacosaurus
+dimichele2014 | DiMichele | 2014 | Wetland-dryland vegetational dynamics in the Pennsylvanian ice age tropics | a:Medullosa, a:Calamites, a:Sigillaria, a:Lepidodendron
+clack1998 | Clack | 1998 | The Scottish Carboniferous tetrapod Crassigyrinus scoticus (Lydekker) — cranial anatomy and relationships | a:Crassigyrinus
+lund1985 | Lund | 1985 | The morphology of Falcatus falcatus (St. John and Worthen), a Mississippian stethacanthid chondrichthyan from the Bear Gulch Limestone of Montana | a:Falcatus
+coates2001 | Coates | 2001 | A new stethacanthid chondrichthyan from the Lower Carboniferous of Bearsden, Scotland | a:Akmonistion
+tapanila2020 | Tapanila | 2020 | Saws, scissors, and sharks: Late Paleozoic experimentation with symphyseal dentition | a:Edestus
+sallan2014 | Sallan | 2014 | The long-rostrumed elasmobranch Bandringa Zangerl, 1969, and taphonomy within a Carboniferous shark nursery | a:Bandringa
+kukalova1983 | Kukalová-Peck | 1983 | New Homoiopteridae (Insecta: Paleodictyoptera) with wing articulation from Upper Carboniferous strata of Mazon Creek, Illinois | a:Mazothairos
+holmes1984 | Holmes | 1984 | The Carboniferous amphibian Proterogyrinus scheelei Romer, and the early evolution of tetrapods | a:Proterogyrinus

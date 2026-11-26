@@ -10625,5 +10625,320 @@
 ],
 "first": "",
 "title_expected": "Feeding mechanics and bite force modelling of the skull of Dunkleosteus terrelli, an ancient apex predator"
+},
+"andrews1985": {
+"doi": "10.1017/s0263593300010324",
+"title": "Rhizodont crossopterygian fish from the Dinantian of Foulden, Berwickshire, Scotland, with a re-evaluation of this group",
+"journal": "Transactions of the Royal Society of Edinburgh: Earth Sciences",
+"year": 1985,
+"authors": [
+"Andrews"
+],
+"type": "journal-article",
+"targets": [
+"a:Rhizodus"
+],
+"first": "",
+"title_expected": "Rhizodont crossopterygian fish from the Dinantian of Foulden, Berwickshire, Scotland, with a re-evaluation of this group"
+},
+"clapham2012": {
+"doi": "10.1073/pnas.1204026109",
+"title": "Environmental and biotic controls on the evolutionary history of insect body size",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2012,
+"authors": [
+"Clapham",
+"Karr"
+],
+"type": "journal-article",
+"targets": [
+"a:Meganeura"
+],
+"first": "",
+"title_expected": "Environmental and biotic controls on the evolutionary history of insect body size"
+},
+"davies2022": {
+"doi": "10.1144/jgs2021-115",
+"title": "The largest arthropod in Earth history: insights from newly discovered Arthropleura remains (Serpukhovian Stainmore Formation, Northumberland, England)",
+"journal": "Journal of the Geological Society",
+"year": 2022,
+"authors": [
+"Davies",
+"Garwood",
+"McMahon",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Arthropleura"
+],
+"first": "",
+"title_expected": "The largest arthropod in Earth history: insights from newly discovered Arthropleura remains (Serpukhovian Stainmore Formation, Northumberland, England)"
+},
+"carroll1964": {
+"doi": "10.1111/j.1096-3642.1964.tb00488.x",
+"title": "The earliest reptiles",
+"journal": "Journal of the Linnean Society of London, Zoology",
+"year": 1964,
+"authors": [
+"Carroll"
+],
+"type": "journal-article",
+"targets": [
+"a:Hylonomus"
+],
+"first": "",
+"title_expected": "The earliest reptiles"
+},
+"pawley2006": {
+"doi": "10.1666/0022-3360(2006)80[561:tasoem]2.0.co;2",
+"title": "The Appendicular Skeleton of Eryops Megacephalus Cope, 1877 (temnospondyli: Eryopoidea) from the Lower Permian of North America",
+"journal": "Journal of Paleontology",
+"year": 2006,
+"authors": [
+"PAWLEY",
+"WARREN"
+],
+"type": "journal-article",
+"targets": [
+"a:Eryops"
+],
+"first": "",
+"title_expected": "The appendicular skeleton of Eryops megacephalus Cope, 1877 (Temnospondyli: Eryopoidea) from the Lower Permian of North America"
+},
+"falconlang2006": {
+"doi": "10.1144/0016-764905-063",
+"title": "The Pennsylvanian tropical biome reconstructed from the Joggins Formation of Nova Scotia, Canada",
+"journal": "Journal of the Geological Society",
+"year": 2006,
+"authors": [
+"Falcon-Lang",
+"Benton",
+"Braddy",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Hylonomus",
+"a:Dendrerpeton",
+"a:Sigillaria",
+"a:Calamites"
+],
+"first": "",
+"title_expected": "The Pennsylvanian tropical biome reconstructed from the Joggins Formation of Nova Scotia, Canada"
+},
+"floudas2012": {
+"doi": "10.1126/science.1221748",
+"title": "The Paleozoic Origin of Enzymatic Lignin Decomposition Reconstructed from 31 Fungal Genomes",
+"journal": "Science",
+"year": 2012,
+"authors": [
+"Floudas",
+"Binder",
+"Riley",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Lepidodendron"
+],
+"first": "",
+"title_expected": "The Paleozoic origin of enzymatic lignin decomposition reconstructed from 31 fungal genomes"
+},
+"nelsen2016": {
+"doi": "10.1073/pnas.1517943113",
+"title": "Delayed fungal evolution did not cause the Paleozoic peak in coal production",
+"journal": "Proceedings of the National Academy of Sciences",
+"year": 2016,
+"authors": [
+"Nelsen",
+"DiMichele",
+"Peters",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Lepidodendron"
+],
+"first": "",
+"title_expected": "Delayed fungal evolution did not cause the Paleozoic peak in coal production"
+},
+"smithson1994": {
+"doi": "10.1017/s0263593300006192",
+"title": "Westlothiana lizziae from the Viséan of East Kirkton, West Lothian, Scotland, and the amniote stem",
+"journal": "Earth and Environmental Science Transactions of the Royal Society of Edinburgh",
+"year": 1993,
+"authors": [
+"Smithson",
+"Carroll",
+"Panchen",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Westlothiana"
+],
+"first": "",
+"title_expected": "Westlothiana lizziae from the Viséan of East Kirkton, West Lothian, Scotland, and the amniote stem"
+},
+"romer1942": {
+"doi": "10.1086/625101",
+"title": "Edops, a Primitive Rhachitomous Amphibian from the Texas Red Beds",
+"journal": "The Journal of Geology",
+"year": 1942,
+"authors": [
+"Romer",
+"Witter"
+],
+"type": "journal-article",
+"targets": [
+"a:Edops"
+],
+"first": "",
+"title_expected": "Edops, a primitive rhachitomous amphibian from the Texas red beds"
+},
+"reisz1977": {
+"doi": "10.1126/science.196.4294.1091",
+"title": "Petrolacosaurus, the Oldest Known Diapsid Reptile",
+"journal": "Science",
+"year": 1977,
+"authors": [
+"Reisz"
+],
+"type": "journal-article",
+"targets": [
+"a:Petrolacosaurus"
+],
+"first": "",
+"title_expected": "Petrolacosaurus, the oldest known diapsid reptile"
+},
+"dimichele2014": {
+"doi": "10.1086/675235",
+"title": "Wetland-Dryland Vegetational Dynamics in the Pennsylvanian Ice Age Tropics",
+"journal": "International Journal of Plant Sciences",
+"year": 2014,
+"authors": [
+"DiMichele"
+],
+"type": "journal-article",
+"targets": [
+"a:Medullosa",
+"a:Calamites",
+"a:Sigillaria",
+"a:Lepidodendron"
+],
+"first": "",
+"title_expected": "Wetland-dryland vegetational dynamics in the Pennsylvanian ice age tropics"
+},
+"clack1998": {
+"doi": "10.1017/s0263593300006908",
+"title": "The Scottish Carboniferous tetrapod Crassigyrinus scoticus (Lydekker)—cranial anatomy and relationships",
+"journal": "Transactions of the Royal Society of Edinburgh: Earth Sciences",
+"year": 1997,
+"authors": [
+"Clack"
+],
+"type": "journal-article",
+"targets": [
+"a:Crassigyrinus"
+],
+"first": "",
+"title_expected": "The Scottish Carboniferous tetrapod Crassigyrinus scoticus (Lydekker) — cranial anatomy and relationships"
+},
+"lund1985": {
+"doi": "10.1080/02724634.1985.10011842",
+"title": "The morphology of Falcatus falcatus (St. John and Worthen), a Mississippian stethacanthid chondrichthyan from the Bear Gulch Limestone of Montana",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 1985,
+"authors": [
+"Lund"
+],
+"type": "journal-article",
+"targets": [
+"a:Falcatus"
+],
+"first": "",
+"title_expected": "The morphology of Falcatus falcatus (St. John and Worthen), a Mississippian stethacanthid chondrichthyan from the Bear Gulch Limestone of Montana"
+},
+"coates2001": {
+"doi": "10.1671/0272-4634(2001)021[0438:anscft]2.0.co;2",
+"title": "A new stethacanthid chondrichthyan from the lower Carboniferous of Bearsden, Scotland",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 2001,
+"authors": [
+"Coates",
+"Sequeira"
+],
+"type": "journal-article",
+"targets": [
+"a:Akmonistion"
+],
+"first": "",
+"title_expected": "A new stethacanthid chondrichthyan from the Lower Carboniferous of Bearsden, Scotland"
+},
+"tapanila2020": {
+"doi": "10.1002/ar.24046",
+"title": "Saws, Scissors, and Sharks: Late Paleozoic Experimentation with Symphyseal Dentition",
+"journal": "The Anatomical Record",
+"year": 2020,
+"authors": [
+"Tapanila",
+"Pruitt",
+"Wilga",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Edestus"
+],
+"first": "",
+"title_expected": "Saws, scissors, and sharks: Late Paleozoic experimentation with symphyseal dentition"
+},
+"sallan2014": {
+"doi": "10.1080/02724634.2013.782875",
+"title": "The long-rostrumed elasmobranch Bandringa Zangerl, 1969, and taphonomy within a Carboniferous shark nursery",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 2014,
+"authors": [
+"Sallan",
+"Coates"
+],
+"type": "journal-article",
+"targets": [
+"a:Bandringa"
+],
+"first": "",
+"title_expected": "The long-rostrumed elasmobranch Bandringa Zangerl, 1969, and taphonomy within a Carboniferous shark nursery"
+},
+"kukalova1983": {
+"doi": "10.1139/z83-218",
+"title": "New Homoiopteridae (Insecta: Paleodictyoptera) with wing articulation from Upper Carboniferous strata of Mazon Creek, Illinois",
+"journal": "Canadian Journal of Zoology",
+"year": 1983,
+"authors": [
+"Kukalová-Peck",
+"Richardson Jr."
+],
+"type": "journal-article",
+"targets": [
+"a:Mazothairos"
+],
+"first": "",
+"title_expected": "New Homoiopteridae (Insecta: Paleodictyoptera) with wing articulation from Upper Carboniferous strata of Mazon Creek, Illinois"
+},
+"holmes1984": {
+"doi": "10.1098/rstb.1984.0103",
+"title": "The Carboniferous amphibian Proterogyrinus Scheelei Romer, and the early evolution of tetrapods",
+"journal": "Philosophical Transactions of the Royal Society of London. B, Biological Sciences",
+"year": 1984,
+"authors": [
+"Holmes"
+],
+"type": "journal-article",
+"targets": [
+"a:Proterogyrinus"
+],
+"first": "",
+"title_expected": "The Carboniferous amphibian Proterogyrinus scheelei Romer, and the early evolution of tetrapods"
 }
 }
