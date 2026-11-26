@@ -15,6 +15,7 @@ import { Plants } from './scene/Plants';
 import { Animals, placeAnimals, type AnimalStyle } from './scene/Animals';
 import { EarthIntro, WhereOnEarth } from './EarthIntro';
 import { PaintingView } from './PaintingView';
+import { Checked } from './Checked';
 import { Logs } from './scene/Logs';
 import { Look } from './scene/Look';
 import type { Site } from './types';
@@ -63,7 +64,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
   const [style, setStyle] = useState<AnimalStyle>('outline');
   // how the site is seen: its painting (with things to find), or the living 3D scene to explore at true scale
   const [mode, setMode] = useState<'painting' | '3d'>(site.painting && site.spots?.length ? 'painting' : '3d');
-  const [hints, setHints] = useState(true);
+  const [look, setLook] = useState<'scene' | 'evidence'>('scene');      // the reader lands on the painting itself
   const [pending, setPending] = useState<string | null>(null);     // an animal to fly to once the 3D scene is up
   const STYLES: [AnimalStyle, string][] = [['outline', 'Outlines'], ['paint-outline', 'Painted in outline'], ['paint-free', 'Painted freely']];
   const anyPainted = site.cast.some(c => c.painted);
@@ -96,7 +97,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
   });
 
   return <div className="site" style={{ ['--barH' as string]: barH + 'px' }}>
-    {mode === 'painting' && <PaintingView site={site} units={units} hints={hints} onOpen3D={name => { setMode('3d'); setGoal(null); if (name) setPending(name); }} />}
+    {mode === 'painting' && <PaintingView site={site} units={units} look={look} onOpen3D={name => { setMode('3d'); setGoal(null); if (name) setPending(name); }} />}
     {mode === '3d' && <Canvas shadows={phone ? false : 'percentage'} dpr={phone ? [1, 1.6] : [1, 2]} gl={{ antialias: true, powerPreference: 'high-performance' }}
       camera={{ position: reduceMotion() ? OVERVIEW.pos.toArray() : start.toArray(), fov: phone ? 55 : 45, near: 0.5, far: 2500 }}
       onPointerMissed={() => setSelected(null)}
@@ -107,7 +108,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
         shadow-mapSize={[2048, 2048]} shadow-camera-left={-160} shadow-camera-right={160} shadow-camera-top={160} shadow-camera-bottom={-160} shadow-camera-far={900} shadow-bias={-0.0004} />
       <Terrain land={land} seed={seed} phone={phone} ground={site.ground ? site.ground.f : null} />
       <Water land={land} phone={phone} />
-      <Plants land={land} seed={seed} phone={phone} />
+      <Plants land={land} seed={seed} phone={phone} sprites={site.plantSprites} />
       <Logs land={land} seed={seed} phone={phone} />
       <Look phone={phone} />
       <Suspense fallback={null}><Animals site={site} land={land} selected={selected} onSelect={focus} labels={labels} phone={phone} units={units} style={style} /></Suspense>
@@ -128,7 +129,8 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
     <div className="views">
       {mode === 'painting' ? <>
         <button onClick={() => { setMode('3d'); setGoal(OVERVIEW); }}>Explore in 3D</button>
-        <button onClick={() => setHints(h => !h)} aria-pressed={!hints}>{hints ? 'Hide hints' : 'Show hints'}</button>
+        <button onClick={() => setLook('scene')} aria-pressed={look === 'scene'}>The Scene</button>
+        <button onClick={() => setLook('evidence')} aria-pressed={look === 'evidence'}>The Evidence</button>
         <button onClick={() => setPanel(v => !v)}>{panel ? 'Close' : 'About this place'}</button>
       </> : <>
       {site.painting && site.spots?.length ? <button onClick={() => { setMode('painting'); setSelected(null); }}>Painting</button> : null}
@@ -171,6 +173,7 @@ export function SiteView({ site, onBack }: { site: Site; onBack: () => void }) {
         <h3>What is a guess</h3><p>The exact shape of the river, banks and sandbank; where each plant stands; the animals’ poses and where they stand. The kinds of land, water and plants come from the papers below. Every animal is drawn to scale: most sizes come from papers; where none gives one, the animal’s card says whose estimate it is, or that it is a guess from living relatives.</p>
         <h3>The pictures</h3>
         {site.painting && <p>The painting of this place is by AI ({site.painting.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.painting.model}) in the manner of Charles R. Knight, made from this scene’s own 3D view from the sky, with the animals as they are reconstructed today, then corrected where it strayed. <span className="differs"><b>Where it still differs from the evidence:</b> {site.painting.differs}</span></p>}
+        {site.painting?.check && <Checked c={site.painting.check} />}
         {site.painting && <details className="prompt"><summary>What the painter of the scene was asked</summary><div>{site.painting.prompt}</div></details>}
         <p>{site.earth && <>The Earth at the start is this atlas’s own map of that time — every coast and shallow sea as the science has it — given a painted look in the manner of Charles R. Knight (1874–1953). </>}
           {site.ground && <>The ground is painted by AI ({site.ground.model === 'gemini-3-pro-image' ? 'Google’s Gemini 3 Pro Image' : site.ground.model}){/Charles R\. Knight/.test(site.ground.prompt) ? ' in the manner of Charles R. Knight, drawn with today’s science,' : ''} from this scene’s own map, and checked by eye; the scene lays its texture over the land, so the river and banks keep their shape. No animal is painted: they are the scientists’ silhouettes.</>}</p>

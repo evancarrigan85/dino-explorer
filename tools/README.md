@@ -16,6 +16,7 @@ It checks every animal (fields known and present, dates inside its period, valid
 |---|---|
 | **`content/animals/<period id>.json`** | **Every animal, one file per period** (the period it is listed under): name, emoji, diet, size, habitat, lived, `t` [first, last] Ma, `g` kind, `c` lineage path, means, fact, know, debate, taxonomy, discovery, keyResearchers, citation, `weird`, `sites` [[lat, lon, label]]. An unknown or empty field stops the build. To add an animal, add an object to its period’s file |
 | **`content/periods.json`** | **The periods**, oldest first: name, dates (`start`, `end`, ICS December 2024, rounded), descriptions, map title, `lifeNote` for a span with no named fossil, and the Insights panel (`insight`, with `ext` for a mass extinction) |
+| **`content/briefs/<site>.json`** | **The reconstruction brief of each site scene**, written before any painting: five layers (place, landscape, life, moment, discovery) of decisions, each with its words for the reader, its status (documented / inferred / imagined), its reason, its verified papers, the alternatives, and how it is painted (`picture`, `not`, `spots`); life decisions say whether the evidence puts the animals `together`. The build refuses one that breaks the rules (`tools/briefs.mjs`); the painter's prompt and the art reviewer's checklist are built from it; `node tools/briefs.mjs --ref <paper>` lists what rests on a paper |
 | **`content/geology.json`** | The geology cards (Geology tab) and where each is pinned (`at`, or null) |
 | `data_class.js` | The lineage path shown for each group of the human family |
 | `data_hominins.js` | The human family and its turning points |
@@ -28,6 +29,8 @@ It checks every animal (fields known and present, dates inside its period, valid
 | `data_mammals.js` | The Age of Mammals, epoch by epoch: a chapter (title, map title, Insights) for each epoch from the Paleocene to the Pliocene; sources under `p:<epoch>` |
 | `data_history.js` | Empires, kingdoms and beliefs of the last 5,500 years (Humans tab) |
 | `data_sites.js` | Life at the site: one fossil site at its own time, every animal from the site’s paper, drawn as a silhouette (`sil`, a key in `SIL`), known lengths to scale and as bars; sources under `z:<id>` |
+| `data_mapfauna.js` | Life on the map: the animals that walk, swim and fly round their own fossil sites when the map is zoomed in (`LIFE_ON_MAP`: card name, body plan, length, land/sea/air/shore, and a group only with the card’s reason); the build refuses a name with no card, an unknown plan, or a group without words |
+| `creatures.js` | How those animals are drawn from above (`CREATURES.PLANS`: one body plan per kind — theropod, ceratopsian, sauropod, mosasaur, pterosaur, mammoth …); preview any plan by drawing it on a canvas with `CREATURES.draw` |
 | `data_survival.js` | What helped people and what threatened them, by time (Humans tab, “At this time”); sources under `v:` |
 | `data_extinctions.js` | The Extinctions view: one entry per event, with its scene and its steps |
 | `data_trees.js` | The family trees: branches, the feature each one added, and which lineage paths hang on it |
@@ -55,6 +58,7 @@ Two blocks inside the page are **generated** and marked `GENERATED … do not ed
 | `COAST_HAVE` + `tiles/coast/` (detailed modern land and coastline) | `build_coast.py` |
 | `SIL` + `tiles/sil/` (animal silhouettes for the site scenes, from PhyloPic, with artist and licence; CC0, public domain or CC BY only) | `build_silhouettes.py` (all of `WANT`), `--only k1,k2` (just those); needs Pillow and the two PhyloPic hosts |
 | `ICONS` (`icons-data.js`: the line icons the page uses) | `node tools/build_icons.mjs <lucide-static 1.70.0>/icon-nodes.json` after changing `icon_map.js` (install the package in any scratch folder with `npm i --ignore-scripts lucide-static@1.70.0`) |
+| `tools/paint/art.json` (every AI picture: what it shows, the science it follows, its review and sign-off) | `python3 -I tools/review_art.py build`, then `review`, `repair` (paints failures again with the reviewer’s objections), `report`, `hold`, and Evan’s `approve` / `reject`; the app shows only pictures that passed. See `docs/ART.md` › Every picture is checked |
 | `PAINT` (`paintings-data.js`) + `tiles/scenes/` (AI-painted landscapes behind the site scenes; no animals) | `python3 -I tools/paint.py site <id> [--n 3] [--pro] [--dry-run]`, look at every candidate, then `tools/paint.py choose <id> <n>`; needs the Gemini key as a network secret |
 | `SILA`, `SILI` + `tiles/sil/p/` (a silhouette for every animal card that has one: own, one member of the group, or a relative) | `build_silhouettes.py --animals cards.json picks.json [--resume]` (choose; `cards.json` is `[{n: name, path: [...]}]` from the page’s `ALL`, without the human family), look at every pick on contact sheets, correct `NAMES`/`GROUPS`/`BAD`, then `--fetch picks.json` (download once per drawing, 320 px, and write the data) |
 

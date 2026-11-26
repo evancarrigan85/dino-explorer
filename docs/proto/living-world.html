@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Living World Prototype</title>
+<style>
+  :root { --ink: #2a1a0c; --paper: #f4ead2; --bg: #17130d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--paper); font: 15px/1.45 Georgia, 'Times New Roman', serif; }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 10px 16px; }
+  .bar b { margin-right: 6px; }
+  .bar button { font: inherit; font-size: 14px; background: #3a2c1c; color: var(--paper); border: 1px solid #6b5536; border-radius: 18px; padding: 6px 13px; cursor: pointer; }
+  .bar button.on { background: #e3c57d; color: var(--ink); border-color: #e3c57d; }
+  #wrap { position: relative; max-width: 1400px; margin: 0 auto; }
+  canvas { display: block; width: 100%; height: auto; touch-action: none; }
+  .tip { position: absolute; pointer-events: none; background: rgba(250, 241, 218, 0.96); color: var(--ink); padding: 5px 9px; border-radius: 7px; font-size: 13px; display: none; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+  .tip b { display: block; }
+  .cap { max-width: 980px; padding: 10px 16px 24px; color: #eadfc4; }
+  .cap b { color: #fff; }
+  .cap small { display: block; color: #b9ab8c; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <b>Living world — a prototype of the close-up</b>
+  <button data-s="cret" class="on">Hell Creek, 66 million years ago</button>
+  <button data-s="ice">A Neanderthal rock shelter, about 50,000 years ago</button>
+  <button id="again">Zoom in again</button>
+  <button id="still">Hold still</button>
+</div>
+<div id="wrap"><canvas id="c" width="1400" height="820"></canvas><div class="tip" id="tip"></div></div>
+<div class="cap" id="cap"></div>
+<script>
+// Everything here is a function of the clock: no Math.random. Sizes are to scale with each other; colours are not known.
+const cv = document.getElementById('c'), c = cv.getContext('2d'), W = cv.width, H = cv.height;
+const TAU = Math.PI * 2, clamp = (v, a, b) => Math.max(a, Math.min(b, v)), lerp = (a, b, t) => a + (b - a) * t;
+const ss = t => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+const hash = (i, k = 0) => { const v = Math.sin(i * 127.1 + k * 311.7 + 17.3) * 43758.5453; return v - Math.floor(v); };
+const win = (t, a, b, r = 1.2) => ss((t - a) / r) * (1 - ss((t - b) / r));      // 0 → 1 between a and b, eased
+const INK = '#2a1a0c';
+const shade = (hex, f) => { const n = parseInt(hex.slice(1), 16), ch = [n >> 16, (n >> 8) & 255, n & 255].map(v => Math.round(clamp(f > 0 ? v + (255 - v) * f : v * (1 + f), 0, 255))); return '#' + ch.map(v => v.toString(16).padStart(2, '0')).join(''); };
+
+// ── the camera: it starts high and looking almost straight down (the map), then tilts and comes in (the close-up) ──
+const CAM = { th: 0.79, dist: 78, F: 825, tx: 0, tz: 50, x: 0, h: 0, z: 0 };
+function setCam(th, dist) { CAM.th = th; CAM.dist = dist; CAM.h = dist * Math.sin(th); CAM.z = CAM.tz - dist * Math.cos(th); CAM.x = CAM.tx; }
+function proj(x, y, z) {
+  const s = Math.sin(CAM.th), co = Math.cos(CAM.th), rx = x - CAM.x, ry = y - CAM.h, rz = z - CAM.z;
+  const d = -ry * s + rz * co, up = ry * co + rz * s;
+  return [W / 2 + CAM.F * rx / d, H / 2 - CAM.F * up / d, CAM.F / d];
+}
+
+// ── the ground: painted once per scene in world coordinates, drawn in perspective a row at a time ──
+let GX0 = -210, GX1 = 210, GZ0 = -70, GZ1 = 180; const PPM = 5;
+const tex = document.createElement('canvas'), tc = tex.getContext('2d'), TX = x => (x - GX0) * PPM, TZ = z => (GZ1 - z) * PPM;
+// value noise from a fixed table (no chance: the table is built from the hash), summed over octaves: soft, painterly ground
+const NT = new Float32Array(65536); for (let i = 0; i < 65536; i++) NT[i] = hash(i, 91);
+const vn = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  const h = (a, b) => NT[((a & 255) << 8) | (b & 255)]; return lerp(lerp(h(xi, yi), h(xi + 1, yi), u), lerp(h(xi, yi + 1), h(xi + 1, yi + 1), u), v); };
+const fbm = (x, y, o = 4) => { let s = 0, a = 0.5, f = 1, n = 0; for (let i = 0; i < o; i++) { s += a * vn(x * f + i * 17.3, y * f - i * 9.1); n += a; a *= 0.5; f *= 2.03; } return s / n; };
+const hex = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const mixc = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+function paintGround(colour) {     // colour(x, z) → [r, g, b], for every pixel of the ground, with a fine grain on top
+  tex.width = (GX1 - GX0) * PPM; tex.height = (GZ1 - GZ0) * PPM;
+  const img = tc.createImageData(tex.width, tex.height), d = img.data;
+  for (let py = 0; py < tex.height; py++) { const z = GZ1 - (py + 0.5) / PPM;
+    for (let px = 0; px < tex.width; px++) { const x = GX0 + (px + 0.5) / PPM, col = colour(x, z), g = 1 + (NT[(px * 7 + py * 131) & 65535] - 0.5) * 0.07, i = (py * tex.width + px) * 4;
+      d[i] = col[0] * g; d[i + 1] = col[1] * g; d[i + 2] = col[2] * g; d[i + 3] = 255; } }
+  tc.putImageData(img, 0, 0);
+}
+function drawGround() {
+  const s = Math.sin(CAM.th), co = Math.cos(CAM.th);
+  for (let sy = 0; sy < H; sy += 2) {
+    const v = (H / 2 - sy - 1) / CAM.F, den = s - v * co; if (den <= 0.02) continue;
+    const t = CAM.h / den, z = CAM.z + t * (co + v * s), half = t * (W / 2) / CAM.F;
+    c.drawImage(tex, TX(CAM.x - half), TZ(z), 2 * half * PPM, 1, 0, sy, W, 2);
+  }
+}
+function blot(x, z, r, col, a) { tc.globalAlpha = a; tc.fillStyle = col; tc.beginPath(); tc.ellipse(TX(x), TZ(z), r * PPM, r * PPM * 0.8, 0, 0, TAU); tc.fill(); tc.globalAlpha = 1; }
+
+// ── drawing helpers in an animal's own side view: metres, x forward, y up, the ground at y = 0 ──
+const bez = (p0, p1, p2, n) => { const o = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; o.push([u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0], u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1]]); } return o; };
+function tube(pts, w0, w1) {
+  const L = [], R = [];
+  pts.forEach((p, i) => { const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)], dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 1, w = lerp(w0, w1, i / (pts.length - 1)) / 2;
+    L.push([p[0] - dy / d * w, p[1] + dx / d * w]); R.push([p[0] + dy / d * w, p[1] - dx / d * w]); });
+  return L.concat(R.reverse());
+}
+function path(o, poly, smooth = true) {
+  const P = poly.map(p => [o.X + o.f * p[0] * o.s, o.Y - p[1] * o.s]);
+  c.beginPath();
+  if (!smooth) { P.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); return; }
+  const n = P.length; c.moveTo((P[n - 1][0] + P[0][0]) / 2, (P[n - 1][1] + P[0][1]) / 2);
+  for (let i = 0; i < n; i++) { const a = P[i], b = P[(i + 1) % n]; c.quadraticCurveTo(a[0], a[1], (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); }
+  c.closePath();
+}
+const rot = (p, a) => [p[0] * Math.cos(a) - p[1] * Math.sin(a), p[0] * Math.sin(a) + p[1] * Math.cos(a)];
+const add = (p, q) => [p[0] + q[0], p[1] + q[1]];
+function ik(hip, tgt, a, b, fwd) {
+  let dx = tgt[0] - hip[0], dy = tgt[1] - hip[1], d = clamp(Math.hypot(dx, dy), Math.abs(a - b) + 1e-3, a + b - 1e-3);
+  const base = Math.atan2(dy, dx), ang = Math.acos(clamp((a * a + d * d - b * b) / (2 * a * d), -1, 1));
+  const k1 = add(hip, [a * Math.cos(base + ang), a * Math.sin(base + ang)]), k2 = add(hip, [a * Math.cos(base - ang), a * Math.sin(base - ang)]);
+  const end = add(hip, [d * Math.cos(base), d * Math.sin(base)]);
+  return [(k1[0] > k2[0]) === fwd ? k1 : k2, end];
+}
+function footAt(q, stride, lift, x0) {
+  q = ((q % 1) + 1) % 1;
+  if (q < 0.62) return [x0 + stride * (0.5 - q / 0.62), 0];
+  const u = (q - 0.62) / 0.38; return [x0 + stride * (-0.5 + u), lift * Math.sin(Math.PI * u)];
+}
+
+// ── the rigs: one per kind of body, proportioned from each animal's outline; the head is its own little drawing ──
+const SP = {
+  trike: { name: 'Triceratops', fill: '#9a8052', len: 9,
+    body: [[-1.55, 2.3], [-0.6, 2.85], [0.6, 2.9], [1.8, 2.55], [2.65, 2.05], [2.7, 1.2], [1.7, 0.78], [0.2, 0.75], [-1.0, 1.1], [-1.65, 1.8]],
+    neck: { base: [2.35, 1.85], ctrl: [2.65, 1.95], tip: [2.95, 1.9], down: [3.05, 0.95], up: [3.0, 2.25], w: [0.78, 0.66] },
+    headA: -0.2, downA: -0.85, upA: 0.1,
+    tail: { base: [-1.45, 2.0], ctrl: [-2.8, 1.75], tip: [-4.3, 1.15], w: [0.85, 0.06] },
+    legs: [[0.05, 1.95, 1.0, 0.92, 0.3, 0.15, 0, 1, 0], [2.05, 1.6, 0.8, 0.75, 0.16, 2.2, 1, 1, 0.25], [-0.05, 1.95, 1.0, 0.92, 0.3, 0.05, 0, 0, 0.5], [1.95, 1.6, 0.8, 0.75, 0.16, 2.1, 1, 0, 0.75]],
+    lw: [0.46, 0.34, 0.25], stride: 1.3, lift: 0.28, head: trikeHead },
+  edmo: { name: 'Edmontosaurus', fill: '#7f8b6b', len: 12,
+    body: [[-1.75, 2.9], [-0.5, 3.4], [1.0, 3.2], [2.3, 2.7], [3.15, 2.15], [3.1, 1.4], [2.0, 1.15], [0.5, 1.3], [-0.9, 1.6], [-1.85, 2.3]],
+    neck: { base: [3.0, 2.15], ctrl: [3.65, 2.55], tip: [4.15, 2.7], down: [4.35, 0.75], up: [3.85, 3.6], w: [0.55, 0.36] },
+    headA: -0.25, downA: -1.15, upA: 0.15,
+    tail: { base: [-1.7, 2.6], ctrl: [-3.8, 2.65], tip: [-6.9, 2.05], w: [0.95, 0.05] },
+    legs: [[0.1, 2.55, 1.25, 1.12, 0.55, 0.25, 0, 1, 0], [2.75, 1.85, 0.92, 0.82, 0.12, 2.85, 1, 1, 0.25], [-0.1, 2.55, 1.25, 1.12, 0.55, 0.1, 0, 0, 0.5], [2.65, 1.85, 0.92, 0.82, 0.12, 2.75, 1, 0, 0.75]],
+    lw: [0.48, 0.3, 0.2], stride: 1.6, lift: 0.32, head: edmoHead },
+  rex: { name: 'Tyrannosaurus rex', fill: '#6f5a40', len: 12.3,
+    body: [[-1.45, 4.0], [0, 4.5], [1.3, 4.4], [2.4, 4.05], [3.0, 3.45], [2.7, 2.6], [1.6, 2.3], [0.4, 2.5], [-0.8, 2.95], [-1.55, 3.55]],
+    neck: { base: [2.6, 3.75], ctrl: [3.2, 4.35], tip: [3.65, 4.35], down: [3.95, 3.3], up: [3.45, 4.9], w: [0.66, 0.52] },
+    headA: -0.12, downA: -0.5, upA: 0.35,
+    tail: { base: [-1.4, 3.65], ctrl: [-3.6, 3.6], tip: [-6.8, 3.0], w: [1.05, 0.05] },
+    legs: [[0.1, 3.35, 1.4, 1.3, 0.68, 0.25, 0, 1, 0], [-0.1, 3.35, 1.4, 1.3, 0.68, 0.05, 0, 0, 0.5]],
+    arms: [[2.35, 3.0, 0.45, 0.4]], lw: [0.62, 0.38, 0.24], stride: 2.1, lift: 0.45, head: rexHead },
+  quetz: { name: 'Quetzalcoatlus', fill: '#b9aa8d', len: 4,
+    body: [[-0.55, 2.1], [0.05, 2.48], [0.8, 2.55], [1.15, 2.25], [0.95, 1.8], [0.2, 1.7], [-0.45, 1.85]],
+    neck: { base: [1.0, 2.4], ctrl: [1.45, 3.5], tip: [1.85, 4.55], down: [2.9, 0.9], up: [1.6, 4.8], w: [0.24, 0.15] },
+    headA: -0.35, downA: -1.25, upA: -0.1,
+    tail: { base: [-0.5, 2.0], ctrl: [-0.7, 1.95], tip: [-0.85, 1.85], w: [0.12, 0.02] },
+    legs: [[0.05, 1.9, 0.9, 0.9, 0.28, 0.1, 0, 1, 0], [0.95, 2.2, 1.25, 1.35, 0.1, 1.6, 1, 1, 0.25], [-0.05, 1.9, 0.9, 0.9, 0.28, 0.0, 0, 0, 0.5], [0.9, 2.2, 1.25, 1.35, 0.1, 1.5, 1, 0, 0.75]],
+    lw: [0.2, 0.15, 0.1], stride: 0.9, lift: 0.2, head: quetzHead, wingFold: true },
+  mammoth: { name: 'Woolly mammoth', fill: '#6b4a2e', len: 5.2, shaggy: true,
+    body: [[-1.15, 2.45], [-0.6, 2.95], [0.6, 3.38], [1.5, 3.12], [1.95, 2.5], [1.85, 1.6], [0.8, 1.32], [-0.4, 1.38], [-1.15, 1.9]],
+    neck: { base: [1.7, 2.6], ctrl: [1.9, 2.7], tip: [2.1, 2.7], down: [2.2, 2.35], up: [2.1, 2.9], w: [1.0, 0.9] },
+    headA: -0.1, downA: -0.35, upA: 0.1,
+    tail: { base: [-1.1, 2.3], ctrl: [-1.3, 2.0], tip: [-1.35, 1.5], w: [0.14, 0.06] },
+    legs: [[-0.35, 2.0, 1.0, 0.92, 0.12, -0.3, 0, 1, 0], [1.35, 2.0, 1.0, 0.92, 0.12, 1.4, 1, 1, 0.25], [-0.45, 2.0, 1.0, 0.92, 0.12, -0.4, 0, 0, 0.5], [1.25, 2.0, 1.0, 0.92, 0.12, 1.3, 1, 0, 0.75]],
+    lw: [0.62, 0.52, 0.5], stride: 1.1, lift: 0.22, head: mammothHead },
+  rhino: { name: 'Woolly rhinoceros', fill: '#7a5a3c', len: 3.6, shaggy: true,
+    body: [[-1.3, 1.55], [-0.6, 1.86], [0.5, 2.02], [1.3, 1.78], [1.62, 1.4], [1.5, 0.78], [0.4, 0.6], [-0.8, 0.7], [-1.32, 1.1]],
+    neck: { base: [1.42, 1.5], ctrl: [1.62, 1.42], tip: [1.82, 1.28], down: [1.9, 0.55], up: [1.85, 1.6], w: [0.62, 0.55] },
+    headA: -0.25, downA: -0.75, upA: 0.05,
+    tail: { base: [-1.3, 1.5], ctrl: [-1.45, 1.3], tip: [-1.5, 1.0], w: [0.1, 0.04] },
+    legs: [[-0.25, 1.1, 0.55, 0.5, 0.1, -0.2, 0, 1, 0], [1.2, 1.1, 0.55, 0.5, 0.1, 1.25, 1, 1, 0.25], [-0.35, 1.1, 0.55, 0.5, 0.1, -0.3, 0, 0, 0.5], [1.1, 1.1, 0.55, 0.5, 0.1, 1.15, 1, 0, 0.75]],
+    lw: [0.4, 0.32, 0.3], stride: 0.7, lift: 0.14, head: rhinoHead },
+};
+// legs: [rootX, rootY, a, b, m (foot segment), footX, front?, far?, phase]
+
+const HEAD = 1.18;                                   // heads a little large: they read better small
+function headTransform(o, tip, ang) { return p => { const q = add(tip, rot([p[0] * HEAD, p[1] * HEAD], ang)); return [o.X + o.f * q[0] * o.s, o.Y - q[1] * o.s]; }; }
+function hpath(Hf, pts, smooth = true) {
+  const P = pts.map(Hf); c.beginPath();
+  if (!smooth) { P.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); return; }
+  const n = P.length; c.moveTo((P[n - 1][0] + P[0][0]) / 2, (P[n - 1][1] + P[0][1]) / 2);
+  for (let i = 0; i < n; i++) { const a = P[i], b = P[(i + 1) % n]; c.quadraticCurveTo(a[0], a[1], (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); } c.closePath();
+}
+function eye(Hf, p, r, o) { const e = Hf(p), R = Math.max(1.6, r * 1.35 * o.s); c.fillStyle = '#fbf3df'; c.beginPath(); c.arc(e[0], e[1], R, 0, TAU); c.fill(); c.fillStyle = '#1a1008'; c.beginPath(); c.arc(e[0] + o.f * R * 0.2, e[1], R * 0.62, 0, TAU); c.fill(); c.fillStyle = '#fff'; c.beginPath(); c.arc(e[0] + o.f * R * 0.35 - R * 0.1, e[1] - R * 0.3, R * 0.22, 0, TAU); c.fill(); }
+function horn(Hf, a, b, w0, w1, col, o) { const pts = tube(bez(a, [(a[0] + b[0]) / 2 + 0.05, (a[1] + b[1]) / 2 + 0.12], b, 8), w0, w1); hpath(Hf, pts, false); c.fillStyle = col; c.fill(); c.lineWidth = Math.max(0.6, 0.035 * o.s); c.strokeStyle = INK; c.stroke(); }
+function inked(fill, o, w = 0.05) { c.fillStyle = fill; c.fill(); c.lineWidth = Math.max(0.8, w * o.s); c.strokeStyle = INK; c.stroke(); }
+
+function trikeHead(o, Hf, sp, P) {
+  const rim = []; for (let i = 0; i < 18; i++) { const a = i / 18 * TAU, r = 1 + 0.06 * Math.cos(i * 3); rim.push(add([-0.62, 0.72], rot([Math.cos(a) * 0.95 * r, Math.sin(a) * 0.82 * r], 0.75))); }
+  hpath(Hf, rim); inked(shade(sp.fill, 0.12), o);
+  for (let i = 0; i < 18; i += 2) { const p = Hf(rim[i]); c.fillStyle = shade(sp.fill, -0.15); c.beginPath(); c.arc(p[0], p[1], Math.max(1, 0.07 * o.s), 0, TAU); c.fill(); }
+  horn(Hf, [0.72, 0.58], [1.85, 1.22], 0.17, 0.03, '#d9cba5', o);
+  hpath(Hf, [[-0.15, 0.05], [0.1, 0.52], [0.65, 0.64], [1.2, 0.34], [1.65, 0.06], [1.82, -0.15], [1.55, -0.36], [0.9, -0.46], [0.25, -0.42]]); inked(sp.fill, o);
+  hpath(Hf, [[1.5, -0.04], [1.84, -0.15], [1.55, -0.36]], false); inked(shade(sp.fill, -0.35), o, 0.03);
+  horn(Hf, [0.62, 0.52], [1.72, 1.12], 0.18, 0.03, '#eee2c2', o);
+  horn(Hf, [1.33, 0.26], [1.55, 0.56], 0.13, 0.02, '#eee2c2', o);
+  eye(Hf, [0.52, 0.3], 0.085, o);
+}
+function edmoHead(o, Hf, sp, P) {
+  hpath(Hf, [[-0.15, 0.1], [0.2, 0.33], [0.72, 0.3], [1.15, 0.18], [1.42, 0.09], [1.52, -0.06], [1.38, -0.2], [0.9, -0.25], [0.3, -0.3], [-0.12, -0.16]]); inked(sp.fill, o);
+  hpath(Hf, [[1.05, 0.15], [1.45, 0.08], [1.53, -0.06], [1.38, -0.2], [1.05, -0.17]]); inked('#c9c09a', o, 0.03);
+  eye(Hf, [0.33, 0.16], 0.075, o);
+  const n = Hf([0.95, 0.06]); c.fillStyle = shade(sp.fill, -0.4); c.beginPath(); c.ellipse(n[0], n[1], Math.max(1, 0.12 * o.s), Math.max(0.6, 0.05 * o.s), 0, 0, TAU); c.fill();
+}
+function rexHead(o, Hf, sp, P) {
+  const jaw = (P.jaw || 0) * 0.5;
+  const J = p => Hf(add([0.05, -0.04], rot(add(p, [-0.05, 0.04]), -jaw)));
+  hpath(J, [[0.05, -0.04], [1.45, -0.12], [1.32, -0.32], [0.45, -0.44], [0.0, -0.26]]); inked(shade(sp.fill, 0.05), o);
+  if (jaw > 0.05) { c.fillStyle = '#7a2a1c'; hpath(Hf, [[0.1, -0.05], [1.45, -0.08], ...[[1.4, -0.12]].map(p => add([0.05, -0.04], rot(add(p, [-0.05, 0.04]), -jaw))), [0.2, -0.2]], false); c.fill(); }
+  hpath(Hf, [[-0.15, 0.36], [0.25, 0.62], [0.82, 0.56], [1.32, 0.33], [1.62, 0.1], [1.64, -0.06], [0.2, -0.08], [-0.16, 0.02]]); inked(sp.fill, o);
+  c.strokeStyle = '#f1e6cb'; c.lineWidth = Math.max(0.6, 0.035 * o.s); for (let i = 0; i < 7; i++) { const a = Hf([0.4 + i * 0.17, -0.07]), b = Hf([0.43 + i * 0.17, -0.16]); c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke(); }
+  c.strokeStyle = INK; c.lineWidth = Math.max(0.8, 0.05 * o.s); const b1 = Hf([0.3, 0.46]), b2 = Hf([0.65, 0.44]); c.beginPath(); c.moveTo(b1[0], b1[1]); c.lineTo(b2[0], b2[1]); c.stroke();
+  eye(Hf, [0.46, 0.32], 0.075, o);
+}
+function quetzHead(o, Hf, sp, P) {
+  hpath(Hf, [[-0.12, 0.12], [0.2, 0.5], [0.42, 0.22]], false); inked('#c98f5a', o, 0.03);
+  hpath(Hf, [[-0.22, 0.14], [0.3, 0.24], [1.4, 0.07], [2.45, -0.03], [1.4, -0.15], [0.3, -0.2]], false); inked(shade(sp.fill, 0.08), o, 0.035);
+  eye(Hf, [0.12, 0.06], 0.06, o);
+}
+function mammothHead(o, Hf, sp, P) {
+  const sw = Math.sin((P.t || 0) * 1.3 + (P.seed || 0)) * 0.12, gr = (P.graze || 0);
+  const trunk = tube(bez([0.72, -0.25], [1.05, -1.0 + gr * 0.2], [0.95 + sw, -1.95 + gr * 0.5], 12), 0.34, 0.13);
+  hpath(Hf, trunk, false); inked(shade(sp.fill, -0.05), o);
+  hpath(Hf, [[-0.3, 0.55], [0.1, 1.02], [0.55, 0.85], [0.82, 0.25], [0.78, -0.3], [0.42, -0.5], [-0.25, -0.42]]); inked(sp.fill, o);
+  hpath(Hf, [[-0.15, 0.25], [0.18, 0.42], [0.25, 0.0], [0.0, -0.22], [-0.2, -0.05]]); inked(shade(sp.fill, -0.18), o, 0.03);
+  const tus = tube(bez([0.62, -0.38], [1.4, -1.05], [1.72, -0.25], 12), 0.16, 0.05); hpath(Hf, tus, false); inked('#efe4c6', o, 0.035);
+  eye(Hf, [0.5, 0.22], 0.06, o);
+}
+function rhinoHead(o, Hf, sp, P) {
+  hpath(Hf, [[-0.12, 0.3], [0.5, 0.36], [0.92, 0.16], [1.12, -0.15], [0.92, -0.36], [0.2, -0.36], [-0.12, -0.1]]); inked(sp.fill, o);
+  horn(Hf, [0.9, 0.08], [1.38, 0.98], 0.22, 0.03, '#d8c9a3', o);
+  horn(Hf, [0.55, 0.26], [0.72, 0.62], 0.14, 0.02, '#d8c9a3', o);
+  hpath(Hf, [[-0.05, 0.3], [0.0, 0.6], [0.15, 0.32]], false); inked(shade(sp.fill, -0.1), o, 0.03);
+  eye(Hf, [0.45, 0.12], 0.055, o);
+}
+
+// one animal, standing at screen point (X, Y) on the ground, s pixels to the metre, facing f (+1 right, -1 left)
+function drawAnimal(sp, X, Y, s, f, P, k = 1) {
+  const o = { X, Y, s: s * k, f }, bob = (P.walk || 0) * 0.05 * Math.sin((P.ph || 0) * TAU * 2);
+  const up = (p, dy = 0) => [p[0], p[1] + bob + dy];
+  const ng = P.graze || 0, na = P.alert || 0, N = sp.neck;
+  const tip = [lerp(lerp(N.tip[0], N.down[0], ng), N.up[0], na), lerp(lerp(N.tip[1], N.down[1], ng), N.up[1], na) + bob];
+  const ctrl = up([lerp(N.ctrl[0], (N.base[0] + tip[0]) / 2 + 0.1, ng), lerp(N.ctrl[1], (N.base[1] + tip[1]) / 2 + 0.25, ng)]);
+  const hA = lerp(lerp(sp.headA, sp.downA, ng), sp.upA, na) + (P.nod || 0);
+  const tsw = (P.tailSway || 0) * 0.35;
+  const tail = tube(bez(up(sp.tail.base), up(sp.tail.ctrl, tsw * 0.4), up(sp.tail.tip, tsw), 14), sp.tail.w[0], sp.tail.w[1]);
+  const neck = tube(bez(up(N.base), ctrl, tip, 10), N.w[0], N.w[1]);
+  const body = sp.body.map(p => up(p));
+  const legs = sp.legs.map(L => {
+    const [rx, ry, a, b, m, x0, front, far, ph] = L, root = up([rx, ry]), w = P.walk || 0;
+    const ft = footAt((P.ph || 0) + ph, sp.stride * w, sp.lift * w, x0), ankle = add(ft, front ? [0.02, m * 0.9] : [-m * 0.38, m * 0.92]);
+    const [knee, end] = ik(root, ankle, a, b, !front);
+    return { far, front, pts: [root, knee, end, ft], L };
+  });
+  const gy = Math.min(...body.map(p => p[1])), gt = Math.max(...body.map(p => p[1]));
+  const grad = c.createLinearGradient(0, Y - gt * o.s, 0, Y - (gy - 0.3) * o.s);
+  grad.addColorStop(0, shade(sp.fill, 0.2)); grad.addColorStop(0.55, sp.fill); grad.addColorStop(1, shade(sp.fill, 0.28));
+  const leg = (g, dark) => {
+    const [r, kn, en, ft] = g.pts, [w1, w2, w3] = sp.lw.map(v => v * 1.45), S2 = p => [o.X + o.f * p[0] * o.s, o.Y - p[1] * o.s];
+    const segs = [[r, kn, w1 * (g.front ? 0.9 : 1.25)], [kn, en, w2], [en, ft, w3]];
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    for (const pass of [0, 1]) for (const [p, q, w] of segs) { const A = S2(p), B = S2(q);
+      c.strokeStyle = pass ? (dark ? shade(sp.fill, -0.28) : shade(sp.fill, -0.06)) : INK; c.lineWidth = Math.max(2, w * o.s) + (pass ? 0 : Math.max(1.6, 0.09 * o.s));
+      c.beginPath(); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); c.stroke(); }
+    const toe = S2(ft); c.fillStyle = dark ? shade(sp.fill, -0.45) : shade(sp.fill, -0.28);
+    c.beginPath(); c.ellipse(toe[0] + o.f * w3 * 0.3 * o.s, toe[1] + 0.02 * o.s, Math.max(1.6, w3 * 0.8 * o.s), Math.max(1, w3 * 0.34 * o.s), 0, 0, TAU); c.fill();
+  };
+  // far legs (and the far arm), darker and a little up the screen; then the body in one piece; then the near legs
+  c.save(); c.translate(0, -0.12 * o.s); legs.filter(g => g.far).forEach(g => leg(g, true)); c.restore();
+  if (sp.wingFold) { // the folded wing, seen from the side: a dark fan along the arm
+    const g = legs.find(g => g.front && !g.far); if (g) { path(o, [g.pts[0], g.pts[1], g.pts[2], add(g.pts[0], [-0.9, -0.2])], false); c.fillStyle = shade(sp.fill, -0.35); c.globalAlpha = 0.85; c.fill(); c.globalAlpha = 1; }
+  }
+  c.lineJoin = 'round';
+  for (const poly of [tail, body, neck]) { path(o, poly, poly === body); c.lineWidth = Math.max(1.6, 0.1 * o.s); c.strokeStyle = INK; c.stroke(); }
+  for (const poly of [tail, body, neck]) { path(o, poly, poly === body); c.fillStyle = grad; c.fill(); }
+  if (sp.shaggy) { // long hair hanging from the belly and the shoulders
+    c.strokeStyle = shade(sp.fill, -0.3); c.lineWidth = Math.max(0.8, 0.05 * o.s);
+    for (let i = 0; i < 16; i++) { const u = i / 15, p = [lerp(body[body.length - 2][0], body[5][0], u), lerp(body[body.length - 2][1], body[5][1], u)], len = 0.32 + 0.12 * Math.sin(i * 2.3);
+      const a = [o.X + o.f * p[0] * o.s, o.Y - p[1] * o.s], sw = Math.sin((P.t || 0) * 2 + i) * 0.04; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(a[0] + o.f * sw * o.s, a[1] + len * o.s); c.stroke(); }
+  }
+  // a highlight along the back
+  c.strokeStyle = 'rgba(255,248,225,0.35)'; c.lineWidth = Math.max(1, 0.12 * o.s); c.lineCap = 'round';
+  c.beginPath(); body.slice(0, 4).forEach((p, i) => { const q = [o.X + o.f * p[0] * o.s, o.Y - (p[1] - 0.18) * o.s]; i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); }); c.stroke();
+  legs.filter(g => !g.far).forEach(g => leg(g, false));
+  for (const A of sp.arms || []) { const r = up([A[0], A[1]]), e = add(r, [0.15, -A[2]]), h = add(e, [A[3] * 0.9, 0.1 + 0.05 * Math.sin((P.t || 0) * 2)]); path(o, tube([r, e, h], 0.2, 0.1), false); inked(shade(sp.fill, -0.1), o, 0.04); }
+  sp.head(o, headTransform(o, tip, hA), sp, P);
+}
+
+// ── plants, standing up, swayed by a gust that rolls across the scene ──
+function gust(t, x, z) { return 0.6 + 0.4 * Math.sin(t * 0.9 - x * 0.03 - z * 0.02); }
+function drawPlant(p, t) {
+  const [X, Y, s] = proj(p.x, 0, p.z), h = p.h * s, sw = Math.sin(t * (p.kind === 'grass' ? 2.4 : 1.3) + p.ph) * gust(t, p.x, p.z) * (p.kind === 'grass' ? 0.25 : p.kind === 'fern' || p.kind === 'horsetail' ? 0.1 : 0.035);
+  c.save(); c.translate(X, Y);
+  if (p.kind === 'broad' || p.kind === 'spruce' || p.kind === 'conifer') {
+    const tw = Math.max(1.5, p.h * 0.05 * s); c.fillStyle = '#5b4330'; c.beginPath(); c.moveTo(-tw, 0); c.lineTo(-tw * 0.5 + sw * h * 0.6, -h * 0.75); c.lineTo(tw * 0.5 + sw * h * 0.6, -h * 0.75); c.lineTo(tw, 0); c.fill();
+    if (p.kind === 'broad') {
+      const base = p.dark ? '#3e5a30' : '#4c6b38';
+      for (let i = 0; i < 7; i++) { const a = i * 2.4 + p.ph, r = h * (0.17 + 0.05 * hash(i, p.ph)), cx = Math.cos(a) * h * 0.2 + sw * h, cy = -h * 0.72 + Math.sin(a) * h * 0.12;
+        c.fillStyle = shade(base, -0.15 + 0.1 * Math.sin(a)); c.beginPath(); c.arc(cx, cy, r, 0, TAU); c.fill(); }
+      c.fillStyle = 'rgba(190,215,140,0.35)'; c.beginPath(); c.arc(-h * 0.08 + sw * h, -h * 0.86, h * 0.16, 0, TAU); c.fill();
+    } else {
+      const col = p.kind === 'spruce' ? '#2f4632' : '#3b5534';
+      for (let i = 0; i < 6; i++) { const u = i / 6, y0 = -h * (0.18 + u * 0.82), w = h * 0.24 * (1 - u * 0.85);
+        c.fillStyle = shade(col, i % 2 ? -0.08 : 0.05); c.beginPath(); c.moveTo(-w + sw * h * u, y0 + h * 0.12); c.lineTo(sw * h * (u + 0.1), y0 - h * 0.08); c.lineTo(w + sw * h * u, y0 + h * 0.12); c.closePath(); c.fill(); }
+    }
+  } else if (p.kind === 'fern') {
+    c.strokeStyle = '#5f8a45'; c.lineWidth = Math.max(1, 0.06 * s);
+    for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * 0.38, L = h * (0.8 + 0.2 * hash(i, p.ph)); c.beginPath(); c.moveTo(0, 0);
+      c.quadraticCurveTo(Math.cos(a) * L * 0.5, Math.sin(a) * L * 0.7, Math.cos(a) * L + sw * h * 2, Math.sin(a) * L * 0.6 + L * 0.15); c.stroke(); }
+  } else if (p.kind === 'horsetail') {
+    c.strokeStyle = '#6a8a4a'; c.lineWidth = Math.max(0.8, 0.05 * s);
+    for (let i = 0; i < 5; i++) { const x0 = (i - 2) * h * 0.1; c.beginPath(); c.moveTo(x0, 0); c.lineTo(x0 + sw * h * 2, -h * (0.7 + 0.3 * hash(i, p.ph))); c.stroke(); }
+  } else if (p.kind === 'shrub') {
+    c.fillStyle = '#3d5230'; c.beginPath(); c.ellipse(sw * h, -h * 0.3, h * 0.75, h * 0.34, 0, 0, TAU); c.fill();
+    for (let i = 0; i < 9; i++) { const a = i * 2.1 + p.ph, rx = Math.cos(a) * h * 0.5 + sw * h, ry = -h * (0.42 + 0.16 * Math.sin(a * 1.7)); c.fillStyle = shade('#5c7a42', -0.12 + 0.05 * (i % 4)); c.beginPath(); c.ellipse(rx, ry, h * 0.24, h * 0.15, a, 0, TAU); c.fill(); }
+    c.fillStyle = 'rgba(205,225,150,0.35)'; c.beginPath(); c.ellipse(-h * 0.15 + sw * h, -h * 0.6, h * 0.3, h * 0.12, 0, 0, TAU); c.fill();
+  } else if (p.kind === 'grass') {
+    c.strokeStyle = p.dry ? '#b5a46a' : '#9aa060'; c.lineWidth = Math.max(0.7, 0.05 * s);
+    for (let i = 0; i < 6; i++) { const x0 = (i - 2.5) * h * 0.14; c.beginPath(); c.moveTo(x0, 0); c.quadraticCurveTo(x0, -h * 0.5, x0 + sw * h * 2 + (i - 2.5) * h * 0.08, -h); c.stroke(); }
+  }
+  c.restore();
+}
+
+// ── people, small and simple ──
+function drawPerson(X, Y, s, f, P) {
+  const o = { X, Y, s, f }, ph = (P.ph || 0) * TAU, w = P.walk || 0, cr = P.crouch || 0, sit = P.sit || 0, kn = P.knap || 0;
+  const hip = [0, 0.95 - cr * 0.4 - sit * 0.5], sh = [0.03 + cr * 0.2, 1.42 - cr * 0.45 - sit * 0.5];
+  c.lineCap = 'round';
+  const limb = (a, b, wd, col) => { const A = [X + f * a[0] * s, Y - a[1] * s], B = [X + f * b[0] * s, Y - b[1] * s]; c.strokeStyle = col; c.lineWidth = Math.max(1.4, wd * s); c.beginPath(); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); c.stroke(); };
+  for (const side of [1, -1]) {
+    const q = Math.sin(ph + (side > 0 ? 0 : Math.PI)) * w, knee = sit ? [0.35, hip[1] + 0.15] : [hip[0] + q * 0.22 + cr * 0.25, hip[1] - 0.45 + cr * 0.15], ft = sit ? [0.6, 0.02] : [hip[0] + q * 0.35, 0.03];
+    limb(hip, knee, 0.13, side > 0 ? '#6e5034' : '#5a412a'); limb(knee, ft, 0.11, side > 0 ? '#b88866' : '#9a7053');
+  }
+  limb(hip, sh, 0.34, '#7a5a3a');
+  const arm = kn ? Math.sin((P.t || 0) * 7) * 0.25 : Math.sin(ph) * 0.3 * w;
+  limb(sh, [sh[0] + 0.15 + arm * 0.3, sh[1] - 0.55 + kn * 0.25], 0.1, '#b88866');
+  const hd = [X + f * (sh[0] + 0.04) * s, Y - (sh[1] + 0.2) * s]; c.fillStyle = '#c4946f'; c.beginPath(); c.arc(hd[0], hd[1], Math.max(2, 0.13 * s), 0, TAU); c.fill();
+  c.fillStyle = '#3a2a1c'; c.beginPath(); c.arc(hd[0] - f * 0.03 * s, hd[1] - 0.05 * s, Math.max(1.6, 0.12 * s), Math.PI * 1.05, Math.PI * 2.05); c.fill();
+}
+
+// ── a flying pterosaur, seen from a little below and to the side ──
+function drawFlyer(X, Y, s, f, t) {
+  const flap = Math.sin(t * 2.2), span = 10.5 * s / 2, by = Y;
+  c.fillStyle = '#9a8566'; c.strokeStyle = INK; c.lineWidth = 1;
+  for (const side of [1, -1]) { c.beginPath(); c.moveTo(X, by); c.quadraticCurveTo(X + side * span * 0.4, by - flap * span * 0.25 - span * 0.1, X + side * span, by - flap * span * 0.35 + span * 0.05); c.quadraticCurveTo(X + side * span * 0.5, by + span * 0.12, X, by + s * 0.6); c.fill(); c.stroke(); }
+  c.fillStyle = '#b9aa8d'; c.beginPath(); c.ellipse(X, by, s * 0.9, s * 0.35, 0, 0, TAU); c.fill(); c.stroke();
+  c.beginPath(); c.moveTo(X + f * s * 0.6, by - s * 0.2); c.lineTo(X + f * s * 3.4, by - s * 0.5); c.lineTo(X + f * s * 0.7, by + s * 0.1); c.fill(); c.stroke();
+}
+
+// ── the scenes ──
+const track = (keys, t) => {           // [[time, x, z], ...] → position and velocity, eased between keys
+  let i = 0; while (i < keys.length - 2 && t > keys[i + 1][0]) i++;
+  const a = keys[i], b = keys[i + 1], u = ss((t - a[0]) / (b[0] - a[0] || 1)), x = lerp(a[1], b[1], u), z = lerp(a[2], b[2], u);
+  const u2 = ss((t + 0.1 - a[0]) / (b[0] - a[0] || 1)); return { x, z, vx: (lerp(a[1], b[1], u2) - x) * 10, vz: (lerp(a[2], b[2], u2) - z) * 10 };
+};
+const SCENES = {
+  cret: {
+    loop: 48, sky: '#cfc39a', tz: 50, dist: 58,
+    cap: '<b>Hell Creek, Montana, 66 million years ago.</b> Edmontosaurus come down to the river to drink; three Triceratops graze on the near bank; a Quetzalcoatlus stalks the shallows for small prey and another flies over. Then a Tyrannosaurus rex walks out of the trees: heads go up, the herd moves off, and one Triceratops turns its horns to face it. These animals lived here together (their cards and sources). The meeting is a scene of the kind their bones show — a Triceratops skull with a brow horn bitten off by a T. rex, healed — not one recorded moment.<small>The animals are drawn a little larger than life against the land so they can be seen, and to scale with each other; their colours are not known. The plants follow the Hell Creek flora: flowering trees, conifers, ferns and horsetails, and no grass. A prototype of how the close-up of the map could look.</small>',
+    river: x => 66 + 8 * Math.sin(x * 0.035) - x * 0.08 + 2 * Math.sin(x * 0.11), riverW: x => 7 + 1.5 * Math.sin(x * 0.05 + 1),
+    colour(x, z) {
+      const n = fbm(x * 0.03, z * 0.03), m = fbm(x * 0.12 + 40, z * 0.12), dz = Math.abs(z - this.river(x)), w = this.riverW(x);
+      let col = mixc(hex('#8d8a58'), hex('#6c7845'), ss((n - 0.42) * 4));               // dry ground ↔ fern cover
+      col = mixc(col, hex('#a39766'), ss((m - 0.62) * 6) * 0.6);                        // bare patches
+      col = mixc(col, hex('#53623a'), ss((z - 96) / 8) * (0.7 + 0.3 * n));              // shade under the forest
+      if (dz < w + 6) col = mixc(col, hex('#c4b385'), ss((w + 6 - dz) / 2.5));            // sand along the river
+      if (dz < w + 1.6) col = mixc(col, hex('#7c6c4c'), ss((w + 1.6 - dz) / 1.2));         // wet mud at the edge
+      if (dz < w) col = mixc(hex('#6f8f86'), hex('#46666a'), ss((w - dz) / (w * 0.7)) * (0.8 + 0.2 * m));   // water: shallow at the edge
+      return col;
+    },
+    plants() {
+      const P = [], R = this.river.bind(this);
+      for (let i = 0; i < 130; i++) { const x = -200 + hash(i, 12) * 400, z = 99 + hash(i, 13) * 70; P.push({ kind: hash(i, 11) < 0.7 ? 'broad' : 'conifer', x, z, h: 15 + hash(i, 14) * 13, ph: i, dark: hash(i, 15) < 0.4 }); }
+      for (let i = 0; i < 30; i++) { const x = -200 + hash(i, 17) * 125, z = 84 + hash(i, 18) * 28; P.push({ kind: hash(i, 16) < 0.6 ? 'broad' : 'conifer', x, z, h: 12 + hash(i, 19) * 10, ph: i + 50 }); }
+      // stands of horsetails and ferns at the water's edge, thick in places and thin in others
+      for (let i = 0; i < 46; i++) { const x0 = -110 + hash(i, 20) * 220, side = hash(i, 21) < 0.5 ? -1 : 1, kind = hash(i, 23) < 0.5 ? 'horsetail' : 'fern', n = 4 + Math.floor(hash(i, 24) * 9);
+        for (let j = 0; j < n; j++) { const x = x0 + (hash(i * 13 + j, 25) - 0.5) * 7, z = R(x) + side * (this.riverW(x) + 1 + hash(i * 13 + j, 26) * 3.5); P.push({ kind, x, z, h: 1.2 + hash(i * 13 + j, 27) * 1.3, ph: i * 3 + j }); } }
+      // fern beds and low shrubs on the plain, in patches
+      for (let i = 0; i < 40; i++) { const x0 = -100 + hash(i, 30) * 200, z0 = 26 + hash(i, 31) * 85, n = 3 + Math.floor(hash(i, 32) * 7);
+        if (Math.abs(z0 - R(x0)) < this.riverW(x0) + 4) continue;
+        for (let j = 0; j < n; j++) P.push({ kind: hash(i, 33) < 0.7 ? 'fern' : 'shrub', x: x0 + (hash(i * 7 + j, 34) - 0.5) * 9, z: z0 + (hash(i * 7 + j, 35) - 0.5) * 6, h: 1.2 + hash(i * 7 + j, 36) * 1.4, ph: i * 5 + j }); }
+      P.push({ kind: 'broad', x: -44, z: 30, h: 17, ph: 7 }, { kind: 'conifer', x: 52, z: 36, h: 21, ph: 9 });
+      return P;
+    },
+    actors(t) {
+      const A = [], T = t;
+      // Edmontosaurus: down to the far bank to drink, heads up when the T. rex shows, then away
+      const ek = [[0, 120, 125], [12, 40, 84], [27, 40, 84], [30.5, 44, 86], [44, 130, 130], [48, 140, 136]];
+      const off = [[0, 0], [-8, 5], [8, 4], [-4, -3], [12, -1]];
+      off.forEach((d, i) => { const q = track(ek, T - i * 0.6), drink = win(T, 13 + i * 0.4, 27.5, 1.5), look = i === 2 ? win(T, 18, 21.5, 0.8) * drink : 0;
+        A.push({ sp: SP.edmo, x: q.x + d[0], z: q.z + d[1], f: q.vx < -0.05 ? -1 : q.vx > 0.05 ? 1 : -1, P: { walk: clamp(Math.hypot(q.vx, q.vz) / 3, 0, 1), ph: T * 0.55 + i * 0.37, graze: drink * (1 - look), alert: Math.max(look, win(T, 28.5, 33, 0.7)), tailSway: Math.sin(T * 1.1 + i), t: T }, k: i === 4 ? 0.72 : 1 - i * 0.03, label: i === 0 ? 'Edmontosaurus (a herd)' : null, note: 'Duck-billed plant-eaters, the commonest big animal of Hell Creek.' }); });
+      // Triceratops: three graze on the near bank; heads up at the T. rex; the nearest turns to face it
+      [[-26, 36], [-8, 43], [-36, 46]].forEach((p, i) => { const q = track([[0, p[0], p[1]], [16, p[0] + 8, p[1] + 2], [30, p[0] + 3, p[1] - 2], [48, p[0], p[1]]], T), al = win(T, 29.5 + i * 0.4, 38.5, 0.8);
+        const face = i === 0 && T > 31 && T < 38.5 ? -1 : (q.vx >= 0 ? 1 : -1);
+        A.push({ sp: SP.trike, x: q.x, z: q.z, f: face, P: { walk: clamp(Math.hypot(q.vx, q.vz) / 1.2, 0, 1) * (1 - al), ph: T * 0.4 + i * 0.5, graze: (1 - al) * (0.6 + 0.4 * Math.sin(T * 0.8 + i)), alert: al, nod: 0.05 * Math.sin(T * 3 + i), tailSway: Math.sin(T * 0.9 + i), t: T }, k: i === 2 ? 0.8 : 1, label: i === 0 ? 'Triceratops (a group)' : null, note: 'Its card: a skull with a brow horn bitten off by a T. rex — and healed.' }); });
+      // Tyrannosaurus rex: out of the trees, stops, calls, goes back
+      { const q = track([[0, -150, 130], [23, -150, 130], [33, -58, 104], [39, -58, 104], [47, -150, 132], [48, -150, 132]], T), stand = win(T, 33, 39, 0.8);
+        A.push({ sp: SP.rex, x: q.x, z: q.z, f: q.vx < -0.05 ? -1 : 1, P: { walk: clamp(Math.hypot(q.vx, q.vz) / 4, 0, 1), ph: T * 0.42, alert: stand * 0.8, jaw: win(T, 35, 37.3, 0.4), tailSway: Math.sin(T * 0.8) * 0.5, t: T }, label: 'Tyrannosaurus rex', note: 'The great predator of Hell Creek.' }); }
+      // Quetzalcoatlus: one stalks the near bank, pecking; one flies over
+      { const q = track([[0, 4, 50], [24, 30, 53], [48, 4, 50]], T), peck = Math.pow(Math.max(0, Math.sin(T * 1.6)), 6);
+        A.push({ sp: SP.quetz, x: q.x, z: q.z, f: q.vx < 0 ? -1 : 1, P: { walk: clamp(Math.hypot(q.vx, q.vz) / 1.5, 0, 1) * (1 - peck), ph: T * 0.6, graze: peck, t: T }, label: 'Quetzalcoatlus', note: 'A giant pterosaur that hunted on foot as well as flying (a reading of its bones; still argued).' }); }
+      if (T > 2 && T < 24) { const u = (T - 2) / 22; A.push({ fly: true, x: lerp(-150, 150, u), y: 30, z: 96, f: 1, label: 'Quetzalcoatlus', note: 'Wingspan about 10 metres.' }); }
+      return A;
+    },
+  },
+  ice: {
+    loop: 50, sky: '#d9dccf', tz: 90, dist: 60,
+    cap: '<b>A Neanderthal rock shelter, about 50,000 years ago.</b> Smoke drifts from the hearths at the cave mouth; one person tends the fire, one works stone, two go down to the river and back. A woolly mammoth family crosses the valley, the calf at its mother’s side; a woolly rhinoceros grazes the steppe. Neanderthals organised their rock shelters around several hearths (their card and sources). Not one real place: a sketch of the kind of place.<small>The mammoths are drawn as a family group, as elephants live today — a guess from their living relatives. Smoke only rises from caves whose card names hearths or fire. The animals are drawn a little larger than life so they can be seen. A prototype of how the close-up of the map could look.</small>',
+    river: x => 84 + x * 0.1 + 3 * Math.sin(x * 0.05), riverW: x => 5 + 1.2 * Math.sin(x * 0.07 + 2),
+    cliff: { z: 136, x0: -210, x1: 70, top: x => 24 + 4 * Math.sin(x * 0.07) + 2 * Math.sin(x * 0.23), cave: [-44, -18, 10] },
+    colour(x, z) {
+      const n = fbm(x * 0.03, z * 0.03), m = fbm(x * 0.09 + 13, z * 0.09), sn = fbm(x * 0.05 + 70, z * 0.05 - 20, 5), dz = Math.abs(z - this.river(x)), w = this.riverW(x);
+      let col = mixc(hex('#b5aa7b'), hex('#9d9a6a'), ss((n - 0.45) * 4));               // dry steppe ↔ greener
+      col = mixc(col, hex('#c8bc90'), ss((m - 0.6) * 5) * 0.7);
+      col = mixc(col, hex('#f0f1ec'), ss((sn - 0.6) * 9));                              // snow lying in drifts
+      if (z > this.cliff.z - 16) col = mixc(col, mixc(hex('#cfc6ae'), hex('#b3a88f'), m), ss((z - (this.cliff.z - 16)) / 4));   // scree under the cliff
+      const path = Math.abs(x - lerp(-30, -10, clamp((this.cliff.z - 4 - z) / (this.cliff.z - 4 - this.river(-10)), 0, 1))); if (z < this.cliff.z - 2 && z > this.river(-10) + 4 && path < 1.1) col = mixc(col, hex('#9d8f74'), 0.7);   // a worn path to the water
+      if (dz < w + 3) col = mixc(col, hex('#c7c0aa'), ss((w + 3 - dz) / 1.5));            // gravel banks
+      if (dz < w) col = mixc(hex('#7d9ea3'), hex('#55777f'), ss((w - dz) / (w * 0.7)));  // cold water
+      return col;
+    },
+    plants() {
+      const P = [], R = this.river.bind(this);
+      for (let i = 0; i < 70; i++) { const x0 = -100 + hash(i, 40) * 200, z0 = 58 + hash(i, 41) * 72, n = 4 + Math.floor(hash(i, 42) * 8);
+        if (Math.abs(z0 - R(x0)) < this.riverW(x0) + 3 || z0 > this.cliff.z - 6) continue;
+        for (let j = 0; j < n; j++) P.push({ kind: 'grass', x: x0 + (hash(i * 9 + j, 43) - 0.5) * 8, z: z0 + (hash(i * 9 + j, 44) - 0.5) * 5, h: 0.5 + hash(i * 9 + j, 45) * 0.5, ph: i * 9 + j, dry: hash(i, 46) < 0.5 }); }
+      for (let i = 0; i < 22; i++) P.push({ kind: 'spruce', x: 40 + hash(i, 47) * 120, z: 108 + hash(i, 48) * 50, h: 9 + hash(i, 49) * 8, ph: i });
+      for (let i = 0; i < 26; i++) { const x = -110 + hash(i, 50) * 220, z = R(x) + (hash(i, 51) < 0.5 ? -1 : 1) * (this.riverW(x) + 2.5); P.push({ kind: 'shrub', x, z, h: 1.1 + hash(i, 52), ph: i + 60 }); }
+      return P;
+    },
+    actors(t) {
+      const A = [], T = t;
+      const mk = [[0, 90, 116], [50, -110, 110]];
+      [[0, 0, 1], [-4.5, -2.5, 0.48], [9, 4, 0.95]].forEach((d, i) => { const q = track(mk, T - i * 0.8 + (i === 1 ? 0.5 : 0));
+        A.push({ sp: SP.mammoth, x: q.x + d[0], z: q.z + d[1], f: -1, P: { walk: 1, ph: T * 0.5 + i * 0.3, graze: 0.25 * win(T, 20 + i, 26 + i, 1), tailSway: Math.sin(T + i), t: T, seed: i }, k: d[2], label: i === 0 ? 'Woolly mammoth (a family group)' : null, note: i === 1 ? 'A calf at its mother’s side.' : 'Drawn as a family, as elephants live today — a guess.' }); });
+      { const q = track([[0, 22, 66], [25, 12, 63], [50, 22, 66]], T), up = win(T, 19, 23.5, 0.8);
+        A.push({ sp: SP.rhino, x: q.x, z: q.z, f: q.vx < 0 ? -1 : 1, P: { walk: clamp(Math.hypot(q.vx, q.vz) / 0.8, 0, 1) * (1 - up), ph: T * 0.45, graze: (1 - up) * 0.9, alert: up, tailSway: Math.sin(T * 1.3), t: T }, label: 'Woolly rhinoceros', note: 'A cold-steppe grazer with two horns.' }); }
+      A.push({ person: true, x: -31, z: 133, f: 1, P: { sit: 1, t: T }, note: 'Tending the hearth.' });
+      A.push({ person: true, x: -22, z: 131, f: -1, P: { knap: 1, crouch: 0.6, t: T }, label: 'Neanderthals', note: 'Their shelters were organised around several hearths (their card).' });
+      const wet = this.river(-10) + this.riverW(-10) + 1.5, pk = [[0, -29, 130], [5, -29, 130], [19, -10, wet], [27, -10, wet], [41, -29, 130], [50, -29, 130]];
+      [0, 1].forEach(i => { const q = track(pk, T - i * 1.1), sp = Math.hypot(q.vx, q.vz);
+        A.push({ person: true, x: q.x + i * 1.6, z: q.z + i * 0.8, f: q.vx < 0 ? -1 : 1, P: { walk: clamp(sp / 1, 0, 1), ph: T * 1.1 + i * 0.5, crouch: win(T, 19.5 + i, 26.5, 0.6), t: T }, note: 'Going down to the water.' }); });
+      return A;
+    },
+  },
+};
+
+// ── the frame ──
+const BIG = 1.35;                                    // animals and people drawn this much larger than life against the land
+let S = SCENES.cret, plants = [], still = false, t0 = performance.now(), intro = 0, hits = [];
+const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function useScene(id) {
+  S = SCENES[id]; CAM.tz = S.tz; GZ0 = S.tz - 125; GZ1 = S.tz + 135; paintGround((x, z) => S.colour(x, z)); plants = S.plants(); t0 = performance.now(); intro = 0;
+  document.getElementById('cap').innerHTML = S.cap;
+  document.querySelectorAll('[data-s]').forEach(b => b.classList.toggle('on', b.dataset.s === id));
+}
+function drawCliff(t) {
+  const C = S.cliff; if (!C) return;
+  const pts = []; for (let x = C.x0; x <= C.x1; x += 3) pts.push([x, C.top(x)]);
+  const top = pts.map(p => proj(p[0], p[1], C.z)), bot = pts.map(p => proj(p[0], 0, C.z));
+  const g = c.createLinearGradient(0, Math.min(...top.map(p => p[1])), 0, Math.max(...bot.map(p => p[1])));
+  g.addColorStop(0, '#e2dac4'); g.addColorStop(0.6, '#cdc2a6'); g.addColorStop(1, '#a99c80');
+  c.beginPath(); top.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); for (let i = bot.length - 1; i >= 0; i--) c.lineTo(bot[i][0], bot[i][1]); c.closePath(); c.fillStyle = g; c.fill();
+  c.strokeStyle = 'rgba(90,75,55,0.35)'; c.lineWidth = 1.2;                    // limestone beds
+  for (let k = 1; k < 7; k++) { c.beginPath(); pts.forEach((p, i) => { const q = proj(p[0], p[1] * k / 7 + Math.sin(p[0] * 0.3 + k) * 0.3, C.z); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); }); c.stroke(); }
+  c.strokeStyle = INK; c.lineWidth = 1.5; c.beginPath(); top.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.stroke();
+  // the cave mouth, with the hearth glowing inside
+  const [a, b, h] = C.cave; c.beginPath();
+  for (let i = 0; i <= 20; i++) { const u = i / 20, x = lerp(a, b, u), y = h * Math.sin(Math.PI * u) * (0.8 + 0.2 * Math.sin(u * 9)); const q = proj(x, y, C.z - 0.1); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); }
+  c.closePath(); c.fillStyle = '#2b2219'; c.fill();
+  const f = proj((a + b) / 2 - 2, 1, C.z - 0.2), pul = 0.75 + 0.15 * Math.sin(t * 6.3) + 0.1 * Math.sin(t * 11.1);
+  const gl = c.createRadialGradient(f[0], f[1], 0, f[0], f[1], 60 * pul); gl.addColorStop(0, 'rgba(255,200,110,0.95)'); gl.addColorStop(0.35, 'rgba(240,120,40,0.55)'); gl.addColorStop(1, 'rgba(120,40,10,0)');
+  c.fillStyle = gl; c.beginPath(); c.arc(f[0], f[1], 60 * pul, 0, TAU); c.fill();
+}
+function drawSmoke(t) {
+  const C = S.cliff; if (!C) return;
+  const [a, b, h] = C.cave, base = [(a + b) / 2 - 1, h * 0.9, C.z - 1.5];
+  for (let i = 0; i < 46; i++) {
+    const age = ((t * 0.07 + i / 46) % 1), x = base[0] + age * 34 + Math.sin(i * 1.7 + t * 0.5) * 2 * age, y = base[1] + age * 38, z = base[2] - age * 6;
+    const [X, Y, s] = proj(x, y, z), r = (1.5 + age * 7) * s;
+    c.fillStyle = `rgba(232,230,226,${0.32 * (1 - age) * Math.min(1, age * 8)})`; c.beginPath(); c.arc(X, Y, r, 0, TAU); c.fill();
+  }
+}
+function drawWater(t) {
+  c.lineCap = 'round';
+  for (let i = 0; i < 150; i++) {
+    const x = GX0 + ((hash(i, 60) * (GX1 - GX0) + t * (4 + hash(i, 61) * 3)) % (GX1 - GX0)), off = (hash(i, 62) - 0.5) * S.riverW(x) * 1.5, z = S.river(x) + off;
+    const p = proj(x, 0, z), q = proj(x + 2.5, 0, S.river(x + 2.5) + off), a = 0.25 + 0.25 * Math.sin(t * 2 + i);
+    c.strokeStyle = `rgba(235,245,240,${a})`; c.lineWidth = Math.max(0.8, 0.18 * p[2]); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
+  }
+}
+function shadowAt(x, z, len, k = 1, alt = 0) { const p = proj(x + len * 0.12 + alt * 0.4, 0, z - len * 0.08 - alt * 0.5); c.fillStyle = alt ? 'rgba(30,22,10,0.13)' : 'rgba(30,22,10,0.26)'; c.beginPath(); c.ellipse(p[0], p[1], len * 0.45 * k * p[2], len * 0.11 * k * p[2], 0, 0, TAU); c.fill(); }
+function label(text, X, Y) { c.font = 'italic 600 16px Georgia, serif'; c.textAlign = 'center'; c.textBaseline = 'top'; c.lineWidth = 4; c.strokeStyle = 'rgba(250,242,220,0.9)'; c.strokeText(text, X, Y); c.fillStyle = INK; c.fillText(text, X, Y); }
+
+function frame(now) {
+  const t = still || reduce ? 21 : (now - t0) / 1000, lt = ((t % S.loop) + S.loop) % S.loop;
+  intro = still || reduce ? 1 : Math.min(1, intro + 1 / 120);
+  const k = ss(intro); setCam(lerp(1.45, 0.8, k), lerp(240, S.dist, k));          // from looking down on the map to the tilted close-up
+  c.fillStyle = S.sky; c.fillRect(0, 0, W, H);
+  drawGround(); drawWater(t);
+  const show = ss((intro - 0.45) / 0.4);                                          // life stands up as the view tilts
+  c.globalAlpha = show;
+  const acts = S.actors(lt), items = [];
+  for (const p of plants) items.push({ z: p.z, draw: () => drawPlant(p, t) });
+  for (const a of acts) items.push({ z: a.z, a });
+  if (S.cliff) items.push({ z: S.cliff.z, draw: () => { c.globalAlpha = 1; drawCliff(t); c.globalAlpha = show; } }, { z: S.cliff.z - 1.6, draw: () => drawSmoke(t) });
+  for (const a of acts) { if (a.fly) { shadowAt(a.x, a.z, 10 * BIG, 1, a.y); continue; } shadowAt(a.x, a.z, (a.person ? 0.8 : a.sp.len) * BIG, a.k || 1); }
+  items.sort((p, q) => q.z - p.z); hits = []; const labels = [];
+  for (const it of items) {
+    if (it.draw) { it.draw(); continue; }
+    const a = it.a;
+    if (a.fly) { const [X, Y, s] = proj(a.x, a.y, a.z); drawFlyer(X, Y, s, a.f, t); hits.push([X - 30, Y - 20, X + 30, Y + 20, a.label, a.note]); if (a.label) labels.push([a.label, X, Y + 18]); continue; }
+    const [X, Y, s] = proj(a.x, 0, a.z);
+    if (a.person) drawPerson(X, Y, s * BIG, a.f, a.P); else drawAnimal(a.sp, X, Y, s * BIG, a.f, a.P, a.k || 1);
+    const len = (a.person ? 1 : a.sp.len) * (a.k || 1) * s * BIG, ht = (a.person ? 1.7 : a.sp.len * 0.45) * (a.k || 1) * s * BIG;
+    hits.push([X - len * 0.55, Y - ht, X + len * 0.55, Y + 4, a.person ? 'Neanderthal' : a.sp.name, a.note]);
+    if (a.label) labels.push([a.label, X, Y + 6]);
+  }
+  for (const L of labels) label(...L);
+  if (S === SCENES.ice) {                                                         // snow on the wind
+    c.fillStyle = 'rgba(255,255,255,0.75)';
+    for (let i = 0; i < 120; i++) { const x = ((hash(i, 70) * W + t * (40 + hash(i, 71) * 30)) % (W + 40)) - 20, y = ((hash(i, 72) * H + t * (25 + hash(i, 73) * 20)) % (H + 20)) - 10; c.beginPath(); c.arc(x, y, 1 + hash(i, 74) * 1.6, 0, TAU); c.fill(); }
+  }
+  c.globalAlpha = 1;
+  requestAnimationFrame(frame);
+}
+// hover or tap: what is it?
+const tip = document.getElementById('tip');
+function pick(e) {
+  const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
+  const h = hits.slice().reverse().find(b => x > b[0] && x < b[2] && y > b[1] && y < b[3]);
+  if (!h) { tip.style.display = 'none'; return; }
+  tip.innerHTML = '<b>' + h[4] + '</b>' + (h[5] || ''); tip.style.display = 'block';
+  tip.style.left = Math.min(r.width - 290, e.clientX - r.left + 12) + 'px'; tip.style.top = (e.clientY - r.top + 12) + 'px';
+}
+cv.addEventListener('pointermove', pick); cv.addEventListener('pointerdown', pick); cv.addEventListener('pointerleave', () => tip.style.display = 'none');
+document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => useScene(b.dataset.s));
+document.getElementById('again').onclick = () => { intro = 0; };
+document.getElementById('still').onclick = e => { still = !still; e.target.classList.toggle('on', still); };
+window.__frame = (scene, t, tilt = 1) => { useScene(scene); t0 = performance.now() - t * 1000; intro = tilt; };
+useScene('cret'); requestAnimationFrame(frame);
+</script>
+</body>
+</html>

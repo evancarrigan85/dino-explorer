@@ -4,6 +4,53 @@ Written 25 Nov 2026. Evan: “Why can't the environment be more richly drawn —
 This is the reference for every living scene (`app/`), painting (`tools/paint.py`) and future illustration. Read it with
 `CLAUDE.md` (sources, uncertainty) and `docs/REBUILD.md` › Living scenes (seen from the sky only).
 
+## Before Us, and its style: Deep-Time History Painting (Evan, 25 Nov)
+
+**The atlas is the reconstruction; the painting is how a reader experiences it.** Paint the ancient world as a place
+where something was happening, with the emotional force of a great history painting — then let the reader open the
+image like a field notebook and see how we know what they are looking at.
+
+- **Lineage.** Henry De la Beche’s *Duria Antiquior* (1830), drawn from Mary Anning’s finds: the first picture of a whole
+  fossil world, a sea full of creatures interacting rather than specimens in a row — borrow the ambition, not the 1830
+  anatomy. John Martin’s *The Destruction of Pompeii and Herculaneum* (1822): the landscape is what is happening to
+  everyone in the picture; Martin also painted *The Country of the Iguanodon* (1837). From the Renaissance history
+  painters: arrange bodies, gestures and light so the eye knows where to land first and what to find next. (All long
+  dead: their names may go in a prompt; a living artist’s never.)
+- **Borrow their power to direct attention and make a landscape feel consequential; never their certainty about what
+  happened.** If the evidence supports a changing coastline but not a flood, find the drama in the coastline. If the
+  research leaves two different landscapes plausible, show the reader the other one rather than hiding the choice.
+- **Every scene needs a story, but not every story needs a disaster.** A shoreline going quiet, an animal stepping onto
+  an exposed mudflat, two shores slowly pulling apart can carry a chapter.
+- **Three working labels** for everything in a picture: **documented** (a fossil or rock at this site shows it),
+  **inferred** (several lines of evidence support it: the habitat, a body rebuilt from relatives), **imagined** (the
+  light, the angle, the instant one animal turns toward another). All three belong in one painting; the atlas never
+  quietly promotes the third into the first.
+- **Two views of every site.** *The Scene*: the painting alone, nothing competing with it. *The Evidence*: tap anything
+  to see what was found, what researchers infer and what the artist supplied, with the sources — and *Where was this?
+  What lived here? How do we know?* A fossil or a rock layer can take the reader from the picture to the evidence, and a
+  fragment of rock can take them forward into the world it came from.
+
+### The research builds the world before the artist enters it
+
+Every scene starts as a **reconstruction brief** (`content/briefs/<site>.json`), written before any painting is made.
+It turns papers, specimens, maps and expert input into decisions the artist can use, in five layers:
+
+| Layer | What it establishes |
+|---|---|
+| Place and time | where the evidence is found today, where that land was then, the age range, which plate model |
+| Landscape and climate | what can be supported about coasts, water, terrain, plants and climate — and what is plausible but not recoverable |
+| Life | what is documented at the site, what is inferred from nearby or comparable deposits, what is too uncertain to show — and whether the evidence supports showing them **together**, not just in the same broad interval |
+| The moment | what the picture is about: a change in the land, a relationship, ordinary life; if the encounter is invented, it says so |
+| History of discovery | who found it, who interpreted it, what later work changed — kept apart from the story set in deep time |
+
+**Sources attach to decisions, not just to the page.** A bibliography says what was read; a decision record says why
+the shoreline is there, why that animal is included, why one reconstruction was chosen over another. Each decision has
+its words for the reader, its status (documented / inferred / imagined), its reason, its verified papers, the
+alternatives, and how it is painted. The build refuses a documented or inferred decision without a Crossref-verified
+paper. `node tools/briefs.mjs --ref <paper>` lists every scene and decision that rests on a paper, so when a new paper
+moves a deposit’s age or reinterprets a fossil, it shows which scenes need review — and “current as of” on a brief means
+its decisions were checked on that date. The painter’s prompt and the art reviewer’s checklist are built from the brief.
+
 ## The one rule
 
 **Rich, but bound by evidence.** Richness comes from texture, light, weather and the small true things a place is made
@@ -83,6 +130,40 @@ Mark Witton (pterosaurs and their ecology), Davide Bonadonna (Spinosaurus), Juli
    still, gliding or drifting only.
 7. **The finish:** a warm film grade, a soft glow only where the sun catches the water, a vignette, and a gentle
    tilt-shift so the place reads like a model in a museum case.
+
+## Every picture is checked before a reader sees it (Evan, 25 Nov)
+
+Evan: every scene, every animal, every plant and place “goes through and verifies based on the scientific papers and
+evidence … which version of the understanding … but then it still has to evoke that emotional response.” The system is
+`tools/review_art.py`, with its registry in `tools/paint/art.json`:
+
+1. **Rules, at the moment a picture is chosen** (`tools/paint.py`): what could not yet exist at that time is named in every
+   prompt (`era_rules`: no land plants before 470 Ma, no trees before 390, no palms before 100, no grass before 66…, with
+   what *did* grow instead, because a bare “no palms” still got palms); nothing written anywhere (`NO_TEXT`: the painter
+   signs its murals unless told not to); animals cut to the scientists’ outline (80 % overlap or refused); the Earth’s
+   coasts copied from the map, never painted.
+2. **The evidence review.** A different model from the painter (Gemini 3.1 Pro) reads each picture against a checklist
+   built from the data: what the evidence says *must* be there (the brief, the event’s own words, each animal’s
+   reconstruction), what *must not* (era rules, the brief’s “do not paint”), and **which version of the science** it
+   follows — e.g. Spinosaurus as Ibrahim et al. 2014 and 2020 (short legs, paddle tail), with the other readings named
+   (a wading heron-like hunter, Hone & Holtz 2021; Sereno et al. 2022). Each item comes back shown / consistent /
+   contradicted / can’t tell, with a reason, plus any other mistake it sees. A contradicted “must not”, two contradicted
+   “musts”, or one with other errors, **fails**. The reviewer is told what each picture is *for* (a plant sheet is cut-outs;
+   the Earth’s coasts are checked by machine) so it judges the right things.
+3. **The feeling.** The same review scores what the picture should raise in a ten-year-old and the adult beside them —
+   wonder, life, light, clarity, story — out of 5, and says how to raise them *without breaking the evidence*. It is shown,
+   never used to pass a picture that the evidence fails.
+4. **Repair.** A failed picture is painted again with the reviewer’s objections in the prompt (“do NOT repeat these
+   mistakes”), each try reviewed the same way, and the best that does not fail is kept, with the reviewer’s plain words on
+   where it still differs (`review_art.py repair`). One that still fails stays out.
+5. **The curator signs off** (`approve` / `reject`). Until then the page says the picture awaits sign-off.
+
+The app shows only pictures that passed (`app/scripts/export-content.mjs` leaves out the rest and says which), and every
+one carries **“How this picture was checked”**: the science it follows, each checklist item with its verdict, what else
+was noticed, the feeling scores, and whether the curator has signed it off. The review is itself a model and can be
+wrong — the first Earth review called the atlas’s own Cretaceous map “hallucinated” — so it never overrides the data;
+it catches what the painter gets wrong (palms in the Permian, two-fingered hands on a carcharodontosaur, the old map’s
+pins painted into eyes on the globe), and the curator has the last word.
 
 ## Palette (the Kem Kem; each scene takes its own from its brief)
 

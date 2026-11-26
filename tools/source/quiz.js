@@ -45,7 +45,9 @@ const GEN = {
       why: `${nm(older)} lived ${older.lived}; ${nm(older === a ? b : a)} lived ${(older === a ? b : a).lived}.` };
   },
   sameTime(pool) {
-    const x = pick(pool), yes = shuffle(pool.filter(c => c !== x && overlap(c, x))), no = shuffle(pool.filter(c => !overlap(c, x) && Math.abs(mid(c) - mid(x)) > Math.max(2, mid(x) * 0.3)));
+    const x = pick(pool), yes = shuffle(pool.filter(c => c !== x && overlap(c, x)));
+    // two cards can share a name (two eurypterids): never offer the same words twice
+    const no = shuffle(pool.filter(c => !overlap(c, x) && Math.abs(mid(c) - mid(x)) > Math.max(2, mid(x) * 0.3))).filter((c, i, a) => a.findIndex(d => nm(d) === nm(c)) === i && (!yes.length || nm(c) !== nm(yes[0])));
     if (!yes.length || no.length < 3) return null;
     const y = yes[0];
     return { q: `Which of these was alive at the same time as ${nm(x)}?`, emoji: x.emoji, opts: shuffle([y, ...no.slice(0, 3)]).map(c => ({ t: c.emoji + ' ' + nm(c), ok: c === y })), show: y.key,
@@ -67,7 +69,7 @@ const GEN = {
       why: `${nm(x)} fossils come from ${x.sites.map(t => lab(t[2])).join(', ')}.` };
   },
   notDino(pool) {
-    const dinos = shuffle(pool.filter(c => c.g === 'dino')), fakes = pool.filter(c => IMPOSTOR_WHY[c.g] && c.g !== 'mammal' && c.g !== 'fish' && c.g !== 'amphib');
+    const dinos = shuffle(pool.filter(c => c.g === 'dino')).filter((c, i, a) => a.findIndex(d => nm(d) === nm(c)) === i), fakes = pool.filter(c => IMPOSTOR_WHY[c.g] && c.g !== 'mammal' && c.g !== 'fish' && c.g !== 'amphib');
     if (dinos.length < 3 || !fakes.length) return null;
     const f = pick(fakes);
     return { q: 'Which one of these is NOT a dinosaur?', opts: shuffle([...dinos.slice(0, 3), f]).map(c => ({ t: c.emoji + ' ' + nm(c), ok: c === f })), show: f.key,

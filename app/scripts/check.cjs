@@ -21,21 +21,39 @@ srv.listen(0, '127.0.0.1', async () => {
     await p.waitForTimeout(6000);
     ok(dev + ': the opening ends by itself, and Where on Earth brings it back', await p.locator('.earth').count() === 0 && await p.locator('.where').count() === 1);
     // the painting is how a site is seen: spots to find, hover for a name, tap to read and collect
-    ok(dev + ': after the opening comes the painting of the place, with 13 things to find and the AI note in the title bar', await p.locator('.pview img').count() === 1 && await p.locator('.spot').count() === 13 && /Painted by AI|A painting by AI/.test(await p.locator('.bar em.ai').innerText()));
+    ok(dev + ': after the opening comes The Scene: the painting alone, nothing competing with it, and the AI note in the title bar', await p.locator('.pview img').count() === 1 && await p.locator('.spot').count() === 0 && await p.locator('.found-btn').count() === 0 && /Painted by AI|A painting by AI/.test(await p.locator('.bar em.ai').innerText()));
+    await p.click('.views button:has-text("The Evidence")'); await p.waitForTimeout(300);
+    ok(dev + ': The Evidence shows the 13 parts of the picture, each ringed by what it rests on (documented, inferred, imagined), with the three questions', await p.locator('.spot').count() === 13 && await p.locator('.spot.st-documented').count() >= 5 && await p.locator('.spot.st-inferred').count() >= 1 && await p.locator('.pview .questions button').count() === 3);
     ok(dev + ': it opens on the leading animal (Spinosaurus in view)', await p.evaluate(() => { const r = document.querySelector('.spot[aria-label$="Spinosaurus"]').getBoundingClientRect(); return r.left > 0 && r.right < innerWidth && r.top > 0 && r.bottom < innerHeight; }));
     ok(dev + ': nothing is found yet', /Found 0 of 13/.test(await p.locator('.found-btn').innerText()));
+    { const box = await p.locator('.pview').boundingBox();
+      for (let i = 0; i < 14; i++) { await p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await p.mouse.wheel(0, -300); await p.waitForTimeout(40); }
+      await p.waitForTimeout(1500);
+      const tiles = await p.evaluate(() => [...document.querySelectorAll('.pview img.hi')].filter(i => i.complete && i.naturalWidth > 2000).length);
+      const site = require('../src/content/sites.json')[0];
+      if (site.paintingHi) ok(dev + ': zoomed in, the sharp detail tiles in view load (and only those)', tiles >= 1 && tiles <= 4, String(tiles));
+      else ok(dev + ': the zoom tiles were cut from an older painting, so none load (they are remade with the painting)', tiles === 0, String(tiles));
+      for (let i = 0; i < 14; i++) { await p.mouse.wheel(0, 300); await p.waitForTimeout(30); }
+      await p.waitForTimeout(400); }
     if (!mob) { await p.hover('.spot[aria-label$="Spinosaurus"]'); await p.waitForTimeout(150);
       ok(dev + ': hovering a spot shows its name', /Spinosaurus/.test(await p.locator('.spot.on .tip').innerText())); }
     await p.click('.spot[aria-label$="Spinosaurus"]'); await p.waitForTimeout(400);
     { const c = await p.locator('.spotcard').innerText();
+      ok(dev + ': its card says what is documented, inferred and imagined about it, with the papers', /Documented/i.test(c) && /Another reading/.test(c) && await p.locator('.spotcard .decision .refs a[href^="https://doi.org/"]').count() >= 2);
       ok(dev + ': tapping it opens its card (size, today’s reconstruction, a way to see it to scale in 3D) and collects it', /Spinosaurus/.test(c) && /As reconstructed today/.test(c) && /See it to scale in 3D/.test(c) && /Found 1 of 13/.test(await p.locator('.found-btn').innerText())); }
     await p.click('.spotcard .x'); await p.waitForTimeout(150);
     await p.locator('.spot[aria-label$="The river"]').dispatchEvent('click'); await p.waitForTimeout(300);   // off-screen on a phone until you pan
-    ok(dev + ': a place spot uses the site’s own words (the river: “flowing north to a delta on the Tethys Sea”)', /delta on the Tethys Sea/.test(await p.locator('.spotcard').innerText()));
+    ok(dev + ': a place spot rests on the brief’s decision (the river: “flowing north to a delta on the Tethys Sea”, documented)', /delta on the Tethys Sea/.test(await p.locator('.spotcard').innerText()) && await p.locator('.spotcard .decision.documented').count() >= 1);
+    await p.click('.spotcard .x'); await p.click('.pview .questions button:has-text("How do we know?")'); await p.waitForTimeout(250);
+    { const q = await p.locator('.panel.evidence').innerText();
+      ok(dev + ': “How do we know?” tells who found it and who changed the picture, and what the artist supplied', /How we came to know it/i.test(q) && /What the artist supplied/i.test(q) && /Imagined/i.test(q) && /current as of/i.test(q)); }
+    await p.click('.panel.evidence .x');
+    await p.locator('.spot[aria-label$="The river"]').dispatchEvent('click'); await p.waitForTimeout(200);
     await p.click('.spotcard .x'); await p.click('.found-btn'); await p.waitForTimeout(200);
     ok(dev + ': the tray lists what is found and keeps the rest a mystery', /✓ Spinosaurus/.test(await p.locator('.tray').innerText()) && /✓ The river/.test(await p.locator('.tray').innerText()) && (await p.locator('.tray li span').count()) === 11);
     await p.click('.found-btn');
     await p.reload(); await p.waitForTimeout(800); await p.click('.earth').catch(() => {}); await p.waitForTimeout(600);
+    await p.click('.views button:has-text("The Evidence")'); await p.waitForTimeout(250);
     ok(dev + ': what you found is remembered on this device', /Found 2 of 13/.test(await p.locator('.found-btn').innerText()));
     // "See it to scale in 3D" goes to the living scene and flies to the animal
     await p.locator('.spot[aria-label$="Carcharodontosaurus"]').dispatchEvent('click'); await p.waitForTimeout(300);   // on a phone it is off-screen until you pan
@@ -91,13 +109,31 @@ srv.listen(0, '127.0.0.1', async () => {
       await btn.click(); await p.waitForTimeout(300);
       await p.click('text=About this place'); await p.waitForTimeout(300);
       const cap = await p.locator('.panel').innerText();
-      ok(dev + ': About this place says who painted the scene, in whose manner, and where it still differs from the evidence', /in the manner of Charles R\. Knight/.test(cap) && /still differs from the evidence/i.test(cap) && /a little large/.test(cap));
+      ok(dev + ': About this place says who painted the scene, in whose manner, and where it still differs from the evidence', /in the manner of Charles R\. Knight/.test(cap) && /still differs from the evidence/i.test(cap) && /colours of every animal are guesses/.test(cap));
+      ok(dev + ': About this place shows how the painting was checked, item by item, including how Spinosaurus is reconstructed today', await p.locator('.panel details.checked').count() === 1 && /Spinosaurus, as reconstructed today/.test(await p.locator('.panel details.checked').textContent()));
       await p.click('.panel .x'); await p.waitForTimeout(200);
       await p.click('.views button:has-text("Painting")'); await p.waitForTimeout(600);
       ok(dev + ': “Painting” goes back to the painting, with what was found kept', await p.locator('.pview img').count() === 1 && await p.locator('.site canvas').count() === 0 && /Found 3 of 13/.test(await p.locator('.found-btn').innerText())); }
     ok(dev + ': no errors', errs.length === 0, errs.join(' | '));
     await p.close();
   }
+  // the great events, painted: every one with its own words, what the painting gets wrong, and its papers
+  { const p = await b.newPage({ viewport: { width: 1400, height: 900 } }); const errs = []; p.on('pageerror', e => errs.push(e.message));
+    await p.goto(url + '#/events'); await p.waitForTimeout(1200);
+    const n = await p.locator('.ev').count(), groups = await p.locator('.events h2').count();
+    const ev = require('../src/content/events.json'), art = require('../src/content/art.json'), evArt = art.filter(a => a.kind === 'event');
+    ok('events: all 32 great events are painted and reviewed; the gallery shows exactly the ones that passed, in their groups', evArt.length === 32 && evArt.every(a => a.status !== 'not reviewed') && n === ev.length && n === evArt.filter(a => a.status !== 'fail' && !a.rejected && !a.held).length && groups >= 3, n + ' shown / ' + evArt.length + ' / ' + groups + ' groups');
+    ok('events: no painting that failed its review is shown', ev.every(e => evArt.find(a => a.id === 'event:' + e.id && a.status !== 'fail' && !a.rejected && !a.held)));
+    ok('events: every painting shown says where it differs from the evidence, keeps its prompt, and carries its review', ev.every(e => e.differs && e.differs.length > 20 && !/^Under review/.test(e.differs) && e.prompt && e.f && e.check && /pass|fix/.test(e.check.status) && e.check.items.length >= 4));
+    ok('events: the painter was told what could not yet exist (no palms before 100 Ma, bare land before 470 Ma ...) for the old events', ev.filter(e => e.t > 100).every(e => /could not yet exist/.test(e.prompt)) || ev.filter(e => e.t > 100 && !/could not yet exist/.test(e.prompt)).map(e => e.id).every(id => ['cretaceous', 'endediacaran', 'kalkarindji', 'ireviken', 'oae2', 'moon', 'snowball'].includes(id)));
+    const one = ev.find(e => e.id === 'permian') || ev[0];
+    await p.locator('.ev', { hasText: one.title }).first().click(); await p.waitForTimeout(600);
+    const t = await p.locator('.evtext').innerText();
+    ok('events: opening one shows its words, the differences, the credit and its verified papers', /differs from the evidence/.test(t) && /Charles R\. Knight/.test(t) && await p.locator('.evtext .papers a[href^="https://doi.org/"]').count() >= 1);
+    await p.click('.evtext details.checked summary'); await p.waitForTimeout(200);
+    const ck = await p.locator('.evtext details.checked').innerText();
+    ok('events: “How this picture was checked” names the science it follows, each item of the checklist with its verdict, and how it works on a viewer', /The science it follows/.test(ck) && await p.locator('.evtext details.checked .items li').count() >= 4 && /wonder \d/.test(ck) && /curator/.test(ck));
+    ok('events: no errors', errs.length === 0, errs.join(' | ')); await p.close(); }
   // the app writes sizes exactly as the data module does (tools/source/data_sites.js sizeText), in both units
   { const { SITE_SCENES, sizeText } = require('../../tools/source/data_sites.js');
     const p = await b.newPage(); await p.goto(url + '#/site/kemkem'); await p.waitForTimeout(800);

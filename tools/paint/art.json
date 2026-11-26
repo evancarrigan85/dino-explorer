@@ -1,0 +1,3718 @@
+{
+ "scene:kemkem": {
+  "kind": "scene",
+  "title": "The painting of The Kem Kem rivers",
+  "file": "painted/scene-kemkem.jpg",
+  "sha": "8ddcb5e98ea4",
+  "t": 97,
+  "style": "Deep-Time History Painting",
+  "brief": {
+   "id": "kemkem",
+   "current_as_of": "2026-11-25",
+   "decisions": [
+    "river",
+    "banks",
+    "trees",
+    "small-plants",
+    "left-out",
+    "light",
+    "spinosaurus",
+    "carcharodontosaurus",
+    "deltadromeus",
+    "pterosaurs",
+    "fish"
+   ]
+  },
+  "context": "The painter was free to imagine only: a hot, hazy dry-season afternoon under a pale sky; An ordinary hot afternoon on the river: Spinosaurus at the water’s edge, two big meat-eaters on the far bank, pterosaurs overhead. Nothing in particular is happening — and that is the point: no place on Earth today has so many big hunters.. Everything else comes from the evidence.",
+  "version": {
+   "text": "The site’s reconstruction brief, decision by decision (current as of 2026-11-25)",
+   "refs": [
+    "ibrahim2010",
+    "ibrahim2014",
+    "ibrahim2020",
+    "ibrahim2020b",
+    "meunier2017",
+    "villalobos2021"
+   ],
+   "alternatives": "Others read it as a wader that hunted from the shallows rather than a swimmer (Hone & Holtz 2021; Sereno et al. 2022). It has been placed among the coelurosaurs and, more often since, among the ceratosaurs; the reconstruction changes with the placement."
+  },
+  "must": [
+   "(documented) a broad, shallow, slow river, brownish-green, braided around a pale sandbank island",
+   "(documented) a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles",
+   "(inferred) a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank, and drift logs in the water",
+   "(inferred) low leafy shrubs and small plants at the water’s edge; a few ferns",
+   "(documented) Spinosaurus at the water’s edge: a long, low theropod with short hind legs, a long narrow crocodile-like snout, a tall sail, and a deep paddle-like tail",
+   "(documented) a giant two-legged meat-eater with a long, deep skull, short three-fingered arms and a long tail held level, on the far bank",
+   "(documented) a slender, long-legged meat-eater with a long tail held level, beside the larger one",
+   "(documented) two long-jawed, long-necked pterosaurs flying high over the river",
+   "(documented) dark shapes of large fish under the water",
+   "Sizes: Carcharodontosaurus is 12–12.5 m long; monkey-puzzle trees stand roughly 25-40 m tall",
+   "Sizes: Deltadromeus is about 8 m long; monkey-puzzle trees stand roughly 25-40 m tall",
+   "Sizes: Spinosaurus is about 17 m long; monkey-puzzle trees stand roughly 25-40 m tall"
+  ],
+  "must_not": [
+   "grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes",
+   "What could not yet exist then, so must not be painted: NO grass or grassland."
+  ],
+  "differs": "Spinosaurus follows the 2014 and 2020 reconstruction (short hind legs, a deep paddle-like tail); others read it as a wader rather than a swimmer. The pterosaurs are long-jawed, long-necked fliers; the Kem Kem pterosaurs are known only from jaws, snouts and neck bones, so their bodies are a guess. The colours of every animal are guesses. The swirling patterns in the sand at the front are the painter’s, not the evidence’s.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Land: a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The far bank clearly features a layer of reddish sandstone beneath pale sand, and the near shore is wide and flat."
+    },
+    {
+     "item": "Water: a broad, shallow, slow river, brownish-green, braided around a pale sandbank island",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The river is broad, brownish-green, reflects the sky (indicating slow movement), and flows around a central pale sandbank."
+    },
+    {
+     "item": "Plants: a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank; low leafy shrubs and small plants at the water’s edge; a few ferns",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Trees with straight, bare trunks and branches clustered at the top are spaced along the far bank, with some smaller vegetation scattered around."
+    },
+    {
+     "item": "Light: a hot, hazy dry-season afternoon under a pale sky",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The pale sky, warm tones, long shadows, and hazy atmosphere effectively convey a hot afternoon."
+    },
+    {
+     "item": "Carcharodontosaurus, as reconstructed today: a giant two-legged meat-eater with a long, deep skull and blade-like serrated teeth, short arms with three fingers, powerful hind legs, and a long tail held level off the ground; scaly skin; its colours are not known, so muted earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A large, robust theropod matching this general description and in muted colors is walking along the far bank."
+    },
+    {
+     "item": "Deltadromeus, as reconstructed today: a slender, long-legged meat-eater with long shins built for running, small arms and a long tail held level; known from one partial skeleton, and how it is related to other dinosaurs is argued over; scaly skin; its colours are not known, so muted earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A smaller, more slender theropod is visible trailing behind the larger one on the far bank."
+    },
+    {
+     "item": "Spinosaurus, as reconstructed today: a long, low theropod with short hind legs, a long narrow crocodile-like snout with cone-shaped teeth, a tall sail of long spines along its back, and a deep, paddle-like tail with tall spines above and below; scaly skin; its colours are not known, so muted earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The theropod in the foreground water has the characteristic sail, long snout, and the modern deep, paddle-like tail."
+    },
+    {
+     "item": "Sizes: Carcharodontosaurus is 12–12.5 m long; monkey-puzzle trees stand roughly 25-40 m tall",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The large theropod on the far bank appears appropriately sized (roughly half the height or less) compared to the nearby trees."
+    },
+    {
+     "item": "Sizes: Deltadromeus is about 8 m long; monkey-puzzle trees stand roughly 25-40 m tall",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The smaller theropod is scaled reasonably compared to both the larger theropod and the trees."
+    },
+    {
+     "item": "Sizes: Spinosaurus is about 17 m long; monkey-puzzle trees stand roughly 25-40 m tall",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The Spinosaurus is in the foreground, making direct comparison difficult, but it appears massive and consistent with a large size."
+    },
+    {
+     "item": "grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None of these forbidden elements are present in the image."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO grass or grassland.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "The ground cover appears to be sand and dirt, with no grass shown."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "The image successfully depicts the described Kem Kem river environment and uses the modern reconstructions for the dinosaurs, including the paddle-tailed Spinosaurus."
+    }
+   ],
+   "other_errors": [
+    "The texture of the sand on the near shore is highly unnatural, looking like swirling paint or plowed furrows rather than natural sand and pebbles.",
+    "The pterosaurs in the sky have slightly garbled, generic anatomy (especially the one on the right with a strange head shape)."
+   ],
+   "emotion": {
+    "wonder": 4,
+    "life": 3,
+    "light": 4,
+    "clarity": 4,
+    "story": 3
+   },
+   "emotion_notes": "The wide, panoramic view and hazy, warm light create a strong sense of deep time and a harsh, hot environment. However, the animals feel a bit static, and the unnatural swirling textures in the foreground sand are distracting.",
+   "raise_it": "Fix the foreground sand texture to look like actual sand and pebbles. Give the dinosaurs slightly more dynamic poses or hint at an interaction to increase the sense of life and story. Ensure the pterosaurs represent specific, known Kem Kem taxa like Alanqa.",
+   "style": "The image captures Charles R. Knight's calm realism, panoramic composition, and warm lighting quite well, though it is marred by AI-generated texture artifacts in the foreground.",
+   "differs": "The colors of the dinosaurs and the flying reptiles are guesses, because nobody knows exactly what colors they were. The swirling patterns in the sand at the front are a mistake in the painting.",
+   "status": "fix",
+   "emotion_avg": 3.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/kemkem-scene/7.jpg"
+  }
+ },
+ "ground:kemkem": {
+  "kind": "ground",
+  "title": "The painted ground of The Kem Kem rivers",
+  "file": "ground/kemkem.webp",
+  "review_file": "tools/paint/candidates/kemkem-ground/4.jpg",
+  "sha": "60ae2f8f4234",
+  "t": 97,
+  "style": "knight",
+  "context": "Seen from high above on purpose: strips of this painting texture the ground of a 3D scene seen from the sky, under the 3D plants and animals.",
+  "version": {
+   "text": "The setting as described by the site review: The head of a vast river system flowing north to a delta on the Tethys Sea: wide channels with big sandbanks, fresh and slightly salty water, and a hot climate with harsh seasons and dry spells. Pieces of petrified wood, probably from conifers related to monkey-puzzle trees, and leaves of flowering plants and other plants from the pond.",
+   "refs": [
+    "ibrahim2020b"
+   ]
+  },
+  "must": [
+   "Land: a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles",
+   "Water: a broad, shallow, slow river, brownish-green, braided around a pale sandbank island"
+  ],
+  "must_not": [
+   "grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes",
+   "What could not yet exist then, so must not be painted: NO grass or grassland."
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Land: a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Far bank features pale sand and a reddish sandstone cutbank; near shore has sand and distinct pebble patches."
+    },
+    {
+     "item": "Water: a broad, shallow, slow river, brownish-green, braided around a pale sandbank island",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "River is brownish-green, appears shallow, and flows around central sandbanks."
+    },
+    {
+     "item": "grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None of these elements are present. The small green plants appear as generic scrub."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO grass or grassland.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No grass is depicted."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Matches the description of wide channels, sandbanks, and a hot, dry climate."
+    }
+   ],
+   "other_errors": [
+    "The high aerial perspective makes it difficult to use as a standard background for terrestrial animals.",
+    "The small green plants are ambiguous and resemble modern desert scrub rather than specific Cretaceous flora."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 4,
+    "story": 2
+   },
+   "emotion_notes": "Effectively conveys a harsh, hot environment, but feels barren due to the lack of focal points.",
+   "raise_it": "Lower the camera angle to ground level for better depth. Add petrified wood and specific Cretaceous plant debris.",
+   "style": "Good use of warm, painterly oil textures typical of Knight, though the aerial view is atypical for him.",
+   "status": "fix",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "animal:carcharodontosaurus:outline": {
+  "kind": "animal",
+  "title": "Carcharodontosaurus, painted in its outline",
+  "file": "painted/carcharodontosaurus-outline.png",
+  "sha": "29733d1a3d09",
+  "t": 97,
+  "style": "knight",
+  "site": "kemkem",
+  "animal": "Carcharodontosaurus",
+  "approach": "outline",
+  "hard": {
+   "outline_iou": 0.928
+  },
+  "version": {
+   "text": "its skull and partial bones, with the rest of the body following its close relatives (carcharodontosaurids such as Giganotosaurus)",
+   "refs": [],
+   "alternatives": null
+  },
+  "must": [
+   "Carcharodontosaurus as reconstructed today: a giant two-legged meat-eater with a long, deep skull and blade-like serrated teeth, short arms with three fingers, powerful hind legs, and a long tail held level off the ground; scaly skin; its colours are not known, so muted earth tones"
+  ],
+  "must_not": [
+   "feathers or fur, unless the reconstruction above says so",
+   "any other animal",
+   "text"
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Carcharodontosaurus as reconstructed today",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Shows a large theropod with deep skull and level tail."
+    },
+    {
+     "item": "feathers or fur",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No feathers or fur present."
+    },
+    {
+     "item": "any other animal",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only the main subject is shown."
+    },
+    {
+     "item": "text",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text visible."
+    },
+    {
+     "item": "follows the science",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Anatomy matches carcharodontosaurid proportions."
+    }
+   ],
+   "other_errors": [
+    "Minor rendering artifacts on the feet."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 2
+   },
+   "emotion_notes": "Clear but static profile.",
+   "raise_it": "Add dynamic posture.",
+   "style": "Matches Knight's warm tones.",
+   "status": "fix",
+   "emotion_avg": 2.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "animal:carcharodontosaurus:free": {
+  "kind": "animal",
+  "title": "Carcharodontosaurus, painted freely",
+  "file": "painted/carcharodontosaurus-free.png",
+  "sha": "af871606bd39",
+  "t": 97,
+  "style": "knight",
+  "site": "kemkem",
+  "animal": "Carcharodontosaurus",
+  "approach": "free",
+  "hard": {},
+  "version": {
+   "text": "its skull and partial bones, with the rest of the body following its close relatives (carcharodontosaurids such as Giganotosaurus)",
+   "refs": [],
+   "alternatives": null
+  },
+  "must": [
+   "Carcharodontosaurus as reconstructed today: a giant two-legged meat-eater with a long, deep skull and blade-like serrated teeth, short arms with three fingers, powerful hind legs, and a long tail held level off the ground; scaly skin; its colours are not known, so muted earth tones"
+  ],
+  "must_not": [
+   "feathers or fur, unless the reconstruction above says so",
+   "any other animal",
+   "text"
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Carcharodontosaurus as reconstructed today: a giant two-legged meat-eater with a long, deep skull and blade-like serrated teeth, short arms with three fingers, powerful hind legs, and a long tail held level off the ground; scaly skin; its colours are not known, so muted earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Depicts a large bipedal theropod with a deep skull, three-fingered hands, horizontal tail, and earth-toned scaly skin."
+    },
+    {
+     "item": "feathers or fur, unless the reconstruction above says so",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No feathers or fur are visible."
+    },
+    {
+     "item": "any other animal",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only the main dinosaur is present."
+    },
+    {
+     "item": "text",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text is included."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Anatomy aligns well with carcharodontosaurid relatives, featuring the correct skull shape and body proportions."
+    }
+   ],
+   "other_errors": [],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 4,
+    "story": 2
+   },
+   "emotion_notes": "The anatomy is very clear, but the plain white background limits the sense of scale, atmosphere, and narrative.",
+   "raise_it": "Place the dinosaur in a prehistoric environment (like a floodplain or forest) to provide scale, context, and a sense of story.",
+   "style": "Captures Knight's warm, painterly realism well, though Knight typically included atmospheric backgrounds.",
+   "differs": "We don't know its exact colors, so the brown and grey patterns are a guess.",
+   "status": "pass",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/kemkem-animals/carcharodontosaurus-free-3.jpg"
+  }
+ },
+ "animal:deltadromeus:outline": {
+  "kind": "animal",
+  "title": "Deltadromeus, painted in its outline",
+  "file": "painted/deltadromeus-outline.png",
+  "sha": "4f89e699ee6e",
+  "t": 97,
+  "style": "knight",
+  "site": "kemkem",
+  "animal": "Deltadromeus",
+  "approach": "outline",
+  "hard": {
+   "outline_iou": 0.885
+  },
+  "version": {
+   "text": "its one partial skeleton (limbs, hips and tail); the skull is not known, so the head is a guess from its likely relatives",
+   "refs": [],
+   "alternatives": "it has been placed among the coelurosaurs and, more often since, among the ceratosaurs; the reconstruction changes with the placement"
+  },
+  "must": [
+   "Deltadromeus as reconstructed today: a slender, long-legged meat-eater with long shins built for running, small arms and a long tail held level; known from one partial skeleton, and how it is related to other dinosaurs is argued over; scaly skin; its colours are not known, so muted earth tones"
+  ],
+  "must_not": [
+   "feathers or fur, unless the reconstruction above says so",
+   "any other animal",
+   "text"
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Deltadromeus as reconstructed today: slender, long-legged meat-eater, long shins, small arms, long tail held level",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The dinosaur has a slender build, small arms, long legs, and a horizontally held tail."
+    },
+    {
+     "item": "scaly skin",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The surface texture appears leathery and scaly."
+    },
+    {
+     "item": "muted earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The animal is painted in browns, tans, and olive greens."
+    },
+    {
+     "item": "feathers or fur",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No feathers or fur are visible."
+    },
+    {
+     "item": "any other animal",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only the single dinosaur is depicted."
+    },
+    {
+     "item": "text",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "There is no text in the image."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "It accurately reflects the known postcranial anatomy and uses a plausible speculative head."
+    }
+   ],
+   "other_errors": [],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 4,
+    "story": 2
+   },
+   "emotion_notes": "The lighting is warm and the anatomy is clear, but the static profile pose on a blank background limits narrative and energy.",
+   "raise_it": "Put the animal in a dynamic running pose to highlight its long shins and speed, and add a subtle ground shadow to anchor it.",
+   "style": "Successfully mimics Knight's warm, painterly oil style while updating the posture to modern scientific standards.",
+   "differs": "Because scientists have not found the skull of Deltadromeus, its head is a guess based on its relatives. Its true colors are also unknown, so the artist used likely earth tones.",
+   "status": "pass",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/kemkem-animals/deltadromeus-outline-3.jpg"
+  }
+ },
+ "animal:deltadromeus:free": {
+  "kind": "animal",
+  "title": "Deltadromeus, painted freely",
+  "file": "painted/deltadromeus-free.png",
+  "sha": "c684a365f1c1",
+  "t": 97,
+  "style": "knight",
+  "site": "kemkem",
+  "animal": "Deltadromeus",
+  "approach": "free",
+  "hard": {},
+  "version": {
+   "text": "its one partial skeleton (limbs, hips and tail); the skull is not known, so the head is a guess from its likely relatives",
+   "refs": [],
+   "alternatives": "it has been placed among the coelurosaurs and, more often since, among the ceratosaurs; the reconstruction changes with the placement"
+  },
+  "must": [
+   "Deltadromeus as reconstructed today: a slender, long-legged meat-eater with long shins built for running, small arms and a long tail held level; known from one partial skeleton, and how it is related to other dinosaurs is argued over; scaly skin; its colours are not known, so muted earth tones"
+  ],
+  "must_not": [
+   "feathers or fur, unless the reconstruction above says so",
+   "any other animal",
+   "text"
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Deltadromeus as reconstructed today: slender, long-legged, small arms, level tail, scaly, earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Shows slender build, long legs, small arms, level tail, and earth tones."
+    },
+    {
+     "item": "feathers or fur",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Skin appears scaly."
+    },
+    {
+     "item": "any other animal",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only one animal shown."
+    },
+    {
+     "item": "text",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text present."
+    },
+    {
+     "item": "follows the version of the science above",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Anatomy matches the known partial skeleton and inferred head."
+    }
+   ],
+   "other_errors": [],
+   "emotion": {
+    "wonder": 2,
+    "life": 2,
+    "light": 2,
+    "clarity": 3,
+    "story": 2
+   },
+   "emotion_notes": "Isolated subject lacks context, reducing impact.",
+   "raise_it": "Add a natural habitat to provide scale and narrative.",
+   "style": "Captures Knight's warm tones but misses his environmental integration.",
+   "status": "pass",
+   "emotion_avg": 2.2,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "animal:spinosaurus:outline": {
+  "kind": "animal",
+  "title": "Spinosaurus, painted in its outline",
+  "file": "painted/spinosaurus-outline.png",
+  "sha": "08b1b544a38e",
+  "t": 97,
+  "style": "knight",
+  "site": "kemkem",
+  "animal": "Spinosaurus",
+  "approach": "outline",
+  "hard": {
+   "outline_iou": 0.937
+  },
+  "version": {
+   "text": "the reconstruction of Ibrahim et al. (2014, 2020): short hind legs and a deep, paddle-like tail, an animal at home in the water",
+   "refs": [
+    "ibrahim2014",
+    "ibrahim2020"
+   ],
+   "alternatives": "others read it as a wader that hunted from the shallows rather than a swimmer (Hone & Holtz 2021; Sereno et al. 2022); the atlas shows it at the water’s edge, which both readings allow"
+  },
+  "must": [
+   "Spinosaurus as reconstructed today: a long, low theropod with short hind legs, a long narrow crocodile-like snout with cone-shaped teeth, a tall sail of long spines along its back, and a deep, paddle-like tail with tall spines above and below; scaly skin; its colours are not known, so muted earth tones"
+  ],
+  "must_not": [
+   "feathers or fur, unless the reconstruction above says so",
+   "any other animal",
+   "text"
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Spinosaurus as reconstructed today: a long, low theropod with short hind legs, a long narrow crocodile-like snout with cone-shaped teeth, a tall sail of long spines along its back, and a deep, paddle-like tail with tall spines above and below; scaly skin; its colours are not known, so muted earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Displays the required short legs, deep paddle tail, tall sail, narrow snout, and muted earth tones."
+    },
+    {
+     "item": "feathers or fur, unless the reconstruction above says so",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Skin is rendered as scaly and leathery with no feathers or fur."
+    },
+    {
+     "item": "any other animal",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only the Spinosaurus is present."
+    },
+    {
+     "item": "text",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text is visible."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Accurately reflects the Ibrahim et al. (2014, 2020) reconstruction with the distinct paddle tail and short hind limbs."
+    }
+   ],
+   "other_errors": [
+    "Front claws are slightly fused and messy due to AI generation artifacts."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 4,
+    "clarity": 4,
+    "story": 2
+   },
+   "emotion_notes": "Clear anatomical rendering with nice lighting, though the blank background limits narrative and scale.",
+   "raise_it": "Place the animal in a shallow water or shoreline setting to add story and scale. Refine the front digits.",
+   "style": "Successfully mimics Knight's warm, classical oil painting aesthetic.",
+   "status": "fix",
+   "emotion_avg": 3.2,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "animal:spinosaurus:free": {
+  "kind": "animal",
+  "title": "Spinosaurus, painted freely",
+  "file": "painted/spinosaurus-free.png",
+  "sha": "885b2f2838ae",
+  "t": 97,
+  "style": "knight",
+  "site": "kemkem",
+  "animal": "Spinosaurus",
+  "approach": "free",
+  "hard": {},
+  "version": {
+   "text": "the reconstruction of Ibrahim et al. (2014, 2020): short hind legs and a deep, paddle-like tail, an animal at home in the water",
+   "refs": [
+    "ibrahim2014",
+    "ibrahim2020"
+   ],
+   "alternatives": "others read it as a wader that hunted from the shallows rather than a swimmer (Hone & Holtz 2021; Sereno et al. 2022); the atlas shows it at the water’s edge, which both readings allow"
+  },
+  "must": [
+   "Spinosaurus as reconstructed today: a long, low theropod with short hind legs, a long narrow crocodile-like snout with cone-shaped teeth, a tall sail of long spines along its back, and a deep, paddle-like tail with tall spines above and below; scaly skin; its colours are not known, so muted earth tones"
+  ],
+  "must_not": [
+   "feathers or fur, unless the reconstruction above says so",
+   "any other animal",
+   "text"
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Spinosaurus as reconstructed today: a long, low theropod with short hind legs, a long narrow crocodile-like snout with cone-shaped teeth, a tall sail of long spines along its back, and a deep, paddle-like tail with tall spines above and below; scaly skin; its colours are not known, so muted earth tones",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Features short legs, paddle tail, sail, narrow snout, and earth tones."
+    },
+    {
+     "item": "feathers or fur, unless the reconstruction above says so",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Skin appears scaly; no feathers or fur."
+    },
+    {
+     "item": "any other animal",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only the Spinosaurus is shown."
+    },
+    {
+     "item": "text",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Matches the Ibrahim et al. paddle-tail and short-leg model."
+    }
+   ],
+   "other_errors": [
+    "Lower jaw tip shows minor distortion.",
+    "Front limb posture is slightly awkward."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 4,
+    "story": 2
+   },
+   "emotion_notes": "Clear anatomical study, but lacks environmental context.",
+   "raise_it": "Add a water's edge environment to provide context and story.",
+   "style": "Captures Knight's warm oil tones and calm realism well.",
+   "status": "fix",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "plants:kemkem": {
+  "kind": "plants",
+  "title": "The painted plants of The Kem Kem rivers",
+  "file": "painted/kemkem-plants.png",
+  "sha": "8b9778829717",
+  "t": 97,
+  "style": "knight",
+  "version": {
+   "text": "The setting as described by the site review: The head of a vast river system flowing north to a delta on the Tethys Sea: wide channels with big sandbanks, fresh and slightly salty water, and a hot climate with harsh seasons and dry spells. Pieces of petrified wood, probably from conifers related to monkey-puzzle trees, and leaves of flowering plants and other plants from the pond.",
+   "refs": [
+    "ibrahim2020b"
+   ]
+  },
+  "context": "A sheet of four separate plants, cut out to be scattered over the ground of a 3D scene seen from the sky (the trees there are made separately). There is no landscape on purpose, and the background is empty. Judge only the plants.",
+  "must": [
+   "Four separate plants: a low, rounded, leafy shrub; a clump of ferns; a small low plant from the water's edge; a more open, spreading low shrub",
+   "Every plant is of a kind that could grow there then. The place's plants: a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank; low leafy shrubs and small plants at the water’s edge; a few ferns"
+  ],
+  "must_not": [
+   "grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes",
+   "What could not yet exist then, so must not be painted: NO grass or grassland."
+  ],
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Four separate plants: a low, rounded, leafy shrub; a clump of ferns; a small low plant from the water's edge; a more open, spreading low shrub",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The image clearly depicts the four requested plant types in a row."
+    },
+    {
+     "item": "Every plant is of a kind that could grow there then. The place's plants: a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank; low leafy shrubs and small plants at the water’s edge; a few ferns",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The depicted shrubs, ferns, and broadleaf plants align with the described flora for the time and place."
+    },
+    {
+     "item": "grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None of these forbidden elements are present."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO grass or grassland.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No grass is shown."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "The plant assets match the described vegetation types."
+    }
+   ],
+   "other_errors": [],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 4,
+    "story": 2
+   },
+   "emotion_notes": "As isolated assets on a black background, the emotional impact is naturally limited, but the plants are clearly rendered and serve their functional purpose well.",
+   "raise_it": "Add subtle imperfections like slightly wilted or damaged leaves to increase the sense of life, and ensure the warm lighting implies a consistent, strong sun angle across all assets.",
+   "style": "The warm lighting and painterly textures effectively capture the requested calm realism of Knight's manner.",
+   "differs": "Nothing we can see.",
+   "status": "pass",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "earth:kemkem": {
+  "kind": "earth",
+  "title": "The Earth at the time of The Kem Kem rivers",
+  "file": "earth/kemkem-1-painted.jpg",
+  "sha": "b8bb6489c443",
+  "t": 97,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's own map of the time: plates (Merdith et al. 2021), seas (Kocsis & Scotese 2021), relief (Scotese & Wright 2018)",
+   "refs": [
+    "merdith2021"
+   ]
+  },
+  "hard": {
+   "coasts": "exact (shapes and colours from the map; brushwork only where it agrees)"
+  },
+  "context": "The land and sea shapes are copied by rule from this atlas's plate model and seas map of the time, and checked by machine, not here: do not judge where the continents were. Judge only what was added on top (marks, symbols, objects, text) and the painting itself. The site is at the centre; the page marks it with its own ring.",
+  "must": [
+   "A globe of the Earth as it was then, with the continents in their positions of that time"
+  ],
+  "must_not": [
+   "today's continents and coastlines",
+   "text other than small map labels"
+  ],
+  "model": "brush filter + gemini-3-pro-image texture",
+  "review": {
+   "items": [
+    {
+     "item": "A globe of the Earth as it was then, with the continents in their positions of that time",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Displays a paleogeographic globe with past continent arrangements."
+    },
+    {
+     "item": "today's continents and coastlines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Modern coastlines are absent."
+    },
+    {
+     "item": "text other than small map labels",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only small, faint map labels are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Land and sea shapes align with the required paleogeographic models."
+    }
+   ],
+   "other_errors": [
+    "The text labels are slightly distorted and difficult to read."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 2
+   },
+   "emotion_notes": "The warm, painterly globe provides a solid sense of deep time, though it remains a relatively static map.",
+   "raise_it": "Add subtle cloud cover or atmospheric haze at the edges to increase depth. Ensure text labels are crisp and legible.",
+   "style": "Captures Knight's warm, oil-painted aesthetic well through textured brushstrokes and muted, natural tones.",
+   "differs": "Nothing we can see.",
+   "status": "fix",
+   "emotion_avg": 2.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:capitanian": {
+  "kind": "event",
+  "title": "The Capitanian crisis",
+  "file": "painted/events/capitanian.jpg",
+  "sha": "f683efe1a30a",
+  "t": 260,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Lava floods across what is now south-west China , the Emeishan eruptions , and life suffers a mass extinction in the sea and on land.",
+   "The dinocephalians vanish.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palm trees (palms appear about 100 million years ago) and nothing palm-shaped (no tall slender trunk with a crown of big fan or feather leaves), and NO flowering plants or flowers.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Lava floods across what is now south-west China, the Emeishan eruptions, and life suffers a mass extinction in the sea and on land.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Massive lava flows and smoke dominate the background landscape."
+    },
+    {
+     "item": "The dinocephalians vanish.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Foreground synapsids are depicted facing the volcanic crisis."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO palm trees, and NO flowering plants or flowers.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Multiple palm-like trees are clearly visible along the shoreline."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text or graphic overlays are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The inclusion of anachronistic palm trees violates the scientific constraints."
+    }
+   ],
+   "other_errors": [
+    "Marine creatures resemble later Mesozoic reptiles rather than Permian fauna."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Scores centered. The scene conveys disaster effectively but botanical errors reduce impact.",
+   "raise_it": "Remove palm trees entirely. Replace with accurate Permian flora like ferns. Adjust marine animal silhouettes.",
+   "style": "Successfully captures Knight's warm oil realism and atmospheric depth.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:carnian": {
+  "kind": "event",
+  "title": "The Carnian rains",
+  "file": "painted/events/carnian.jpg",
+  "sha": "a86a53e91a34",
+  "t": 233,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "One to two million years of wet climate.",
+   "Many kinds of life die out , and dinosaurs spread straight afterwards.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palm trees (palms appear about 100 million years ago) and nothing palm-shaped (no tall slender trunk with a crown of big fan or feather leaves), and NO flowering plants or flowers.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "One to two million years of wet climate.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Rain and rivers shown."
+    },
+    {
+     "item": "Many kinds of life die out, and dinosaurs spread straight afterwards.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Time scale not visible."
+    },
+    {
+     "item": "NO palm trees, and NO flowering plants or flowers.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Palms visible in foreground."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Signature text present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Shows palms and text."
+    }
+   ],
+   "other_errors": [
+    "Signature in bottom right."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 2
+   },
+   "emotion_notes": "Fair atmosphere, low narrative.",
+   "raise_it": "Remove palms and text. Add dinosaurs.",
+   "style": "Good Knight emulation.",
+   "status": "fail",
+   "emotion_avg": 2.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:coalforest": {
+  "kind": "event",
+  "title": "Coal-forest collapse",
+  "file": "painted/events/coalforest.jpg",
+  "sha": "e715ffae4222",
+  "t": 305,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "The tropical rainforests break up as the climate dries.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palms or flowering plants.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Some distant treetops look rounded, like today’s broadleaf trees; the coal-age forests were club-moss trees, giant horsetails and tree ferns. The colours and exact shapes of the plants are the painter’s.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "The tropical rainforests break up as the climate dries.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The landscape clearly displays fragmented patches of forest separated by wide, dry sandy expanses and fallen logs."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO palms or flowering plants.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "The visible flora consists of tree ferns, horsetails, and scaly-trunked lycopsids; no forbidden plants are clearly shown."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "The image contains no text or diagrammatic overlays."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "It accurately visualizes the ecological collapse and drying out of the Carboniferous coal forests."
+    }
+   ],
+   "other_errors": [
+    "Some distant tree canopies appear rounded like modern broadleaf trees, though they may pass as generic early gymnosperms."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 4,
+    "clarity": 4,
+    "story": 3
+   },
+   "emotion_notes": "Warm lighting and fragmented terrain effectively convey a drying, dying ecosystem.",
+   "raise_it": "Add a few early reptiles or amphibians near the shrinking water to boost life and scale.",
+   "style": "Successfully mimics Knight's warm oil tones and calm realism.",
+   "differs": "Nothing we can see.",
+   "status": "fix",
+   "emotion_avg": 3.4,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/events/coalforest-4.jpg"
+  }
+ },
+ "event:cretaceous": {
+  "kind": "event",
+  "title": "The asteroid",
+  "file": "painted/events/cretaceous.jpg",
+  "sha": "71e1163637e9",
+  "t": 66,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A rock about 10 km wide is falling towards the shallow sea that covers the Yucatán.",
+   "The blast is felt around the world; molten rock rains back down and sets forests alight.",
+   "Soot and dust block the Sun.",
+   "For months, perhaps two years, almost nothing can grow.",
+   "Plants die, then the plant-eaters, then the hunters.",
+   "The sky clears on a different world.",
+   "Three in four species are gone , every dinosaur except the birds.."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The picture shows the exact moment the asteroid hit, before the dust blocked the sun. We do not know exactly which animals were swimming nearby when it struck.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A rock about 10 km wide is falling towards the shallow sea that covers the Yucatán.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The impact blast is visible in a shallow sea, though the rock itself is obscured."
+    },
+    {
+     "item": "The blast is felt around the world; molten rock rains back down and sets forests alight.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Depicts the exact moment of impact before global fallout occurs."
+    },
+    {
+     "item": "Soot and dust block the Sun.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The dust cloud has not yet spread."
+    },
+    {
+     "item": "For months, perhaps two years, almost nothing can grow.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "This is a snapshot of the initial strike."
+    },
+    {
+     "item": "Plants die, then the plant-eaters, then the hunters.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The extinction sequence happens after this moment."
+    },
+    {
+     "item": "The sky clears on a different world.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Shows the beginning of the event."
+    },
+    {
+     "item": "Three in four species are gone , every dinosaur except the birds..",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The mass extinction has not yet occurred."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Flora and fauna appear appropriate for the late Cretaceous."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Accurately portrays the initial impact in a shallow sea environment."
+    }
+   ],
+   "other_errors": [
+    "Foreground shadows do not align with the intense light of the impact blast."
+   ],
+   "emotion": {
+    "wonder": 4,
+    "life": 3,
+    "light": 3,
+    "clarity": 4,
+    "story": 4
+   },
+   "emotion_notes": "The massive horizon blast creates scale, though the foreground feels disconnected from the event.",
+   "raise_it": "Adjust foreground lighting to reflect the intense flash, and show early reactions from fauna.",
+   "style": "Successfully mimics Knight's warm, oil-painted realism.",
+   "differs": "The picture shows the exact moment the asteroid hit, before the dust blocked the sun. We do not know exactly which animals were swimming nearby when it struck.",
+   "status": "fix",
+   "emotion_avg": 3.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/events/cretaceous-3.jpg"
+  }
+ },
+ "event:devonian": {
+  "kind": "event",
+  "title": "The suffocating seas",
+  "file": "painted/events/devonian.jpg",
+  "sha": "621cf88de545",
+  "t": 372,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "For the first time, forests are spreading across the land.",
+   "Roots break rock into soil.",
+   "Rain washes the nutrients into the sea.",
+   "Algae bloom, die and rot, using up the oxygen.",
+   "Great stretches of sea turn stagnant.",
+   "Reef builders and armoured fishes die.",
+   "About 70% of species are lost, in pulses over millions of years.",
+   "This is the leading idea, not a settled one: cooling and volcanoes may also have played a part.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palms, conifers, cycads or flowering plants.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "For the first time, forests are spreading across the land.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Extensive forests cover the landmasses."
+    },
+    {
+     "item": "Roots break rock into soil.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Trees grow on rocky terrain, implying root action."
+    },
+    {
+     "item": "Rain washes the nutrients into the sea.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Rivers carry sediment and runoff into the ocean."
+    },
+    {
+     "item": "Algae bloom, die and rot, using up the oxygen.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Large green algal blooms swirl in the coastal waters."
+    },
+    {
+     "item": "Great stretches of sea turn stagnant.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Murky, green water suggests stagnation."
+    },
+    {
+     "item": "Reef builders and armoured fishes die.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Armoured fishes are present; their dying state is plausible but not explicit."
+    },
+    {
+     "item": "About 70% of species are lost, in pulses over millions of years.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Statistical extinction rates cannot be seen in a single scene."
+    },
+    {
+     "item": "This is the leading idea, not a settled one: cooling and volcanoes may also have played a part..",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A distant volcano is erupting."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: the first trees are fern-like early trees (such as Archaeopteris); NO conifers, palms, cycads or flowering plants.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "The trees depicted strongly resemble modern palms, an anachronism."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "A signature is visible in the bottom right corner."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Fails due to anachronistic palm-like trees and included text."
+    }
+   ],
+   "other_errors": [
+    "The flora is highly inaccurate for the Devonian period."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "The visual narrative of runoff causing algal blooms is clear, but inaccurate plants detract from the scientific wonder.",
+   "raise_it": "Replace palm-like trees with accurate Devonian flora like Archaeopteris. Remove the signature. Show dead marine life more explicitly.",
+   "style": "Successfully mimics Knight's warm, painterly, and calm realism.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:endediacaran": {
+  "kind": "event",
+  "title": "The Ediacaran creatures vanish",
+  "file": "painted/events/endediacaran.jpg",
+  "sha": "4df1339aca36",
+  "t": 540,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Most of the strange, quilted creatures of the Ediacaran disappear as the first burrowing, grazing animals spread.",
+   "Whether it counts as a mass extinction is argued over.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The picture makes the sea creatures look as big as hills because the viewpoint is confusing. Real Ediacaran creatures were much smaller.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Most of the strange, quilted creatures of the Ediacaran disappear as the first burrowing, grazing animals spread.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The image shows a landscape with some faint Ediacaran shapes in the shallows, but does not depict the event of their disappearance or the spread of new burrowing animals."
+    },
+    {
+     "item": "Whether it counts as a mass extinction is argued over.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "This is an abstract scientific debate that cannot be depicted in a landscape painting."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "The land is appropriately barren, showing only rock, sand, and possibly microbial crusts, with no green plants."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "There is no text or diagrammatic elements in the image."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "The general setting of a barren landscape and shallow seas with Ediacaran biota aligns with the period, though the specific extinction event is not clearly shown."
+    }
+   ],
+   "other_errors": [
+    "The scale and perspective are severely distorted. The landscape appears to be a high-altitude aerial view, but the Ediacaran organisms in the bottom right are rendered at a scale that makes them appear hundreds of meters wide, like massive landscape features."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 4,
+    "clarity": 2,
+    "story": 2
+   },
+   "emotion_notes": "The warm lighting creates a pleasant atmosphere, but the confusing perspective and lack of clear narrative focus detract from the overall impact.",
+   "raise_it": "Fix the perspective issue. Either create a close-up underwater scene showing the interaction between Ediacarans and new burrowers to tell the story, or maintain a true aerial view where individual creatures are not visible.",
+   "style": "The image successfully captures the warm, slightly hazy, and realistic oil painting style characteristic of Charles R. Knight.",
+   "differs": "The picture makes the sea creatures look as big as hills because the viewpoint is confusing. Real Ediacaran creatures were much smaller.",
+   "status": "fix",
+   "emotion_avg": 2.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/events/endediacaran-2.jpg"
+  }
+ },
+ "event:grandecoupure": {
+  "kind": "event",
+  "title": "The Great Break",
+  "file": "painted/events/grandecoupure.jpg",
+  "sha": "16ecc7323aa9",
+  "t": 33.9,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "As Antarctica freezes, many of Europe’s mammals vanish and newcomers arrive from Asia.."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Antarctica's new ice is shown on the horizon in the same view as Europe's mammals — two places a world apart, joined to tell one story.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "As Antarctica freezes, many of Europe’s mammals vanish and newcomers arrive from Asia.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Shows ice and migrating herds."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Animals resemble modern elephants and later whales."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Signature text is visible."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Captures the climate shift theme."
+    }
+   ],
+   "other_errors": [
+    "Geographic compression of ice and temperate zones.",
+    "Generic marine mammals."
+   ],
+   "emotion": {
+    "wonder": 4,
+    "life": 3,
+    "light": 4,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Grand scale but confusing geography.",
+   "raise_it": "Use accurate Oligocene fauna and clarify the setting.",
+   "style": "Good emulation of Knight's warm oil style.",
+   "status": "fail",
+   "emotion_avg": 3.4,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:greatlakes": {
+  "kind": "event",
+  "title": "How the Great Lakes were made",
+  "file": "painted/events/greatlakes.jpg",
+  "sha": "f4decd2f841f",
+  "t": 0.026,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "An ice sheet three kilometres thick scrapes out five basins , then melts, and fills them.",
+   "26,000 years ago.",
+   "Ice up to 3 km thick covers Canada and the northern United States.",
+   "The ice is moving.",
+   "Rocks frozen into its base scrape like sandpaper, deepening old river valleys and soft rock into huge basins.",
+   "About 18,000 years ago the climate warms, and the ice edge starts to melt back north.",
+   "Meltwater pools in the scooped-out basins in front of the ice , lakes bigger than today’s, spilling south down the Mississippi.",
+   "About 12,500 years ago water starts pouring over a ridge of hard rock: Niagara Falls begins."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "We cannot see the rocks scraping under the ice, and the exact shapes of the five modern Great Lakes are not yet formed.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "An ice sheet three kilometres thick scrapes out five basins , then melts, and fills them.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Shows ice melting into basins, though exactly five distinct modern lakes are not yet formed."
+    },
+    {
+     "item": "26,000 years ago.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Pleistocene megafauna and the massive ice sheet match the era."
+    },
+    {
+     "item": "Ice up to 3 km thick covers Canada and the northern United States.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "A massive continental ice sheet dominates the landscape."
+    },
+    {
+     "item": "The ice is moving.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Crevasses and lobed flow lines clearly indicate glacial movement."
+    },
+    {
+     "item": "Rocks frozen into its base scrape like sandpaper, deepening old river valleys and soft rock into huge basins.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The base of the ice is hidden from this aerial perspective."
+    },
+    {
+     "item": "About 18,000 years ago the climate warms, and the ice edge starts to melt back north.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Meltwater lakes at the terminus show active melting and retreat."
+    },
+    {
+     "item": "Meltwater pools in the scooped-out basins in front of the ice , lakes bigger than today’s, spilling south down the Mississippi.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Large lakes are visible right at the ice edge with rivers draining away."
+    },
+    {
+     "item": "About 12,500 years ago water starts pouring over a ridge of hard rock: Niagara Falls begins.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Specific geographic features like Niagara are not identifiable here."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No anachronistic elements are visible."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None are present in the image."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Accurately depicts the Laurentide ice retreat and proglacial lakes."
+    }
+   ],
+   "other_errors": [
+    "Megafauna scale is slightly too large for this high aerial altitude."
+   ],
+   "emotion": {
+    "wonder": 4,
+    "life": 3,
+    "light": 4,
+    "clarity": 4,
+    "story": 4
+   },
+   "emotion_notes": "Vast scale and warm lighting effectively convey deep time and geological majesty.",
+   "raise_it": "Add distinct glacial moraines and adjust animal scale to better reflect the extreme altitude.",
+   "style": "Captures Knight's warm, atmospheric realism and painterly oil textures well.",
+   "differs": "We cannot see the rocks scraping under the ice, and the exact shapes of the five modern Great Lakes are not yet formed.",
+   "status": "fix",
+   "emotion_avg": 3.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/events/greatlakes-2.jpg"
+  }
+ },
+ "event:grenville": {
+  "kind": "event",
+  "title": "The Grenville mountains",
+  "file": "painted/events/grenville.jpg",
+  "sha": "9ddb0ba5317e",
+  "t": 1050,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Continents collide and raise a long mountain range along eastern North America.",
+   "Worn down, its roots are the old rocks of the Adirondacks and of southern Ontario, Quebec and Labrador.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water; NO animals of any kind, not even in the sea: life is microbes and simple algae, too small or too plain to see from the sky (at most green or brown scum in shallow water).",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The picture shows small shapes in the water that might be early sea creatures, but scientists are still guessing exactly what life looked like that long ago.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Continents collide and raise a long mountain range along eastern North America.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A massive, rugged mountain range dominates the background landscape."
+    },
+    {
+     "item": "Worn down, its roots are the old rocks of the Adirondacks and of southern Ontario, Quebec and Labrador.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The image shows the mountains at their peak, not their modern eroded roots, and specific geography is unidentifiable."
+    },
+    {
+     "item": "NO plants of any kind on land, nothing green or leafy; NO animals anywhere except, at most, simple soft-bodied sea creatures.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "The land is completely barren, and the water contains only simple, indistinct shapes."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "There are no text or diagrammatic elements present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "It accurately depicts a barren, mountainous Precambrian landscape."
+    }
+   ],
+   "other_errors": [],
+   "emotion": {
+    "wonder": 4,
+    "life": 3,
+    "light": 4,
+    "clarity": 4,
+    "story": 3
+   },
+   "emotion_notes": "The warm, hazy atmosphere effectively conveys a primordial, untouched world.",
+   "raise_it": "Add visible dark microbial crusts along the riverbanks to hint at early life, and show tilted rock strata to emphasize the tectonic collision.",
+   "style": "Successfully captures Knight's manner with painterly strokes, warm atmospheric perspective, and a calm, sweeping composition.",
+   "differs": "The picture shows small shapes in the water that might be early sea creatures, but scientists are still guessing exactly what life looked like that long ago.",
+   "status": "pass",
+   "emotion_avg": 3.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25",
+   "candidate": "tools/paint/candidates/events/grenville-3.jpg"
+  },
+  "held": {
+   "why": "it was checked against a rule that allowed simple sea creatures before 580 million years ago; there were no animals then. Paint again and review.",
+   "date": "2026-11-25"
+  }
+ },
+ "event:hangenberg": {
+  "kind": "event",
+  "title": "The Hangenberg crisis",
+  "file": "painted/events/hangenberg.jpg",
+  "sha": "c2ddb23d81ce",
+  "t": 359.3,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "At the very end of the Devonian, the armoured fishes and much other sea life die out, as ice spreads in the south and the seas lose oxygen.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palms, conifers, cycads or flowering plants.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "At the very end of the Devonian, the armoured fishes and much other sea life die out, as ice spreads in the south and the seas lose oxygen.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Ice is visible and dead armoured fishes are in the dark water."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: the first trees are fern-like early trees (such as Archaeopteris); NO conifers, palms, cycads or flowering plants.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Anachronistic palm trees are clearly visible on the landmasses."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text or lines are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The presence of palm trees contradicts the scientific version."
+    }
+   ],
+   "other_errors": [
+    "Modern palm trees are present instead of Archaeopteris.",
+    "Some fish anatomy appears too modern or generic."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Warm lighting works well but inaccurate plants reduce impact.",
+   "raise_it": "Change palms to Archaeopteris and improve placoderm anatomy.",
+   "style": "Good Knight-like warm oil realism.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:hawaii": {
+  "kind": "event",
+  "title": "How Hawaii’s islands were born",
+  "file": "painted/events/hawaii.jpg",
+  "sha": "4822dadf317a",
+  "t": 5.6,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A hot spot in the mantle builds volcano after volcano as the Pacific plate slides over it like a conveyor belt.",
+   "Deep under the Pacific, a hot spot of rising rock melts its way up and builds volcanoes on the sea floor.",
+   "About 5 million years ago Kauaʻi rises out of the sea over the hot spot.",
+   "The Pacific plate slides north-west, about 7 to 9 centimetres a year, carrying each island away.",
+   "Cut off from the hot spot, its volcano goes quiet.",
+   "A new volcano grows over the hot spot, then another: Oʻahu, then Molokaʻi, Maui and the rest.",
+   "Old islands wear down and slowly sink as they move away.",
+   "That is why Kauaʻi is the most rugged and the Big Island the most volcanic."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The islands' shapes are illustrative; the steam marks the young volcano over the hot spot.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A hot spot in the mantle builds volcano after volcano as the Pacific plate slides over it like a conveyor belt.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Subterranean mantle processes are not visible."
+    },
+    {
+     "item": "Deep under the Pacific, a hot spot of rising rock melts its way up and builds volcanoes on the sea floor.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Underwater processes are not shown."
+    },
+    {
+     "item": "About 5 million years ago Kauaʻi rises out of the sea over the hot spot.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Shows a volcanic island emerging from the ocean."
+    },
+    {
+     "item": "The Pacific plate slides north-west, about 7 to 9 centimetres a year, carrying each island away.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Plate motion cannot be seen in a static image."
+    },
+    {
+     "item": "Cut off from the hot spot, its volcano goes quiet.",
+     "kind": "must",
+     "verdict": "contradicted",
+     "why": "Multiple separated islands are actively smoking simultaneously."
+    },
+    {
+     "item": "A new volcano grows over the hot spot, then another: Oʻahu, then Molokaʻi, Maui and the rest.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Multiple islands are visible in a chain."
+    },
+    {
+     "item": "Old islands wear down and slowly sink as they move away.",
+     "kind": "must",
+     "verdict": "contradicted",
+     "why": "The background shows a massive continuous landmass, not sinking islands."
+    },
+    {
+     "item": "That is why Kauaʻi is the most rugged and the Big Island the most volcanic.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Specific island identities and relative ruggedness are unclear."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "A massive continental landmass is shown, which is geographically impossible for isolated Hawaii."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "There is a signature in the bottom right corner."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The background continent and multiple active volcanoes contradict the isolated hotspot model."
+    }
+   ],
+   "other_errors": [
+    "Background shows a large continental landmass; Hawaii is extremely isolated.",
+    "Multiple islands are actively smoking at once, rather than just the one over the hotspot."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 4,
+    "clarity": 2,
+    "story": 3
+   },
+   "emotion_notes": "Warm lighting and fauna create a pleasant scene, but the geological narrative is muddled by the background landmass.",
+   "raise_it": "Remove the background continent to show Hawaii's isolation. Show only one active volcano; older islands should be quiet. Remove the signature.",
+   "style": "Captures Knight's warm, realistic oil style well, despite the unwanted signature.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:himalaya": {
+  "kind": "event",
+  "title": "How the Himalayas rose",
+  "file": "painted/events/himalaya.jpg",
+  "sha": "a9b26091c4b5",
+  "t": 80,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "India races north across an ocean, crashes into Asia, and pushes up the highest mountains on Earth.",
+   "80 million years ago India is an island continent far to the south, moving north across an ocean.",
+   "It moves up to about 15 centimetres a year , four times faster than your fingernails grow, and very fast for a continent.",
+   "Around 66 million years ago lava floods out across western India: the Deccan eruptions, at the time the dinosaurs died out.",
+   "About 50 million years ago India meets Asia.",
+   "The ocean floor between them has been used up, and the crust starts to crumple.",
+   "India keeps pushing.",
+   "The crust buckles and stacks up into the Himalayas and the high Tibetan Plateau."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO grass or grassland.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Drawn like a view from space with today's outline of India and Asia, where the story ends; the earlier stages of India's journey are not shown.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "India races north across an ocean, crashes into Asia, and pushes up the highest mountains on Earth.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The image depicts a landmass colliding with another, forming a massive mountain range."
+    },
+    {
+     "item": "80 million years ago India is an island continent far to the south, moving north across an ocean.",
+     "kind": "must",
+     "verdict": "contradicted",
+     "why": "India is shown already attached to Asia, not as an isolated island."
+    },
+    {
+     "item": "It moves up to about 15 centimetres a year , four times faster than your fingernails grow, and very fast for a continent.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Speed of tectonic movement cannot be determined from a static image."
+    },
+    {
+     "item": "Around 66 million years ago lava floods out across western India: the Deccan eruptions, at the time the dinosaurs died out.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Volcanic eruptions are visible on the western side of the Indian landmass, with tiny dinosaurs nearby."
+    },
+    {
+     "item": "About 50 million years ago India meets Asia.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The landmasses are shown connected."
+    },
+    {
+     "item": "The ocean floor between them has been used up, and the crust starts to crumple.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Crumpled crust and mountains are visible at the collision zone."
+    },
+    {
+     "item": "India keeps pushing.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Implied by the massive scale of the mountains."
+    },
+    {
+     "item": "The crust buckles and stacks up into the Himalayas and the high Tibetan Plateau.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A large mountain range and a high plateau behind it are clearly depicted."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO grass or grassland.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Green areas appear to be generic vegetation or forests, not explicitly grass."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The image compresses tens of millions of years into a single scene, showing Deccan volcanism (66 mya) occurring simultaneously with fully formed Himalayas (post-50 mya)."
+    }
+   ],
+   "other_errors": [
+    "The image combines multiple distinct time periods into one impossible landscape.",
+    "The cross-section in the foreground with giant, out-of-scale fossils is jarring and inappropriate for a landscape view.",
+    "Dinosaurs are shown coexisting with the fully formed Himalayas, which is anachronistic."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 2,
+    "story": 3
+   },
+   "emotion_notes": "The massive scale provides some wonder, but the confusing mix of time periods and the bizarre cross-section severely hurt clarity and story. The landscape feels mostly sterile despite tiny animal figures.",
+   "raise_it": "Choose a single point in time to depict, such as India as an island with Deccan eruptions, OR the moment of collision. Remove the geological cross-section to maintain a consistent landscape perspective.",
+   "style": "The warm lighting and oil-like textures nod to Knight, but the satellite-view composition and cutaway sections feel more like a modern textbook diagram than Knight's ground-level, immersive realism.",
+   "status": "fail",
+   "emotion_avg": 2.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:holocene": {
+  "kind": "event",
+  "title": "Now",
+  "file": "painted/events/holocene.jpg",
+  "sha": "bd0165d275ba",
+  "t": 0,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "The last 800 years.",
+   "People now reach every island and every sea.",
+   "Each ring is an animal in this app, seen for the last time.",
+   "Species are now being lost far faster than the natural rate , through hunting, cleared land, and the animals we carry with us.",
+   "This one is not over.",
+   "Unlike an asteroid, we can see what we are doing , and stop.."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "A general view of today's world, not one real place.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "The last 800 years.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Shows historical ships and settlements."
+    },
+    {
+     "item": "People now reach every island and every sea.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Ships navigate coastal and island waters."
+    },
+    {
+     "item": "Each ring is an animal in this app, seen for the last time.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Rings highlight specific animals."
+    },
+    {
+     "item": "Species are now being lost far faster than the natural rate , through hunting, cleared land, and the animals we carry with us.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Settlements and cleared land are visible."
+    },
+    {
+     "item": "This one is not over.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Active smoke and ships show ongoing events."
+    },
+    {
+     "item": "Unlike an asteroid, we can see what we are doing , and stop..",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Abstract concept not visually verifiable."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No obvious anachronisms present."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None present besides the requested rings."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Follows the theme of human expansion."
+    }
+   ],
+   "other_errors": [
+    "Animals inside rings lack detail."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 2,
+    "story": 3
+   },
+   "emotion_notes": "Warm lighting sets a calm mood.",
+   "raise_it": "Improve animal clarity.",
+   "style": "Matches Knight's warm palette.",
+   "status": "fix",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:iapetus": {
+  "kind": "event",
+  "title": "Scotland meets England",
+  "file": "painted/events/iapetus.jpg",
+  "sha": "bda7bcaee7cb",
+  "t": 424,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "The Iapetus Ocean closes.",
+   "The land that became Scotland joins the land that became England, and the Caledonian mountains rise.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "The Iapetus Ocean closes.",
+     "kind": "must",
+     "verdict": "contradicted",
+     "why": "A large seaway still separates the landmasses."
+    },
+    {
+     "item": "The land that became Scotland joins the land that became England, and the Caledonian mountains rise.",
+     "kind": "must",
+     "verdict": "contradicted",
+     "why": "Mountains are shown, but the lands are not joined."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Green textures resemble dense forests from this altitude."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "A signature is visible in the bottom right."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Fails on geography and vegetation constraints."
+    }
+   ],
+   "other_errors": [
+    "Landmass shapes look too similar to modern UK geography."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Good scale, but lacks focus.",
+   "raise_it": "Close the seaway. Remove forest textures. Delete signature.",
+   "style": "Captures Knight's warm oil tones well.",
+   "status": "fail",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:ireviken": {
+  "kind": "event",
+  "title": "The Ireviken event",
+  "file": "painted/events/ireviken.jpg",
+  "sha": "c2033a8d1973",
+  "t": 431,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A short extinction in the sea, with a big swing in the carbon of the oceans.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The small green plants on the shore stand for the low, early land plants of the time, drawn a little too large and lush; the landscape is illustrative.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A short extinction in the sea, with a big swing in the carbon of the oceans.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Dead marine life washed ashore indicates extinction."
+    },
+    {
+     "item": "NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Large shrub-like plants are visible in the foreground."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Anachronistic large plants violate the timeline."
+    }
+   ],
+   "other_errors": [
+    "Foreground trilobites appear giant relative to the landscape scale."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Warm lighting works, but scale confusion limits impact.",
+   "raise_it": "Remove large plants. Use tiny mosses. Fix foreground scale.",
+   "style": "Good warm oil tones matching Knight.",
+   "status": "fail",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:kalkarindji": {
+  "kind": "event",
+  "title": "The Kalkarindji eruptions",
+  "file": "painted/events/kalkarindji.jpg",
+  "sha": "5e6daac56d61",
+  "t": 511,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Lava floods across what is now northern Australia, at the same time as the first big extinction of animals.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The coastline and the spread of the lava are illustrative; the colours are the painter's.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Lava floods across what is now northern Australia, at the same time as the first big extinction of animals.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Lava flows are visible near marine life."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO plants of any kind on land: the land is bare rock, sand and mud (at most a thin crust of microbes); all life is in the water.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Green plants and shrubs are clearly visible on land."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text or labels are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Terrestrial plants are anachronistic for this era."
+    }
+   ],
+   "other_errors": [
+    "Terrestrial vegetation present at 511 Ma."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 4,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Good lighting, but anachronistic plants distract.",
+   "raise_it": "Remove all land plants to fix the timeline. Enhance marine life visibility.",
+   "style": "Captures Knight's warm oil style well.",
+   "status": "fail",
+   "emotion_avg": 3.2,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:lau": {
+  "kind": "event",
+  "title": "The Lau crisis",
+  "file": "painted/events/lau.jpg",
+  "sha": "6b2b34ff1f5b",
+  "t": 423,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A short extinction in the sea.",
+   "Afterwards, mats of microbes spread over the sea floor as they had not for hundreds of millions of years.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A short extinction in the sea.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Extinction is an event over time, hard to see in a single landscape."
+    },
+    {
+     "item": "Afterwards, mats of microbes spread over the sea floor as they had not for hundreds of millions of years..",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Dark textured mats are visible in the shallows."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Green patches on land look like bushes, too large for Silurian."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Contains anachronistic large bushes."
+    }
+   ],
+   "other_errors": [
+    "Greenery extends too far inland for this era."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 2
+   },
+   "emotion_notes": "Warm light gives a calm feel. Needs more focus on the marine aspect.",
+   "raise_it": "Remove the bushes. Show closer view of the microbial mats to highlight the marine aftermath.",
+   "style": "Captures Knight's warm oil style well, but landscape feels too modern.",
+   "status": "fail",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:mackenzie": {
+  "kind": "event",
+  "title": "The Mackenzie dykes",
+  "file": "painted/events/mackenzie.jpg",
+  "sha": "00bca60129f2",
+  "t": 1270,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Magma from one hot spot splits northern Canada in a giant fan of cracks, more than 2,000 km long, that fill with rock.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water; NO animals of any kind, not even in the sea: life is microbes and simple algae, too small or too plain to see from the sky (at most green or brown scum in shallow water).",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Magma from one hot spot splits northern Canada in a giant fan of cracks, more than 2,000 km long, that fill with rock.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Dark branching rock formations resembling magma-filled cracks span the landscape."
+    },
+    {
+     "item": "NO plants of any kind on land; all life is in the water; NO animals anywhere except, at most, simple soft-bodied sea creatures.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Land is barren rock and water contains only simple soft-bodied forms."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text or artificial lines are present."
+    },
+    {
+     "item": "Follows the version of the science above",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Depicts barren land with magma cracks and simple aquatic life."
+    }
+   ],
+   "other_errors": [
+    "The scale appears too small, looking like a local lava flow rather than a 2000 km continental dyke swarm."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Warm lighting creates a calm atmosphere, though the scale feels local.",
+   "raise_it": "Widen the perspective to show a larger continental expanse to convey the massive scale.",
+   "style": "Captures Knight's warm oil realism with smooth brushstrokes.",
+   "status": "fix",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  },
+  "held": {
+   "why": "it was checked against a rule that allowed simple sea creatures before 580 million years ago; there were no animals then. Paint again and review.",
+   "date": "2026-11-25"
+  }
+ },
+ "event:mediterranean": {
+  "kind": "event",
+  "title": "When the Mediterranean dried up",
+  "file": "painted/events/mediterranean.jpg",
+  "sha": "18184b710822",
+  "t": 6.2,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Cut off from the ocean, a whole sea turns to salt , then the Atlantic breaks back in.",
+   "About 6 million years ago the Mediterranean is joined to the Atlantic by channels through what is now southern Spain and Morocco.",
+   "As Africa pushes into Europe, those channels rise and narrow.",
+   "Less ocean water can get in.",
+   "The sun evaporates the sea faster than rivers can refill it.",
+   "Salt starts to pile up on the sea floor.",
+   "Over about 600,000 years, salt and gypsum build up in layers that are kilometres thick in places.",
+   "At the lowest, much of the sea may have shrunk to salty lakes far below today’s sea level."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The animals are the painter's addition; the salt flats and the last salty lakes follow the story.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Cut off from the ocean, a whole sea turns to salt , then the Atlantic breaks back in.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Shows the sea turned to salt, though the Atlantic breaking back in is not depicted."
+    },
+    {
+     "item": "About 6 million years ago the Mediterranean is joined to the Atlantic by channels through what is now southern Spain and Morocco.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "A distant ocean and land barrier are visible, but specific geography cannot be confirmed."
+    },
+    {
+     "item": "As Africa pushes into Europe, those channels rise and narrow.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Tectonic movement is not visible in a static image."
+    },
+    {
+     "item": "Less ocean water can get in.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The basin is largely dry, implying restricted water flow."
+    },
+    {
+     "item": "The sun evaporates the sea faster than rivers can refill it.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The massive salt flats imply high evaporation rates."
+    },
+    {
+     "item": "Salt starts to pile up on the sea floor.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Vast white expanses of salt are clearly visible across the basin."
+    },
+    {
+     "item": "Over about 600,000 years, salt and gypsum build up in layers that are kilometres thick in places.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Thick salt deposits are shown, though exact depth cannot be measured."
+    },
+    {
+     "item": "At the lowest, much of the sea may have shrunk to salty lakes far below today’s sea level.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Residual blue and reddish lakes are visible in the lowest parts of the basin."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "The elephants and rhinos appear to be modern African species rather than Late Miocene fauna."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "There is a signature ('Charles R. Knight') in the bottom right corner."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "It accurately depicts the geological state of the Messinian Salinity Crisis, despite minor fauna and text errors."
+    }
+   ],
+   "other_errors": [
+    "Foreground trees resemble modern cultivated olive orchards rather than wild Miocene vegetation.",
+    "Foreground fauna (elephants, rhinos) lack the specific anatomical features of Late Miocene species (e.g., Deinotherium or Gomphotherium)."
+   ],
+   "emotion": {
+    "wonder": 4,
+    "life": 3,
+    "light": 4,
+    "clarity": 4,
+    "story": 3
+   },
+   "emotion_notes": "The vast scale of the salt flats evokes deep time well, and the lighting is atmospheric, but the modern-looking animals detract slightly from the prehistoric immersion.",
+   "raise_it": "Remove the signature. Replace modern elephants and rhinos with accurate Late Miocene species. Emphasize the extreme depth of the basin relative to the distant ocean to heighten the sense of scale.",
+   "style": "Strongly captures Knight's manner with warm, golden-hour lighting, painterly textures, and a calm, sweeping panoramic composition.",
+   "status": "fail",
+   "emotion_avg": 3.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:midcontinent": {
+  "kind": "event",
+  "title": "North America almost splits",
+  "file": "painted/events/midcontinent.jpg",
+  "sha": "41922613561d",
+  "t": 1100,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A rift tears into the middle of North America and floods with lava, then stops.",
+   "Lake Superior lies in it, and so does its copper.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water; NO animals of any kind, not even in the sea: life is microbes and simple algae, too small or too plain to see from the sky (at most green or brown scum in shallow water).",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A rift tears into the middle of North America and floods with lava, then stops.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Rift and lava are clearly visible."
+    },
+    {
+     "item": "Lake Superior lies in it, and so does its copper.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Water is present but specific geography and copper are unidentifiable."
+    },
+    {
+     "item": "NO plants of any kind on land: the land is bare rock, sand and mud (at most a thin crust of microbes); all life is in the water; NO animals anywhere except, at most, simple soft-bodied sea creatures.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Landscape is appropriately barren."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Signature in bottom right."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Matches the barren rift description."
+    }
+   ],
+   "other_errors": [
+    "Strange floating artifacts in the water on the right."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Geological drama is clear. Lighting is warm.",
+   "raise_it": "Remove signature. Clean up artifacts in water.",
+   "style": "Captures Knight's warm oil realism well.",
+   "status": "fail",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:missoula": {
+  "kind": "event",
+  "title": "The floods that carved the Scablands",
+  "file": "painted/events/missoula.jpg",
+  "sha": "2de4412bc3ee",
+  "t": 0.02,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A dam of ice holds back a lake in Montana , then breaks, again and again, and the floods tear across Washington.",
+   "20,000 years ago the great ice sheet over western Canada pushes tongues of ice south into what is now the United States.",
+   "One tongue of ice blocks the Clark Fork River in Idaho like a dam.",
+   "Behind it, water fills the valleys of western Montana: Glacial Lake Missoula.",
+   "Ice floats on water.",
+   "When the lake grows deep enough, the water lifts the dam and breaks it.",
+   "The lake empties within days.",
+   "A wall of water rushes across eastern Washington, stripping off the soil and cutting deep channels into the rock: the Channeled Scablands."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The floods are shown all at once; they came again and again over thousands of years.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A dam of ice holds back a lake in Montana , then breaks, again and again, and the floods tear across Washington.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Massive flooding is shown tearing across a landscape, though the repetitive breaking cannot be seen."
+    },
+    {
+     "item": "20,000 years ago the great ice sheet over western Canada pushes tongues of ice south into what is now the United States.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A massive ice sheet with a southern-reaching lobe is prominently featured on the right."
+    },
+    {
+     "item": "One tongue of ice blocks the Clark Fork River in Idaho like a dam.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "An ice sheet is present, but it is unclear if it is actively blocking a specific river in this composition."
+    },
+    {
+     "item": "Behind it, water fills the valleys of western Montana: Glacial Lake Missoula.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "A large body of water is visible in the background, serving as the source of the flood."
+    },
+    {
+     "item": "Ice floats on water.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "No floating ice chunks from the shattered dam are visible in the floodwaters."
+    },
+    {
+     "item": "When the lake grows deep enough, the water lifts the dam and breaks it.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The image shows the active flood aftermath, not the lifting and breaking process."
+    },
+    {
+     "item": "The lake empties within days.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Timeframes cannot be determined from a still image."
+    },
+    {
+     "item": "A wall of water rushes across eastern Washington, stripping off the soil and cutting deep channels into the rock: the Channeled Scablands.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Massive water flows are actively cutting deep, rocky channels and waterfalls."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Pleistocene megafauna (mammoths) and flora are appropriate for 20,000 years ago."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "There is a signature ('Charles R. Knight') in the bottom right corner."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "It captures the megaflood and ice sheet, though it lacks the specific mechanics of the breached ice dam."
+    }
+   ],
+   "other_errors": [
+    "The floodwaters lack massive icebergs and debris, which would be present immediately after an ice dam breach.",
+    "The geography is slightly ambiguous; the ice sheet appears parallel to the flow rather than acting as a breached barrier."
+   ],
+   "emotion": {
+    "wonder": 4,
+    "life": 3,
+    "light": 4,
+    "clarity": 3,
+    "story": 4
+   },
+   "emotion_notes": "The grand scale and warm lighting evoke awe, but the exact geography of the dam break is slightly confusing.",
+   "raise_it": "Add massive floating ice chunks to the floodwaters to clearly show the shattered dam. Adjust the composition so the ice lobe clearly acts as a breached barrier. Remove the signature.",
+   "style": "Excellent emulation of Knight's warm, classical oil painting style and calm realism.",
+   "status": "fail",
+   "emotion_avg": 3.6,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:moon": {
+  "kind": "event",
+  "title": "How the Moon was made",
+  "file": "painted/events/moon.jpg",
+  "sha": "060458abc689",
+  "t": 4567,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A planet the size of Mars hits the young Earth, and the wreckage becomes the Moon , as the computer models tell it.",
+   "4,567 million years ago.",
+   "Around the young Sun, dust sticks into pebbles, pebbles into rocks, and rocks into small planets.",
+   "The Earth grows by swallowing them.",
+   "Each crash heats it, and much of its surface may be molten rock.",
+   "Then a planet about the size of Mars , scientists call it Theia , hits the Earth a glancing blow.",
+   "Molten rock and hot vapour are thrown into space, and form a glowing ring around the Earth.",
+   "In the computer models the ring clumps together into one Moon very fast , in years, or perhaps a few centuries."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water; NO animals of any kind, not even in the sea: life is microbes and simple algae, too small or too plain to see from the sky (at most green or brown scum in shallow water).",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "No one knows what the body that hit the Earth looked like; the sizes and the look of the two worlds are the painter's guess.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A planet the size of Mars hits the young Earth, and the wreckage becomes the Moon , as the computer models tell it.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The aftermath of the impact is depicted, with wreckage forming the Moon."
+    },
+    {
+     "item": "4,567 million years ago.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The Hadean, molten environment fits this timeframe."
+    },
+    {
+     "item": "Around the young Sun, dust sticks into pebbles, pebbles into rocks, and rocks into small planets.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Other small planetary bodies are visible in the hazy sky."
+    },
+    {
+     "item": "The Earth grows by swallowing them.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The molten surface implies frequent, violent impacts."
+    },
+    {
+     "item": "Each crash heats it, and much of its surface may be molten rock.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "The foreground is dominated by glowing, molten rock and magma."
+    },
+    {
+     "item": "Then a planet about the size of Mars , scientists call it Theia , hits the Earth a glancing blow.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The impact itself is not shown, but the resulting debris ring is."
+    },
+    {
+     "item": "Molten rock and hot vapour are thrown into space, and form a glowing ring around the Earth.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A massive, glowing ring of material is visible in the sky."
+    },
+    {
+     "item": "In the computer models the ring clumps together into one Moon very fast , in years, or perhaps a few centuries.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A large, spherical, glowing body is forming within the ring."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO plants of any kind on land: the land is bare rock, sand and mud (at most a thin crust of microbes); all life is in the water; NO animals anywhere except, at most, simple soft-bodied sea creatures.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No life is depicted in this molten landscape."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "A signature is visible in the bottom right corner."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "It illustrates the giant impact hypothesis and the resulting molten Earth and debris ring."
+    }
+   ],
+   "other_errors": [
+    "The ring appears to be continuously erupting from a single point on the surface like a tornado, rather than being an orbital disk of debris left over from a past impact."
+   ],
+   "emotion": {
+    "wonder": 4,
+    "life": 2,
+    "light": 4,
+    "clarity": 3,
+    "story": 4
+   },
+   "emotion_notes": "The image conveys immense scale and geological violence. The lighting is dramatic and atmospheric.",
+   "raise_it": "Remove the signature. Adjust the ring geometry so it is clearly in orbit, rather than physically connecting to the ground like a waterspout.",
+   "style": "Successfully mimics Knight's warm, oil-painted aesthetic, applying his traditional paleoart style to a cosmic event.",
+   "status": "fail",
+   "emotion_avg": 3.4,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:oae2": {
+  "kind": "event",
+  "title": "The seas run short of oxygen",
+  "file": "painted/events/oae2.jpg",
+  "sha": "78001a09b40f",
+  "t": 93.9,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Oceanic Anoxic Event 2: huge eruptions warm the world, much of the ocean loses its oxygen, and some sea creatures die out.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO grass or grassland.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "The dark swirls stand for water that had lost its oxygen; the coasts and forests are illustrative.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Oceanic Anoxic Event 2: huge eruptions warm the world, much of the ocean loses its oxygen, and some sea creatures die out.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Volcanoes, dark water, and skeletons depict the event."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO grass or grassland.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No grass visible; ground cover is fern-like or bare."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Image is free of text and lines."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Aligns with the described anoxic event and extinctions."
+    }
+   ],
+   "other_errors": [
+    "Marine reptile anatomy is slightly indistinct."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "The dark waters and distant smoke set a moody tone.",
+   "raise_it": "Add more distinct dying marine life in the foreground to strengthen the narrative.",
+   "style": "Captures Knight's warm, painterly realism well.",
+   "status": "fix",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:ordovician": {
+  "kind": "event",
+  "title": "The great freeze",
+  "file": "painted/events/ordovician.jpg",
+  "sha": "4f4b9e36c07d",
+  "t": 444,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Gondwana lies over the South Pole.",
+   "Almost all life is in the sea.",
+   "Ice sheets grow across the polar land.",
+   "So much water is locked up that the sea falls.",
+   "The warm, shallow seas where most animals live drain away or turn cold.",
+   "Then the ice melts.",
+   "Water low in oxygen spreads across the sea floor , a second wave of death.",
+   "About 85% of sea species are gone.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Gondwana lies over the South Pole.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "A large, glaciated landmass is depicted, consistent with a polar continent."
+    },
+    {
+     "item": "Almost all life is in the sea.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "All visible animal life is restricted to the water or stranded on the mudflats."
+    },
+    {
+     "item": "Ice sheets grow across the polar land.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Massive glaciers and ice sheets are clearly visible covering the land."
+    },
+    {
+     "item": "So much water is locked up that the sea falls.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Extensive exposed mudflats and stranded pools indicate a significant drop in sea level."
+    },
+    {
+     "item": "The warm, shallow seas where most animals live drain away or turn cold.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Marine animals are shown trapped in shrinking, shallow pools as the water recedes."
+    },
+    {
+     "item": "Then the ice melts.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "The image captures the freeze and sea-level drop; a subsequent melting phase is not clearly depicted."
+    },
+    {
+     "item": "Water low in oxygen spreads across the sea floor , a second wave of death.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "While the water is dark, oxygen levels cannot be visually confirmed."
+    },
+    {
+     "item": "About 85% of sea species are gone..",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Dead animals are shown, but a specific extinction percentage cannot be seen."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water.",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "Only low, green, moss-like ground cover is visible near the water; no trees or shrubs are present."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "There is a signature ('C.R. Knight') in the bottom left corner."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "It effectively illustrates the glaciation and resulting sea-level drop that stranded marine life."
+    }
+   ],
+   "other_errors": [
+    "The marine fauna appears generic and inaccurate for the Ordovician; the fish-like creatures resemble modern tadpoles or jawed fish rather than armored, jawless ostracoderms.",
+    "The coiled shells resemble later ammonites rather than the straight-shelled orthocones typical of the period.",
+    "The scale is confusing; the animals in the foreground pools appear disproportionately large compared to the vast landscape behind them."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 4,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "The landscape and lighting provide a good sense of scale and atmosphere, but the inaccurate, poorly scaled animals detract from the realism and life of the scene.",
+   "raise_it": "Remove the signature. Replace the generic aquatic animals with accurate Ordovician fauna (e.g., orthocones, trilobites, eurypterids) and adjust their scale so the foreground reads clearly as a close-up or the animals fit the landscape's vastness.",
+   "style": "The image successfully mimics Knight's style with its warm, atmospheric lighting, painterly textures, and calm, sweeping landscape composition.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:permian": {
+  "kind": "event",
+  "title": "The Great Dying",
+  "file": "painted/events/permian.jpg",
+  "sha": "c7fe0dc323b5",
+  "t": 251.9,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Siberia splits open.",
+   "Lava floods an area nearly the size of Australia.",
+   "Carbon dioxide and other gases pour out and wrap the planet.",
+   "The world heats by about 10 °C.",
+   "Forests die back.",
+   "The seas turn acid and lose their oxygen.",
+   "Between 8 and 9 in every 10 sea species are gone, and most land animals with backbones.",
+   "It is the closest life has come to ending.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palm trees (palms appear about 100 million years ago) and nothing palm-shaped (no tall slender trunk with a crown of big fan or feather leaves), and NO flowering plants or flowers.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Siberia splits open.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Large volcanic eruptions and fissures are visible in the background."
+    },
+    {
+     "item": "Lava floods an area nearly the size of Australia.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Extensive lava flows are depicted, implying a massive scale."
+    },
+    {
+     "item": "Carbon dioxide and other gases pour out and wrap the planet.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Thick, billowing clouds of gas and ash dominate the sky."
+    },
+    {
+     "item": "The world heats by about 10 °C.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The landscape appears arid, baking, and desolate."
+    },
+    {
+     "item": "Forests die back.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Dead stumps and sparse, struggling vegetation are in the foreground."
+    },
+    {
+     "item": "The seas turn acid and lose their oxygen.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Water is present, but chemical changes are invisible."
+    },
+    {
+     "item": "Between 8 and 9 in every 10 sea species are gone, and most land animals with backbones.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The scene is largely barren of visible animal life."
+    },
+    {
+     "item": "It is the closest life has come to ending.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "The apocalyptic atmosphere reflects a severe extinction event."
+    },
+    {
+     "item": "NO palm trees, and NO flowering plants or flowers.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Foreground plants clearly resemble anachronistic palm trees."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None are present in the image."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The inclusion of palm-like flora violates the botanical timeline."
+    }
+   ],
+   "other_errors": [
+    "Volcanoes appear as stratovolcano cones rather than the massive flood basalt fissures typical of the Siberian Traps."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Captures apocalyptic scale with dramatic lighting, though the landscape feels slightly static.",
+   "raise_it": "Replace palms with accurate Permian flora like dying cordaites. Emphasize flat fissure eruptions over cone volcanoes. Add a few dying Permian synapsids to highlight the extinction.",
+   "style": "Successfully emulates Knight's oil textures, warm palette, and atmospheric realism.",
+   "status": "fail",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:petm": {
+  "kind": "event",
+  "title": "Sudden global warming",
+  "file": "painted/events/petm.jpg",
+  "sha": "c447c53d9c13",
+  "t": 56,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "The Paleocene–Eocene Thermal Maximum: 5–8 °C of warming from a burst of carbon.",
+   "In the deep sea, many tiny shelled creatures die out.."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "A warm, wet world as the evidence shows, but not one particular place; the coasts and forests are illustrative.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "The Paleocene-Eocene Thermal Maximum: 5-8 C of warming from a burst of carbon.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Warm tropical landscape implies high temperatures."
+    },
+    {
+     "item": "In the deep sea, many tiny shelled creatures die out.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Shell layer visible in bottom right corner."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "cannot_tell",
+     "why": "Animals are too small to identify definitively."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Signature text visible in bottom right."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "consistent",
+     "why": "Shows warming and shell die-off."
+    }
+   ],
+   "other_errors": [
+    "Confusing perspective mixing landscape and map views.",
+    "Shell layer appears on a beach or cross-section rather than deep sea."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 2,
+    "story": 3
+   },
+   "emotion_notes": "Warm light creates wonder but mixed perspective hurts clarity.",
+   "raise_it": "Fix perspective to pure landscape. Move shell die-off to deep sea. Remove signature.",
+   "style": "Captures Knight's warm oil tones well.",
+   "status": "fail",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:quaternary": {
+  "kind": "event",
+  "title": "The loss of the giants",
+  "file": "painted/events/quaternary.jpg",
+  "sha": "12e1afc1b4c1",
+  "t": 0.012,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Our own species spreads out of Africa, reaching lands that have never known people.",
+   "People reach Australia.",
+   "Its giant wombats, kangaroos and lizards disappear over the next ten thousand years.",
+   "The ice sheets melt and the climate lurches.",
+   "People spread through the Americas.",
+   "Mammoths, sabre-toothed cats, giant sloths and many more vanish.",
+   "Hunting, a changing climate, or both together? Still argued , but the losses follow people around the world.."
+  ],
+  "must_not": [
+   "nothing from a later or earlier time",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "It gathers animals from several continents — mammoths, giant kangaroos, wombat-like diprotodonts — into one landscape; they lived far apart. The people are small and few; how much people caused these losses is argued over.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Our own species spreads out of Africa, reaching lands that have never known people.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Humans are depicted on both distinct landmasses."
+    },
+    {
+     "item": "People reach Australia.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Humans are visible on the left landmass alongside Australian flora and fauna."
+    },
+    {
+     "item": "Its giant wombats, kangaroos and lizards disappear over the next ten thousand years.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Giant wombats, a large kangaroo, and a giant lizard are shown coexisting with humans, representing the start of this period."
+    },
+    {
+     "item": "The ice sheets melt and the climate lurches.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Ice sheets are visible in the upper right background."
+    },
+    {
+     "item": "People spread through the Americas.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Humans are visible on the right landmass alongside American megafauna."
+    },
+    {
+     "item": "Mammoths, sabre-toothed cats, giant sloths and many more vanish.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Mammoths, a sabre-toothed cat, and a giant sloth are depicted coexisting with humans."
+    },
+    {
+     "item": "Hunting, a changing climate, or both together? Still argued , but the losses follow people around the world..",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Humans are shown holding spears near the animals, and ice sheets are present, hinting at both potential causes."
+    },
+    {
+     "item": "nothing from a later or earlier time",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "There is a faint silhouette of a dinosaur in the dusty background on the left."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The inclusion of a dinosaur and the impossible geography contradict the scientific reality of the era."
+    }
+   ],
+   "other_errors": [
+    "The geography is impossible; Australia and the Americas are depicted as being separated by a narrow river or strait.",
+    "The scale of the animals relative to the landscape is bizarre, making them appear as large as mountains.",
+    "A dinosaur silhouette is visible in the background on the left."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "The conceptual layout is clear, but the impossible geography and scale issues detract from the realism and wonder.",
+   "raise_it": "Remove the dinosaur silhouette. Resolve the impossible geography by either splitting the image into two distinct panels or using a more realistic global perspective. Adjust the scale of the animals so they fit naturally into a landscape rather than appearing as giants on a map.",
+   "style": "Captures the warm oil tones and lighting of Knight's work, but the map-like, conceptual composition departs significantly from his naturalistic landscape approach.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:snowball": {
+  "kind": "event",
+  "title": "When the Earth froze over",
+  "file": "painted/events/snowball.jpg",
+  "sha": "bf5e3a30715e",
+  "t": 722,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Twice, ice spread from the poles to the tropics and stayed for millions of years , then melted fast.",
+   "720 million years ago.",
+   "The supercontinent Rodinia is breaking up, and many of its pieces lie near the equator.",
+   "717 million years ago, just as huge eruptions flood Arctic Canada with lava, the ice begins.",
+   "White ice reflects sunlight back into space, so the cold feeds itself.",
+   "Ice spreads from the poles toward the equator.",
+   "The world stays frozen for nearly 60 million years: the Sturtian glaciation.",
+   "Whether the oceans froze over completely, or kept a strip of open water near the equator, is argued over."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water; NO animals of any kind, not even in the sea: life is microbes and simple algae, too small or too plain to see from the sky (at most green or brown scum in shallow water).",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "How completely the ice covered the oceans is still argued over; the painting shows ice almost everywhere.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Twice, ice spread from the poles to the tropics and stayed for millions of years , then melted fast.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "A static image cannot show multiple cycles or duration."
+    },
+    {
+     "item": "720 million years ago.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Exact dates cannot be visually confirmed."
+    },
+    {
+     "item": "The supercontinent Rodinia is breaking up, and many of its pieces lie near the equator.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Shows fragmented landmasses, though exact latitude is ambiguous."
+    },
+    {
+     "item": "717 million years ago, just as huge eruptions flood Arctic Canada with lava, the ice begins.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Active volcanoes are prominently erupting amidst the advancing ice."
+    },
+    {
+     "item": "White ice reflects sunlight back into space, so the cold feeds itself.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Vast white ice sheets are shown reflecting warm sunlight."
+    },
+    {
+     "item": "Ice spreads from the poles toward the equator.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Ice sheets are visibly advancing across the globe and landmasses."
+    },
+    {
+     "item": "The world stays frozen for nearly 60 million years: the Sturtian glaciation.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Duration cannot be seen in a single frame."
+    },
+    {
+     "item": "Whether the oceans froze over completely, or kept a strip of open water near the equator, is argued over.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Shows both extensive ice and patches of open water."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO plants of any kind on land: the land is bare rock, sand and mud (at most a thin crust of microbes); all life is in the water; NO animals anywhere except, at most, simple soft-bodied sea creatures.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "The landmass on the left clearly shows green areas, implying plant life."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "No text or labels are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The presence of green vegetation violates the strict 'no plants' rule."
+    }
+   ],
+   "other_errors": [
+    "Exaggerated planetary curvature creates a 'tiny planet' effect, distorting scale."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 2,
+    "light": 4,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Lighting is effective and atmospheric, but the miniature scale reduces the overall impact.",
+   "raise_it": "Eliminate all green from the landmasses to reflect bare rock. Flatten the horizon to correct the planetary scale.",
+   "style": "Successfully mimics Knight's warm oil textures and calm realism.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:southatlantic": {
+  "kind": "event",
+  "title": "The South Atlantic opens",
+  "file": "painted/events/southatlantic.jpg",
+  "sha": "68ee990117f2",
+  "t": 115,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Africa and South America pull apart, from the south northwards.",
+   "Salt piles up in the narrow new sea before it joins the open ocean.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palm trees (palms appear about 100 million years ago) and nothing palm-shaped (no tall slender trunk with a crown of big fan or feather leaves), and NO flowering plants except a few small early ones.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Africa and South America pull apart, from the south northwards.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Landmasses separate with a narrow sea forming."
+    },
+    {
+     "item": "Salt piles up in the narrow new sea before it joins the open ocean.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "White deposits line the water edges."
+    },
+    {
+     "item": "NO palm trees, and NO flowering plants except a few small early ones.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Palm trees are clearly visible in the foreground."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "None are present."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Anachronistic palm trees violate the timeline."
+    }
+   ],
+   "other_errors": [
+    "Foreground plants resemble modern desert flora."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 4,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Warm lighting but static composition.",
+   "raise_it": "Remove palms. Add early fauna.",
+   "style": "Matches Knight's warm oil realism.",
+   "status": "fail",
+   "emotion_avg": 3.2,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:spice": {
+  "kind": "event",
+  "title": "The SPICE event",
+  "file": "painted/events/spice.jpg",
+  "sha": "0f9b4146a54a",
+  "t": 497,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "A big swing in the carbon of the oceans, as several families of trilobites die out.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "A big swing in the carbon of the oceans, as several families of trilobites die out.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Trilobites are present in the shallow water, though the chemical changes in the ocean cannot be seen."
+    },
+    {
+     "item": "NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "There are distinct, bright green patches on the land, particularly along the shoreline and in the inland valleys, which look like vegetation rather than dark microbial crusts."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "consistent",
+     "why": "There is no text or diagrammatic elements in the image."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "The presence of green on the land violates the rule that there should be no plants or green on land during this period."
+    }
+   ],
+   "other_errors": [
+    "Some trilobites appear to be crawling entirely out of the water onto the dry shore, which is unlikely."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 4,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "The landscape has a nice atmospheric quality, but the specific extinction event is not clearly communicated, and the scene feels somewhat static.",
+   "raise_it": "Remove all green from the land, replacing it with bare rock, dirt, or dark brown/black microbial crusts. To tell the story of the extinction, show more dead or dying trilobites washing up on the shore, perhaps contrasting with a few surviving species.",
+   "style": "The image successfully captures the Charles R. Knight style with its painterly textures, sweeping perspective, and warm, dramatic lighting.",
+   "differs": "The picture shows green patches on the land, but at this time, there were no plants, and the land would have been completely bare rock and dirt.",
+   "status": "fail",
+   "emotion_avg": 3.2,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:toarcian": {
+  "kind": "event",
+  "title": "Toarcian crisis",
+  "file": "painted/events/toarcian.jpg",
+  "sha": "b6afb573388d",
+  "t": 183,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Huge eruptions in southern Africa and Antarctica; oceans lose oxygen.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palm trees (palms appear about 100 million years ago) and nothing palm-shaped (no tall slender trunk with a crown of big fan or feather leaves), and NO flowering plants or flowers.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Huge eruptions in southern Africa and Antarctica; oceans lose oxygen.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Volcanoes erupt in the background and dark water implies anoxia."
+    },
+    {
+     "item": "NO palm trees, NO flowering plants or flowers.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Foreground shows distinct palm trees."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Signature text is visible in the bottom right."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Fails due to palm trees and text."
+    }
+   ],
+   "other_errors": [
+    "Marine reptile anatomy is slightly generic."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 2
+   },
+   "emotion_notes": "Atmosphere is good but errors detract.",
+   "raise_it": "Remove palms and text. Fix animal anatomy.",
+   "style": "Matches Knight's warm oil style.",
+   "status": "fail",
+   "emotion_avg": 2.8,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ },
+ "event:triassic": {
+  "kind": "event",
+  "title": "The tearing of Pangaea",
+  "file": "painted/events/triassic.jpg",
+  "sha": "11bd901eae2a",
+  "t": 201.4,
+  "style": "knight",
+  "version": {
+   "text": "This atlas's account of the event (its timeline and extinction text), from its verified papers",
+   "refs": []
+  },
+  "must": [
+   "Pangaea begins to tear down the middle , where the Atlantic Ocean is today.",
+   "Lava pours from cracks thousands of kilometres long, in pulses over about 600,000 years.",
+   "The gases warm the planet and turn the seas acid.",
+   "About three-quarters of species are lost , among them most of the big crocodile-line reptiles.",
+   "The dinosaurs come through.",
+   "The world is now theirs.."
+  ],
+  "must_not": [
+   "What could not yet exist then, so must not be painted: NO palm trees (palms appear about 100 million years ago) and nothing palm-shaped (no tall slender trunk with a crown of big fan or feather leaves), and NO flowering plants or flowers.",
+   "text, labels, arrows or map lines"
+  ],
+  "differs": "Under review.",
+  "model": "gemini-3-pro-image",
+  "review": {
+   "items": [
+    {
+     "item": "Pangaea begins to tear down the middle , where the Atlantic Ocean is today.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "A massive central rift dividing the landmass is clearly visible."
+    },
+    {
+     "item": "Lava pours from cracks thousands of kilometres long, in pulses over about 600,000 years.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Lava actively erupts from a long, continuous fissure extending to the horizon."
+    },
+    {
+     "item": "The gases warm the planet and turn the seas acid.",
+     "kind": "must",
+     "verdict": "cannot_tell",
+     "why": "Gas and smoke are visible, but warming and ocean acidity cannot be seen."
+    },
+    {
+     "item": "About three-quarters of species are lost , among them most of the big crocodile-line reptiles.",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Large crocodile-like reptiles are present in the foreground, fitting the extinction context."
+    },
+    {
+     "item": "The dinosaurs come through.",
+     "kind": "must",
+     "verdict": "shown",
+     "why": "Bipedal dinosaurs are visible surviving in the background."
+    },
+    {
+     "item": "The world is now theirs..",
+     "kind": "must",
+     "verdict": "consistent",
+     "why": "Dinosaurs are shown active and widespread across the landscape."
+    },
+    {
+     "item": "What could not yet exist then, so must not be painted: NO palm trees (palms appear about 100 million years ago), and NO flowering plants or flowers.",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Anachronistic palm-like trees are clearly visible in the foreground and midground."
+    },
+    {
+     "item": "text, labels, arrows or map lines",
+     "kind": "must_not",
+     "verdict": "contradicted",
+     "why": "Contains a hallucinated artist signature in the bottom right corner."
+    },
+    {
+     "item": "does the picture follow the version of the science above?",
+     "kind": "version",
+     "verdict": "contradicted",
+     "why": "Fails due to the presence of anachronistic palm trees and text."
+    }
+   ],
+   "other_errors": [
+    "The crocodile-like reptiles resemble modern crocodilians rather than accurate Triassic pseudosuchians or phytosaurs."
+   ],
+   "emotion": {
+    "wonder": 3,
+    "life": 3,
+    "light": 3,
+    "clarity": 3,
+    "story": 3
+   },
+   "emotion_notes": "Captures the grand scale of the rift well, but the scene feels slightly static.",
+   "raise_it": "Remove palms and signature. Update foreground reptiles to accurate Triassic anatomy.",
+   "style": "Mimics Knight's warm oil style effectively, though the hallucinated signature breaks immersion.",
+   "status": "fail",
+   "emotion_avg": 3.0,
+   "reviewer": "gemini-3.1-pro-preview",
+   "date": "2026-11-25"
+  }
+ }
+}

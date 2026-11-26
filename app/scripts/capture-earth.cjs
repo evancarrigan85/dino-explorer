@@ -16,7 +16,8 @@ srv.listen(0, '127.0.0.1', async () => {
   for (const s of SITE_SCENES) {
     await p.goto(`http://127.0.0.1:${srv.address().port}/dino-explorer.html#${s.t}mya`); await p.waitForTimeout(2500);
     await p.evaluate(() => { closeDoor(); WorldMap.setMotion(false); });
-    // only the map itself: no buttons, title card or notes (the animals' pins stay: they are this time's finds)
+    // only the map itself: no buttons, title card, notes or pins (the old map's animal pins, painted over, read as eyes: the
+    // reviewer caught it, 25 Nov 2026). The opening marks the site with its own ring, and says what it is.
     await p.addStyleTag({ content: '.map-ctl,#cartouche,#mapNote,#youBar,#eventsRibbon,#mapTip,#sceneCap,#pinPanel,#siteScene,#journey,#mapAbout,#benchNote{display:none!important}' });
     await p.evaluate(() => document.getElementById('mapGlobe').click()); await p.waitForTimeout(800);
     await p.evaluate(at => { WorldMap.lookAt(WorldMap.attach(at[0], at[1], S.t)); }, s.at);
@@ -24,7 +25,8 @@ srv.listen(0, '127.0.0.1', async () => {
     const box = await p.locator('#mapArea').boundingBox();
     for (let i = 0; i < ZOOMS.length; i++) {
       await p.evaluate(z => { const W = document.getElementById('mapCanvas').clientWidth, H = document.getElementById('mapCanvas').clientHeight; WorldMap.zoomAt(W / 2, H / 2, z / WorldMap.zoom); }, ZOOMS[i]);
-      await p.waitForTimeout(2200);
+      await p.evaluate(() => WorldMap.setLayers({ markers: [], pin: null })); await p.waitForTimeout(2200);
+      await p.evaluate(() => WorldMap.setLayers({ markers: [], pin: null })); await p.waitForTimeout(400);
       // a square around the centre, where the site is
       const side = Math.min(box.width, box.height), clip = { x: box.x + (box.width - side) / 2, y: box.y + (box.height - side) / 2, width: side, height: side };
       await p.screenshot({ path: path.join(OUT, `${s.id}-${i + 1}.jpg`), type: 'jpeg', quality: 84, clip });

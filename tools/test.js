@@ -413,6 +413,29 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   await p.evaluate(() => { WorldMap.setMotion(true); closeFact(); setWindow(T_MAX, 0, true); S.sel = null; switchTab('life'); }); await p.waitForTimeout(150);
   // the living map
   ok('motion: eruptions and impacts are placed, and motion can be switched off', await p.evaluate(() => { const a = SPARKS.length >= 8 && WorldMap.motion === true; WorldMap.setMotion(false); const b = WorldMap.motion === false; WorldMap.setMotion(true); return a && b; }));
+  // life up close: animals round their own sites, plants by the time (data_mapfauna.js, creatures.js)
+  { const off = await p.evaluate(async () => { closeFact(); setTime(76); WorldMap.resetView(); const cv = document.getElementById('mapCanvas'); WorldMap.zoomAt(cv.clientWidth / 2, cv.clientHeight / 2, 9); WorldMap.lookAt(WorldMap.attach(51, -112, S.t)); await new Promise(r => setTimeout(r, 1900)); WorldMap._draw();
+      return { f: WorldMap._fauna().placed.length, p: Object.keys(WorldMap._plants()).length, note: document.getElementById('lifeNote').hidden, on: WorldMap.lifeUpClose }; });
+    ok('life up close: switched off on the live page until it is redrawn — no creatures or plants, and How this map is made does not describe them', !off.on && off.f === 0 && off.p === 0 && off.note, JSON.stringify(off));
+    await p.evaluate(() => setLifeUpClose(true)); }
+  { const lifeAt = async (t, lat, lon, z) => { await p.evaluate(([t, la, lo, z]) => { closeFact(); setTime(t); WorldMap.resetView(); const cv = document.getElementById('mapCanvas'); WorldMap.zoomAt(cv.clientWidth / 2, cv.clientHeight / 2, z); WorldMap.lookAt(WorldMap.attach(la, lo, S.t)); }, [t, lat, lon, z]);
+      await p.waitForTimeout(1900); return p.evaluate(() => { WorldMap._draw(); return { fauna: WorldMap._fauna(), plants: WorldMap._plants() }; }); };
+    const far = await p.evaluate(() => { closeFact(); WorldMap.resetView(); setTime(76); WorldMap._draw(); return { f: WorldMap._fauna().placed.length, p: Object.keys(WorldMap._plants()).length }; });
+    ok('life up close: at the whole-world view no animals walk and no plants are drawn', far.f === 0 && far.p === 0, JSON.stringify(far));
+    const ab = await lifeAt(76, 51, -112, 9), names = ab.fauna.placed.map(g => g.name);
+    ok('life up close: zoomed into Alberta 76 million years ago, the Centrosaurus herd, Parasaurolophus and the Maiasaura colony walk round their sites', ['Centrosaurus', 'Parasaurolophus', 'Maiasaura'].every(n => names.includes(n)) && (ab.fauna.placed.find(g => g.name === 'Centrosaurus') || {}).n > 1, names.join(', '));
+    const ks = await lifeAt(80, 35, -97, 6);
+    ok('life up close: in the seaway 80 million years ago Elasmosaurus swims and Pteranodon flies', ks.fauna.placed.some(g => g.name === 'Elasmosaurus') && ks.fauna.placed.some(g => g.name === 'Pteranodon'), ks.fauna.placed.map(g => g.name).join(', '));
+    ok('life up close: every swimmer is in the sea and every walker on land', [...ab.fauna.placed, ...ks.fauna.placed].every(g => g.where === 'sea' ? !g.land : g.where === 'land' ? g.land : true));
+    const h = ks.fauna.hits.find(x => x[2] === 'Elasmosaurus');
+    const tapped = h && await p.evaluate(h => { WorldMap.onPick(WorldMap.hit(h[0], h[1]), h[0], h[1]); return S.sel && BY_KEY[S.sel] && BY_KEY[S.sel].name; }, h);
+    ok('life up close: a tap on a swimming Elasmosaurus opens its card', tapped === 'Elasmosaurus', String(tapped));
+    const still = await p.evaluate(async () => { closeFact(); WorldMap.setMotion(false); WorldMap._draw(); const a = JSON.stringify(WorldMap._fauna().hits); await new Promise(r => setTimeout(r, 500)); WorldMap._draw(); const b = JSON.stringify(WorldMap._fauna().hits); WorldMap.setMotion(true); return a === b && a.length > 4; });
+    ok('life up close: with motion off the animals keep still', still);
+    const old = await lifeAt(450, 45, -75, 8), coal = await lifeAt(305, 40.5, -78, 8), ice = await lifeAt(0.02, 62, 130, 7), k = ab.plants;
+    ok('life up close: plants follow the time — bare ground or low mats before trees, club-moss forests in the coal age, no grass or palms among the dinosaurs, steppe in the ice age', Object.keys(old.plants).every(x => ['ripple', 'mat', 'moss'].includes(x)) && coal.plants.lycopsid > 50 && !k.grass && !k.palm && (ice.plants.grass || 0) > (ice.plants.conifer || 0), JSON.stringify([old.plants, coal.plants, k, ice.plants]));
+    ok('life up close: How this map is made says the animals and plants are a sketch, and why some come in groups', await p.evaluate(() => /a sketch/.test(document.getElementById('lifeNote').textContent) && /Hilda/.test(document.getElementById('lifeNote').textContent)));
+    await p.evaluate(() => { setLifeUpClose(false); closeFact(); WorldMap.resetView(); setWindow(T_MAX, 0, true); S.sel = null; switchTab('life'); }); await p.waitForTimeout(200); }
   // family trees
   await p.click('#treeBtn'); await p.waitForTimeout(250);
   ok('trees: the road to mammals opens, trunk and side branches drawn', await p.evaluate(() => S.view === 'tree' && document.querySelectorAll('#lifeList .tn.trunk').length >= 6 && document.querySelectorAll('#lifeList .tn:not(.trunk)').length >= 12 && /Synapsida/.test(document.querySelector('#lifeList .tn').innerText)));
@@ -601,7 +624,7 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
   { await p.evaluate(() => { closeFact(); setWindow(150, 120, true); setTime(134); WorldMap.setMotion(false); WorldMap._draw(); }); await p.waitForTimeout(300);
     const at = await p.evaluate(() => { const sp = SPARKS.find(s => s[8] === 'parana'), a = WorldMap.attach(sp[0], sp[1], (sp[2] + sp[3]) / 2), ll = WorldMap.locate(a, 134); return ll && WorldMap._screen(ll[0], ll[1]); });
     const bb = await (await p.$('#mapCanvas')).boundingBox();
-    if (at) { await p.mouse.click(bb.x + at[0], bb.y + at[1]); await p.waitForTimeout(250); }
+    if (at) { await p.mouse.click(bb.x + at[0], bb.y + at[1]); await p.waitForFunction(() => /Paraná–Etendeka/.test(document.getElementById('fpText').textContent), null, { timeout: 3000 }).catch(() => {}); }
     ok('sparks: tapping an eruption on the map names it and shows its papers', !!at && await p.evaluate(() => { const t = document.getElementById('fpText'); return /Paraná–Etendeka/.test(t.textContent) && /Thiede (et al\. )?2010/.test(t.textContent) && !!t.querySelector('.fp-src a[href^="https://doi.org/"]'); }), await p.evaluate(() => document.getElementById('fpText').textContent)); }
   await p.evaluate(() => { closeFact(); setWindow(T_MAX, 0, true); setTime(150); }); await p.waitForTimeout(200);
   ok('early earth: eight new cards (an eon, four eras, three periods), named as such, each with sources; life sourced, with the argued-over finds marked', await p.evaluate(() => ['hadean', 'eoarchean', 'paleoarchean', 'mesoarchean', 'neoarchean', 'siderian', 'rhyacian', 'orosirian'].every(id => (SRCMAP['p:' + id] || []).length >= 1 && PERIODS.find(x => x.id === id)) && (setTime(4200), /Hadean Eon/.test(document.getElementById('periodName').textContent)) && (setTime(3300), /Paleoarchean Era/.test(document.getElementById('periodName').textContent)) && ['Isua cones (possible stromatolites)', 'Strelley Pool stromatolites', 'Dresser hot-spring microbes', 'Moodies river mats', 'Francevillian fossils', 'Gunflint microbes'].every(n => BY_NAME[n] && (SRCMAP['a:' + n] || []).length) && !!BY_NAME['Isua cones (possible stromatolites)'].debate && !!BY_NAME['Francevillian fossils'].debate && (setTime(150), true)));
@@ -673,6 +696,20 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     ok('terrain: sea depth where the seaway was (Kansas), relief on dry land (South Africa)', tp[0] > 200 && tp[1] > 200, JSON.stringify(tp));
     const shelf = await p.evaluate(() => { WorldMap._draw(); const a = WorldMap._px(39, -98.4).rgb; WorldMap.setTerrain(false); WorldMap._draw(); const b = WorldMap._px(39, -98.4).rgb; WorldMap.setTerrain(true); WorldMap._draw(); return [a, b]; });
     ok('terrain: switching it off gives the plain map back, and on draws something different', shelf[0].join() !== shelf[1].join(), JSON.stringify(shelf));
+  // the living finish: the sea, its waves and clouds and wind, and the ground's grain, drawn in WebGL through the map's own projection
+  { const fin = await p.evaluate(async () => { closeFact(); WorldMap.resetView(); setTime(100); WorldMap._draw(); return WorldMap._finish(); });
+    ok('living sea and sky: over http the sea, the clouds, the wind and the ground’s grain are drawn', fin.ok && fin.drawn[0] > 0 && fin.drawn[1] > 0 && fin.ground > 0, JSON.stringify(fin));
+    const fxSum = () => p.evaluate(() => { const c = document.getElementById('mapFx'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let s = 0; for (let i = 3; i < d.length; i += 97) s = (s * 31 + d[i] + d[i - 1]) % 1000000007; return s; });
+    await p.evaluate(() => document.getElementById('mapCanvas').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))); await p.waitForTimeout(300);
+    const a1 = await fxSum(); await p.waitForTimeout(700); const a2 = await fxSum();
+    ok('living sea and sky: while someone explores, the clouds and waves move', a1 !== a2);
+    await p.evaluate(() => { WorldMap.setMotion(false); WorldMap._draw(); }); const b1 = await fxSum(); await p.waitForTimeout(700); await p.evaluate(() => WorldMap._draw()); const b2 = await fxSum();
+    ok('living sea and sky: with motion off they keep still', b1 === b2);
+    await p.evaluate(() => WorldMap.setMotion(true));
+    const off = await p.evaluate(() => { const n = WorldMap._finish().drawn[0]; WorldMap.setFinish(false); WorldMap._draw(); const m = WorldMap._finish().drawn[0]; WorldMap.setFinish(true); WorldMap._draw(); return n === m; });
+    ok('living sea and sky: it can be switched off, and the map draws as before', off);
+    ok('living sea and sky: How this map is made says it is a sketch of the wind belts, not a weather record', await p.evaluate(() => /trade winds/.test(document.getElementById('skyNote').textContent) && /not a weather record/.test(document.getElementById('skyNote').textContent)));
+    await p.evaluate(() => setTime(600)); await p.waitForTimeout(100); }
     await p.evaluate(() => setTime(600)); await p.waitForTimeout(200);
     ok('terrain: nothing before the elevation maps begin (540 Ma)', await p.evaluate(() => { const d = WorldMap._ter().drawn; WorldMap._draw(); return WorldMap._ter().drawn === d; }));
     // silhouettes from PhyloPic on the map pins, the cards and the lists (Release 12.1): served over http, as on the live site

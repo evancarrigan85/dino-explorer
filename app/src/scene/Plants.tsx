@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { type Land } from './land';
 import { rng, fbm } from './rng';
-import { windy } from './shared';
+import { windy, clock, LIGHT, WIND } from './shared';
 
 const tint = (geo: THREE.BufferGeometry, c: THREE.Color) => {
   const n = geo.attributes.position.count, a = new Float32Array(n * 3);
@@ -81,28 +81,47 @@ function shrubGeo(): THREE.BufferGeometry {
 
 interface Place { x: number; z: number; y: number; s: number; ry: number }
 
-export function Plants({ land, seed, phone }: { land: Land; seed: number; phone: boolean }) {
+export function Plants({ land, seed, phone, sprites }: { land: Land; seed: number; phone: boolean; sprites?: { f: string; cells: { w: number; h: number }[] } | null }) {
   const kinds = useMemo(() => {
     const r = rng(seed + 101);
     const k = phone ? 0.45 : 1;
-    // trees: spaced along the far bank, a few further back
-    const trees: Place[] = [];
-    for (let x = -300; x < 300; x += 11 + r() * 22) {
-      const z = land.farBankZ(x) - 5 - r() * (r() < 0.3 ? 140 : 22), y = land.height(x, z);
-      if (y < 1.2) continue; trees.push({ x, z, y, s: 0.75 + r() * 0.5, ry: r() * 6.28 });
+    // Plants grow in stands, as they do in nature (Evan, 25 Nov: "it certainly wasn't just barren, weird diorama with
+    // weirdly placed tree fronds"): trees in groves along the far bank, a few alone further back; low thickets packed
+    // along the wet edge, biggest in the middle of a stand and thinning to its rim; ferns in the shade under the groves;
+    // only a few plants out on the open sand. Positions come from the scene's seed, so the scene is the same every time.
+    const trees: Place[] = [], shrubs: Place[] = [], ferns: Place[] = [];
+    const gauss = () => { let u = 0; for (let i = 0; i < 4; i++) u += r(); return (u - 2) / 0.577; };   // about normal, from the seeded stream
+    const stand = (cx: number, cz: number, R: number, n: number, out: (p: Place, d: number) => void, minY = 0.12) => {
+      for (let i = 0; i < n; i++) {
+        const x = cx + gauss() * R * 0.5, z = cz + gauss() * R * 0.5, y = land.height(x, z);
+        if (y < minY) continue;
+        const d = Math.min(1, Math.hypot(x - cx, z - cz) / R);
+        out({ x, z, y, s: (0.75 + r() * 0.6) * (1.25 - 0.55 * d), ry: r() * 6.28 }, d);
+      }
+    };
+    // groves along the far bank, and the ferns that grow in their shade
+    for (let x = -300; x < 300; x += 34 + r() * 60) {
+      const cz = land.farBankZ(x) - 8 - r() * 26, nT = 3 + Math.floor(r() * 6);
+      stand(x, cz, 14, nT, p => { if (p.y >= 1.2) trees.push({ ...p, s: 0.75 + r() * 0.5 }); }, 1.2);
+      stand(x, cz + 4, 18, Math.floor((40 + r() * 60) * k), p => ferns.push(p), 1.2);
     }
-    // shrubs and ferns: mostly where the ground meets the water, thinner on the open sand and the bank top
-    const shrubs: Place[] = [], ferns: Place[] = [];
-    const tries = Math.floor(26000 * k);
-    for (let i = 0; i < tries; i++) {
+    for (let i = 0; i < 7; i++) {                                  // a few trees alone, further back
+      const x = -280 + r() * 560, z = land.farBankZ(x) - 60 - r() * 110, y = land.height(x, z);
+      if (y >= 1.2) trees.push({ x, z, y, s: 0.75 + r() * 0.5, ry: r() * 6.28 });
+    }
+    // thickets along the wet edge of both banks: stand centres found where the ground is just above the water
+    let made = 0;
+    for (let i = 0; i < 6000 && made < 70 * k + 20; i++) {
       const x = -300 + r() * 600, z = -250 + r() * 340, y = land.height(x, z);
-      if (y < 0.12) continue;
-      const edge = Math.exp(-Math.pow((y - 0.35) / 0.35, 2)), bank = z < land.riverZ(x) ? 0.25 : 0.05;
-      const patch = 0.5 + 0.5 * fbm(x * 0.05, z * 0.05, 3, seed + 21);
-      const p = (edge * 1.4 + bank) * patch * 0.12;
-      if (r() > p) continue;
-      const place = { x, z, y, s: 0.8 + r() * 1.1, ry: r() * 6.28 };
-      if (r() < 0.22) ferns.push(place); else shrubs.push(place);
+      if (Math.abs(y - 0.35) > 0.22 || r() > 0.5 + 0.5 * fbm(x * 0.03, z * 0.03, 2, seed + 21)) continue;
+      made++;
+      stand(x, z, 6 + r() * 10, Math.floor((30 + r() * 50) * k), (p, d) => (d < 0.45 && r() < 0.2 ? ferns : shrubs).push(p));
+    }
+    // a few small plants out on the open sand
+    for (let i = 0; i < 1400 * k; i++) {
+      const x = -300 + r() * 600, z = -250 + r() * 340, y = land.height(x, z);
+      if (y < 0.5 || y > 1.1 || r() > 0.05) continue;
+      shrubs.push({ x, z, y, s: 0.5 + r() * 0.4, ry: r() * 6.28 });
     }
     return { trees, shrubs, ferns };
   }, [land, seed, phone]);
@@ -126,7 +145,59 @@ export function Plants({ land, seed, phone }: { land: Land; seed: number; phone:
 
   return <group>
     <instancedMesh key={'t' + kinds.trees.length} ref={m => fill(m, kinds.trees)} args={[assets.tree, assets.treeMat, kinds.trees.length]} castShadow={!phone} receiveShadow />
-    <instancedMesh key={'f' + kinds.ferns.length} ref={m => fill(m, kinds.ferns)} args={[assets.fern, assets.fernMat, kinds.ferns.length]} receiveShadow />
-    <instancedMesh key={'s' + kinds.shrubs.length} ref={m => fill(m, kinds.shrubs)} args={[assets.shrub, assets.shrubMat, kinds.shrubs.length]} receiveShadow />
+    {sprites ? <SpriteField sprites={sprites} shrubs={kinds.shrubs} ferns={kinds.ferns} seed={seed} /> : <>
+      <instancedMesh key={'f' + kinds.ferns.length} ref={m => fill(m, kinds.ferns)} args={[assets.fern, assets.fernMat, kinds.ferns.length]} receiveShadow />
+      <instancedMesh key={'s' + kinds.shrubs.length} ref={m => fill(m, kinds.shrubs)} args={[assets.shrub, assets.shrubMat, kinds.shrubs.length]} receiveShadow />
+    </>}
   </group>;
+}
+
+/** The brief's low plants, painted in Knight's manner (tools/paint.py plants), as sprites that face the camera, stand on
+ *  the ground where the plants are placed, sway in the scene's wind and fade into its haze. Cells: shrub, fern, herb, shrub2. */
+function SpriteField({ sprites, shrubs, ferns, seed }: { sprites: { f: string; cells: { w: number; h: number }[] }; shrubs: Place[]; ferns: Place[]; seed: number }) {
+  const mesh = useMemo(() => {
+    const r = rng(seed + 77), all = [...ferns.map(p => ({ p, k: 1 })), ...shrubs.map(p => ({ p, k: [0, 0, 2, 3][Math.floor(r() * 4)] }))];
+    const g = new THREE.InstancedBufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute([-0.5, 0, 0, 0.5, 0, 0, 0.5, 1, 0, -0.5, 1, 0], 3));
+    g.setIndex([0, 1, 2, 0, 2, 3]);
+    const pos = new Float32Array(all.length * 3), sc = new Float32Array(all.length), kind = new Float32Array(all.length), ph = new Float32Array(all.length);
+    all.forEach(({ p, k }, i) => { pos.set([p.x, p.y - 0.08, p.z], i * 3); sc[i] = (k === 1 ? 1.5 : k === 2 ? 0.9 : 1.9) * p.s; kind[i] = k; ph[i] = r() * 6.28; });
+    g.setAttribute('iPos', new THREE.InstancedBufferAttribute(pos, 3)); g.setAttribute('iScale', new THREE.InstancedBufferAttribute(sc, 1));
+    g.setAttribute('iKind', new THREE.InstancedBufferAttribute(kind, 1)); g.setAttribute('iPhase', new THREE.InstancedBufferAttribute(ph, 1));
+    g.instanceCount = all.length; g.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, -60), 600);
+    const tex = new THREE.TextureLoader().load(sprites.f); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+    const c = sprites.cells, asp = new THREE.Vector4(...c.map(x => x.h / x.w) as [number, number, number, number]);
+    const mat = new THREE.ShaderMaterial({
+      transparent: false, side: THREE.DoubleSide,
+      uniforms: { uTex: { value: tex }, uTime: clock, uWind: { value: WIND.dir }, uAsp: { value: asp }, uWid: { value: new THREE.Vector4(...c.map(x => x.w) as [number, number, number, number]) },
+        uFog: { value: LIGHT.haze }, uNear: { value: LIGHT.fogNear }, uFar: { value: LIGHT.fogFar } },
+      vertexShader: /* glsl */ `
+attribute vec3 iPos; attribute float iScale; attribute float iKind; attribute float iPhase;
+uniform float uTime; uniform vec2 uWind; uniform vec4 uAsp; uniform vec4 uWid;
+varying vec2 vUv; varying float vKind; varying float vDist; varying float vH;
+float pick(vec4 v, float k) { return k < 0.5 ? v.x : k < 1.5 ? v.y : k < 2.5 ? v.z : v.w; }
+void main() {
+  float asp = pick(uAsp, iKind), h = iScale * asp, w = iScale;
+  float gust = 0.5 + 0.5 * sin(dot(iPos.xz, uWind) * 0.028 - uTime * 0.75); gust = gust * gust * gust;
+  float sway = (sin(uTime * (iKind == 1.0 ? 2.2 : 1.5) + iPhase) * (0.3 + 0.7 * gust) + gust) * 0.07 * position.y * position.y;
+  vec4 mv = viewMatrix * vec4(iPos, 1.0);
+  mv.xy += vec2((position.x + sway) * w, position.y * h);
+  gl_Position = projectionMatrix * mv;
+  vUv = vec2(position.x + 0.5, position.y); vKind = iKind; vDist = -mv.z; vH = asp * pick(uWid, iKind);
+}`,
+      fragmentShader: /* glsl */ `
+uniform sampler2D uTex; uniform vec4 uWid; uniform vec3 uFog; uniform float uNear; uniform float uFar;
+varying vec2 vUv; varying float vKind; varying float vDist; varying float vH;
+void main() {
+  float wid = vKind < 0.5 ? uWid.x : vKind < 1.5 ? uWid.y : vKind < 2.5 ? uWid.z : uWid.w;
+  vec2 uv = vec2((vKind + 0.5 + (vUv.x - 0.5) * wid) / 4.0, vUv.y * vH);   // the sprite stands on its cell's bottom edge
+  vec4 t = texture2D(uTex, uv); if (t.a < 0.45) discard;
+  vec3 col = mix(t.rgb, uFog, smoothstep(uNear, uFar, vDist) * 0.9);
+  gl_FragColor = vec4(col, 1.0);
+  #include <colorspace_fragment>
+}`,
+    });
+    return new THREE.Mesh(g, mat);
+  }, [sprites, shrubs, ferns, seed]);
+  return <primitive object={mesh} />;
 }

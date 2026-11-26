@@ -243,6 +243,28 @@ const { CHAPTERS } = require('./data_mammals.js');
   const msrc = fs.readFileSync(SRC + 'data_mammals.js', 'utf8');
   data += msrc.slice(msrc.indexOf('// ===='), msrc.indexOf("if (typeof module")).trim() + '\n';
 }
+{ // reconstruction briefs (content/briefs/): every decision with its status, its reason and its verified papers
+  const { loadBriefs, checkBrief } = await import('../briefs.mjs'), refs = JSON.parse(fs.readFileSync(SRC + 'refs.json', 'utf8')), { SITE_SCENES } = require('./data_sites.js');
+  for (const B of loadBriefs()) problems.push(...checkBrief(B, { refs, site: SITE_SCENES.find(s => s.id === B.site) }));
+  for (const s of SITE_SCENES) if (!loadBriefs().some(B => B.site === s.id)) problems.push('site scene ' + s.id + ': no reconstruction brief in content/briefs/');
+}
+{ // life on the map (data_mapfauna.js, drawn by creatures.js): a real card, a plan that exists, and words for any group
+  const { LIFE_ON_MAP } = require('./data_mapfauna.js'), { CREATURES } = require('./creatures.js'), seen = new Set();
+  for (const f of LIFE_ON_MAP) {
+    const who = 'life on the map: ' + f.name;
+    if (!allNames.has(f.name)) problems.push(who + ': no animal card has that name');
+    if (!CREATURES.PLANS[f.plan]) problems.push(who + ': creatures.js has no plan ' + f.plan);
+    if (!['land', 'sea', 'air', 'shore'].includes(f.where)) problems.push(who + ': where must be land, sea, air or shore');
+    if (!(f.m > 0)) problems.push(who + ': no length');
+    if (f.n > 1 && !(f.group && f.group.length > 20)) problems.push(who + ': drawn as a group of ' + f.n + ' with no words saying why (group)');
+    if (f.guess && !/guess/.test(f.group || '')) problems.push(who + ': a guessed group must say it is a guess');
+    if (f.n > 1 && !f.as) problems.push(who + ': a group needs `as` (a herd, a nesting colony …) to be named on the map');
+    if (/'/.test(JSON.stringify(f))) problems.push(who + ': use ’ not a straight quote');
+    if (seen.has(f.name)) problems.push(who + ': listed twice'); seen.add(f.name);
+  }
+  const lsrc = fs.readFileSync(SRC + 'data_mapfauna.js', 'utf8');
+  data += lsrc.slice(lsrc.indexOf('// ===='), lsrc.indexOf("if (typeof module")).trim() + '\n';
+}
 const okTarget = { a: n => allNames.has(n), h: id => HOMININS.some(h => h.id === id), c: id => CULTURES.some(c => c.id === id), d: id => DROWNED.some(d => d.id === id),
   p: id => !!byId[id] || CHAPTERS.some(c => c.id === id), f: id => !!FOODWEBS[id], x: id => FINDS.some(f => f.id === id), t: id => TREES.some(t => t.id === id), j: id => ['you', 'extinctions', 'drift', 'finds'].includes(id), e: id => EXTINCTIONS.some(e => e.id === id), k: id => EMPIRES.some(e => e.id === id), b: id => BELIEFS.some(b => b.id === id), r: id => TRADE.some(r => r.id === id), w: id => WORKS.some(w => w.id === id), o: id => ['sumer', 'nile', 'indus'].includes(id) || OLD.some(o => o.id === id), i: id => INSPIRATIONS.some(x => x.id === id), v: id => require('./data_survival.js').SURVIVAL.some(x => x.id === id), s: id => require('./data_stories.js').STORIES.some(st => st.id === id), m: id => ['plates', 'sealevel', 'time', 'climate', 'history', 'landcover', 'rocks', 'seas', 'terrain', 'checks', 'sound', 'ice', 'rivers', 'geoid'].includes(id), n: id => T.EVENTS.some(e => e[5] === id), z: id => require('./data_sites.js').SITE_SCENES.some(x => x.id === id) };
 const REFS = {}, SRCMAP = {};
@@ -294,7 +316,7 @@ const quat = fs.readFileSync(SRC + 'icon_map.js', 'utf8').trim() + '\n' + fs.rea
 const hillIndex = fs.readFileSync(SRC + 'hill-index.js', 'utf8').trim();
 const coastIndex = fs.readFileSync(SRC + 'coast-index.js', 'utf8').trim();
 { const csrc = fs.readFileSync(SRC + 'data_climate.js', 'utf8'); data += csrc.slice(csrc.indexOf('// ===='), csrc.indexOf("if (typeof module")).trim() + '\n'; }
-const engine = fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
+const csrc_ = fs.readFileSync(SRC + 'creatures.js', 'utf8'), engine = csrc_.slice(csrc_.indexOf('// ===='), csrc_.indexOf('if (typeof module')).trim() + '\n\n' + fs.readFileSync(SRC + 'engine.js', 'utf8').trim(), quiz = fs.readFileSync(SRC + 'quiz.js', 'utf8').trim();
 let app = fs.readFileSync(SRC + 'app.js', 'utf8').trim();
 if (!/\ninit\(\);$/.test(app)) throw new Error('app.js must end with init();');
 app = app.replace(/\ninit\(\);$/, '\n\n' + quiz + '\n\ninit();');

@@ -1,0 +1,15 @@
+{
+ "kind": "crisis",
+ "title": "The Kalkarindji eruptions",
+ "t": 511,
+ "text": "Lava floods across what is now northern Australia, at the same time as the first big extinction of animals.",
+ "id": "kalkarindji",
+ "model": "gemini-3-pro-image",
+ "prompt": "A painting for a natural-history museum: The Kalkarindji eruptions, about 511 million years ago.\nPainted in the manner of Charles R. Knight (1874–1953), the American natural-history muralist: oil on canvas, confident visible brushwork, warm golden naturalistic light, soft atmospheric haze, a palette of ochres, siennas, olive greens and dusty blues, calm and dignified realism. Keep his warmth and his eye for the real world, but follow TODAY's science, not the science of his time: paint the land, water, plants and climate exactly as described here.\nWhat happened, from the scientific evidence: Lava floods across what is now northern Australia, at the same time as the first big extinction of animals.\nPaint the moment as seen from high in the sky: a wide view of the land and sea where it happened, as they were THEN — the continents, coasts, plants and life of that time, not today's. Show only what the description says. Living things only where it names them, small, as they are reconstructed today; none where it does not.\nNo text, labels, map lines, arrows, borders or frame.",
+ "made": "2026-11-25",
+ "f": "painted/events/kalkarindji.jpg",
+ "w": 2752,
+ "h": 1536,
+ "candidate": 1,
+ "differs": "The coastline and the spread of the lava are illustrative; the colours are the painter's."
+}

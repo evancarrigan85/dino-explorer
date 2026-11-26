@@ -11,6 +11,39 @@ correct anything below that turned out to be wrong. Where a step says **ask Evan
 
 ## Next up (updated 25 Nov 2026 — start here)
 
+**25 Nov, latest of all: Before Us is an evidence-led atlas of deep time; its style is Deep-Time History Painting**
+(Evan; `docs/ART.md` › Before Us, and its style). Built: the **reconstruction brief** (`content/briefs/`, rules in
+`tools/briefs.mjs`, checked by the build), the Kem Kem as the first brief (25 decisions: 14 documented, 9 inferred,
+2 imagined, 13 papers), the painter's prompt and the reviewer's checklist built from it, and in the app **The Scene**
+(the painting alone) and **The Evidence** (every part ringed by its status; *Where was this? What lived here? How do we
+know?*). The living globe (moving sea and sky; the land coloured by its climate) is on the `living-world` branch,
+not shipped. **Next:** *A More Ancient Dorset* as the first brief written from scratch in this form — Lyme Regis in the
+Early Jurassic, from Mary Anning's finds, after De la Beche's *Duria Antiquior* (1830): verify its papers first
+(`tools/verify_refs.py`), then the brief, then the painting (Gemini credits needed). The story: perhaps the viewer at
+the waterline, a small disturbance in the foreground, a large shape coming into view below — every scene needs a story,
+not every story a disaster. Then: the switch between the fossil site on today's map and the same crust on the ancient one.
+
+**25 Nov, later: every picture is checked before it is shown** (Evan: “every piece of artwork … verifies based on the
+scientific papers and evidence … which version of the understanding … but then it still has to evoke that emotional
+response”). `tools/review_art.py` keeps a registry of every picture (`tools/paint/art.json`), reviews each one against a
+checklist built from the data with a second model, scores the feeling it raises, repairs failures by painting again with
+the reviewer’s objections, and waits for Evan’s sign-off (`approve` / `reject`). The app shows only pictures that passed,
+each with “How this picture was checked”. How it works: `docs/ART.md` › Every picture is checked.
+State on 25 Nov: the Gemini credits ran out mid-repair. Shown: the Kem Kem scene (fixed Spinosaurus), the animals, ground,
+plants, Earth, and 6 of the 32 events. Out until repaired: 24 events (20 never retried; capitanian, carnian, devonian and
+grandecoupure failed 3 tries — the painter turns tree ferns and cycads into palms; consider leaving tree ferns out of
+those prompts), and grenville and mackenzie are **held** (checked against a rule that allowed sea creatures before
+580 Ma). The Kem Kem zoom tiles were cut from the previous painting and are not used until remade (`paint.py detail
+kemkem --pro`, then `detail-assemble`). **Next, once Evan adds credits:**
+`PAINT_MAX_CALLS=80 PAINT_BUDGET_USD=10 python3 -I tools/review_art.py repair` (then `repair event:grenville event:mackenzie`),
+remake the tiles; then Evan signs off (`report` lists what waits). Then the globe in the new style (`docs/REBUILD.md`).
+
+**25 Nov: life up close on the map** (Evan: “a top-down … charming vector drawn … version of some key animals … mosasaurus
+swimming in the shoreline, triceratops … and the trees and vegetation … swaying in the wind”). Shipped on the old map:
+29 animals in 14 body plans (`data_mapfauna.js`, `creatures.js`) and plants by era (`placePlants` in `engine.js`).
+Next for it: more animals per period (each needs a plan; a pliosaur and a whale plan would cover many), nests at Egg
+Mountain, the same layer in the new app’s globe when the engine moves.
+
 **25 Nov, later: the rebuild comes first — read `docs/REBUILD.md`.** Evan wants the site moved off the one-generated-page
 build into an app that can grow (“professional grade”). Steps 0 (measuring), **1 (engine speed) and 2 (content in `content/`) shipped 25 Nov**; **Step 3, the new app, is next.**
 Content work below goes on in the data files; no new screens on the old app. The Kem Kem painting is built and tested

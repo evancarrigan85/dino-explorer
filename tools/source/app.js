@@ -249,11 +249,18 @@ function updateMarkers(now) {
   if (S.tab === 'humans' && inHistory()) now = now.filter(c => c.hom);   // recorded history: the map is for empires and beliefs
   if (S.tab === 'finds') { const f = S.sel && S.sel.startsWith('find:') && FIND[S.sel.slice(5)]; now = now.filter(c => f && f.animal === c.name); }   // the find pins have the map to themselves
   if (S.tab === 'life' && S.view === 'kin' && KIN[S.kin] && !S.story && !gravityShown()) {
-    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })) });
+    WorldMap.setLayers({ markers: KIN[S.kin].filter(c => c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c), dim: !alive(c, S.t), tag: ageTag(c.t[0]) })), fauna: [] });
     return;
   }
-  WorldMap.setLayers({ markers: now.filter(c => typeOK(c) && c.sites && c.sites.length).map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c) })) });
+  const shown = now.filter(c => typeOK(c) && c.sites && c.sites.length);
+  WorldMap.setLayers({ markers: shown.map(c => ({ key: c.key, emoji: c.emoji, pic: picFn(c), mark: monogram(c), name: c.name, sites: sitesOf(c) })), fauna: faunaOf(shown) });
 }
+// life on the map (data_mapfauna.js): the animals of the moment that have a body plan walk, swim or fly round each of their
+// fossil sites when the map is zoomed in. The engine draws them (creatures.js); each knows its card, so a tap opens it.
+const LIFE = Object.fromEntries(LIFE_ON_MAP.map(f => [f.name, f]));
+// off on the live page until the close-up is redrawn; How this map is made describes it only while it is on
+function setLifeUpClose(on) { WorldMap.setLifeUpClose(on); const n = document.getElementById('lifeNote'); if (n) n.hidden = !on; }
+const faunaOf = list => list.flatMap(c => LIFE[c.name] ? sitesOf(c).map((s, j) => ({ ...LIFE[c.name], key: c.key, at: s.at, seed: ((c.key.length * 7919 + j * 104729 + c.name.charCodeAt(0) * 31) % 997) / 997 })) : []);
 const placeCache = {};
 // cultures shown at the current moment: active now, with a little give so short-lived ones can be found
 const CUL = Object.fromEntries(CULTURES.map(c => [c.id, c]));
@@ -2318,7 +2325,7 @@ function init() {
   const tip = $('mapTip');
   WorldMap.onHover = (h, x, y) => {
     if (!h) { tip.style.display = 'none'; return; }
-    tip.innerHTML = h.spark ? esc(h.spark.name) + '<small>' + (h.spark.kind === 'impact' ? 'asteroid impact' : 'volcanic eruptions') + ' · click to read</small>' : h.more ? h.more.n + ' more here<small>click to zoom in</small>' : h.marker ? esc(h.marker.name) + '<small>click for its story</small>' : h.pin ? esc(h.pin.name) + '<small>your pin</small>' : esc(h.place.name);
+    tip.innerHTML = h.spark ? esc(h.spark.name) + '<small>' + (h.spark.kind === 'impact' ? 'asteroid impact' : 'volcanic eruptions') + ' · click to read</small>' : h.more ? h.more.n + ' more here<small>click to zoom in</small>' : h.marker ? esc(h.marker.name) + '<small>' + (h.fauna && h.fauna.n > 1 ? esc(h.fauna.group) + ' · ' : h.fauna ? 'drawn far larger than life · ' : '') + 'click for its story</small>' : h.pin ? esc(h.pin.name) + '<small>your pin</small>' : esc(h.place.name);
     tip.style.display = 'block'; tip.style.left = x + 'px'; tip.style.top = y + 'px';
   };
   WorldMap.onView = () => { $('mapGlobe').textContent = WorldMap.mode === 'globe' ? '🗺' : '🌐'; };

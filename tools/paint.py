@@ -70,6 +70,34 @@ def scenes():
     return {s['id']: s for s in json.loads(subprocess.check_output(['node', '-e', js]).decode())}
 
 
+# The reconstruction brief (content/briefs/<site>.json, Evan, 25 Nov: "the research builds the world before the artist
+# enters it"): the painter is told each decision with its status — what is documented and inferred it must show as given;
+# what is imagined (the light, the moment) is its own to make, within the evidence; what the brief leaves out it must not
+# paint. The art reviewer checks the picture against the same decisions (tools/review_art.py).
+HISTORY = ('Deep-Time History Painting: the force and composition of a great history painting — light, gesture and the '
+           'shape of the land arranged so the eye knows where to land first and what to find next, the landscape part of '
+           'what is happening — painted with the calm naturalism of the classic natural-history muralists (in the manner '
+           'of Charles R. Knight), and following TODAY\'s science exactly as described here. Find the drama in what the '
+           'evidence holds; add no event it does not.')
+
+
+def brief(sid):
+    p = os.path.join(ROOT, 'content', 'briefs', sid + '.json')
+    return json.load(open(p)) if os.path.exists(p) else None
+
+
+def brief_lines(sid):
+    """The brief's decisions as the painter needs them: what to show (documented and inferred, as given), what is the
+    painter's own (imagined), and what must not be painted."""
+    B = brief(sid)
+    if not B: return None
+    D = [d for L in ('place', 'landscape', 'life', 'moment') for d in B['layers'][L]]
+    must = [d['picture'] for d in D if d.get('picture') and d['status'] != 'imagined']
+    free = [d['picture'] if d.get('picture') else d['says'] for d in D if d['status'] == 'imagined']
+    nots = [d['not'] for d in D if d.get('not')]
+    return {'must': must, 'free': free, 'not': nots, 'brief': B}
+
+
 def prompt_for(s):
     p = s.get('paint')
     if not p: sys.exit('scene %s has no `paint` brief in data_sites.js' % s['id'])
@@ -180,6 +208,12 @@ KNIGHT = ('Painted in the manner of Charles R. Knight (1874–1953), the America
           'confident visible brushwork, warm golden naturalistic light, soft atmospheric haze, a palette of ochres, siennas, '
           'olive greens and dusty blues, calm and dignified realism. Keep his warmth and his eye for the real world, but follow '
           "TODAY's science, not the science of his time: paint the land, water, plants and climate exactly as described here.")
+# Nothing written: the painter imitates a muralist's signature in a corner unless told not to (the reviewer caught it on
+# 9 of the first 32 event paintings, 25 Nov 2026).
+NO_TEXT = 'No text of any kind: no signature, monogram, initials or date (not even small, in a corner), no labels, map lines, arrows, border or frame.'
+# What a reviewer objected to in an earlier painting of the same subject (set by tools/review_art.py repair): added to the
+# prompt so the next try does not repeat it.
+AVOID = ''
 GROUND_KNIGHT = ('A richly detailed painting of a landscape seen from directly above. ' + KNIGHT + ' Fine, careful texture '
                  'everywhere: grains and small pebbles on the gravel bars, ripple marks left by the current on the low sand, '
                  'darker damp sand along every edge of the water, silt swirls and sand waves on the bed of the shallow river '
@@ -309,6 +343,10 @@ def earth_brush(sid):
             mask = lambda im: np.asarray(Image.fromarray(im).resize((1400, 1400), Image.NEAREST))
             sm, _ = _sea(Image.open(src), False); sc, _ = _sea(Image.open(os.path.join(CAND, sid + '-earth', best_c)), False)
             same = mask(((sm == sc) * 255).astype(np.uint8)) > 127
+            # ... and never over a mark the painter was shown but the map no longer has (the old capture's animal pins,
+            # painted into eyes: <view>-marks.png, white where the brushwork must not be used)
+            mk = os.path.join(CAND, sid + '-earth', '%d-marks.png' % view)
+            if os.path.exists(mk): same &= ~(np.asarray(Image.open(mk).convert('L').resize((1400, 1400), Image.NEAREST)) > 127)
             soft = np.asarray(Image.fromarray((same * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(4))).astype(np.float64) / 255
             out = out * (1 + (detail - 1) * soft * 0.9)[..., None]
             used = best_c
@@ -352,7 +390,7 @@ def _outline_guide(key):
 
 def animal(sid, name, approach, n, pro):
     s, c = _animal(sid, name)
-    bg = 'A plain, flat, pure white background: no ground, no shadow, no scenery, no other animals, no text, labels, border or frame.'
+    bg = 'A plain, flat, pure white background: no ground, no shadow, no scenery, no other animals. ' + NO_TEXT + ((' ' + AVOID) if AVOID else '')
     if approach == 'outline':
         guide, _, _ = _outline_guide(c['sil'])
         text = '\n'.join(['The attached picture is the scientists\' outline (silhouette) of %s, seen from the side.' % name,
@@ -371,13 +409,15 @@ def animal(sid, name, approach, n, pro):
     open(os.path.join(HERE, 'prompts', '%s-%s-%s.txt' % (sid, c['sil'], approach)), 'w').write(text)
     body = {'model': MODEL_PRO if pro else MODEL, 'input': inp,
             'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': '2K' if pro else '1K', 'aspect_ratio': '16:9'}}
+    made = []
     for i in range(n):
         for b in images(call(body)):
             k = len([f for f in os.listdir(d) if f.startswith('%s-%s-' % (c['sil'], approach)) and f.endswith('.jpg')]) + 1
             fn = os.path.join(d, '%s-%s-%d.jpg' % (c['sil'], approach, k)); open(fn, 'wb').write(b)
             json.dump({'model': body['model'], 'prompt': text, 'approach': approach, 'animal': name, 'made': time.strftime('%Y-%m-%d')}, open(fn[:-4] + '.json', 'w'))
-            print('  candidate', fn)
+            print('  candidate', fn); made.append(fn)
     print('  this run: %d call(s), ~$%.2f' % (_calls, _spent))
+    return made
 
 
 def _png(im):
@@ -427,15 +467,18 @@ def choose_animal(sid, name, approach, k):
 # trees and animals where and as large as they are), repainted in Knight's manner with the animals as reconstructed today.
 def scene_paint(sid, guide, n, pro):
     s = scenes().get(sid) or sys.exit('no scene ' + sid)
-    p = s['paint']; looks = '; '.join('%s: %s' % (c['name'], c['look']['text']) for c in s['cast'] if c.get('look'))
+    p = s['paint']; looks = '; '.join('%s: %s' % (c['name'], c['look']['text']) for c in s['cast'] if c.get('look')); BL = brief_lines(sid)
     text = '\n'.join(['The attached picture is a 3D reconstruction of %s, %s, %s, seen from the sky.' % (s['name'].replace('The ', 'the '), s['where'], s['when']),
-                      'Repaint it as ONE oil painting. ' + KNIGHT,
+                      'Repaint it as ONE oil painting. ' + (HISTORY if BL else KNIGHT),
                       'Keep the composition EXACTLY: the river and its sandbanks, the low red sandstone face of the far bank, every '
                       'monkey-puzzle tree, and every animal where it is and as large as it is (the dark shapes are the animals).',
                       'Paint the dark shapes as the living animals, as reconstructed today: %s. The small shapes under the water '
                       'are fish; the shapes in the air are pterosaurs.' % looks,
-                      'Land: %s. Water: %s. Plants: %s. Light: %s. Do not paint: %s.' % (p['land'], p['water'], p['plants'], p['light'], p['not']),
-                      'No text, labels, border or frame.'])
+                      *(['From the evidence (show these as given): ' + '; '.join(BL['must']) + '.',
+                         'Your own to imagine, within the evidence: ' + '; '.join(BL['free']) + '.',
+                         'Do not paint: ' + '; '.join(BL['not']) + '.'] if BL else
+                        ['Land: %s. Water: %s. Plants: %s. Light: %s. Do not paint: %s.' % (p['land'], p['water'], p['plants'], p['light'], p['not'])]),
+                      NO_TEXT])
     d = os.path.join(CAND, sid + '-scene'); os.makedirs(d, exist_ok=True); os.makedirs(os.path.join(HERE, 'prompts'), exist_ok=True)
     open(os.path.join(HERE, 'prompts', sid + '-scene.txt'), 'w').write(text)
     body = {'model': MODEL_PRO if pro else MODEL,
@@ -450,6 +493,269 @@ def scene_paint(sid, guide, n, pro):
     print('  this run: %d call(s), ~$%.2f' % (_calls, _spent))
 
 
+def scene_fix(sid, k, fix, n, pro):
+    """Correct a scene painting where it differs from the evidence: the painting and plain instructions go back to the
+    model, which is asked to change only those things. A new candidate, looked at by eye like any other."""
+    if not fix: sys.exit('say what to correct: --fix "..."')
+    src = os.path.join(CAND, sid + '-scene', '%s.jpg' % k)
+    text = '\n'.join(['The attached oil painting (in the manner of Charles R. Knight) shows %s, seen from the sky.' % scenes()[sid]['name'].replace('The ', 'the '),
+                      'Correct ONLY these things, and keep everything else exactly as it is — the composition, the river, the '
+                      'sandbanks, the trees, the light, the brushwork and the other animals: ' + fix, NO_TEXT])
+    d = os.path.join(CAND, sid + '-scene')
+    body = {'model': MODEL_PRO if pro else MODEL,
+            'input': [{'type': 'text', 'text': text}, {'type': 'image', 'mime_type': 'image/jpeg', 'data': base64.b64encode(open(src, 'rb').read()).decode()}],
+            'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': '2K' if pro else '1K', 'aspect_ratio': '16:9'}}
+    base = json.load(open(src[:-4] + '.json')); made = []
+    for i in range(n):
+        for b in images(call(body)):
+            kk = len([f for f in os.listdir(d) if f.endswith('.jpg')]) + 1
+            fn = os.path.join(d, '%d.jpg' % kk); open(fn, 'wb').write(b)
+            json.dump({'model': body['model'], 'prompt': base['prompt'] + '\n\nThen corrected: ' + fix, 'fixed_from': int(k), 'made': time.strftime('%Y-%m-%d')}, open(fn[:-4] + '.json', 'w'))
+            print('  candidate', fn); made.append(fn)
+    print('  this run: %d call(s), ~$%.2f' % (_calls, _spent))
+    return made
+
+
+# Paintings of the great events (Evan, 25 Nov: "paintings for all the extinction events and other events like when things
+# drifted, when things collided ... they all need to be painting"): the extinctions (data_extinctions.js), the smaller
+# crises and the drift and collision events of the timeline (data_time.js EVENTS, each with verified sources), and the
+# Earth-building stories (data_stories.js). Each brief is the event's own text; the painter is told to show only that.
+EVENT_IDS = {
+    'extinction': ['ordovician', 'devonian', 'permian', 'triassic', 'cretaceous', 'quaternary', 'holocene'],
+    'crisis': ['endediacaran', 'kalkarindji', 'spice', 'ireviken', 'lau', 'hangenberg', 'coalforest', 'capitanian', 'carnian', 'toarcian', 'oae2', 'petm', 'grandecoupure'],
+    'drift': ['grenville', 'midcontinent', 'mackenzie', 'iapetus', 'southatlantic'],
+    'story': ['moon', 'snowball', 'himalaya', 'mediterranean', 'missoula', 'hawaii', 'greatlakes'],
+}
+
+
+def event_brief(eid):
+    js = ("const X=require(%r), T=require(%r), S=require(%r); console.log(JSON.stringify({ext: X.EXTINCTIONS, ev: T.EVENTS.filter(e => e[5]), st: S.STORIES}))"
+          % tuple(os.path.join(ROOT, 'tools', 'source', f) for f in ('data_extinctions.js', 'data_time.js', 'data_stories.js')))
+    D = json.loads(subprocess.check_output(['node', '-e', js]).decode())
+    e = next((x for x in D['ext'] if x['id'] == eid), None)
+    if e: return {'kind': 'extinction', 'title': e['short'], 't': e['t'], 'text': ' '.join(s[1] for s in e['steps'])}
+    s = next((x for x in D['st'] if x['id'] == eid), None)
+    if s:
+        when = s['ma'][0][1] if s.get('ma') else s['ka'][0][1] / 1000
+        return {'kind': 'story', 'title': s['title'], 't': when, 'text': s['blurb'] + ' ' + ' '.join(x[1] for x in s['steps'])}
+    v = next((x for x in D['ev'] if x[5] == eid), None) or sys.exit('no event ' + eid)
+    return {'kind': 'drift' if eid in EVENT_IDS['drift'] else 'crisis', 'title': v[3], 't': v[0], 'text': v[4]}
+
+
+def era_rules(t, positive=True):
+    """What plants could not yet exist at time t (Ma): the painter otherwise puts palms and lush green on every
+    'prehistoric' landscape (25 Nov 2026: 16 of 32 event paintings did). Broad, well-established first appearances.
+    With `positive`, also what the ground WAS covered in, and how plants grow: the bans alone gave bare stage sets with
+    a few fronds dotted about (Evan, 25 Nov: "it may not be lush ... but it certainly wasn't just barren, weird diorama")."""
+    r, ok = [], ''
+    if t > 470:
+        r.append('NO plants of any kind on land, nothing green or leafy (dark crusts of microbes on damp ground are fine): all life is in the water')
+        ok = ('The land is real, weathered ground, not a stage: grey and red rock, gravel, and wide sheets of sand and mud spread '
+              'by rain and broad shallow rivers (with no roots to hold the soil, rivers ran in wide braided sheets), wind-rippled '
+              'sand, dark wrinkled crusts of microbial mats on damp ground and tidal flats, and a sea full of life')
+    elif t > 390:
+        r.append('NO trees, shrubs or bushes: the only land plants are tiny, low, moss-like plants a few centimetres tall, near water')
+        ok = ('Near water the ground is carpeted with them: low green and brown mats of tiny moss-like and liverwort-like plants '
+              'and small leafless forked stems, spreading in patches like a thin felt over damp mud; drier ground is still '
+              'bare rock and sand')
+    elif t > 359:
+        r.append('NO palms, conifers, cycads or flowering plants')
+        ok = ('The trees are Archaeopteris: tall trees shaped like a conifer, with a straight trunk and spreading side branches '
+              'carrying flat fern-like leaves — NOT palm-shaped — in forests along rivers and coasts, with low ferny and '
+              'leafless forked plants and a litter of fallen branches beneath them')
+    elif t > 299:
+        r.append('NO palms or flowering plants')
+        ok = ('The forests are giant club-moss trees (Lepidodendron, Sigillaria): tall straight bare trunks covered in a diamond-shaped '
+              'scale pattern, ending in a few short forked branches with grassy tufts — NOT palm-shaped; with giant horsetails (Calamites, '
+              'jointed stems with whorls of needle leaves) and tree ferns, standing close together in swamps over dark water, with '
+              'fallen trunks and a dense undergrowth of ferns')
+    if 0 < t <= 299 and t > 100:
+        r.append('NO palm trees (palms appear about 100 million years ago) and nothing palm-shaped (no tall slender trunk with a crown of big fan or feather leaves), and NO flowering plants' + (' or flowers' if t > 130 else ' except a few small early ones'))
+        ok = ('The trees are conifers (pine-like and monkey-puzzle-like)' + (', seed ferns like Glossopteris with tongue-shaped leaves' if t > 252 else ', ginkgos') +
+              ', tree ferns, and cycads — cycads only as SHORT, stout, barrel-trunked plants no taller than a person. Where it is wet the '
+              'ground is covered with ferns and horsetails (there is no grass), in thick stands; where it is dry, scattered low shrubs '
+              'and bare ground')
+    if 0 < t <= 100 and t > 66:
+        r.append('NO grass or grassland')
+        ok = ok or ('Conifers, ferns, cycads and early flowering trees and shrubs; ferns and horsetails, not grass, cover wet ground')
+    if t > 580: r.append('NO animals of any kind, not even in the sea: life is microbes and simple algae, too small or too plain to see from the sky (at most green or brown scum in shallow water)')
+    elif t > 541: r.append('NO animals except simple, soft-bodied sea creatures on the sea floor (the Ediacaran kind: fronds, discs, quilted mats)')
+    if ok and t <= 470: ok += ('. Plants grow as they do in nature: in continuous stands, thickets and carpets where there is water, '
+                               'thinning gradually where it is drier — never single plants dotted evenly over bare ground like a model')
+    return (('What could not yet exist then, so must not be painted: ' + '; '.join(r) + '.') if r else '') + ((' ' + ok + '.') if ok and positive else '')
+
+
+def when_words(t):
+    return 'today' if t == 0 else ('about %s years ago' % format(round(t * 1e6), ',') if t < 0.1 else 'about %s million years ago' % ('%g' % round(t, 1)))
+
+
+def event_paint(eid, n, pro):
+    b = event_brief(eid)
+    text = '\n'.join(['A painting for a natural-history museum: %s, %s.' % (b['title'], when_words(b['t'])), KNIGHT,
+                      'What happened, from the scientific evidence: ' + b['text'],
+                      'Paint the moment as seen from high in the sky: a wide view of the land and sea where it happened, as they '
+                      'were THEN — the continents, coasts, plants and life of that time, not today\'s. Show only what the '
+                      'description says. Living things only where it names them, small, as they are reconstructed today; none '
+                      'where it does not.', era_rules(b['t']), AVOID, NO_TEXT])
+    d = os.path.join(CAND, 'events'); os.makedirs(d, exist_ok=True); os.makedirs(os.path.join(HERE, 'prompts', 'events'), exist_ok=True)
+    open(os.path.join(HERE, 'prompts', 'events', eid + '.txt'), 'w').write(text)
+    body = {'model': MODEL_PRO if pro else MODEL, 'input': [{'type': 'text', 'text': text}],
+            'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': '2K' if pro else '1K', 'aspect_ratio': '16:9'}}
+    made = []
+    for i in range(n):
+        for img in images(call(body)):
+            k = len([f for f in os.listdir(d) if f.startswith(eid + '-') and f.endswith('.jpg')]) + 1
+            fn = os.path.join(d, '%s-%d.jpg' % (eid, k)); open(fn, 'wb').write(img)
+            json.dump(dict(b, id=eid, model=body['model'], prompt=text, made=time.strftime('%Y-%m-%d')), open(fn[:-4] + '.json', 'w'), ensure_ascii=False)
+            print('  candidate', fn); made.append(fn)
+    return made
+
+
+def choose_event(eid, k, differs):
+    if not differs: sys.exit('say where the painting differs from the evidence: --differs "..." (or "nothing we can see")')
+    src = os.path.join(CAND, 'events', '%s-%s.jpg' % (eid, k)); meta = json.load(open(src[:-4] + '.json'))
+    out = os.path.join(ROOT, 'app', 'public', 'painted', 'events'); os.makedirs(out, exist_ok=True)
+    im = Image.open(src).convert('RGB'); dst = os.path.join(out, eid + '.jpg'); im.save(dst, 'JPEG', quality=86)
+    json.dump(dict(meta, f='painted/events/%s.jpg' % eid, w=im.width, h=im.height, candidate=int(k), differs=differs),
+              open(dst[:-4] + '.json', 'w'), ensure_ascii=False, indent=1)
+    print('  %s ← candidate %s' % (dst, k))
+
+
+# Zooming into a scene painting without blur (Evan, 25 Nov: "improve zooming fidelity"): the painting is cut into a 3x3
+# grid of overlapping crops, each repainted at 3x the detail by the model ("keep every shape exactly"), checked against
+# its crop (a repaint that moved things is replaced by a plain enlargement), colour-matched, blended across the overlaps,
+# and cut into nine tiles the page loads only when the reader zooms in (app/public/painted/<scene>-hi/r-c.jpg).
+DETAIL_N, DETAIL_OVERLAP = 3, 0.12
+
+
+def detail(sid, pro, only=None):
+    src = os.path.join(ROOT, 'app', 'public', 'painted', 'scene-%s.jpg' % sid); im = Image.open(src).convert('RGB'); W, H = im.size
+    only = set(only.split(',')) if only else None                  # e.g. "0-1,1-0": retry the tiles that strayed
+    d = os.path.join(CAND, sid + '-detail'); os.makedirs(d, exist_ok=True)
+    text = ('The attached picture is one part of a larger oil painting in the manner of Charles R. Knight. Repaint EXACTLY this '
+            'part at much higher resolution, with finer, sharper oil brushwork and detail: keep every shape, edge, colour, '
+            'shadow and position exactly where it is; do not add, remove, move or restyle anything; no text, border or frame.')
+    for r in range(DETAIL_N):
+        for c in range(DETAIL_N):
+            if only and '%d-%d' % (r, c) not in only: continue
+            x0, y0, x1, y1 = _detail_box(W, H, r, c)
+            crop = im.crop((x0, y0, x1, y1)); b = io.BytesIO(); crop.save(b, 'JPEG', quality=92)
+            body = {'model': MODEL_PRO if pro else MODEL,
+                    'input': [{'type': 'text', 'text': text}, {'type': 'image', 'mime_type': 'image/jpeg', 'data': base64.b64encode(b.getvalue()).decode()}],
+                    'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': '2K' if pro else '1K', 'aspect_ratio': '16:9'}}
+            got = images(call(body))
+            if got: open(os.path.join(d, '%d-%d.jpg' % (r, c)), 'wb').write(got[0]); print('  tile', r, c)
+    print('  this run: %d call(s), ~$%.2f' % (_calls, _spent))
+
+
+def _detail_box(W, H, r, c):
+    tw, th = W / DETAIL_N, H / DETAIL_N; ox, oy = tw * DETAIL_OVERLAP, th * DETAIL_OVERLAP
+    return int(max(0, c * tw - ox)), int(max(0, r * th - oy)), int(min(W, (c + 1) * tw + ox)), int(min(H, (r + 1) * th + oy))
+
+
+def detail_assemble(sid):
+    import numpy as np
+    src = os.path.join(ROOT, 'app', 'public', 'painted', 'scene-%s.jpg' % sid); im = Image.open(src).convert('RGB'); W, H = im.size
+    S = 3; BW, BH = W * S, H * S
+    acc = np.zeros((BH, BW, 3), np.float32); wsum = np.zeros((BH, BW, 1), np.float32); report = []
+    for r in range(DETAIL_N):
+        for c in range(DETAIL_N):
+            x0, y0, x1, y1 = _detail_box(W, H, r, c); cw, ch = x1 - x0, y1 - y0
+            crop = np.asarray(im.crop((x0, y0, x1, y1)).resize((cw * S, ch * S), Image.LANCZOS)).astype(np.float32)
+            fn = os.path.join(CAND, sid + '-detail', '%d-%d.jpg' % (r, c)); used = 'enlarged'
+            if os.path.exists(fn):
+                t = np.asarray(Image.open(fn).convert('RGB').resize((cw * S, ch * S), Image.LANCZOS)).astype(np.float32)
+                small = lambda a: np.asarray(Image.fromarray(np.uint8(np.clip(a, 0, 255))).resize((cw // 4, ch // 4), Image.BILINEAR)).astype(np.float32).mean(2)
+                A, B = small(crop), small(t); A -= A.mean(); B -= B.mean()
+                corr = float((A * B).sum() / (np.sqrt((A * A).sum() * (B * B).sum()) + 1e-6))
+                if corr > 0.88:                                   # same picture: match its colours to the original crop
+                    t = (t - t.mean((0, 1))) / (t.std((0, 1)) + 1e-6) * crop.std((0, 1)) + crop.mean((0, 1)); crop = t; used = 'repainted'
+                report.append('%d-%d %s (%.2f)' % (r, c, used, corr))
+            else: report.append('%d-%d enlarged (no tile)' % (r, c))
+            # weights: 1 in the middle, falling to 0 across the overlap, so neighbours blend without seams
+            wy = np.minimum(1, np.minimum(np.arange(ch * S) + 1, ch * S - np.arange(ch * S)) / (H / DETAIL_N * DETAIL_OVERLAP * S + 1))
+            wx = np.minimum(1, np.minimum(np.arange(cw * S) + 1, cw * S - np.arange(cw * S)) / (W / DETAIL_N * DETAIL_OVERLAP * S + 1))
+            if x0 == 0: wx[:len(wx) // 2] = 1
+            if y0 == 0: wy[:len(wy) // 2] = 1
+            if x1 == W: wx[len(wx) // 2:] = 1
+            if y1 == H: wy[len(wy) // 2:] = 1
+            w = (wy[:, None] * wx[None, :])[..., None].astype(np.float32)
+            acc[y0 * S:y0 * S + ch * S, x0 * S:x0 * S + cw * S] += crop * w; wsum[y0 * S:y0 * S + ch * S, x0 * S:x0 * S + cw * S] += w
+    big = np.uint8(np.clip(acc / np.maximum(wsum, 1e-6), 0, 255))
+    out = os.path.join(ROOT, 'app', 'public', 'painted', sid + '-hi'); os.makedirs(out, exist_ok=True)
+    tw, th = BW // DETAIL_N, BH // DETAIL_N
+    for r in range(DETAIL_N):
+        for c in range(DETAIL_N):
+            Image.fromarray(big[r * th:(r + 1) * th, c * tw:(c + 1) * tw]).save(os.path.join(out, '%d-%d.jpg' % (r, c)), 'JPEG', quality=82)
+    cand = json.load(open(src[:-4] + '.json')).get('candidate')                     # the tiles are only good for this painting
+    json.dump({'n': DETAIL_N, 'scale': S, 'tw': tw, 'th': th, 'tiles': report, 'candidate': cand}, open(os.path.join(out, 'index.json'), 'w'), indent=1)
+    print('  ' + '\n  '.join(report)); print('  %s: %dx%d in %d tiles' % (out, BW, BH, DETAIL_N * DETAIL_N))
+
+
+# Plants for the 3D scene, painted (Evan, 25 Nov: the 3D vegetation looked artificial): one sheet of the brief's own plant
+# kinds, seen from about 45 degrees above like the scene's camera, cut into sprites (app/public/painted/<site>-plants.png).
+def plants(sid, n, pro):
+    s = scenes().get(sid) or sys.exit('no scene ' + sid); p = s['paint']
+    text = '\n'.join(['A sheet of four separate plants for a natural-history museum diorama. ' + KNIGHT,
+                      'Each plant stands alone on a PURE WHITE background, with wide white space between them, in a row from left '
+                      'to right, all seen from about 45 degrees above (as from a low aircraft), lit from the upper left:',
+                      '1) a low, rounded, leafy shrub about one and a half metres tall, with small leaves; 2) a clump of ferns about '
+                      'one metre tall; 3) a small low leafy plant from the water\'s edge, half a metre tall; 4) a more open, spreading '
+                      'low shrub.',
+                      'They grow at %s, %s: %s. Do not paint: %s.' % (s['where'], s['when'], p['plants'], p['not']),
+                      'No ground, no shadows, no soil, no pot, no text, numbers, labels, border or frame.'])
+    d = os.path.join(CAND, sid + '-plants'); os.makedirs(d, exist_ok=True)
+    os.makedirs(os.path.join(HERE, 'prompts'), exist_ok=True); open(os.path.join(HERE, 'prompts', sid + '-plants.txt'), 'w').write(text)
+    body = {'model': MODEL_PRO if pro else MODEL, 'input': [{'type': 'text', 'text': text}],
+            'response_format': {'type': 'image', 'mime_type': 'image/jpeg', 'image_size': '2K' if pro else '1K', 'aspect_ratio': '16:9'}}
+    for i in range(n):
+        for b in images(call(body)):
+            k = len([f for f in os.listdir(d) if f.endswith('.jpg')]) + 1; fn = os.path.join(d, '%d.jpg' % k); open(fn, 'wb').write(b)
+            json.dump({'model': body['model'], 'prompt': text, 'made': time.strftime('%Y-%m-%d')}, open(fn[:-4] + '.json', 'w')); print('  candidate', fn)
+
+
+def choose_plants(sid, k):
+    """Cut the four plants out of a sheet (split where whole columns are white) into a 4-cell atlas with alpha."""
+    import numpy as np
+    src = os.path.join(CAND, sid + '-plants', '%s.jpg' % k); im = Image.open(src).convert('RGB'); a = np.asarray(im).astype(int)
+    ink = np.abs(a - 255).sum(2) > 45
+    # the plants by their shapes: connected areas of paint on a quarter-size mask (they may overlap side to side)
+    q = ink[::4, ::4]; H4, W4 = q.shape; lab = np.zeros(q.shape, np.int32); n = 0; sizes = {}
+    for y0 in range(H4):
+        for x0 in range(W4):
+            if q[y0, x0] and not lab[y0, x0]:
+                n += 1; st = [(y0, x0)]; lab[y0, x0] = n; cnt = 0
+                while st:
+                    y, x = st.pop(); cnt += 1
+                    for dy in (-1, 0, 1):
+                        for dx in (-1, 0, 1):
+                            yy, xx = y + dy, x + dx
+                            if 0 <= yy < H4 and 0 <= xx < W4 and q[yy, xx] and not lab[yy, xx]: lab[yy, xx] = n; st.append((yy, xx))
+                sizes[n] = cnt
+    big = sorted(sizes, key=sizes.get, reverse=True)[:4]
+    if len(big) < 4 or sizes[big[3]] < 300: sys.exit('found fewer than 4 plants: choose another sheet')
+    comp = {}
+    for c in big:
+        ys, xs = np.where(lab == c); comp[c] = (xs.min() * 4, ys.min() * 4, xs.max() * 4 + 4, ys.max() * 4 + 4)
+    order = sorted(big, key=lambda c: comp[c][0])
+    atlas = Image.new('RGBA', (2048, 512), (0, 0, 0, 0)); meta = []
+    for i, c in enumerate(order):
+        x0, y0, x1, y1 = comp[c]
+        mine = np.kron(lab == c, np.ones((4, 4), bool))[:ink.shape[0], :ink.shape[1]]
+        m = np.asarray(Image.fromarray(np.uint8(mine) * 255).filter(ImageFilter.MaxFilter(9))) > 0     # this plant's area, a little grown
+        sel = (ink & m)[y0:y1, x0:x1]
+        mask = Image.fromarray(np.uint8(sel) * 255).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1))
+        sp = im.crop((x0, y0, x1, y1)).convert('RGBA'); sp.putalpha(mask)
+        sc = min(500 / sp.width, 500 / sp.height); sp = sp.resize((max(1, int(sp.width * sc)), max(1, int(sp.height * sc))), Image.LANCZOS)
+        atlas.paste(sp, (i * 512 + (512 - sp.width) // 2, 512 - sp.height), sp)          # standing on the cell's bottom edge
+        meta.append({'w': sp.width / 512, 'h': sp.height / 512})
+    out = os.path.join(ROOT, 'app', 'public', 'painted'); os.makedirs(out, exist_ok=True)
+    atlas.save(os.path.join(out, sid + '-plants.png'), optimize=True)
+    json.dump({'f': 'painted/%s-plants.png' % sid, 'cells': meta, 'kinds': ['shrub', 'fern', 'herb', 'shrub2'], 'candidate': int(k)},
+              open(os.path.join(out, sid + '-plants.json'), 'w'), indent=1)
+    print('  plants:', meta)
+
+
 def choose_scene(sid, k, differs):
     """A scene painting is kept only with a plain account of where it differs from the evidence (--differs "..."):
     the page shows it beside the picture, as the atlas does for old reconstructions."""
@@ -457,8 +763,8 @@ def choose_scene(sid, k, differs):
     src = os.path.join(CAND, sid + '-scene', '%s.jpg' % k); meta = json.load(open(src[:-4] + '.json'))
     out_dir = os.path.join(ROOT, 'app', 'public', 'painted'); os.makedirs(out_dir, exist_ok=True)
     dst = os.path.join(out_dir, 'scene-%s.jpg' % sid)
-    Image.open(src).convert('RGB').resize((1920, 1080), Image.LANCZOS).save(dst, 'JPEG', quality=86)
-    json.dump({'f': 'painted/scene-%s.jpg' % sid, 'model': meta['model'], 'prompt': meta['prompt'], 'made': meta['made'], 'candidate': int(k),
+    im = Image.open(src).convert('RGB'); im.save(dst, 'JPEG', quality=88)          # full size: the page lets readers zoom in
+    json.dump({'f': 'painted/scene-%s.jpg' % sid, 'w': im.width, 'h': im.height, 'model': meta['model'], 'prompt': meta['prompt'], 'made': meta['made'], 'candidate': int(k),
                'differs': differs}, open(dst[:-4] + '.json', 'w'), ensure_ascii=False, indent=1)
     print('  %s ← candidate %s' % (dst, k))
 
@@ -545,6 +851,14 @@ if __name__ == '__main__':
     elif a[0] == 'choose-animal': choose_animal(a[1], a[2], a[3], a[4])
     elif a[0] == 'scene': scene_paint(a[1], opt('--guide', None) or sys.exit('--guide <png> is needed'), int(opt('--n', 2)), '--pro' in sys.argv)
     elif a[0] == 'choose-scene': choose_scene(a[1], a[2], opt('--differs', None))
+    elif a[0] == 'detail': detail(a[1], '--pro' in sys.argv, opt('--only', None))
+    elif a[0] == 'plants': plants(a[1], int(opt('--n', 1)), '--pro' in sys.argv)
+    elif a[0] == 'choose-plants': choose_plants(a[1], a[2])
+    elif a[0] == 'detail-assemble': detail_assemble(a[1])
+    elif a[0] == 'event': event_paint(a[1], int(opt('--n', 1)), '--pro' in sys.argv)
+    elif a[0] == 'choose-event': choose_event(a[1], a[2], opt('--differs', None))
+    elif a[0] == 'events': print(' '.join(i for v in EVENT_IDS.values() for i in v))
+    elif a[0] == 'scene-fix': scene_fix(a[1], a[2], opt('--fix', None), int(opt('--n', 2)), '--pro' in sys.argv)
     elif a[0] == 'choose-ground': choose_ground(a[1], a[2])
     elif a[0] == 'spent': spent()
     elif a[0] == 'check': check()

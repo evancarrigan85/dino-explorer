@@ -5,13 +5,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Site, Spot } from './types';
 import { sizeText, BASIS_WORDS, type Units } from './size';
+import { Badge, DecisionCard, decisionsFor, strongest, QUESTIONS, QuestionPanel } from './Evidence';
 
 const loadFound = (id: string): string[] => { try { const v = JSON.parse(localStorage.getItem('found:' + id) || '[]'); return Array.isArray(v) ? v : []; } catch { return []; } };
 const saveFound = (id: string, v: string[]) => { try { localStorage.setItem('found:' + id, JSON.stringify(v)); } catch { /* not kept: fine */ } };
 
 export function spotTitle(site: Site, s: Spot) { return s.title || (s.cast && s.cast.length === 1 ? s.cast[0] : s.id); }
 
-export function PaintingView({ site, units, onOpen3D, hints }: { site: Site; units: Units; onOpen3D: (name?: string) => void; hints: boolean }) {
+// Two views of the same painting (Evan, 25 Nov): The Scene — the painting alone, nothing competing with it; The Evidence —
+// every part of it rests on decisions in the site's reconstruction brief, marked documented, inferred or imagined.
+export function PaintingView({ site, units, onOpen3D, look }: { site: Site; units: Units; onOpen3D: (name?: string) => void; look: 'scene' | 'evidence' }) {
   const P = site.painting!, spots = site.spots || [];
   const box = useRef<HTMLDivElement>(null);
   const [view, setView] = useState({ s: 1, x: 0, y: 0 });         // scale (1 = cover the screen), and the picture's offset in px
@@ -20,13 +23,18 @@ export function PaintingView({ site, units, onOpen3D, hints }: { site: Site; uni
   const [hover, setHover] = useState<string | null>(null);
   const [found, setFound] = useState<string[]>(() => loadFound(site.id));
   const [tray, setTray] = useState(false);
+  const [question, setQuestion] = useState<string | null>(null);
+  const ev = look === 'evidence', B = site.brief;
+  useEffect(() => { if (!ev) { setOpen(null); setTray(false); setQuestion(null); } }, [ev]);
 
   // the picture's size on screen at scale 1: it covers the screen (on a phone, you pan along it)
   const base = useMemo(() => Math.max(size.w / P.w, size.h / P.h), [size, P]);
+  // with detail tiles the painting holds 3x the pixels, so it can be zoomed further and stay sharp
+  const HI = site.paintingHi, maxS = HI ? Math.max(3, (P.w * 3) / (P.w * base) * 0.9) : 3;
   const clamp = useCallback((v: { s: number; x: number; y: number }) => {
-    const s = Math.min(3, Math.max(1, v.s)), w = P.w * base * s, h = P.h * base * s;
+    const s = Math.min(maxS, Math.max(1, v.s)), w = P.w * base * s, h = P.h * base * s;
     return { s, x: Math.min(0, Math.max(size.w - w, v.x)), y: Math.min(0, Math.max(size.h - h, v.y)) };
-  }, [P, base, size]);
+  }, [P, base, size, maxS]);
   useEffect(() => {
     const el = box.current!; const fit = () => setSize({ w: el.clientWidth, h: el.clientHeight });
     fit(); const ro = new ResizeObserver(fit); ro.observe(el); return () => ro.disconnect();
@@ -43,7 +51,7 @@ export function PaintingView({ site, units, onOpen3D, hints }: { site: Site; uni
 
   // zoom about a point on screen
   const zoomAt = (px: number, py: number, f: number) => setView(v => {
-    const s = Math.min(3, Math.max(1, v.s * f)), k = s / v.s;
+    const s = Math.min(maxS, Math.max(1, v.s * f)), k = s / v.s;
     return clamp({ s, x: px - (px - v.x) * k, y: py - (py - v.y) * k });
   });
   // pointers: drag to pan, two fingers to pinch
@@ -72,15 +80,21 @@ export function PaintingView({ site, units, onOpen3D, hints }: { site: Site; uni
   };
   const all = spots.length, got = spots.filter(s => found.includes(s.id)).length;
   const W = P.w * base * view.s, H = P.h * base * view.s;
+  const legend = ev && B ? <div className="legend" aria-hidden="true"><Badge s="documented" /><Badge s="inferred" /><Badge s="imagined" /></div> : null;
   const castOf = (n: string) => site.cast.find(c => c.name === n)!;
 
   return <div className="pview" ref={box} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
     onDoubleClick={e => { const r = box.current!.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, view.s < 2.5 ? 1.8 : 1 / 3); }}>
     <div className="layer" style={{ width: W, height: H, transform: `translate(${view.x}px, ${view.y}px)` }}>
       <img src={P.f} alt={'A painting of ' + site.name.replace(/^The /, 'the ') + ', seen from the sky'} draggable={false} />
-      {spots.map(s => {
-        const f = found.includes(s.id), on = hover === s.id || open?.id === s.id;
-        return <button key={s.id} className={'spot' + (f ? ' found' : '') + (on ? ' on' : '') + (hints || f ? '' : ' quiet')}
+      {HI && W > P.w * 0.95 && Array.from({ length: HI.n * HI.n }, (_, i) => {   // the detail tiles in view, once the painting is shown bigger than its own pixels
+        const r = Math.floor(i / HI.n), c = i % HI.n, tw = W / HI.n, th = H / HI.n, x = c * tw + view.x, y = r * th + view.y;
+        if (x > size.w || y > size.h || x + tw < 0 || y + th < 0) return null;
+        return <img key={i} className="hi" src={`${HI.dir}/${r}-${c}.jpg`} alt="" draggable={false} style={{ left: c * tw, top: r * th, width: tw + 0.5, height: th + 0.5 }} />;
+      })}
+      {ev && spots.map(s => {
+        const f = found.includes(s.id), on = hover === s.id || open?.id === s.id, st = B ? strongest(decisionsFor(B, s.id, s.cast)) : null;
+        return <button key={s.id} className={'spot' + (f ? ' found' : '') + (on ? ' on' : '') + (st ? ' st-' + st : '')}
           style={{ left: s.x * W, top: s.y * H, width: 2 * s.r * W, height: 2 * s.r * W }}
           onMouseEnter={() => setHover(s.id)} onMouseLeave={() => setHover(h => h === s.id ? null : h)} onFocus={() => setHover(s.id)} onBlur={() => setHover(null)}
           onClick={e => { e.stopPropagation(); collect(s); }} aria-label={(f ? 'Found: ' : 'Find: ') + spotTitle(site, s)}>
@@ -89,26 +103,32 @@ export function PaintingView({ site, units, onOpen3D, hints }: { site: Site; uni
       })}
     </div>
 
-    <button className="found-btn" onClick={() => setTray(t => !t)} aria-expanded={tray}>Found {got} of {all}</button>
-    {tray && <div className="tray" role="dialog" aria-label="What you have found">
+    {legend}
+    {ev && <button className="found-btn" onClick={() => setTray(t => !t)} aria-expanded={tray}>Found {got} of {all}</button>}
+    {ev && B && <div className="questions" role="group" aria-label="Questions">
+      {QUESTIONS.map(q => <button key={q.id} onClick={e => { e.stopPropagation(); setQuestion(q.id); setOpen(null); setTray(false); }} aria-pressed={question === q.id}>{q.q}</button>)}
+    </div>}
+    {ev && B && question && <QuestionPanel brief={B} q={QUESTIONS.find(q => q.id === question)!} onClose={() => setQuestion(null)} />}
+    {ev && tray && <div className="tray" role="dialog" aria-label="What you have found">
       <b>{got === all ? 'You found everything at ' + site.name.replace(/^The /, 'the ') + '!' : 'Find everything in the painting: hover or tap on it.'}</b>
       <ul>{spots.map(s => <li key={s.id} className={found.includes(s.id) ? 'got' : ''}>
         {found.includes(s.id) ? <button className="link" onClick={() => { setOpen(s); setTray(false); }}>✓ {spotTitle(site, s)}</button> : <span>?</span>}</li>)}</ul>
       {got > 0 && <button className="link small" onClick={() => { setFound([]); saveFound(site.id, []); }}>Start again</button>}
     </div>}
 
-    {open && <aside className="panel spotcard">
+    {ev && open && <aside className="panel spotcard">
       <button className="x" onClick={() => setOpen(null)} aria-label="Close">✕</button>
       <h2>{spotTitle(site, open)}</h2>
+      {B && (() => { const ds = decisionsFor(B, open.id, open.cast); return ds.length ? <ul className="decisions">{ds.map(d => <DecisionCard key={d.id} d={d} brief={B} />)}</ul> : null; })()}
       {open.cast ? open.cast.map(n => { const c = castOf(n); return <section key={n}>
-        {open.cast!.length > 1 && <h3>{c.name}</h3>}
+        <h3>{c.name}</h3>
         <p className="size">{sizeText(c, units)}</p>
         <p>{c.note.replace(/^./, x => x.toUpperCase())}.</p>
         {c.look && <p className="basis"><b>As reconstructed today:</b> {c.look.text}.</p>}
         {c.basis && <p className="basis"><b>{BASIS_WORDS[c.basis.k]}:</b> {c.basis.text}.</p>}
         <button className="link" onClick={() => onOpen3D(c.name)}>See it to scale in 3D →</button>
       </section>; })
-      : <p>{open.text || (open.from ? site[open.from] : '')}</p>}
+      : (B && decisionsFor(B, open.id).length ? null : <p>{open.text || (open.from ? site[open.from] : '')}</p>)}
     </aside>}
   </div>;
 }

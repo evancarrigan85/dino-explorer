@@ -2,7 +2,13 @@
 
 Guidance for Claude Code sessions working in this repository.
 
-**Before Us — a deep-time atlas of Earth, life and people** (until November 2026 “Dino Time
+**Before Us is an evidence-led atlas of deep time** (Evan, 25 Nov 2026). It reconstructs specific places at specific
+moments in Earth’s history: each scene begins with the best available research on where the land was, what the
+environment was like and what lived there; the artist turns that reconstruction into a moment worth looking at; the
+atlas lets you trace the picture back to the evidence, including where the evidence runs out. Its visual style is
+**Deep-Time History Painting** (`docs/ART.md`). Every scene has a **reconstruction brief** (`content/briefs/`) whose
+decisions carry their own sources and are marked *documented*, *inferred* or *imagined* — never promote the third
+into the first. (Until November 2026 the atlas was “Dino Time
 Explorer”; the repository and the file `dino-explorer.html` keep the old name so the live address does
 not change) is one web page: a timeline from the birth of the Earth (4,567 Ma) to today, with a map of the Earth that
 moves through the last 1.8 billion years (before that nobody knows where the land was, and the map says so), and the
@@ -66,6 +72,7 @@ python3 -I tools/verify_refs.py                       # verify new/changed lines
 python3 -I tools/verify_refs.py --only key1,key2      # re-check particular references
 python3 -I tools/verify_refs.py --audit               # re-fetch every stored DOI; fails on preprints
 node tools/bench/bench.js [--update]                  # score the map against independent evidence
+node tools/briefs.mjs [--ref <paper>]                 # reconstruction briefs: decisions by status; what rests on a paper
 node tools/review_geometry.js                         # walk the timeline: jumps, gaps, labels, terrain fit
 node tools/perf/perf.js [--json out.json]             # time load, idle, drag, zoom, scrub, play, tabs (desktop + phone)
 cd app && npm run dev                                 # the new app (Step 3), at http://localhost:5173/#/site/kemkem
@@ -147,6 +154,11 @@ builds, passes the checks and has been looked at.
   and impacts drawn on the map (`SPARKS`; each belongs to a timeline event with sources, and a tap shows them —
   the build refuses a spark without one), and feeds the guided journeys (`JOURNEYS` in `app.js`). A spark is
   only drawn where the plates can carry its spot: they carry continents, not the ocean floor (no Ontong Java).
+  **Life up close** (`data_mapfauna.js`, drawn by `creatures.js`): zoomed in (`FAUNA_Z`), the big animals of the moment walk,
+  swim and fly round their own fossil sites as top-down body plans, kept to land or sea as the map has it, never more than a
+  few body lengths from the site and never across the wrong ground; their pins step aside and the group is named on the map;
+  groups only with the card’s reason. Plants (`placePlants`) are a sketch by era and climate belt, in stands and clearings,
+  swayed by the clock; `How this map is made` › `#lifeNote` says so. Test hooks: `WorldMap._fauna()`, `_plants()`.
   `data_extinctions.js` holds the Extinctions view; each event names a scene in `SCENES` (`app.js`),
   a function of progress 0→1 drawn over the map through `WorldMap.setFx()`, while `playScene()` runs
   the timeline through the event. A scene illustrates the order of events the card describes — it
@@ -191,8 +203,11 @@ builds, passes the checks and has been looked at.
   `iconize()` swaps them into rendered text and a MutationObserver keeps doing it; `ico(name)` writes one; the map paints
   them through `WorldMap.setIconPainter(paintIcon)`. Animals without a silhouette are lettered roundels (`monogram()`,
   `monoHTML()`, `mark` on a marker). Unmapped emoji stay; never map a belief’s or a people’s symbol to a stand-in.
-- **Paintings** (`tools/paint.py`): AI-painted landscapes behind the site scenes, never animals; built from each scene’s
-  `paint` brief, capped, logged, every candidate checked by eye; see `docs/PLAN.md` › Next up.
+- **Paintings** (`tools/paint.py`): AI paintings for the new app (sites, animals, events, the Earth opening), built from the
+  data's own briefs, capped, logged. **Every picture is reviewed before it is shown** (`tools/review_art.py`, registry
+  `tools/paint/art.json`): a second model checks it item by item against the evidence and the version of the science it
+  follows, scores how it works on a viewer, failures are painted again with its objections, and Evan signs off. The app
+  leaves out anything that failed, was held or rejected. Rules in `docs/ART.md` › Every picture is checked.
 - Sources: `refs_wanted.txt` (what we want to cite, and which entries each paper supports) →
   `verify_refs.py` → `refs.json` (what Crossref confirmed) → `REFS`/`SRCMAP` in the page.
   Target prefixes: `a:` animal name, `h:` hominin id, `c:` culture id, `d:` drowned site id,

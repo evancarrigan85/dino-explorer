@@ -412,7 +412,7 @@ const WorldMap = (() => {
   // them: each point rides its own plate, the light falls from the north-west, and the picture blends
   // from one map to the next. It only adds light, shadow and water depth — where land and sea are
   // still comes from the traced coasts — so with no WebGL or no files the map is simply as before.
-  let terOn = true;
+  let terOn = true, grMask = null, grx = null;
   const TER = { have: typeof DEM_HAVE === 'undefined' ? null : DEM_HAVE, st: 'idle', maps: new Map(), busy: new Set(), pair: '', drawn: 0 };
   const TEX_W = 256, EXAG = 90;
   const inflate = buf => new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer();
@@ -425,9 +425,9 @@ const WorldMap = (() => {
   const TER_VS = `#version 300 es
 precision highp float; precision highp int;
 in vec3 aPos; in vec3 aCen; in float aFam; in float aPix;
-uniform sampler2D uFam, uA, uB; uniform float uMix, uShift; uniform int uMode;
+uniform sampler2D uFam, uA, uB; uniform float uMix, uShift; uniform int uMode, uLayer;
 uniform vec2 uRot, uTr, uSize; uniform float uScale;
-out float vE, vShade, vVis, vLam, vW;
+out float vE, vShade, vVis, vLam, vW; out vec3 vP;
 const float PI = 3.14159265358979;
 float wrapPi(float a) { return a - 6.28318530718 * floor((a + PI) / 6.28318530718); }
 vec3 rot(vec4 r0, vec4 r1, vec4 r2, vec3 p) { return vec3(dot(r0.xyz, p), dot(r1.xyz, p), dot(r2.xyz, p)); }
@@ -441,7 +441,7 @@ void main() {
   vE = mix(A.x, B.x, m);
   vec3 n0 = mix(hA ? A.yzw : B.yzw, hB ? B.yzw : A.yzw, m), n = normalize(n0);
   vW = clamp(length(n0) * 2.0 - 1.0, 0.0, 1.0);
-  vVis = (r0.w > 0.5 && (hA || hB)) ? 1.0 : -1.0;
+  vVis = (r0.w > 0.5 && (hA || hB || uLayer == 3)) ? 1.0 : -1.0; vP = aPos;
   vec3 q = rot(r0, r1, r2, aPos), c = rot(r0, r1, r2, aCen), nw = rot(r0, r1, r2, n);
   // light from the north-west, high in the sky, in the ground's own frame at this time
   vec3 up = normalize(q), east = normalize(vec3(-q.y, q.x, 0.0) + vec3(1e-6, 0.0, 0.0)), north = cross(up, east);
@@ -467,11 +467,24 @@ void main() {
 }`;
   const TER_FS = `#version 300 es
 precision highp float; precision highp int;
-in float vE, vShade, vVis, vLam, vW;
-uniform int uLayer, uMode; uniform vec3 uDeep; uniform float uAlpha;
+in float vE, vShade, vVis, vLam, vW; in vec3 vP;
+uniform int uLayer, uMode; uniform vec3 uDeep; uniform float uAlpha, uZoom;
 out vec4 o;
+float h3(vec3 p) { p = fract(p * 0.3183099 + vec3(0.11, 0.17, 0.13)); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+float vn(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(h3(i), h3(i + vec3(1, 0, 0)), f.x), mix(h3(i + vec3(0, 1, 0)), h3(i + vec3(1, 1, 0)), f.x), f.y),
+             mix(mix(h3(i + vec3(0, 0, 1)), h3(i + vec3(1, 0, 1)), f.x), mix(h3(i + vec3(0, 1, 1)), h3(i + vec3(1, 1, 1)), f.x), f.y), f.z); }
+float fbm(vec3 p, int oct) { float s = 0.0, a = 0.5, n = 0.0; for (int i = 0; i < 6; i++) { if (i >= oct) break; s += a * vn(p); n += a; a *= 0.5; p = p * 2.03 + vec3(1.7, 9.2, 3.1); } return s / n; }
 void main() {
   if (vVis < 0.0 || (uMode == 0 && abs(vLam) > 3.14159265)) discard;
+  if (uLayer == 3) {                                  // the ground's own texture, computed where each piece of land is today, so it rides its plate
+    vec3 p = normalize(vP);
+    float m1 = fbm(p * 3.2, 4), m2 = fbm(p * 15.0 + 3.0, 4), m3 = fbm(p * 70.0 + 7.0, 3), m4 = vn(p * 380.0);
+    float zd = smoothstep(1.5, 5.0, uZoom), ze = smoothstep(5.0, 14.0, uZoom);       // finer grain appears as you come close
+    float v = 0.5 + (m1 - 0.5) * 0.34 + (m2 - 0.5) * 0.26 + (m3 - 0.5) * (0.12 + 0.14 * zd) + (m4 - 0.5) * 0.12 * ze;
+    vec3 c = vec3(v) + vec3(0.035, 0.005, -0.03) * (m1 - 0.5) * 2.0 + vec3(-0.025, 0.03, -0.012) * (m2 - 0.5) * 2.0;
+    o = vec4(c * uAlpha, uAlpha); return;
+  }
   if (uLayer == 2) { o = vec4(vE >= 0.0 && vW > 0.5 ? 1.0 : 0.0); return; }   // review only: the elevation maps' own dry land
   if (uLayer == 1) {                                  // land: light and shadow, and high ground a little paler
     float e = max(vE, 0.0), g = clamp(0.5 + (vShade - 1.0) * 1.25, 0.1, 0.8) + 0.05 * smoothstep(800.0, 4000.0, e);
@@ -495,7 +508,7 @@ void main() {
       const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
       const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, TER_VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, TER_FS)); gl.linkProgram(pr);
       if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
-      const U = {}; for (const k of ['uFam', 'uA', 'uB', 'uMix', 'uShift', 'uMode', 'uRot', 'uTr', 'uSize', 'uScale', 'uLayer', 'uDeep', 'uAlpha']) U[k] = gl.getUniformLocation(pr, k);
+      const U = {}; for (const k of ['uFam', 'uA', 'uB', 'uMix', 'uShift', 'uMode', 'uRot', 'uTr', 'uSize', 'uScale', 'uLayer', 'uDeep', 'uAlpha', 'uZoom']) U[k] = gl.getUniformLocation(pr, k);
       const tex = (w, h, fmt, ifmt, type) => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST); gl.texImage2D(gl.TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, null); return t; };
       const th = Math.ceil(TER.have.n / TEX_W);
       Object.assign(TER, { cv, pr, U, th,
@@ -585,12 +598,12 @@ void main() {
     const step = TER.have.step, x = Math.max(0, Math.min(TER.have.stages - 1.0001, t / step)), sA = Math.floor(x), sB = Math.min(TER.have.stages - 1, sA + 1), f = x - sA;
     terLoadMap(sA); terLoadMap(sB);
     const mA = TER.maps.get(sA), mB = TER.maps.get(sB);
-    if (!mA && !mB) return null;
+    if (!mA && !mB && layer !== 'ground') return null;                    // the ground's texture needs only the plates
     const cv = TER.cv;
     const tw = Math.ceil(canvas.width / 2), th2 = Math.ceil(canvas.height / 2);      // half size: the maps are 1° — the coasts' own outlines keep the edges sharp
     if (cv.width !== tw || cv.height !== th2) { cv.width = tw; cv.height = th2; }
     const pk = sA + ',' + sB;
-    if (TER.pair !== pk) {                             // the two maps either side of t
+    if (TER.pair !== pk && (mA || mB)) {               // the two maps either side of t
       TER.pair = pk;
       gl.bindTexture(gl.TEXTURE_2D, TER.tA); gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, TEX_W, TER.th, gl.RGBA, gl.FLOAT, mA || mB);
       gl.bindTexture(gl.TEXTURE_2D, TER.tB); gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, TEX_W, TER.th, gl.RGBA, gl.FLOAT, mB || mA);
@@ -610,11 +623,210 @@ void main() {
     [[TER.tFam, 'uFam'], [TER.tA, 'uA'], [TER.tB, 'uB']].forEach(([tx, nm], i) => { gl.activeTexture(gl.TEXTURE0 + i); gl.bindTexture(gl.TEXTURE_2D, tx); gl.uniform1i(U[nm], i); });
     gl.uniform1f(U.uMix, mA && mB ? f : 0); gl.uniform1i(U.uMode, mode === 'flat' ? 0 : 1);
     gl.uniform2f(U.uRot, r[0] * D2R, r[1] * D2R); gl.uniform2f(U.uTr, tr[0], tr[1]); gl.uniform2f(U.uSize, W, H); gl.uniform1f(U.uScale, proj.scale());
-    gl.uniform1i(U.uLayer, layer === 'land' ? 1 : layer === 'dry' ? 2 : 0); gl.uniform1f(U.uAlpha, alpha);
+    gl.uniform1i(U.uLayer, layer === 'land' ? 1 : layer === 'dry' ? 2 : layer === 'ground' ? 3 : 0); gl.uniform1f(U.uAlpha, alpha); gl.uniform1f(U.uZoom, zoom);
     const deep = hex(mix(pal.o2, '#123a5c', 0.35)).map(v => v / 255); gl.uniform3f(U.uDeep, deep[0], deep[1], deep[2]);
     gl.uniform1f(U.uShift, 0); gl.drawArrays(gl.TRIANGLES, 0, TER.nVert);    // (a triangle across the map's edge loses a sliver under 1° wide)
     gl.bindVertexArray(null);
-    TER.drawn++;
+    if (layer === 'ground') TER.ground = (TER.ground || 0) + 1; else TER.drawn++;   // the ground's grain only borrows the mesh
+    return cv;
+  }
+
+  // ── the living finish (WebGL): the sea's colour, its waves, glint and surf; clouds and wind (Evan, 25 Nov: "the way
+  // we render the water, the way we render the wind, the movement, to make it feel living when you're navigating a simple
+  // globe. The way that the texture of the ground is built"). One full-screen pass, drawn per pixel through the map's
+  // own projection turned inside out, so it lines up with the coasts exactly; it only colours what the map already
+  // holds. The sea's shading is illustrative; the clouds and wind follow today's wind belts (trade winds, westerlies,
+  // polar easterlies) as a moving sketch, not a weather record. All of it runs off the clock and holds still for readers
+  // who ask for less motion. Without WebGL the map draws as before.
+  const FIN = { gl: undefined, landStamp: -1, drawn: [0, 0, 0] };
+  const FIN_VS = `#version 300 es
+in vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }`;
+  const FIN_FS = `#version 300 es
+precision highp float;
+uniform int uMode, uPass; uniform vec2 uRot, uTr, uSize, uRes; uniform float uScale, uTime, uOcean, uCloud, uWind, uZoom, uHaze;
+uniform vec3 uO1, uO2, uO3; uniform sampler2D uLand;
+uniform vec3 uRing, uBare, uLandBase; uniform vec4 uB1, uB2;
+out vec4 o;
+const float PI = 3.14159265358979;
+float h3(vec3 p) { p = fract(p * 0.3183099 + vec3(0.11, 0.17, 0.13)); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+float vn(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(h3(i), h3(i + vec3(1, 0, 0)), f.x), mix(h3(i + vec3(0, 1, 0)), h3(i + vec3(1, 1, 0)), f.x), f.y),
+             mix(mix(h3(i + vec3(0, 0, 1)), h3(i + vec3(1, 0, 1)), f.x), mix(h3(i + vec3(0, 1, 1)), h3(i + vec3(1, 1, 1)), f.x), f.y), f.z); }
+float fbm(vec3 p, int oct) { float s = 0.0, a = 0.5, n = 0.0; for (int i = 0; i < 7; i++) { if (i >= oct) break; s += a * vn(p); n += a; a *= 0.5; p = p * 2.03 + vec3(1.7, 9.2, 3.1); } return s / n; }
+vec3 rotZ(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(c * p.x - s * p.y, s * p.x + c * p.y, p.z); }
+vec4 over(vec4 d, vec4 s) { return s + d * (1.0 - s.a); }
+// the map's projection, inside out: screen point -> longitude and latitude in the map's own frame, and the view normal
+bool inv(vec2 s, out vec2 ll, out vec3 n) {
+  vec2 v = (s - uTr) / uScale;
+  if (uMode == 1) {
+    float py = v.x, Z = -v.y, r2 = py * py + Z * Z; if (r2 > 1.0) return false;
+    float X = sqrt(1.0 - r2), cp = cos(uRot.y), sp = sin(uRot.y);
+    float px = X * cp + Z * sp, pz = Z * cp - X * sp;
+    ll = vec2(atan(py, px) - uRot.x, asin(clamp(pz, -1.0, 1.0))); n = vec3(v.x, -v.y, X); return true;
+  }
+  float y = -v.y, l = y;
+  for (int i = 0; i < 6; i++) { float l2 = l * l, l6 = l2 * l2 * l2;
+    float fy = l * (1.340264 - 0.081106 * l2 + l6 * (0.000893 + 0.003796 * l2)) - y, fp = 1.340264 - 3.0 * 0.081106 * l2 + l6 * (7.0 * 0.000893 + 9.0 * 0.003796 * l2); l -= fy / fp; }
+  float l2 = l * l, l6 = l2 * l2 * l2, fp = 1.340264 - 3.0 * 0.081106 * l2 + l6 * (7.0 * 0.000893 + 9.0 * 0.003796 * l2);
+  float lam = v.x * 0.8660254 * fp / cos(l); if (abs(lam) > PI + 0.002 || abs(l) > 1.4) return false;
+  ll = vec2(lam - uRot.x, asin(clamp(sin(l) / 0.8660254, -1.0, 1.0))); n = vec3(0.0, 0.0, 1.0); return true;
+}
+float cloudAt(vec3 q, float belt) { float c = fbm(q * vec3(2.4, 2.4, 4.6) + vec3(3.1, 1.7, 0.0), 6); return smoothstep(0.6 - 0.18 * belt, 0.74 - 0.1 * belt, c); }
+void main() {
+  vec2 s = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) * (uSize / uRes);
+  vec2 ll; vec3 n; if (!inv(s, ll, n)) { o = vec4(0.0); return; }
+  float lat = ll.y, a = abs(lat) * 180.0 / PI;
+  vec3 P = vec3(cos(lat) * cos(ll.x), cos(lat) * sin(ll.x), sin(lat));
+  vec3 L = normalize(vec3(-0.45, 0.5, 0.75)), V = vec3(0.0, 0.0, 1.0), Hn = normalize(L + V);
+  if (uPass == 2) {                                   // the land's colour: wet, dry and cold belts, drier deep inland, by the age's warmth and plants
+    vec2 uv = gl_FragCoord.xy / uRes; uv.y = 1.0 - uv.y;
+    float ins = 0.0, cnt = 0.0;                       // how much of the ground round this point is land, in rings of about 4°, 9° and 16°
+    for (int k = 0; k < 3; k++) { float r = uRing[k];
+      for (int i = 0; i < 10; i++) { float an = float(i) * 0.6283185 + float(k) * 0.31; vec2 q = uv + vec2(cos(an), sin(an)) * r / uSize;
+        if (q.x < 0.0 || q.y < 0.0 || q.x > 1.0 || q.y > 1.0) continue; ins += texture(uLand, q).a * (k == 0 ? 1.4 : 1.0); cnt += (k == 0 ? 1.4 : 1.0); } }
+    float land = cnt > 0.0 ? ins / cnt : 0.6, I = smoothstep(0.62, 0.97, land), coast = 1.0 - smoothstep(0.4, 0.72, land);
+    float green = uB1.x, arid = uB1.y, cont = uB1.z, grass = uB1.w, warm = uB2.x, icy = uB2.y, lush = uB2.z;
+    float n = fbm(P * 3.4 + vec3(11.0), 4), n2 = fbm(P * 11.0 + vec3(3.0), 3);
+    float sh = warm * 4.0;                             // a warm world pushes the belts toward the poles
+    a = clamp(a + (fbm(P * 2.3 + vec3(21.0), 4) - 0.5) * 16.0, 0.0, 90.0);   // belts follow latitude loosely, not as ruled lines
+    float wetTrop = 1.0 - smoothstep(9.0 + sh, 16.0 + sh, a);
+    float bd = (a - 24.0 - sh * 0.8) / (7.0 + warm * 2.0), dryBelt = exp(-bd * bd);
+    float cold = smoothstep(55.0 + warm * 16.0, 72.0 + warm * 16.0, a);
+    float d = clamp(dryBelt * arid + I * cont * (1.0 - wetTrop) * 0.9 - coast * 0.22 - wetTrop * 0.3 + (n - 0.5) * 0.5 + (n2 - 0.5) * 0.15, 0.0, 1.0);
+    vec3 RAIN = vec3(0.30, 0.45, 0.22), TEMP = vec3(0.39, 0.52, 0.28), BOREAL = vec3(0.31, 0.42, 0.27), TUNDRA = vec3(0.63, 0.62, 0.5);
+    vec3 STEPPE = vec3(0.73, 0.67, 0.44), DESERT = vec3(0.86, 0.76, 0.53), GRASS = vec3(0.72, 0.68, 0.39);
+    vec3 g = mix(RAIN, TEMP, smoothstep(12.0, 35.0, a)); g = mix(g, BOREAL, smoothstep(45.0, 62.0, a)); g = mix(g, mix(BOREAL, TUNDRA, icy), cold);
+    g = mix(g, RAIN * 0.88, lush * wetTrop * 0.6);    // the coal-age swamp forests
+    g *= 0.92 + 0.16 * n2;
+    vec3 dry = mix(STEPPE, DESERT, smoothstep(0.55, 0.9, d)); dry = mix(dry, GRASS, grass * (1.0 - smoothstep(0.78, 0.95, d)));
+    vec3 c = mix(g, dry, smoothstep(0.3, 0.75, d));
+    float ge = clamp(green * (1.0 + coast * 0.7 * (1.0 - green)) - I * 0.4 * (1.0 - green), 0.0, 1.0);   // the first plants keep to the wet ground by the coasts
+    c = mix(uBare * (0.9 + 0.2 * n), c, ge);
+    c = mix(c, uLandBase, 0.1);                        // in the atlas's own palette
+    o = vec4(c, 1.0); return;
+  }
+  if (uPass == 0) {                                   // the open sea: broad changes of colour, like depth and currents
+    float basin = fbm(P * 2.1 + vec3(3.0), 4), curr = fbm(rotZ(P, 0.3) * vec3(6.0, 6.0, 11.0) + vec3(5.0), 4);
+    vec3 c = mix(uO1, uO2, smoothstep(0.3, 0.72, basin * 0.75 + 0.25 * curr));
+    c = mix(c, uO3, smoothstep(0.5, 1.0, a / 90.0) * 0.5);                                 // colder and darker toward the poles
+    c = mix(c, c * vec3(0.93, 1.04, 1.03), (1.0 - smoothstep(10.0, 35.0, a)) * 0.6);         // a little more turquoise in the tropics
+    c *= 0.93 + 0.1 * (curr - 0.5);
+    if (uMode == 1) { float dif = clamp(dot(n, L), 0.0, 1.0); c *= 0.8 + 0.3 * dif;
+      c = mix(c, vec3(0.82, 0.9, 0.95), pow(1.0 - n.z, 3.0) * 0.32 * uHaze); }          // the air at the rim
+    o = vec4(c, 1.0); return;
+  }
+  float sec = uTime;
+  // the wind belts: easterly trade winds, the westerlies, easterlies round the poles
+  float wT = 1.0 - smoothstep(25.0, 35.0, a), wP = smoothstep(58.0, 68.0, a), wW = 1.0 - wT - wP;
+  vec3 pT = rotZ(P, -0.011 * sec), pW = rotZ(P, 0.017 * sec), pP = rotZ(P, -0.007 * sec);
+  // the cloudiest belts are the tropical rains near the equator and the storm tracks of the westerlies; the clearest the dry belts near 25°
+  float b1 = (a - 4.0) / 8.0, b2 = (a - 50.0) / 11.0, b3 = (a - 24.0) / 6.0;      // (squared by hand: pow() of a negative number is undefined)
+  float belt = clamp(0.32 + 0.6 * exp(-b1 * b1) + 0.5 * exp(-b2 * b2) - 0.25 * exp(-b3 * b3), 0.0, 1.0);
+  float cov = wT * cloudAt(pT, belt) + wW * cloudAt(pW + vec3(7.0), belt) + wP * cloudAt(pP + vec3(13.0), belt);
+  float sh = wT * cloudAt(rotZ(pT, -0.012) + vec3(0.0, 0.0, 0.012), belt) + wW * cloudAt(rotZ(pW + vec3(7.0), -0.012) + vec3(0.0, 0.0, 0.012), belt) + wP * cloudAt(rotZ(pP + vec3(13.0), -0.012) + vec3(0.0, 0.0, 0.012), belt);
+  float zf = 1.0 - smoothstep(3.0, 7.0, uZoom);       // clouds thin out as you come close, so the ground shows
+  vec4 acc = vec4(0.0);
+  acc = over(acc, vec4(0.0, 0.0, 0.0, 0.13 * sh * (1.0 - cov) * uCloud * zf));       // their shadows on the ground and sea
+  // the sea: waves moving with the wind, the sun's glint, and surf along the coasts
+  vec2 uv = gl_FragCoord.xy / uRes; uv.y = 1.0 - uv.y;
+  float landA = texture(uLand, uv).a, sea = (1.0 - landA) * uOcean;
+  if (sea > 0.01) {
+    float k = 42.0 * clamp(uZoom, 1.0, 6.0);
+    vec3 pw = wT * pT + wW * pW + wP * pP;
+    float h = fbm(rotZ(pw, 0.004 * sec) * k + vec3(0.0, 0.0, sec * 0.08), 3) * 0.6 + fbm(rotZ(pw, -0.006 * sec) * k * 1.7 + vec3(4.0, 0.0, -sec * 0.06), 2) * 0.4;
+    vec3 nw = normalize(n + vec3(dFdx(h), -dFdy(h), 0.0) * 9.0);
+    float g = max(dot(nw, Hn), 0.0), gl0 = max(dot(n, Hn), 0.0);
+    float glint = (pow(g, 260.0) * 0.8 + pow(gl0, 30.0) * 0.3 * smoothstep(0.55, 0.75, h)) * smoothstep(0.9, 0.98, gl0) + pow(gl0, 14.0) * 0.16;   // sparkles only where the sun is reflected
+    if (uMode == 0) glint = pow(max(0.0, 1.0 - distance(s / uSize, vec2(0.3, 0.3)) * 1.8), 3.0) * 0.12 * smoothstep(0.6, 0.85, h);
+    float band = smoothstep(0.58, 0.78, h) * 0.06;                                         // the swell, faintly
+    float near = 0.0;
+    for (int i = 0; i < 8; i++) { float an = float(i) * 0.7853982; vec2 d = vec2(cos(an), sin(an)) / uRes;
+      near = max(near, texture(uLand, uv + d * 1.6).a * 0.9); near = max(near, texture(uLand, uv + d * 3.5).a * 0.35); }
+    float sets = smoothstep(0.45, 0.75, vn(P * 90.0 + vec3(0.0, 0.0, sec * 0.25)));          // the surf breaks in moving sets, not as an outline
+    float surf = near * sets * (0.55 + 0.45 * sin(sec * 1.6 + h * 14.0 + ll.x * 60.0 + ll.y * 40.0)) * 0.9;
+    float wa = clamp(band + glint + surf * 0.42, 0.0, 0.9) * sea; acc = over(acc, vec4(vec3(wa), wa));   // premultiplied: white at that strength
+  }
+  // the wind itself: faint streaks running with each belt
+  vec3 qT = rotZ(P, -0.03 * sec), qW = rotZ(P, 0.045 * sec), qP = rotZ(P, -0.02 * sec), q = wT * qT + wW * qW + wP * qP;
+  float line = 1.0 - abs(vn(q * vec3(1.6, 1.6, 90.0)) * 2.0 - 1.0);                      // thin ridges running east–west
+  float st = smoothstep(0.93, 0.995, line) * smoothstep(0.42, 0.7, vn(q * vec3(3.0, 3.0, 6.0) + vec3(0.0, 0.0, 2.0)));
+  float sa = st * 0.2 * uWind * zf * (0.35 + 0.65 * (1.0 - landA)); acc = over(acc, vec4(vec3(sa), sa));   // fainter over land
+  // the clouds, brightest on top
+  float lit = uMode == 1 ? 0.86 + 0.18 * clamp(dot(n, L), 0.0, 1.0) : 1.0;
+  acc = over(acc, vec4(vec3(0.97, 0.98, 1.0) * lit * (0.9 + 0.1 * cov), 1.0) * (cov * 0.6 * uCloud * zf));
+  o = acc;
+}`;
+  function finGL() {
+    if (FIN.gl !== undefined) return FIN.gl;
+    FIN.gl = null;
+    try {
+      const cv = document.createElement('canvas'), gl = cv.getContext('webgl2', { premultipliedAlpha: true, antialias: false, alpha: true });
+      if (!gl) return null;
+      const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+      const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, FIN_VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FIN_FS)); gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+      const U = {}; for (const k of ['uMode', 'uPass', 'uRot', 'uTr', 'uSize', 'uRes', 'uScale', 'uTime', 'uOcean', 'uCloud', 'uWind', 'uZoom', 'uHaze', 'uO1', 'uO2', 'uO3', 'uLand', 'uRing', 'uBare', 'uLandBase', 'uB1', 'uB2']) U[k] = gl.getUniformLocation(pr, k);
+      const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+      const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'aP'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+      const tLand = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tLand);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+      Object.assign(FIN, { cv, pr, U, vao, tLand });
+      FIN.gl = gl;
+    } catch (e) { FIN.gl = null; FIN.err = String(e && e.message || e); }
+    return FIN.gl;
+  }
+  let finOn = true, finQuick = false;
+  /* The climate of an age, for the land's colour (a sketch): how far plants had spread (greening), the global temperature
+     (TEMP_MA, Scotese et al. 2021) — warm ages push the belts poleward and grow forests near the poles, cold ones bring
+     tundra — how dry the subtropical belts and the interiors of big continents were (Pangaea's interior was the driest),
+     the coal-age swamp forests, and grassland only in the last 20 million years. */
+  function biomeOf(t) {
+    const T = typeof TEMP_MA !== 'undefined' ? (TEMP_MA[Math.max(0, Math.min(TEMP_MA.length - 1, Math.round(t)))] || 145) / 10 : 15;
+    const warm = Math.max(0, Math.min(1, (T - 15) / 11)), icy = Math.max(0, Math.min(1, (19 - T) / 5));
+    const arid = t > 300 ? 0.6 : t > 175 ? 0.95 : t > 145 ? 0.75 : t > 66 ? 0.55 : t > 34 ? 0.3 : 0.45 + 0.3 * (1 - t / 34);
+    const cont = t > 300 ? 0.45 : t > 170 ? 0.85 : 0.45, grass = Math.max(0, Math.min(1, (20 - t) / 14)), lush = t <= 360 && t > 300 ? 1 : 0;
+    return { green: greening(t), arid, cont, grass, warm, icy, lush };
+  }
+  function finLand(t) {                                // upload the land as it is now (its shape), then colour it
+    const gl = finGL(); if (!gl) return null;
+    try { gl.bindTexture(gl.TEXTURE_2D, FIN.tLand); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, land); FIN.landStamp = stamp; FIN.noLand = false; }
+    catch (e) { FIN.noLand = true; return null; }
+    return finDraw(2, { biome: biomeOf(t) });
+  }
+  const finOK = () => finOn && !projGeoid && !!finGL();
+  /* pass 0: the sea, for the full redraw; pass 1: what moves (waves, glint, surf, clouds, wind), for the decoration layer.
+     Returns the canvas (at a fraction of the screen's pixels: all of it is soft), or null. */
+  function finDraw(pass, o = {}) {
+    const gl = finGL(); if (!gl) return null;
+    const k = o.quick || W < 768 ? (W < 768 && dpr > 1.5 ? 0.26 : 0.34) : 0.5, cv = FIN.cv;   // all of it is soft: phones' dense screens need far fewer pixels
+    const rw = Math.max(2, Math.round(canvas.width * k)), rh = Math.max(2, Math.round(canvas.height * k));
+    if (cv.width !== rw || cv.height !== rh) { cv.width = rw; cv.height = rh; }
+    gl.viewport(0, 0, rw, rh); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.disable(gl.BLEND);
+    gl.useProgram(FIN.pr); gl.bindVertexArray(FIN.vao);
+    const U = FIN.U, r = proj.rotate(), tr = proj.translate(), col = h => hex(h).map(v => v / 255);
+    gl.uniform1i(U.uMode, mode === 'flat' ? 0 : 1); gl.uniform1i(U.uPass, pass);
+    gl.uniform2f(U.uRot, r[0] * D2R, r[1] * D2R); gl.uniform2f(U.uTr, tr[0], tr[1]); gl.uniform2f(U.uSize, W, H); gl.uniform2f(U.uRes, rw, rh); gl.uniform1f(U.uScale, proj.scale());
+    gl.uniform1f(U.uTime, o.sec || 0); gl.uniform1f(U.uZoom, zoom); gl.uniform1f(U.uHaze, bd().dark ? 1.2 : 0.8);
+    gl.uniform1f(U.uCloud, o.cloud == null ? 1 : o.cloud); gl.uniform1f(U.uWind, o.wind == null ? 1 : o.wind);
+    const [a1, a2, a3] = [col(pal.o1), col(pal.o2), col(pal.o3)]; gl.uniform3f(U.uO1, ...a1); gl.uniform3f(U.uO2, ...a2); gl.uniform3f(U.uO3, ...a3);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, FIN.tLand); gl.uniform1i(U.uLand, 0);
+    let ocean = o.ocean || 0;
+    if (pass === 1 && ocean > 0 && FIN.landStamp !== stamp) {      // the land, as the coast mask for surf and glint (not allowed on file: pages: the land has read local pictures)
+      try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, land); FIN.landStamp = stamp; FIN.noLand = false; } catch (e) { FIN.noLand = true; }
+    }
+    if (FIN.noLand) ocean = 0;
+    gl.uniform1f(U.uOcean, ocean);
+    if (pass === 2) {                                  // the land's colour needs the age's climate and the land itself
+      const ppd = proj.scale() * D2R, cap = 0.6 * Math.max(W, H), B = o.biome;
+      gl.uniform3f(U.uRing, Math.min(cap, 4 * ppd), Math.min(cap, 9 * ppd), Math.min(cap, 16 * ppd));
+      gl.uniform4f(U.uB1, B.green, B.arid, B.cont, B.grass); gl.uniform4f(U.uB2, B.warm, B.icy, B.lush, 0);
+      gl.uniform3f(U.uBare, ...col(pal.bare)); gl.uniform3f(U.uLandBase, ...col(pal.land));
+    }
+    gl.drawArrays(gl.TRIANGLES, 0, 3); gl.bindVertexArray(null);
+    FIN.drawn[pass] = (FIN.drawn[pass] || 0) + 1;
     return cv;
   }
 
@@ -629,7 +841,7 @@ void main() {
   let centerLon = 0;                          // flat view central meridian
   let proj = null, baseScale = 1, baseT = [0, 0];
   let dirty = true, raf = 0;
-  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], regions: [], routes: [], rocks: [], pin: null, banner: null };
+  let layers = { labels: [], markers: [], places: [], oceans: [], notes: [], superocean: [], sparks: [], regions: [], routes: [], rocks: [], fauna: [], pin: null, banner: null };
   let selected = null, hits = [], rings = [];
   let pal = null;
   const QS = 4;                               // soft effects are built at 1/4 size
@@ -1133,11 +1345,11 @@ void main() {
   // carried on its plate. Land with no patch has no rock evidence in the dataset, and stays plain.
   const ROCK = [['#4f8a4f', 'trees', '#2b5a30'], ['#ead49c', 'sand', '#b08f52'], ['#2f7038', 'trees', '#17421f'], ['#f2f7fb', null, null]];
   let rockSprites = null;
-  function rockSprite(k) {
+  function rockSprite(k, plain = false) {             // plain: the colour only (the living finish gives the ground its texture)
     if (!rockSprites) rockSprites = {};
-    if (rockSprites[k]) return rockSprites[k];
+    if (rockSprites[k + (plain ? 'p' : '')]) return rockSprites[k + (plain ? 'p' : '')];
     const n = 96, cv = document.createElement('canvas'); cv.width = cv.height = n;
-    const x = cv.getContext('2d'), [tint, grain, ink] = ROCK[k];
+    const x = cv.getContext('2d'), [tint, grain0, ink] = ROCK[k], grain = plain ? null : grain0;
     if (grain) { x.fillStyle = x.strokeStyle = ink; x.lineCap = 'round';
       for (let i = 0; i < 26; i++) {                      // fixed marks, densest in the middle
         const a = i * 2.39996, d = Math.sqrt((i + 0.5) / 26) * n * 0.4, px = n / 2 + Math.cos(a) * d, py = n / 2 + Math.sin(a) * d;
@@ -1150,7 +1362,7 @@ void main() {
     x.globalCompositeOperation = 'destination-in';        // fade the whole patch, grain and all, to nothing at its edge
     const m = x.createRadialGradient(n / 2, n / 2, n * 0.05, n / 2, n / 2, n / 2); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');
     x.fillStyle = m; x.fillRect(0, 0, n, n);
-    return rockSprites[k] = cv;
+    return rockSprites[k + (plain ? 'p' : '')] = cv;
   }
   // markers that arrive and leave: when each first appeared, where it was last drawn, and the ones just gone
   let born = {}, lastAt = {}, ghosts = [], animUntil = 0;
@@ -1443,9 +1655,11 @@ void main() {
     const og = c.createRadialGradient(cx - rad * 0.15, cy - rad * 0.2, rad * 0.05, cx, cy, rad * 1.05);
     og.addColorStop(0, pal.o1); og.addColorStop(0.55, pal.o2); og.addColorStop(1, pal.o3);
     c.save(); c.clip(sphere);
-    c.fillStyle = og; c.fillRect(0, 0, W, H);
+    const oc = finOK() ? finDraw(0) : null;                                   // the living finish: depth, currents, light and the air at the rim
+    if (oc) { c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.imageSmoothingEnabled = true; c.drawImage(oc, 0, 0, canvas.width, canvas.height); c.restore(); }
+    else { c.fillStyle = og; c.fillRect(0, 0, W, H); }
     if (backdrop === 'space' || backdrop === 'planetarium') { c.globalAlpha = 0.42; c.fillStyle = '#05162e'; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }   // a planet’s sea, seen from far off
-    if (wavePat) { c.globalAlpha = bd().sea === 'hatch' ? 0.5 : 0.3; c.fillStyle = wavePat; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
+    if (wavePat && (!oc || bd().sea === 'hatch')) { c.globalAlpha = bd().sea === 'hatch' ? 0.5 : 0.3; c.fillStyle = wavePat; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
 
     // sea ice: soft-edged, so it reads as pack ice rather than a hard line
     const I = ice(t);
@@ -1551,7 +1765,9 @@ void main() {
       L.globalCompositeOperation = 'source-over'; L.fill(sea.L);
     }
     L.globalCompositeOperation = 'source-atop';
-    if (mode === 'flat') {
+    const bc = finOK() && t <= MAXT ? finLand(t) : null;                    // the living finish: the land coloured by its climate
+    if (bc) { L.save(); L.setTransform(1, 0, 0, 1, 0, 0); L.imageSmoothingEnabled = true; L.drawImage(bc, 0, 0, land.width, land.height); L.restore(); }
+    else if (mode === 'flat') {
       const yN = latY(89.9), yS = latY(-89.9), g = L.createLinearGradient(0, yN, 0, yS);
       for (let la = 90; la >= -90; la -= 6) g.addColorStop(Math.max(0, Math.min(1, (latY(Math.max(-89.9, Math.min(89.9, la))) - yN) / (yS - yN))), beltColor(la));
       L.fillStyle = g; L.fillRect(0, 0, W, H);
@@ -1574,7 +1790,7 @@ void main() {
         const q2 = proj([ll[0], Math.max(-89, Math.min(89, ll[1] + (ll[1] > 0 ? -6 : 6)))]); if (!q2) continue;
         const rad = Math.max(5, Math.min(140, Math.hypot(q2[0] - p[0], q2[1] - p[1])));
         if (!inView(p[0], p[1], -rad)) continue;
-        L.globalAlpha = k === 3 ? 0.85 : 0.62; L.drawImage(rockSprite(k), p[0] - rad, p[1] - rad, rad * 2, rad * 2);
+        L.globalAlpha = k === 3 ? 0.85 : 0.62; L.drawImage(rockSprite(k, finOK()), p[0] - rad, p[1] - rad, rad * 2, rad * 2);
       }
       L.globalAlpha = 1;
     }
@@ -1589,6 +1805,16 @@ void main() {
         if (grain) { L.globalAlpha = 0.5 * cf * zc; L.fillStyle = coverTile(grain, ink); L.fill(pth); }
       }
       L.globalAlpha = 1;
+    }
+    // the ground's own texture, riding its plate (the living finish): mottled at three scales, with grain close up
+    if (!lite && finOn && t <= MAXT) {
+      const gt = terDraw(t, 'ground', 0.9);
+      if (gt) {
+        if (!grMask) { grMask = document.createElement('canvas'); grx = grMask.getContext('2d'); }
+        if (grMask.width !== land.width || grMask.height !== land.height) { grMask.width = land.width; grMask.height = land.height; }
+        grx.imageSmoothingEnabled = true; grx.globalCompositeOperation = 'copy'; grx.drawImage(gt, 0, 0, land.width, land.height); grx.globalCompositeOperation = 'destination-in'; grx.drawImage(land, 0, 0); grx.globalCompositeOperation = 'source-over';
+        L.save(); L.setTransform(1, 0, 0, 1, 0, 0); L.globalAlpha = 1; L.globalCompositeOperation = 'soft-light'; L.drawImage(grMask, 0, 0); L.restore();
+      }
     }
     // today's terrain as light and shadow — only while the land is where it is today (last ~2 million years)
     const hf = t <= 1 ? 1 : t >= 2 ? 0 : 2 - t;
@@ -1733,6 +1959,11 @@ void main() {
       sg.addColorStop(0, 'rgba(255,250,235,0.20)'); sg.addColorStop(0.6, 'rgba(255,250,235,0)'); sg.addColorStop(1, 'rgba(30,18,6,0.42)');
       c.fillStyle = sg; c.fill(sphere);
     }
+    if (mode === 'globe' && oc) {                     // the air round the planet, lit from the same side
+      const ag = c.createRadialGradient(cx - rad * 0.05, cy - rad * 0.06, rad * 0.985, cx, cy, rad * 1.075);
+      ag.addColorStop(0, bd().dark ? 'rgba(150,200,255,0.55)' : 'rgba(150,190,225,0.42)'); ag.addColorStop(1, 'rgba(150,190,225,0)');
+      c.save(); c.beginPath(); c.arc(cx, cy, rad * 1.075, 0, 7); c.arc(cx, cy, rad * 0.99, 0, 7, true); c.fillStyle = ag; c.fill('evenodd'); c.restore();
+    }
     c.lineWidth = 1.6; c.strokeStyle = bd().rim; c.stroke(sphere);
 
     curSea = sea;
@@ -1774,8 +2005,8 @@ void main() {
       c.imageSmoothingEnabled = true; c.drawImage(snapCv, 0, 0);
     }
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    hits = []; rings = [];                                          // positions are stale until the proper redraw
-    drawFx();
+    hits = []; rings = []; faunaAt = []; faunaHits = []; plantsAt = [];   // positions are stale until the proper redraw
+    finQuick = true; try { drawFx(); } finally { finQuick = false; }
   }
 
   // ── labels and markers ─────────────────────────────────────────────
@@ -1854,7 +2085,7 @@ void main() {
   }
 
   function drawOverlays(c, t, lp) {
-    boxes.length = 0; mboxes.length = 0; hits = []; rings = []; curLand = lp;
+    boxes.length = 0; mboxes.length = 0; hits = []; rings = []; curLand = lp; placeFauna(t); plantsAt = [];
     const zs = Math.min(1.5, 0.82 + zoom * 0.18) * Math.max(0.72, Math.min(1.15, W / 900));
     const label = (s, p, size, o, bs = boxes) => {
       const w = s.length * size * (o.wk || 0.74) + 8, h = size * 1.3;
@@ -2001,7 +2232,8 @@ void main() {
         text(c, s.label, q_[0] + (left ? -(R0 * 1.2 + 7) : R0 * 1.2 + 7), q_[1], size, { align: left ? 'right' : 'left', spacing: 0.3, weight: 700, haloW: 3.8, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       }
     }
-    for (const m of layers.markers) { if (m === sel) continue; for (const s of m.sites) { if (medal(m, s.at, false)) break; } }
+    const walking = faunaShow() >= 0.5 ? new Set(faunaAt.map(g => g.f.key)) : null;   // their animals stand in for these pins, named
+    for (const m of layers.markers) { if (m === sel || (walking && walking.has(m.key))) continue; for (const s of m.sites) { if (medal(m, s.at, false)) break; } }
     // where animals would not fit: a badge with how many more are here — tap it to zoom in
     for (const k in crowd) {
       const cr = crowd[k], bx = cr.x + R0 * 0.2, by = cr.y - R0 * 1.5, br = 8.5 * zs, tx = '+' + cr.n;
@@ -2015,6 +2247,7 @@ void main() {
       text(c, sp.name, p[0], ly, sz, { weight: 700, spacing: 0.4, haloW: 3.6, color: imp ? '#7a1e08' : '#5a1608', font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
       text(c, imp ? 'asteroid impact' : 'volcanic eruptions', p[0], ly + sz * 1.15, sz * 0.82, { weight: 500, spacing: 0.4, haloW: 3, color: '#4a2a14', italic: true, font: "system-ui,-apple-system,'Segoe UI',sans-serif" });
     }
+    placePlants(t);                                                // after the words and pins, so plants keep clear of them
     // animals that have just gone: a medallion fading and sinking where it stood
     if (ghosts.length) {
       ghosts = ghosts.filter(g => nowMs - g.t < 520);
@@ -2078,13 +2311,176 @@ void main() {
     }
     return cv;
   }
+  // ── life on the map: animals walking, swimming and flying round their fossil sites (data_mapfauna.js, creatures.js) ──
+  // Shown only when zoomed in (FAUNA_Z), far larger than life, each group kept to its own ground: land animals on the land
+  // of that time, swimmers in its sea (onLand, the same test the labels use), fliers and shore animals anywhere near.
+  // Placed on every full redraw (never under a moving hand); walked in the decoration frames, by the clock alone.
+  let faunaAt = [], faunaHits = [], faunaWhy = [];
+  let lifeOn = false;                                  // off until the close-up is redrawn (Evan, 25 Nov: not good enough yet); setLifeUpClose(true) for work on it
+  const FAUNA_Z = () => mode === 'flat' ? [3.5, 5] : [2.5, 3.5];
+  const faunaShow = () => { const [a, b] = FAUNA_Z(); return Math.max(0, Math.min(1, (zoom - a) / (b - a))); };
+  const faunaLen = f => Math.min(110, (9 + 5 * Math.log2(1 + (f.span || f.m))) * Math.max(0.9, Math.min(3, mode === 'flat' ? 0.7 + zoom * 0.15 : 0.6 + zoom * 0.3))) * (f.span ? 0.42 : 1);
+  function placeFauna(t) {
+    faunaAt = []; faunaHits = []; faunaWhy = [];
+    if (!lifeOn || !layers.fauna.length || faunaShow() <= 0 || fxHook) return;
+    // the biggest groups choose their ground first; fliers last, as they need none
+    const order = layers.fauna.slice().sort((a, b) => (a.where === 'air') - (b.where === 'air') || b.n - a.n);
+    for (const f of order) {
+      const ll = locate(f.at, t), p = ll && project(ll); if (!p || !inView(p[0], p[1], -60)) { faunaWhy.push(f.name + ': off ' + JSON.stringify(p)); continue; }
+      const L = faunaLen(f), k = f.where === 'air' ? 3.2 : f.where === 'sea' ? 2.2 : 1.5, maxD = 2.5 * L + 20;
+      const good = (x, y) => f.where === 'land' ? onLand(x, y) : f.where === 'sea' ? !onLand(x, y) : true;
+      const fits = (x, y, R) => { let n = good(x, y) ? 1 : 0; for (let i = 0; i < 8; i++) n += good(x + Math.cos(i * 0.785) * R, y + Math.sin(i * 0.785) * R) ? 1 : 0; return n; };
+      // the same animal at a site close to one already drawn: one group stands for both
+      if (faunaAt.some(g => g.f.name === f.name && Math.hypot(g.cx - p[0], g.cy - p[1]) < 4 * L)) continue;
+      // a spot near the site (never more than a few body lengths away) that is all the right ground and clear of the
+      // groups already there; where there is little room the group keeps to a smaller round, and a herd is drawn smaller
+      let best = null;
+      for (const sc of [1, 0.6, 0.35]) for (const nn of [...new Set([f.n, Math.ceil(f.n / 2), Math.ceil(f.n / 4)])]) {
+        if (best) break;
+        const amp = L * k * 0.6 * sc, R = amp + (nn > 1 ? 0.6 * L * Math.sqrt(nn) : 0) + 0.5 * L;
+        for (let ring = 0; ring <= 3 && !best; ring++) for (let i = 0; i < (ring ? 8 : 1) && !best; i++) {
+          const d = ring * 0.9 * R; if (d > maxD) continue;
+          const a = i * 0.785 + f.seed * 6.28, x = p[0] + Math.cos(a) * d, y = p[1] + Math.sin(a) * d;
+          if (f.where !== 'air' && faunaAt.some(g => g.f.where !== 'air' && Math.hypot(g.cx - x, g.cy - y) < (g.R + R) * 0.45)) continue;   // fliers claim no ground
+          // and reached from the site over the same ground (a herd on the coast does not cross the sea to the next land)
+          if (d > 0 && ![0.35, 0.55, 0.75].every(u => good(p[0] + (x - p[0]) * u, p[1] + (y - p[1]) * u))) continue;
+          if (fits(x, y, R) >= 8) best = [x, y, R, amp, nn];
+        }
+      }
+      if (!best) { faunaWhy.push(f.name + ': no room of the right ground near ' + p.map(Math.round)); continue; }   // left out, not moved away
+      faunaAt.push({ f, cx: best[0], cy: best[1], L, R: best[2], amp: best[3], n: best[4] });
+    }
+  }
+  function drawFauna(now) {
+    faunaHits = [];
+    const show = faunaShow(); if (!faunaAt.length || show <= 0) return;
+    const sec = decoNow(now) / 1000;
+    for (const g of faunaAt) {
+      const f = g.f, L = g.L, sea = f.where === 'sea', air = f.where === 'air', rot = f.seed * 6.28;
+      const w = air ? 0.16 : sea ? 0.12 : 0.07;                // how fast round the path, radians a second
+      let mx = 0, my = 0, low = -1e9;
+      for (let i = 0; i < g.n; i++) {
+        // the path: a slow figure of eight (a loop for fliers), each member a little behind the one before; grazers dawdle
+        const tau = rot * 3 + w * sec + (air || sea ? 0 : 0.35 * Math.sin(0.22 * sec + rot)) - i * 0.035;
+        const ex = Math.cos(tau), ey = air ? Math.sin(tau) : 0.55 * Math.sin(2 * tau), dx = -Math.sin(tau), dy = air ? Math.cos(tau) : 1.1 * Math.cos(2 * tau);
+        const cr = Math.cos(rot), sr = Math.sin(rot), hx = dx * cr - dy * sr, hy = dx * sr + dy * cr, h = Math.atan2(hy, hx);
+        const o = i ? [0.6 * L * Math.sqrt(i) * Math.cos(i * 2.39996), 0.6 * L * Math.sqrt(i) * Math.sin(i * 2.39996)] : [0, 0];
+        const x = g.cx + (ex * cr - ey * sr) * g.amp + o[0], y = g.cy + (ex * sr + ey * cr) * g.amp + o[1];
+        const size = L * (1 - ((i * 7) % 5) * 0.04);            // not all the same size
+        const phase = air ? sec * 0.9 + i * 0.31 : sea ? sec * 0.45 + f.seed * 3 : tau * g.amp / (0.55 * L) + i * 0.37;
+        CREATURES.draw(fctx, f.plan, x, y, h, size, phase, { alpha: show, variant: f.variant, span: f.span ? f.span / f.m * 0.42 * 2.2 : undefined, alt: air ? 1.4 : undefined });
+        faunaHits.push({ x, y, r: Math.max(12, size * 0.42), marker: { key: f.key, name: f.name }, fauna: f });
+        mx += x / g.n; my += y / g.n; low = Math.max(low, y);
+      }
+      // its name, under the group's home ground, so nothing on the map goes unnamed
+      const nm = f.n > 1 ? f.name + ' (' + (f.as || 'a group') + ')' : f.name;
+      fctx.globalAlpha = show; fctx.font = `italic 600 ${Math.round(Math.max(10, Math.min(13, L * 0.3)))}px ${FONT}`; fctx.textAlign = 'center'; fctx.textBaseline = 'top';
+      fctx.lineWidth = 3; fctx.strokeStyle = 'rgba(250,240,215,0.85)'; const ly = (air ? my : low) + L * (air ? 0.9 : 0.45); fctx.strokeText(nm, mx, ly); fctx.fillStyle = '#3a2410'; fctx.fillText(nm, mx, ly); fctx.globalAlpha = 1;
+    }
+  }
+  // ── plants on the map, when zoomed in (Evan, 25 Nov: "the trees and the vegetation, when you zoom in, should be the
+  // animated swaying in the wind versions … or the barren wasteland, you should be able to see that animated") ──
+  // A sketch, and the page says so: the KINDS follow the broad first appearances (no land plants before about 470 Ma,
+  // the first trees about 385, club-moss forests in the coal age, conifers and cycads, flowering trees after about 100,
+  // grass only in the last 20 million years); how THICK they grow follows the climate belts of the map's land tint (wet
+  // tropics, dry belts near 25°, temperate, cold) — illustrative, not measured. Bare land before plants gets wind ripples
+  // and dark microbial mats. Placed on a grid tied to the ground (it does not slide as the map pans), kept off the ice
+  // and clear of the map's words and pins; swayed by a gust that rolls across the map, by the clock alone.
+  let plantsAt = [], plantSpr = {};
+  const PLANT_INK = '#22301a';
+  function plantSprite(kind) {
+    if (plantSpr[kind]) return plantSpr[kind];
+    const n = Math.round(40 * Math.min(2, dpr)), cv = document.createElement('canvas'); cv.width = cv.height = n;
+    const x = cv.getContext('2d'), k = n / 40; x.scale(k, k); x.translate(20, 20); x.lineCap = 'round'; x.lineJoin = 'round';
+    const shadow = (fn, dx = 2.2, dy = 3) => { x.save(); x.translate(dx, dy); x.globalAlpha = 0.25; fn('#1a140a'); x.restore(); };
+    const star = (r, m, inner, col) => { x.fillStyle = col; x.beginPath(); for (let i = 0; i <= m * 2; i++) { const a = i * Math.PI / m - Math.PI / 2, rr = i % 2 ? inner : r; i ? x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : x.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); } x.fill(); };
+    const fronds = (r, m, col, w = 1.3) => { x.strokeStyle = col; x.lineWidth = w; for (let i = 0; i < m; i++) { const a = i * 2 * Math.PI / m + 0.3; x.beginPath(); x.moveTo(0, 0); x.quadraticCurveTo(Math.cos(a + 0.25) * r * 0.6, Math.sin(a + 0.25) * r * 0.6, Math.cos(a) * r, Math.sin(a) * r); x.stroke();
+      for (let j = 1; j < 4; j++) { const u = j / 4, px = Math.cos(a) * r * u, py = Math.sin(a) * r * u; x.lineWidth = w * 0.6; x.beginPath(); x.moveTo(px, py); x.lineTo(px + Math.cos(a + 0.9) * r * 0.22, py + Math.sin(a + 0.9) * r * 0.22); x.moveTo(px, py); x.lineTo(px + Math.cos(a - 0.9) * r * 0.22, py + Math.sin(a - 0.9) * r * 0.22); x.stroke(); x.lineWidth = w; } } };
+    const blobs = (r, col, light) => { for (const [dx, dy, rr] of [[-3, -2, .62], [3, -2.5, .58], [-2, 3, .6], [3.5, 2.5, .55], [0, 0, .7]]) { x.fillStyle = col; x.beginPath(); x.arc(dx * r / 9, dy * r / 9, r * rr, 0, 7); x.fill(); }
+      x.fillStyle = light; x.globalAlpha = 0.5; x.beginPath(); x.arc(-r * 0.3, -r * 0.3, r * 0.35, 0, 7); x.fill(); x.globalAlpha = 1; };
+    switch (kind) {
+      case 'conifer': shadow(c => star(9, 8, 4.5, c), 4, 5); star(9, 8, 4.5, '#2c4a2a'); star(5, 8, 2.5, '#3f6236'); break;
+      case 'archaeopteris': shadow(c => star(9, 7, 5.5, c), 4, 5); star(9, 7, 5.5, '#3a5a30'); fronds(7, 7, '#5a7a3e', 1); break;
+      case 'lycopsid': x.save(); x.globalAlpha = 0.28; x.strokeStyle = '#1a140a'; x.lineWidth = 1.6; x.beginPath(); x.moveTo(1, 1); x.lineTo(11, 15); x.stroke(); x.restore();   // a tall bare trunk: its long shadow
+        star(6, 6, 3, '#2f4a26'); fronds(6, 6, '#4b6a34', 1.1); break;
+      case 'horsetail': for (const [dx, dy] of [[-4, -2], [3, -3], [0, 3], [5, 3]]) { x.save(); x.translate(dx, dy); star(3, 8, 1, '#4c6a3a'); x.restore(); } break;
+      case 'cycad': shadow(c => fronds(8, 9, c, 1.5)); fronds(8, 9, '#3e5f2e', 1.5); x.fillStyle = '#6a5030'; x.beginPath(); x.arc(0, 0, 1.6, 0, 7); x.fill(); break;
+      case 'fern': fronds(7, 6, '#5d8a43', 1.2); break;
+      case 'broadleaf': shadow(c => blobs(9, c, c), 3, 4); blobs(9, '#3f6a33', '#7da35a'); break;
+      case 'palm': shadow(c => fronds(10, 7, c, 1.8), 4, 5); fronds(10, 7, '#4a7034', 1.8); break;
+      case 'grass': x.strokeStyle = '#9a9a4a'; x.lineWidth = 1; for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * 0.22; x.beginPath(); x.moveTo((i - 4) * 0.8, 4); x.lineTo((i - 4) * 0.8 + Math.cos(a) * 7, 4 + Math.sin(a) * 7); x.stroke(); } break;
+      case 'scrub': blobs(4.5, '#7a7a52', '#a3a274'); break;
+      case 'moss': for (const [dx, dy, r] of [[-5, -1, 3], [1, -3, 2.6], [4, 2, 3.2], [-2, 4, 2.4]]) { x.fillStyle = '#6a7240'; x.globalAlpha = 0.85; x.beginPath(); x.arc(dx, dy, r, 0, 7); x.fill(); } x.globalAlpha = 1; break;
+      case 'mat': x.fillStyle = '#4e4636'; x.globalAlpha = 0.45; for (const [dx, dy, r] of [[-4, 0, 5], [3, -2, 4], [2, 4, 3.5]]) { x.beginPath(); x.ellipse(dx, dy, r * 1.3, r * 0.8, 0.4, 0, 7); x.fill(); } x.globalAlpha = 1; break;
+      case 'ripple': x.strokeStyle = 'rgba(120,90,50,0.55)'; x.lineWidth = 0.9; for (let i = -2; i <= 2; i++) { x.beginPath(); x.moveTo(-10, i * 4); x.quadraticCurveTo(0, i * 4 - 2.4, 10, i * 4); x.stroke(); } break;
+      case 'dune': x.strokeStyle = 'rgba(150,110,60,0.6)'; x.lineWidth = 1.3; x.beginPath(); x.moveTo(-12, 3); x.quadraticCurveTo(-2, -6, 12, 2); x.stroke(); x.strokeStyle = 'rgba(255,240,200,0.5)'; x.beginPath(); x.moveTo(-11, 4.5); x.quadraticCurveTo(-1, -4.2, 11, 3.5); x.stroke(); break;
+    }
+    return plantSpr[kind] = cv;
+  }
+  // how wet each belt of latitude is, in the same sketch as the land tint: wet tropics, dry near 25°, temperate, cold
+  const wetAt = lat => { const a = Math.abs(lat); return a < 10 ? 1 : a < 17 ? 0.75 : a < 33 ? 0.2 : a < 52 ? 0.75 : a < 66 ? 0.55 : 0.2; };
+  function plantKind(t, lat, h) {
+    const w = wetAt(lat), cold = Math.abs(lat) > 58, dry = w < 0.3;
+    if (t > 717 && t < 1800 || t > 470) return t >= 635 && t <= 717 ? null : h < 0.8 ? 'ripple' : 'mat';      // bare land (none on the Snowball's ice)
+    if (t > 390) return w > 0.5 && h < 0.75 ? 'moss' : h < 0.35 ? 'ripple' : null;
+    if (t > 359) return dry ? (h < 0.4 ? 'ripple' : null) : h < 0.55 ? 'archaeopteris' : h < 0.8 ? 'fern' : 'moss';
+    if (t > 299) return dry ? (h < 0.3 ? 'dune' : h < 0.45 ? 'conifer' : null) : h < 0.5 ? 'lycopsid' : h < 0.72 ? 'horsetail' : 'fern';
+    if (t > 100) return dry ? (h < 0.35 ? 'dune' : h < 0.6 ? 'scrub' : null) : h < 0.45 ? 'conifer' : h < 0.68 ? 'cycad' : 'fern';
+    if (t > 66) return dry ? (h < 0.35 ? 'dune' : h < 0.6 ? 'scrub' : null) : h < 0.35 ? 'conifer' : h < 0.55 ? 'broadleaf' : h < 0.7 ? 'cycad' : 'fern';
+    if (t > 20) return dry ? (h < 0.35 ? 'dune' : h < 0.65 ? 'scrub' : null) : cold ? (h < 0.7 ? 'conifer' : 'fern') : Math.abs(lat) < 20 && h < 0.3 ? 'palm' : h < 0.7 ? 'broadleaf' : 'conifer';
+    if (t < 3 && seaLevel(t) < -60) return Math.abs(lat) > 40 ? (h < 0.8 ? 'grass' : 'conifer') : dry ? (h < 0.3 ? 'dune' : h < 0.7 ? 'grass' : 'scrub') : h < 0.45 ? 'grass' : 'broadleaf';   // an ice age: cold, dry steppe
+    if (cold) return Math.abs(lat) > 68 ? (h < 0.4 ? 'grass' : null) : h < 0.75 ? 'conifer' : 'grass';
+    return dry ? (h < 0.25 ? 'dune' : h < 0.6 ? 'scrub' : 'grass') : w < 0.8 ? (h < 0.5 ? 'grass' : h < 0.8 ? 'broadleaf' : 'conifer') : Math.abs(lat) < 20 && h < 0.25 ? 'palm' : h < 0.85 ? 'broadleaf' : 'fern';
+  }
+  function placePlants(t) {
+    plantsAt = [];
+    if (!lifeOn || faunaShow() <= 0 || fxHook || t > MAXT || !proj.invert) return;
+    const ppd = proj.scale() * Math.PI / 180, step = (W < 768 ? 20 : 15) / ppd, g = Math.pow(2, Math.round(Math.log2(step)));   // ~15 px apart, on a ladder so they stay put
+    const c0 = proj.invert([W / 2, H / 2]); if (!c0) return;
+    const spanLat = (H / 2 + 30) / ppd, spanLon = (W / 2 + 30) / ppd;
+    const h = (i, j, s) => { const v = Math.sin(i * 127.1 + j * 311.7 + s * 74.7) * 43758.5453; return v - Math.floor(v); };
+    const ice = t < 3.6 ? iceAt(t) : null, blocked = (x, y) => [boxes, mboxes].some(bs => bs.some(b => x > b[0] - 6 && x < b[0] + b[2] + 6 && y > b[1] - 6 && y < b[1] + b[3] + 6));
+    let n = 0;
+    const cap = W < 768 ? 1500 : 4200;
+    // stands and clearings: a smooth field over the ground (a few degrees across), so plants grow in masses, not dots
+    const patch = (lon, lat) => 0.5 + 0.26 * Math.sin(lon * 0.9 + lat * 0.5 + 1.1) + 0.16 * Math.sin(lon * 2.3 - lat * 1.9 + 2.3) + 0.09 * Math.sin(lon * 5.7 + lat * 4.9);
+    for (let i = Math.floor((c0[1] - spanLat) / g); i <= Math.ceil((c0[1] + spanLat) / g) && n < cap; i++) {
+      const lat0 = i * g; if (Math.abs(lat0) > 85) continue;
+      const gl = g / Math.max(0.25, Math.cos(lat0 * Math.PI / 180)), sl = spanLon / Math.max(0.25, Math.cos(lat0 * Math.PI / 180));
+      for (let j = Math.floor((c0[0] - sl) / gl); j <= Math.ceil((c0[0] + sl) / gl) && n < cap; j++) {
+        n++;
+        const lat = lat0 + (h(i, j, 1) - 0.5) * g * 0.8, lon = j * gl + (h(i, j, 2) - 0.5) * gl * 0.8;
+        const dense = Math.max(0, Math.min(1, (patch(lon, lat) - 0.62 + 0.45 * wetAt(lat)) * 2.2));   // 1 in a stand, 0 in a clearing
+        if (h(i, j, 3) > 0.06 + 0.94 * dense) continue;
+        const kind = plantKind(t, lat, h(i, j, 4)); if (!kind) continue;
+        const p = project([lon, lat]); if (!p || !inView(p[0], p[1], -20) || !onLand(p[0], p[1]) || blocked(p[0], p[1])) continue;
+        if (ice && ice.some(x => x.w > 0.5 && d3.geoContains(x.s.geo, [lon, lat]))) continue;
+        plantsAt.push({ x: p[0], y: p[1], kind, s: (0.7 + h(i, j, 5) * 0.45) * (0.8 + 0.45 * dense), ph: h(i, j, 6) * 6.28 });
+      }
+    }
+  }
+  function drawPlants(now) {
+    const show = faunaShow(); if (!plantsAt.length || show <= 0) return;
+    const sec = decoNow(now) / 1000, size = Math.max(14, Math.min(30, 10 + zoom * (mode === 'flat' ? 1.1 : 2)));
+    fctx.globalAlpha = show * 0.95;
+    for (const P of plantsAt) {
+      const spr = plantSprite(P.kind), s = size * P.s, gust = 0.55 + 0.45 * Math.sin(sec * 0.8 - P.x * 0.012 - P.y * 0.004);   // a gust rolling across
+      const bend = P.kind === 'grass' ? 0.22 : P.kind === 'ripple' || P.kind === 'dune' || P.kind === 'mat' ? 0 : P.kind === 'fern' || P.kind === 'moss' ? 0.1 : 0.06;
+      const sw = bend * gust * Math.sin(sec * 2.1 + P.ph), drift = P.kind === 'ripple' || P.kind === 'dune' ? ((sec * (P.kind === 'dune' ? 0.4 : 1.6) + P.ph) % 4) - 2 : 0;
+      fctx.save(); fctx.translate(P.x + sw * s * 0.6 + drift, P.y); fctx.rotate(sw); fctx.drawImage(spr, -s / 2, -s / 2, s, s); fctx.restore();
+    }
+    fctx.globalAlpha = 1;
+  }
   const sparksNow = () => motion && !fxHook ? layers.sparks.filter(sp => time <= sp.from && time >= sp.to) : [];   // a playing scene draws its own
   function drawFx() {
     const now = performance.now();
     fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'source-over'; fctx.clearRect(0, 0, fx.width, fx.height);
     // light on the water: only while someone is exploring, eased in and out, never over land
     const live = motion ? Math.max(0, Math.min(1, (liveUntil - now) / 2500)) : 0;
-    if (live > 0 && proj) {
+    if (proj && finOK()) {                             // waves, the sun's glint, surf on the coasts, clouds and the wind
+      const fc = finDraw(1, { sec: decoNow(now) / 1000, ocean: finQuick || lite ? 0 : 1, quick: finQuick });
+      if (fc) { fctx.save(); fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.imageSmoothingEnabled = true; fctx.drawImage(fc, 0, 0, fx.width, fx.height); fctx.restore(); }
+    } else if (live > 0 && proj) {
       if (!swell) swell = makeSwell();
       const vk = [mode, zoom.toFixed(3), panX | 0, panY | 0, W, H].join('|');
       if (vk !== sphereKey || !sphereP) { sphereKey = vk; sphereP = geoP({ type: 'Sphere' }); }
@@ -2141,6 +2537,8 @@ void main() {
         const k = (sec / 4) % 1; fctx.beginPath(); fctx.arc(p[0], p[1], R * (0.6 + k * 1.3), 0, 7); fctx.strokeStyle = `rgba(70,50,44,${0.3 * (1 - k)})`; fctx.lineWidth = 5 * (1 - k) + 1; fctx.stroke();   // ash spreading
       }
     }
+    if (plantsAt.length) { fctx.save(); drawPlants(now); fctx.restore(); fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.globalAlpha = 1; }
+    if (faunaAt.length) { fctx.save(); drawFauna(now); fctx.restore(); fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.globalAlpha = 1; }
     if (fxHook) { fctx.save(); fxHook(fctx, fxHelp, now); fctx.restore(); fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'source-over'; }
     if (!rings.length) return;
     const k = motion ? (decoNow(now) % 1700) / 1700 : 0.25;     // at rest, the ring stays drawn, a little way out
@@ -2381,13 +2779,19 @@ void main() {
       Object.assign(layers, l); dirty = true; schedule();
     },
     select(key) { if (key !== selected) { selected = key; dirty = true; schedule(); } },
-    hit(x, y) { for (let i = hits.length - 1; i >= 0; i--) { const h = hits[i]; if (Math.hypot(h.x - x, h.y - y) <= h.r) return h; } return null; },
+    hit(x, y) { for (const L of [faunaHits, hits]) for (let i = L.length - 1; i >= 0; i--) { const h = L[i]; if (Math.hypot(h.x - x, h.y - y) <= h.r) return h; } return null; },
     redraw() { dirty = true; schedule(); },
     resize,
     stats: () => ({ families: fams.length, polygons: polys.length, ms: lastMs }),
     _draw: () => { lite = false; draw(); }, _drawLite: () => { lite = true; draw(); lite = false; },
     _seaWorker: () => ({ on: !!SW.w, failed: SW.failed, made: SW.made, busy: SW.busy, cached: [...SEA.cache.keys()] }),
-    _rest() { liveUntil = performance.now() - 100; schedule(); },   // as if the last touch was 14 s ago
+    _rest() { liveUntil = performance.now() - 100; schedule(); },
+    setFinish(on) { finOn = !!on; dirty = true; schedule(); },
+    setLifeUpClose(on) { lifeOn = !!on; dirty = true; schedule(); },
+    get lifeUpClose() { return lifeOn; },
+    _finish: () => ({ ok: !!finGL(), err: FIN.err || null, drawn: FIN.drawn.slice(), ground: TER.ground || 0, terErr: TER.err || null }),
+    _plants: () => { const k = {}; for (const P of plantsAt) k[P.kind] = (k[P.kind] || 0) + 1; return k; },
+    _fauna: () => ({ why: faunaWhy, asked: layers.fauna.length, show: faunaShow(), scene: !!fxHook, placed: faunaAt.map(g => ({ name: g.f.name, n: g.n, x: g.cx, y: g.cy, L: g.L, where: g.f.where, land: onLand(g.cx, g.cy) })), hits: faunaHits.map(h => [Math.round(h.x * 10) / 10, Math.round(h.y * 10) / 10, h.marker.name]) }),   // as if the last touch was 14 s ago
     _plugCheck(ts) { return ts.every(t => PLUGS.every(P => { const a = attach(P.anchor[0], P.anchor[1], t); return plugFam(P, t) === (a ? a.f : -1); })); },
     _seaTraceBoth(s) {                                 // the worker's outlines for stage s, and this page's, for the check
       return new Promise(res => { const w = seaWorker(); if (!w) return res(null); SEA.cache.delete(s);

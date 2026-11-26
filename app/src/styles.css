@@ -10,6 +10,17 @@ a { color: var(--link); }
 .card { display: block; padding: 16px; margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: var(--ink); background: #182030; }
 .card b { font-size: 1.1rem; } .card span { display: block; color: var(--gold); font-size: 0.85rem; } .card p { margin: 8px 0 0; color: var(--muted); }
 
+.events { max-width: 1100px; } .events h2 { color: var(--gold); margin: 28px 0 0; } .events .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 10px; }
+.ev { display: flex; flex-direction: column; text-align: left; padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #182030; color: var(--ink); cursor: pointer; }
+.ev img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; } .ev b { padding: 8px 10px 0; } .ev span { padding: 0 10px 10px; color: var(--gold); font-size: 0.8rem; }
+.evp { position: fixed; inset: 0; display: flex; background: #070a12; }
+.evimg { flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; touch-action: none; cursor: zoom-in; }
+.evimg img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: 50% 50%; transition: transform 0.08s; }
+.evtext { width: 380px; overflow: auto; padding: 16px; background: var(--panel); font-size: 0.88rem; }
+.evtext h2 { color: #fff; margin: 8px 0 0; } .evtext .when { color: var(--gold); margin: 2px 0 10px; } .evtext .differs { color: #f3d9a8; } .evtext .credit { color: var(--muted); font-size: 0.8rem; }
+.evtext h3 { color: var(--gold); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; } .evtext .papers { padding-left: 18px; } .evtext .prompt summary { cursor: pointer; color: var(--link); }
+.evtext .prompt div { white-space: pre-wrap; font-size: 0.72rem; color: var(--muted); }
+@media (max-width: 767px) { .evp { flex-direction: column; } .evimg { flex: none; height: 45vh; } .evtext { width: auto; flex: 1; } }
 .site { position: fixed; inset: 0; }
 .site canvas { touch-action: none; }
 .bar { position: absolute; z-index: 40; top: 0; left: 0; right: 0; display: flex; gap: 10px; align-items: center; padding: max(10px, env(safe-area-inset-top)) 16px 10px;
@@ -24,6 +35,7 @@ a { color: var(--link); }
 .pview:active { cursor: grabbing; }
 .pview .layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .pview .layer img { width: 100%; height: 100%; display: block; pointer-events: none; }
+.pview .layer img.hi { position: absolute; width: auto; height: auto; }
 .spot { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed rgba(255, 244, 214, 0.55); background: rgba(255, 244, 214, 0.06);
   cursor: pointer; padding: 0; min-width: 34px; min-height: 34px; animation: spot 2.6s ease-in-out infinite; }
 .spot.quiet { border-color: transparent; background: transparent; animation: none; }
@@ -45,6 +57,11 @@ a { color: var(--link); }
 .painting .pcap .x { float: right; width: 36px; height: 36px; border-radius: 18px; border: 1px solid var(--line); background: #1d2533; color: #fff; cursor: pointer; }
 .painting .pcap p { margin: 6px 0; } .painting .differs { color: #f3d9a8; } .painting .prompt summary { cursor: pointer; color: var(--link); }
 .painting .prompt div { white-space: pre-wrap; font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+.checked { margin: 8px 0; padding: 8px 10px; border-radius: 8px; background: rgba(159, 179, 209, 0.07); font-size: 0.8rem; }
+.checked summary { cursor: pointer; color: var(--link); } .checked .items { list-style: none; padding: 0; margin: 6px 0; }
+.checked .items li { margin: 3px 0; } .checked .items li span { display: inline-block; width: 16px; font-weight: 700; }
+.checked .items li.shown span, .checked .items li.consistent span { color: #8fd18f; } .checked .items li.contradicted span { color: #ff9a8a; } .checked .items li.cannot_tell span { color: var(--muted); }
+.checked small { color: var(--muted); } .checked .feel { color: var(--muted); }
 .panel .basis { font-size: 0.82rem; color: var(--ink); background: rgba(255, 255, 255, 0.05); padding: 6px 8px; border-radius: 8px; }
 .bar b { display: block; color: #fff; } .bar span { color: var(--gold); font-size: 0.8rem; } .bar em { display: block; color: var(--muted); font-size: 0.8rem; max-width: 560px; }
 .back { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: #fff; cursor: pointer; }
@@ -88,3 +105,19 @@ a { color: var(--link); }
   .tag { padding: 2px 7px; border-radius: 12px; }
 }
 @media (prefers-color-scheme: light) { /* the scene is a picture: the frame stays dark in both themes */ }
+
+/* The Evidence: what was found, what is inferred, what the artist supplied */
+.badge { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 1px 6px; border-radius: 9px; vertical-align: 1px; }
+.badge.documented { background: #8fcf8a; color: #10240e; } .badge.inferred { background: #e9c46a; color: #2b1e04; } .badge.imagined { background: #c8a9f0; color: #22123a; }
+.decisions { list-style: none; padding: 0; margin: 8px 0; } .decision { margin: 0 0 10px; }
+.decision .says { color: var(--ink, #f4ead2); } .decision .why { margin: 3px 0 0; color: var(--muted); font-size: 0.84rem; }
+.decision .alt { margin: 3px 0 0; font-size: 0.84rem; } .decision .refs { margin: 3px 0 0; font-size: 0.78rem; display: flex; flex-wrap: wrap; gap: 8px; } .decision .refs a { color: var(--link); }
+.spot.st-documented { box-shadow: 0 0 0 2px rgba(143, 207, 138, 0.95), 0 0 12px rgba(0, 0, 0, 0.35); }
+.spot.st-inferred { box-shadow: 0 0 0 2px rgba(233, 196, 106, 0.95), 0 0 12px rgba(0, 0, 0, 0.35); }
+.spot.st-imagined { box-shadow: 0 0 0 2px rgba(200, 169, 240, 0.95), 0 0 12px rgba(0, 0, 0, 0.35); }
+.pview .questions { position: absolute; left: 16px; top: calc(var(--barH) + 62px); display: flex; flex-wrap: wrap; gap: 6px; z-index: 44; max-width: calc(100% - 32px); }
+.pview .questions button { font: inherit; font-size: 0.86rem; background: rgba(20, 16, 10, 0.82); color: #f4ead2; border: 1px solid rgba(233, 196, 106, 0.6); border-radius: 16px; padding: 6px 12px; cursor: pointer; }
+.pview .questions button[aria-pressed='true'] { background: #e9c46a; color: #2b1e04; }
+.pview .legend { position: absolute; right: 16px; top: calc(var(--barH) + 20px); display: flex; gap: 5px; z-index: 44; }
+.panel.evidence { max-height: calc(100% - 90px); overflow: auto; } .panel.evidence .intro { color: var(--muted); } .panel.evidence .asof { font-size: 0.78rem; color: var(--muted); }
+@media (max-width: 767px) { .pview .legend { display: none; } .pview .questions button { font-size: 0.8rem; padding: 5px 10px; } }   /* on a phone the cards explain the colours */

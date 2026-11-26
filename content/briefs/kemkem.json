@@ -1,0 +1,310 @@
+{
+ "id": "kemkem",
+ "site": "kemkem",
+ "title": "The Kem Kem rivers",
+ "style": "Deep-Time History Painting",
+ "current_as_of": "2026-11-25",
+ "summary": "The head of a vast river system in what is now south-east Morocco, about 100–95 million years ago: wide braided channels and sandbanks, giant fish, and more big meat-eating dinosaurs than anywhere on Earth today.",
+ "layers": {
+  "place": [
+   {
+    "id": "today",
+    "says": "The rocks are in south-east Morocco, along the escarpment called the Kem Kem, by the border with Algeria.",
+    "status": "documented",
+    "why": "Where the fossils are found today.",
+    "refs": [
+     "ibrahim2020b"
+    ]
+   },
+   {
+    "id": "age",
+    "says": "About 100–95 million years ago, in the early Late Cretaceous (the Cenomanian).",
+    "status": "inferred",
+    "why": "The site’s review dates the Kem Kem Group to the Cenomanian.",
+    "refs": [
+     "ibrahim2020b"
+    ]
+   },
+   {
+    "id": "then",
+    "says": "Then this place lay at about 21° north — some 10° nearer the equator than today — near the northern edge of Africa, with the Tethys Sea to the north.",
+    "status": "inferred",
+    "why": "The atlas carries the site back on its plate with the plate model of Merdith et al. (2021); another model would place it a little differently.",
+    "refs": [
+     "merdith2021"
+    ]
+   }
+  ],
+  "landscape": [
+   {
+    "id": "river",
+    "says": "A vast river system flowing north to a delta on the Tethys Sea, in wide channels around big sandbanks that moved with every flood.",
+    "status": "documented",
+    "why": "River sandstones and pebble beds; the current marks in them show the water flowed north.",
+    "refs": [
+     "ibrahim2020b"
+    ],
+    "spots": [
+     "river",
+     "sandbank",
+     "ripples"
+    ],
+    "picture": "a broad, shallow, slow river, brownish-green, braided around a pale sandbank island"
+   },
+   {
+    "id": "banks",
+    "says": "Low banks of sand and reddish sandstone, with bars of gravel the rivers dropped where they slowed.",
+    "status": "documented",
+    "why": "The rock itself: the Gara Sbaa and Douira formations.",
+    "refs": [
+     "ibrahim2020b"
+    ],
+    "spots": [
+     "sandstone",
+     "gravel"
+    ],
+    "picture": "a low, level far bank of pale sand and reddish sandstone; a wide, flat near shore of sand and small pebbles"
+   },
+   {
+    "id": "water",
+    "says": "Fresh and slightly salty water.",
+    "status": "inferred",
+    "why": "Fish and rays of a kind that live in both, such as the sawfish Onchopristis.",
+    "refs": [
+     "ibrahim2020b",
+     "villalobos2021"
+    ]
+   },
+   {
+    "id": "climate",
+    "says": "A hot climate with harsh seasons and dry spells.",
+    "status": "inferred",
+    "why": "From the rocks and fossils, in the site’s review; it fits the latitude the plates give the site.",
+    "refs": [
+     "ibrahim2020b"
+    ]
+   },
+   {
+    "id": "trees",
+    "says": "Tall conifers, probably related to monkey-puzzle trees.",
+    "status": "inferred",
+    "why": "Pieces of petrified wood, probably from such conifers, are most of what is known of the plants here; how many trees stood on the banks is not known.",
+    "refs": [
+     "ibrahim2020b"
+    ],
+    "spots": [
+     "trees",
+     "logs"
+    ],
+    "picture": "a few tall conifers related to monkey-puzzle trees (straight bare trunks, branches in tiers near the top) spaced along the far bank, and drift logs in the water"
+   },
+   {
+    "id": "small-plants",
+    "says": "Low leafy plants at the water’s edge.",
+    "status": "inferred",
+    "why": "Leaves of flowering plants and others come from an old pond at Oum Tkout; their exact kinds and where they grew along the rivers are not known.",
+    "refs": [
+     "ibrahim2020b"
+    ],
+    "spots": [
+     "plants"
+    ],
+    "picture": "low leafy shrubs and small plants at the water’s edge; a few ferns"
+   },
+   {
+    "id": "left-out",
+    "says": "No grass, no palms, no broadleaf forest, no flowers in bloom; no cliffs, mountains or volcanoes.",
+    "status": "inferred",
+    "why": "None is recorded in the Kem Kem rocks; grasslands came many millions of years later, and the land was a low river plain.",
+    "refs": [
+     "ibrahim2020b"
+    ],
+    "not": "grass or grassland, palm trees, cycads, broadleaf forest, flowers in bloom, cliffs, mountains, volcanoes"
+   },
+   {
+    "id": "light",
+    "says": "A hot, hazy afternoon in the dry season.",
+    "status": "imagined",
+    "why": "The time of day and the weather are the painter’s; they fit the climate, but no rock records an afternoon.",
+    "picture": "a hot, hazy dry-season afternoon under a pale sky"
+   }
+  ],
+  "life": [
+   {
+    "id": "together",
+    "says": "These animals are found in the same rocks — but their bones are river-worn and mixed together, so whether they all lived side by side at one moment is not known.",
+    "status": "inferred",
+    "why": "Most fossils here are single bones and teeth rolled along by the rivers. It is part of “Stromer’s riddle”: why so many big meat-eaters and so few plant-eaters? Perhaps many hunted the rivers’ giant fish; perhaps the rivers mixed bones from different times.",
+    "refs": [
+     "ibrahim2020b",
+     "lang2013"
+    ],
+    "together": "same-formation"
+   },
+   {
+    "id": "spinosaurus",
+    "cast": "Spinosaurus",
+    "says": "Spinosaurus, a long, low hunter with a sail on its back and a paddle-like tail.",
+    "status": "documented",
+    "why": "A partial skeleton and a tail from the Kem Kem.",
+    "refs": [
+     "ibrahim2014",
+     "ibrahim2020"
+    ],
+    "together": "same-formation",
+    "spots": [
+     "spinosaurus"
+    ],
+    "alternatives": "Others read it as a wader that hunted from the shallows rather than a swimmer (Hone & Holtz 2021; Sereno et al. 2022).",
+    "picture": "Spinosaurus at the water’s edge: a long, low theropod with short hind legs, a long narrow crocodile-like snout, a tall sail, and a deep paddle-like tail"
+   },
+   {
+    "id": "carcharodontosaurus",
+    "cast": "Carcharodontosaurus",
+    "says": "Carcharodontosaurus, a giant meat-eater with a long, deep skull and blade-like teeth.",
+    "status": "documented",
+    "why": "Its skull and partial bones are from these rocks; the rest of the body is rebuilt from its close relatives, which is inferred.",
+    "refs": [
+     "ibrahim2020b"
+    ],
+    "together": "same-formation",
+    "spots": [
+     "carcharodontosaurus"
+    ],
+    "picture": "a giant two-legged meat-eater with a long, deep skull, short three-fingered arms and a long tail held level, on the far bank"
+   },
+   {
+    "id": "deltadromeus",
+    "cast": "Deltadromeus",
+    "says": "Deltadromeus, a slender, long-legged meat-eater.",
+    "status": "documented",
+    "why": "One partial skeleton from these rocks; its skull is not known, so its head is a guess from its likely relatives.",
+    "refs": [
+     "ibrahim2020b"
+    ],
+    "together": "same-formation",
+    "spots": [
+     "deltadromeus"
+    ],
+    "alternatives": "It has been placed among the coelurosaurs and, more often since, among the ceratosaurs; the reconstruction changes with the placement.",
+    "picture": "a slender, long-legged meat-eater with a long tail held level, beside the larger one"
+   },
+   {
+    "id": "pterosaurs",
+    "cast": "Alanqa",
+    "says": "Big pterosaurs — Alanqa and Siroccopteryx — overhead.",
+    "status": "documented",
+    "why": "Known from jaws, snouts and neck bones found here; their bodies are rebuilt from relatives, which is inferred.",
+    "refs": [
+     "ibrahim2010",
+     "ibrahim2020b"
+    ],
+    "together": "same-formation",
+    "spots": [
+     "pterosaurs"
+    ],
+    "picture": "two long-jawed, long-necked pterosaurs flying high over the river"
+   },
+   {
+    "id": "fish",
+    "cast": "Onchopristis",
+    "says": "Giant fish: the sawfish-like Onchopristis, a coelacanth, a lungfish and a gar — and the long-snouted crocodile relative Elosuchus.",
+    "status": "documented",
+    "why": "Onchopristis teeth are the commonest fossil here; the others are known from bones and skulls.",
+    "refs": [
+     "villalobos2021",
+     "meunier2017",
+     "ibrahim2020b"
+    ],
+    "together": "same-formation",
+    "spots": [
+     "fish"
+    ],
+    "picture": "dark shapes of large fish under the water"
+   },
+   {
+    "id": "not-shown",
+    "says": "Also here, but not in this painting: an abelisaurid meat-eater, the long-necked plant-eater Rebbachisaurus, side-necked turtles.",
+    "status": "documented",
+    "why": "Bones from these rocks; left out of this picture to keep it to one moment by the river.",
+    "refs": [
+     "chiarenza2016",
+     "wilson2015",
+     "ibrahim2020b"
+    ],
+    "together": "same-formation"
+   }
+  ],
+  "moment": [
+   {
+    "id": "the-moment",
+    "says": "An ordinary hot afternoon on the river: Spinosaurus at the water’s edge, two big meat-eaters on the far bank, pterosaurs overhead. Nothing in particular is happening — and that is the point: no place on Earth today has so many big hunters.",
+    "status": "imagined",
+    "why": "The gathering is invented: no fossil records these animals at this spot at this moment. It is chosen to show what is unusual about the Kem Kem, its many big meat-eaters.",
+    "refs": [
+     "lang2013"
+    ]
+   },
+   {
+    "id": "edge",
+    "says": "Spinosaurus is shown at the water’s edge.",
+    "status": "inferred",
+    "why": "Both readings of its life — a swimmer and a wader — allow it there.",
+    "refs": [
+     "ibrahim2020",
+     "hone2021",
+     "sereno2022"
+    ],
+    "spots": [
+     "spinosaurus"
+    ]
+   }
+  ],
+  "discovery": [
+   {
+    "id": "rebbachisaurus-1954",
+    "says": "In 1954 René Lavocat named the long-necked Rebbachisaurus garasbae from bones found here.",
+    "status": "documented",
+    "why": "Its name and author, re-described in 2015.",
+    "refs": [
+     "wilson2015"
+    ]
+   },
+   {
+    "id": "alanqa-2010",
+    "says": "In 2010 a big pterosaur, Alanqa, was named from jaws found in these rocks.",
+    "status": "documented",
+    "refs": [
+     "ibrahim2010"
+    ]
+   },
+   {
+    "id": "spinosaurus-2014",
+    "says": "In 2014 a new partial skeleton from the Kem Kem changed the picture of Spinosaurus: short hind legs, an animal at home in water. In 2020 its tail, found here, was described as a paddle.",
+    "status": "documented",
+    "refs": [
+     "ibrahim2014",
+     "ibrahim2020"
+    ]
+   },
+   {
+    "id": "debate-2021",
+    "says": "In 2021 and 2022 the question split: some argued Spinosaurus waded and hunted from the shallows rather than swam (Hone & Holtz; Sereno and others), while a study of its dense bones argued it dived (Fabbri and others). It is still open.",
+    "status": "documented",
+    "refs": [
+     "hone2021",
+     "fabbri2022",
+     "sereno2022"
+    ]
+   },
+   {
+    "id": "review-2020",
+    "says": "In 2020 a review gathered the geology and all the fossils of the Kem Kem Group.",
+    "status": "documented",
+    "refs": [
+     "ibrahim2020b"
+    ]
+   }
+  ]
+ }
+}

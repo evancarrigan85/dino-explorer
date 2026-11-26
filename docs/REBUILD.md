@@ -184,6 +184,29 @@ name, tap opens its card and collects it; “Found n of 13” keeps what you fou
 real search. “Explore in 3D” (or “See it to scale in 3D” on an animal’s card) opens the living 3D scene at true sizes.
 A new painting means placing its spots again (by eye, on a grid; `tools/paint.py scene-fix` corrects a painting).
 
+## The globe, its navigation and the systems around it, in the new style (Evan, 25 Nov: “what about the actual globe
+itself and the navigation and the systems that are built around it for the visuals?”)
+
+The globe is the atlas’s spine: everything else — sites, events, animals, people — hangs on a place and a time on it.
+In the new app it becomes the home screen, drawn in the same painted manner, **without ever giving up exact coasts**:
+
+1. **The engine moves in whole.** `engine.js` (plates, seas, ice, relief, rivers, the benchmark-tested geometry) becomes
+   `engine/` in the app, its per-time work in the worker it already has, drawing into WebGL.
+2. **The painted look is a finish, not a repaint.** An image model cannot be trusted with coastlines (it pulled 97 Ma
+   back toward today’s, 25 Nov). So the globe is drawn from the data as now, then given Knight’s manner live in the
+   shader: an oil-paint brush filter (the Kuwahara filter of `earth-brush`, on the GPU), the Knight palette, a canvas
+   grain, painted relief from the existing light-and-shadow tiles, and ocean depth as layered glazes. Coasts are exact
+   at every time, and it moves.
+3. **Navigation: globe → place → painting.** The timeline and the turning globe are home. Pins open what is there at that
+   time: a site’s painting with its spots to find (the Kem Kem now), an event’s painting (the 32 great events), an
+   animal’s card. The Earth opening becomes the real transition: the live globe zooms into the site.
+4. **The systems around it** — Life, Humans, Insights, Extinctions, Finds, Quiz, Geology — become screens of the new app
+   one by one (the parity list of Step 3), each drawing on the same content and paintings; Extinctions and Geology use the
+   event paintings first.
+5. **Collecting across the atlas:** what you find in every site and event adds up to one collection per reader.
+
+Order: the engine port and painted finish first (it is the home screen), then globe → place navigation, then the tabs.
+
 ## Features for the new app (from comparing with the World History Encyclopedia app, 25 Nov)
 
 Evan pointed at the World History Encyclopedia iPhone app (a non-profit; human-written, expert-reviewed). What to take:
