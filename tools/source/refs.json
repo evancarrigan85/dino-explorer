@@ -1368,7 +1368,8 @@
 "targets": [
 "a:Brontosaurus",
 "a:Apatosaurus",
-"x:bonewars"
+"x:bonewars",
+"a:Diplodocus"
 ],
 "title_expected": "A specimen-level phylogenetic analysis and taxonomic revision of Diplodocidae (Dinosauria, Sauropoda)",
 "type": "journal-article",
@@ -10539,5 +10540,90 @@
 ],
 "first": "",
 "title_expected": "The skeletal remains of the euryhaline sclerorhynchoid Onchopristis (Elasmobranchii) from the 'Mid'-Cretaceous and their palaeontological implications"
+},
+"wolff2009": {
+"doi": "10.1371/journal.pone.0007288",
+"title": "Common Avian Infection Plagued the Tyrant Dinosaurs",
+"journal": "PLoS ONE",
+"year": 2009,
+"authors": [
+"Wolff",
+"Salisbury",
+"Horner",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Tyrannosaurus rex"
+],
+"first": "",
+"title_expected": "Common avian infection plagued the tyrant dinosaurs"
+},
+"turner2007": {
+"doi": "10.1126/science.1145076",
+"title": "Feather Quill Knobs in the Dinosaur Velociraptor",
+"journal": "Science",
+"year": 2007,
+"authors": [
+"Turner",
+"Makovicky",
+"Norell"
+],
+"type": "journal-article",
+"targets": [
+"a:Velociraptor"
+],
+"first": "",
+"title_expected": "Feather quill knobs in the dinosaur Velociraptor"
+},
+"fowler2011": {
+"doi": "10.1371/journal.pone.0028964",
+"title": "The Predatory Ecology of Deinonychus and the Origin of Flapping in Birds",
+"journal": "PLoS ONE",
+"year": 2011,
+"authors": [
+"Fowler",
+"Freedman",
+"Scannella",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Velociraptor",
+"a:Deinonychus"
+],
+"first": "",
+"title_expected": "The predatory ecology of Deinonychus and the origin of flapping in birds"
+},
+"bennett1992": {
+"doi": "10.1080/02724634.1992.10011472",
+"title": "Sexual dimorphism of Pteranodon and other pterosaurs, with comments on cranial crests",
+"journal": "Journal of Vertebrate Paleontology",
+"year": 1992,
+"authors": [
+"Bennett"
+],
+"type": "journal-article",
+"targets": [
+"a:Pteranodon"
+],
+"first": "",
+"title_expected": "Sexual dimorphism of Pteranodon and other pterosaurs, with comments on cranial crests"
+},
+"anderson2007": {
+"doi": "10.1098/rsbl.2006.0569",
+"title": "Feeding mechanics and bite force modelling of the skull of Dunkleosteus terrelli, an ancient apex predator",
+"journal": "Biology Letters",
+"year": 2007,
+"authors": [
+"Anderson",
+"Westneat"
+],
+"type": "journal-article",
+"targets": [
+"a:Dunkleosteus"
+],
+"first": "",
+"title_expected": "Feeding mechanics and bite force modelling of the skull of Dunkleosteus terrelli, an ancient apex predator"
 }
 }

@@ -15,11 +15,11 @@
 //   variant  a variant the plan knows ('nose': a long nose horn and no brow horns)
 const LIFE_ON_MAP = [
   // Cretaceous
-  { name: 'Triceratops', plan: 'ceratopsian', m: 9, where: 'land', n: 3, as: 'a group', group: 'Bonebeds suggest they were social animals.' },
+  { name: 'Triceratops', plan: 'ceratopsian', m: 9, where: 'land', n: 1 },                       // most are found alone (card)
   { name: 'Centrosaurus', plan: 'ceratopsian', m: 5.8, where: 'land', n: 12, as: 'a herd', variant: 'nose', group: 'Near Hilda, Alberta, at least 14 bonebeds in one rock layer hold one enormous herd.' },
   { name: 'Tyrannosaurus rex', plan: 'theropod', m: 12.5, where: 'land', n: 1 },
   { name: 'Edmontosaurus', plan: 'hadrosaur', m: 12, where: 'land', n: 1 },
-  { name: 'Parasaurolophus', plan: 'hadrosaur', m: 10, where: 'land', n: 4, as: 'a herd', group: 'Its card says herds travelled together; how big they were is not known.' },
+  { name: 'Parasaurolophus', plan: 'hadrosaur', m: 10, where: 'land', n: 1 },                   // whether it lived in herds is not known (card)
   { name: 'Maiasaura', plan: 'hadrosaur', m: 9, where: 'land', n: 5, as: 'a nesting colony', group: 'At Egg Mountain, nests lie one adult body-length apart, like a seabird colony.' },
   { name: 'Ankylosaurus', plan: 'ankylosaur', m: 9, where: 'land', n: 1 },
   { name: 'Spinosaurus', plan: 'theropod', m: 14, where: 'shore', n: 1 },
@@ -41,7 +41,7 @@ const LIFE_ON_MAP = [
   { name: 'Coelophysis', plan: 'theropod', m: 2.5, where: 'land', n: 8, as: 'a group', group: 'At Ghost Ranch, New Mexico, one quarry holds hundreds that died together.' },
   { name: 'Shonisaurus', plan: 'ichthyosaur', m: 15, where: 'sea', n: 1 },
   { name: 'Dimetrodon', plan: 'synapsid', m: 3.5, where: 'land', n: 1 },
-  { name: 'Dunkleosteus', plan: 'shark', m: 6, where: 'sea', n: 1 },
+  { name: 'Dunkleosteus', plan: 'shark', m: 4, where: 'sea', n: 1 },
   // The Age of Mammals
   { name: 'Megalodon', plan: 'shark', m: 16, where: 'sea', n: 1 },
   { name: 'Woolly Mammoth', plan: 'proboscidean', m: 5, where: 'land', n: 4, as: 'a family group', guess: true, group: 'Drawn as a family group, as elephants live today — a guess from their living relatives.' },

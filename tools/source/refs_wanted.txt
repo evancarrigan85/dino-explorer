@@ -80,7 +80,7 @@ xu2006 | Xu | 2006 | A basal tyrannosauroid dinosaur from the Late Jurassic of C
 li2010 | Li | 2010 | Plumage color patterns of an extinct dinosaur | a:Anchiornis
 wang2017 | Wang | 2017 | Extreme ontogenetic changes in a ceratosaurian theropod | a:Limusaurus
 sander2006 | Sander | 2006 | Bone histology indicates insular dwarfism in a new Late Jurassic sauropod dinosaur | a:Europasaurus |  | Sander
-tschopp2015 | Tschopp | 2015 | A specimen-level phylogenetic analysis and taxonomic revision of Diplodocidae (Dinosauria, Sauropoda) | a:Brontosaurus, a:Apatosaurus, x:bonewars 
+tschopp2015 | Tschopp | 2015 | A specimen-level phylogenetic analysis and taxonomic revision of Diplodocidae (Dinosauria, Sauropoda) | a:Brontosaurus, a:Apatosaurus, x:bonewars, a:Diplodocus
 lambert2010 | Lambert | 2010 | The giant bite of a new raptorial sperm whale from the Miocene epoch of Peru | a:Livyatan, f:neogene
 erickson2004 | Erickson | 2004 | Gigantism and comparative life-history parameters of tyrannosaurid dinosaurs | a:Tyrannosaurus rex
 depalma2013 | DePalma | 2013 | Physical evidence of predatory behavior in Tyrannosaurus rex | a:Tyrannosaurus rex, a:Edmontosaurus, f:cretaceous
@@ -623,3 +623,8 @@ chiarenza2016 | Chiarenza | 2016 | A large abelisaurid (Dinosauria, Theropoda) f
 meunier2017 | Meunier | 2017 | Revision and phylogenetic affinities of Elosuchus (Crocodyliformes) | z:kemkem | 10.1111/zoj.12448
 villalobos2021 | Villalobos-Segura | 2021 | The skeletal remains of the euryhaline sclerorhynchoid Onchopristis (Elasmobranchii) from the 'Mid'-Cretaceous and their palaeontological implications | z:kemkem | 10.1093/zoolinnean/zlaa166
 ibrahim2010 | Ibrahim | 2010 | A new pterosaur (Pterodactyloidea: Azhdarchidae) from the Upper Cretaceous of Morocco | z:kemkem
+wolff2009 | Wolff | 2009 | Common avian infection plagued the tyrant dinosaurs | a:Tyrannosaurus rex
+turner2007 | Turner | 2007 | Feather quill knobs in the dinosaur Velociraptor | a:Velociraptor
+fowler2011 | Fowler | 2011 | The predatory ecology of Deinonychus and the origin of flapping in birds | a:Velociraptor, a:Deinonychus
+bennett1992 | Bennett | 1992 | Sexual dimorphism of Pteranodon and other pterosaurs, with comments on cranial crests | a:Pteranodon
+anderson2007 | Anderson | 2007 | Feeding mechanics and bite force modelling of the skull of Dunkleosteus terrelli, an ancient apex predator | a:Dunkleosteus
