@@ -427,7 +427,7 @@ precision highp float; precision highp int;
 in vec3 aPos; in vec3 aCen; in float aFam; in float aPix;
 uniform sampler2D uFam, uA, uB; uniform float uMix, uShift; uniform int uMode, uLayer;
 uniform vec2 uRot, uTr, uSize; uniform float uScale;
-out float vE, vShade, vVis, vLam, vW; out vec3 vP;
+out float vE, vShade, vVis, vLam, vW; out vec3 vP, vN;
 const float PI = 3.14159265358979;
 float wrapPi(float a) { return a - 6.28318530718 * floor((a + PI) / 6.28318530718); }
 vec3 rot(vec4 r0, vec4 r1, vec4 r2, vec3 p) { return vec3(dot(r0.xyz, p), dot(r1.xyz, p), dot(r2.xyz, p)); }
@@ -441,7 +441,7 @@ void main() {
   vE = mix(A.x, B.x, m);
   vec3 n0 = mix(hA ? A.yzw : B.yzw, hB ? B.yzw : A.yzw, m), n = normalize(n0);
   vW = clamp(length(n0) * 2.0 - 1.0, 0.0, 1.0);
-  vVis = (r0.w > 0.5 && (hA || hB || uLayer == 3)) ? 1.0 : -1.0; vP = aPos;
+  vVis = (r0.w > 0.5 && (hA || hB || uLayer == 3)) ? 1.0 : -1.0; vP = aPos; vN = hA || hB ? n : normalize(aPos);
   vec3 q = rot(r0, r1, r2, aPos), c = rot(r0, r1, r2, aCen), nw = rot(r0, r1, r2, n);
   // light from the north-west, high in the sky, in the ground's own frame at this time
   vec3 up = normalize(q), east = normalize(vec3(-q.y, q.x, 0.0) + vec3(1e-6, 0.0, 0.0)), north = cross(up, east);
@@ -467,33 +467,76 @@ void main() {
 }`;
   const TER_FS = `#version 300 es
 precision highp float; precision highp int;
-in float vE, vShade, vVis, vLam, vW; in vec3 vP;
-uniform int uLayer, uMode; uniform vec3 uDeep; uniform float uAlpha, uZoom, uPx, uCheap;
+in float vE, vShade, vVis, vLam, vW; in vec3 vP, vN;
+uniform int uLayer, uMode; uniform vec3 uDeep; uniform float uAlpha, uZoom, uPx, uCheap, uRelief;
 out vec4 o;
 float h3(vec3 p) { p = fract(p * 0.3183099 + vec3(0.11, 0.17, 0.13)); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float vn(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(h3(i), h3(i + vec3(1, 0, 0)), f.x), mix(h3(i + vec3(0, 1, 0)), h3(i + vec3(1, 1, 0)), f.x), f.y),
              mix(mix(h3(i + vec3(0, 0, 1)), h3(i + vec3(1, 0, 1)), f.x), mix(h3(i + vec3(0, 1, 1)), h3(i + vec3(1, 1, 1)), f.x), f.y), f.z); }
 float fbm(vec3 p, int oct) { float s = 0.0, a = 0.5, n = 0.0; for (int i = 0; i < 6; i++) { if (i >= oct) break; s += a * vn(p); n += a; a *= 0.5; p = p * 2.03 + vec3(1.7, 9.2, 3.1); } return s / n; }
+// value noise and its slope, worked out exactly rather than from neighbouring pixels
+vec4 vnd(vec3 x) {
+  vec3 i = floor(x), f = fract(x), u = f * f * (3.0 - 2.0 * f), du = 6.0 * f * (1.0 - f);
+  float a = h3(i), b = h3(i + vec3(1, 0, 0)), c = h3(i + vec3(0, 1, 0)), d = h3(i + vec3(1, 1, 0));
+  float e = h3(i + vec3(0, 0, 1)), g = h3(i + vec3(1, 0, 1)), h = h3(i + vec3(0, 1, 1)), k = h3(i + vec3(1, 1, 1));
+  float k1 = b - a, k2 = c - a, k3 = e - a, k4 = a - b - c + d, k5 = a - c - e + h, k6 = a - b - e + g, k7 = -a + b + c - d + e - g - h + k;
+  return vec4(a + k1 * u.x + k2 * u.y + k3 * u.z + k4 * u.x * u.y + k5 * u.y * u.z + k6 * u.z * u.x + k7 * u.x * u.y * u.z,
+    du * vec3(k1 + k4 * u.y + k6 * u.z + k7 * u.y * u.z, k2 + k5 * u.z + k4 * u.x + k7 * u.z * u.x, k3 + k6 * u.x + k5 * u.y + k7 * u.x * u.y));
+}
+// gullies: stripes one cell apart running down the slope (d points across it), blended from the cell's eight corners so
+// there are no seams, and kept near full strength between them; returns the stripe's cos and sin
+vec2 gully(vec3 x, vec3 d) {
+  vec3 i = floor(x), f = fract(x), u = f * f * (3.0 - 2.0 * f);
+  vec2 s = vec2(0.0);
+  for (int k = 0; k < 8; k++) {
+    vec3 c = vec3(float(k & 1), float((k >> 1) & 1), float(k >> 2)), w = mix(1.0 - u, u, c);
+    float ph = (dot(f - c, d) + h3(i + c)) * 6.2831853;
+    s += w.x * w.y * w.z * vec2(cos(ph), sin(ph));
+  }
+  return s / (0.35 + 0.65 * length(s));
+}
 void main() {
   if (vVis < 0.0 || (uMode == 0 && abs(vLam) > 3.14159265)) discard;
   if (uLayer == 3) {                                  // the ground's own texture, computed where each piece of land is today, so it rides its plate
     vec3 p = normalize(vP);
-    // carved relief (Evan, 26 Nov: "the land isn't that great"): ridges and valleys only where the elevation maps put high
-    // ground, gentle swells on the lowlands, lit from the north-west like the rest. Their exact shapes are a painted texture.
-    float e = vE > -50000.0 ? vE : 250.0, mtn = smoothstep(250.0, 2200.0, e), hill = 0.35 + 0.65 * smoothstep(30.0, 500.0, e);
-    float rg = 0.0, ra = 0.5, rn = 0.0; vec3 q = p * 34.0;
-    int oc = uCheap > 0.5 ? 2 : 5;
-    for (int i = 0; i < 5; i++) { if (i >= oc) break; float r = 1.0 - abs(vn(q) * 2.0 - 1.0); rg += ra * r * r; rn += ra; ra *= 0.5; q = q * 2.07 + vec3(3.1, 1.7, 5.3); }
-    rg /= rn;
-    float hgt = mtn * rg * 0.9 + hill * (1.0 - mtn) * fbm(p * 55.0 + 4.0, 4) * 0.34 + fbm(p * 160.0 + 9.0, 2) * 0.06;
-    vec2 gr = vec2(dFdx(hgt), dFdy(hgt)) * uPx * 0.012;                // the slope of the ground, the same at every zoom
-    vec3 nrm = normalize(vec3(-gr.x, gr.y, 1.0)), Ld = normalize(vec3(-0.55, 0.6, 0.58));
-    float shade = (dot(nrm, Ld) - Ld.z) * 0.9;                         // light on the slopes that face the sun, shadow on the others
-    float m1 = fbm(p * 3.2, 4), m2 = fbm(p * 15.0 + 3.0, 4), m3 = fbm(p * 75.0 + 7.0, 3), m4 = vn(p * 420.0);
-    float zd = smoothstep(1.5, 5.0, uZoom), ze = smoothstep(4.0, 12.0, uZoom);          // finer grain appears as you come close
-    float v = 0.5 + (m1 - 0.5) * 0.16 + (m2 - 0.5) * 0.16 + (m3 - 0.5) * (0.1 + 0.12 * zd) + (m4 - 0.5) * 0.1 * ze + clamp(shade, -0.34, 0.26);
-    vec3 c = vec3(v) + vec3(0.035, 0.005, -0.03) * (m1 - 0.5) * 2.0 + vec3(-0.025, 0.03, -0.012) * (m2 - 0.5) * 2.0 + vec3(0.03, 0.02, 0.0) * mtn * max(shade, 0.0);
+    // eroded relief, all in code (Evan, 26 Nov: "the land isn't that great"; "can't we turn some aspects to pure code?"):
+    // hills and ranges from noise, then gullies cut down their slopes, each finer set branching off the slopes of the last,
+    // the way running water carves real mountains (an erosion filter). Strong only where the elevation maps put high
+    // ground, and steered downhill by the maps' own slope; detail finer than a few pixels is left out, so more appears as
+    // you come close. The exact ridges and valleys are a painted texture, not a map.
+    float e = vE > -50000.0 ? vE : 250.0, mtn = smoothstep(250.0, 2200.0, e), hill = smoothstep(30.0, 500.0, e);
+    float R = (0.1 + 0.25 * hill + 0.65 * mtn) * uRelief;  // how much relief the elevation maps allow here
+    vec3 dn = vN - p * dot(vN, p);                       // the elevation maps' own slope, pointing downhill
+    vec4 n0 = vnd(p * 22.0), n1 = vnd(p * 47.0 + 5.0);
+    float hgt = (n0.x - 0.5) * 0.6 + (n1.x - 0.5) * 0.3;
+    vec3 G = n0.yzw * 22.0 * 0.6 + n1.yzw * 47.0 * 0.3;
+    G -= p * dot(G, p);
+    vec3 Gm = -dn * 60.0;                                // the maps' slope steers the gullies but is not shaded here (the 1° layer does that)
+    float fr = 48.0, k = 0.7, cut = 0.0;
+    int oc = uCheap > 0.5 ? 2 : 8;
+    for (int i = 0; i < 8; i++) {
+      if (i >= oc) break;
+      float lod = smoothstep(1.2, 3.5, uPx / fr); if (lod <= 0.0) break;
+      vec3 d = cross(p, G + Gm); float dl = length(d);
+      if (dl < 1e-4) break;
+      d /= dl;
+      vec2 cs = gully(p * fr, d);
+      float w = k * lod * length(G);                     // a gully is cut in proportion to the slope it runs down: none on flat ground
+      hgt += w * cs.x / (6.2831853 * fr); cut += k * lod * cs.x;
+      G += w * -cs.y * d;
+      fr *= 2.0; k *= 0.86;
+    }
+    // light from the north-west, as on the rest of the map: the ground's slope carried into screen pixels (window y is up)
+    vec2 gr = vec2(dot(G, dFdx(p)), dot(G, dFdy(p))) * R * uPx * 0.034;
+    vec3 nrm = normalize(vec3(-gr, 1.0)), Ld = normalize(vec3(-0.55, 0.6, 0.58));
+    float shade = (dot(nrm, Ld) - Ld.z) * 0.9;
+    float steep = clamp(length(gr) * 0.8, 0.0, 1.0);
+    float m1 = fbm(p * 3.2, 4), m2 = fbm(p * 15.0 + 3.0, 4), m3 = fbm(p * 75.0 + 7.0, 3), m4 = fbm(p * 260.0 + 2.0, 2);
+    float zd = smoothstep(1.5, 5.0, uZoom), ze = smoothstep(3.0, 9.0, uZoom);          // finer grain appears as you come close
+    float v = 0.5 + (m1 - 0.5) * 0.14 + (m2 - 0.5) * 0.14 + (m3 - 0.5) * (0.06 + 0.08 * zd) + (m4 - 0.5) * 0.12 * ze + clamp(shade, -0.36, 0.28) + hgt * R * 0.12 + cut * R * 0.035;   // valley floors a little darker, crests a little lighter
+    vec3 c = vec3(v) + vec3(0.035, 0.005, -0.03) * (m1 - 0.5) * 2.0 + vec3(-0.025, 0.03, -0.012) * (m2 - 0.5) * 2.0
+      + vec3(0.03, 0.015, -0.01) * steep * mtn + vec3(-0.01, 0.012, -0.01) * clamp(-cut * 0.8, 0.0, 1.0) * (1.0 - mtn * 0.5);
     o = vec4(c * uAlpha, uAlpha); return;
   }
   if (uLayer == 2) { o = vec4(vE >= 0.0 && vW > 0.5 ? 1.0 : 0.0); return; }   // review only: the elevation maps' own dry land
@@ -519,7 +562,7 @@ void main() {
       const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
       const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, TER_VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, TER_FS)); gl.linkProgram(pr);
       if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
-      const U = {}; for (const k of ['uFam', 'uA', 'uB', 'uMix', 'uShift', 'uMode', 'uRot', 'uTr', 'uSize', 'uScale', 'uLayer', 'uDeep', 'uAlpha', 'uZoom', 'uPx', 'uCheap']) U[k] = gl.getUniformLocation(pr, k);
+      const U = {}; for (const k of ['uFam', 'uA', 'uB', 'uMix', 'uShift', 'uMode', 'uRot', 'uTr', 'uSize', 'uScale', 'uLayer', 'uDeep', 'uAlpha', 'uZoom', 'uPx', 'uCheap', 'uRelief']) U[k] = gl.getUniformLocation(pr, k);
       const tex = (w, h, fmt, ifmt, type) => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST); gl.texImage2D(gl.TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, null); return t; };
       const th = Math.ceil(TER.have.n / TEX_W);
       Object.assign(TER, { cv, pr, U, th,
@@ -636,7 +679,7 @@ void main() {
     [[TER.tFam, 'uFam'], [TER.tA, 'uA'], [TER.tB, 'uB']].forEach(([tx, nm], i) => { gl.activeTexture(gl.TEXTURE0 + i); gl.bindTexture(gl.TEXTURE_2D, tx); gl.uniform1i(U[nm], i); });
     gl.uniform1f(U.uMix, mA && mB ? f : 0); gl.uniform1i(U.uMode, mode === 'flat' ? 0 : 1);
     gl.uniform2f(U.uRot, r[0] * D2R, r[1] * D2R); gl.uniform2f(U.uTr, tr[0], tr[1]); gl.uniform2f(U.uSize, W, H); gl.uniform1f(U.uScale, proj.scale());
-    gl.uniform1i(U.uLayer, layer === 'land' ? 1 : layer === 'dry' ? 2 : layer === 'ground' ? 3 : 0); gl.uniform1f(U.uAlpha, alpha); gl.uniform1f(U.uZoom, zoom); gl.uniform1f(U.uPx, proj.scale() * cv.width / W); gl.uniform1f(U.uCheap, cheap ? 1 : 0);
+    gl.uniform1i(U.uLayer, layer === 'land' ? 1 : layer === 'dry' ? 2 : layer === 'ground' ? 3 : 0); gl.uniform1f(U.uAlpha, alpha); gl.uniform1f(U.uZoom, zoom); gl.uniform1f(U.uPx, proj.scale() * cv.width / W); gl.uniform1f(U.uCheap, cheap ? 1 : 0); gl.uniform1f(U.uRelief, groundRelief);
     const deep = hex(mix(pal.o2, '#123a5c', 0.35)).map(v => v / 255); gl.uniform3f(U.uDeep, deep[0], deep[1], deep[2]);
     gl.uniform1f(U.uShift, 0); gl.drawArrays(gl.TRIANGLES, 0, TER.nVert);    // (a triangle across the map's edge loses a sliver under 1° wide)
     gl.bindVertexArray(null);
@@ -659,7 +702,7 @@ void main() {
 in vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }`;
   const FIN_FS = `#version 300 es
 precision highp float;
-uniform int uMode, uPass; uniform vec2 uRot, uTr, uSize, uRes; uniform float uScale, uTime, uOcean, uCloud, uWind, uZoom, uHaze;
+uniform int uMode, uPass; uniform vec2 uRot, uTr, uSize, uRes; uniform float uScale, uTime, uOcean, uCloud, uWind, uZoom, uHaze, uGlint;
 uniform vec3 uO1, uO2, uO3; uniform sampler2D uLand;
 uniform vec3 uRing, uBare, uLandBase; uniform vec4 uB1, uB2;
 out vec4 o;
@@ -743,18 +786,27 @@ void main() {
   float zf = 1.0 - smoothstep(1.8, 4.5, uZoom);       // clouds thin out as you come close, so the ground shows
   vec4 acc = vec4(0.0);
   acc = over(acc, vec4(0.0, 0.0, 0.0, 0.13 * sh * (1.0 - cov) * uCloud * zf));       // their shadows on the ground and sea
-  // the sea: a slow, faint swell moving with the wind, and on the globe a broad, calm sheen where the sun is reflected
-  // (Evan, 26 Nov: the sparkle looked bad — no specks, no streaks, no glowing outline round the coasts)
+  // the sea: a slow, faint swell moving with the wind (Evan, 26 Nov: the sparkle looked bad — no specks, no streaks, no
+  // glowing outline round the coasts), and on the globe the sun's glint as Cox & Munk measured it (1954): the sea is a field
+  // of tiny tilted facets, and the harder the wind blows the more they tilt, so the glint spreads wider and dimmer. The wind
+  // speeds are today's belts, as a sketch: calm near the equator and around 30°, the trade winds about 7 m/s, the westerlies
+  // about 10; gusts and lulls drift with the wind.
   vec2 uv = gl_FragCoord.xy / uRes; uv.y = 1.0 - uv.y;
   float landA = texture(uLand, uv).a, sea = (1.0 - landA) * uOcean;
   if (sea > 0.01) {
     vec3 pw = wT * pT + wW * pW + wP * pP;
-    float sw = fbm(rotZ(pw, 0.002 * sec) * 9.0 + vec3(0.0, 0.0, sec * 0.02), 3);
-    float swell = (sw - 0.5) * 0.07;                                   // lighter and darker, very gently
-    float sheen = uMode == 1 ? pow(max(dot(n, Hn), 0.0), 9.0) * 0.16 : 0.0;
-    float la = clamp(max(swell, 0.0) + sheen, 0.0, 0.3) * sea, da = clamp(-swell, 0.0, 0.1) * sea;
-    acc = over(acc, vec4(0.0, 0.0, 0.0, da));
-    acc = over(acc, vec4(vec3(la), la));
+    float sw = fbm(rotZ(pw, 0.002 * sec) * 9.0 + vec3(0.0, 0.0, sec * 0.02), 3), swell = (sw - 0.5) * 0.06;
+    float la = max(swell, 0.0), da = max(-swell, 0.0);
+    if (uMode == 1) {
+      float t1 = (a - 16.0) / 9.0, t2 = (a - 52.0) / 10.0, t3 = (a - 76.0) / 9.0;
+      float U = (3.5 + 4.0 * exp(-t1 * t1) + 7.0 * exp(-t2 * t2) + 2.0 * exp(-t3 * t3)) * (0.7 + 0.6 * fbm(pw * 4.0 + vec3(0.0, 0.0, sec * 0.03), 3));
+      float s2 = 0.003 + 0.00512 * U, cb = max(dot(n, Hn), 0.05), cb2 = cb * cb, tb2 = (1.0 - cb2) / cb2;   // facet slopes' spread; the tilt a facet needs
+      float F = 0.02 + 0.98 * pow(1.0 - clamp(dot(Hn, V), 0.0, 1.0), 5.0);                                 // how much of the sun the water reflects
+      float rho = F * exp(-tb2 / s2) / (4.0 * s2 * cb2 * cb2 * max(n.z, 0.08) * max(dot(n, L), 0.08));
+      la += 0.45 * (1.0 - exp(-rho * uGlint));                       // soft at the edges, never a flat disc
+    }
+    acc = over(acc, vec4(0.0, 0.0, 0.0, clamp(da, 0.0, 0.1) * sea));
+    la = clamp(la, 0.0, 0.6) * sea; acc = over(acc, vec4(vec3(1.0, 0.97, 0.9) * la, la));
   }
   // the clouds, brightest on top
   float lit = uMode == 1 ? 0.86 + 0.18 * clamp(dot(n, L), 0.0, 1.0) : 1.0;
@@ -770,7 +822,7 @@ void main() {
       const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
       const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, FIN_VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FIN_FS)); gl.linkProgram(pr);
       if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
-      const U = {}; for (const k of ['uMode', 'uPass', 'uRot', 'uTr', 'uSize', 'uRes', 'uScale', 'uTime', 'uOcean', 'uCloud', 'uWind', 'uZoom', 'uHaze', 'uO1', 'uO2', 'uO3', 'uLand', 'uRing', 'uBare', 'uLandBase', 'uB1', 'uB2']) U[k] = gl.getUniformLocation(pr, k);
+      const U = {}; for (const k of ['uMode', 'uPass', 'uRot', 'uTr', 'uSize', 'uRes', 'uScale', 'uTime', 'uOcean', 'uCloud', 'uWind', 'uZoom', 'uHaze', 'uGlint', 'uO1', 'uO2', 'uO3', 'uLand', 'uRing', 'uBare', 'uLandBase', 'uB1', 'uB2']) U[k] = gl.getUniformLocation(pr, k);
       const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
       const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       const loc = gl.getAttribLocation(pr, 'aP'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
@@ -783,7 +835,7 @@ void main() {
     } catch (e) { FIN.gl = null; FIN.err = String(e && e.message || e); }
     return FIN.gl;
   }
-  let finOn = true, finQuick = false, tMoved = -1e9, tSettle = 0;
+  let finOn = true, finQuick = false, tMoved = -1e9, tSettle = 0, groundRelief = 1, glintK = 5;
   const timeMoving = () => performance.now() - tMoved < 250;   // playing or scrubbing: the lighter land, then the full picture when it stops
   /* The climate of an age, for the land's colour (a sketch): how far plants had spread (greening), the global temperature
      (TEMP_MA, Scotese et al. 2021) — warm ages push the belts poleward and grow forests near the poles, cold ones bring
@@ -815,7 +867,7 @@ void main() {
     const U = FIN.U, r = proj.rotate(), tr = proj.translate(), col = h => hex(h).map(v => v / 255);
     gl.uniform1i(U.uMode, mode === 'flat' ? 0 : 1); gl.uniform1i(U.uPass, pass);
     gl.uniform2f(U.uRot, r[0] * D2R, r[1] * D2R); gl.uniform2f(U.uTr, tr[0], tr[1]); gl.uniform2f(U.uSize, W, H); gl.uniform2f(U.uRes, rw, rh); gl.uniform1f(U.uScale, proj.scale());
-    gl.uniform1f(U.uTime, o.sec || 0); gl.uniform1f(U.uZoom, zoom); gl.uniform1f(U.uHaze, bd().dark ? 1.2 : 0.8);
+    gl.uniform1f(U.uTime, o.sec || 0); gl.uniform1f(U.uZoom, zoom); gl.uniform1f(U.uHaze, bd().dark ? 1.2 : 0.8); gl.uniform1f(U.uGlint, glintK);
     gl.uniform1f(U.uCloud, o.cloud == null ? 1 : o.cloud); gl.uniform1f(U.uWind, o.wind == null ? 1 : o.wind);
     const [a1, a2, a3] = [col(pal.o1), col(pal.o2), col(pal.o3)]; gl.uniform3f(U.uO1, ...a1); gl.uniform3f(U.uO2, ...a2); gl.uniform3f(U.uO3, ...a3);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, FIN.tLand); gl.uniform1i(U.uLand, 0);
@@ -1828,7 +1880,7 @@ void main() {
     if (hf > 0 && !lite && !projGeoid) drawHill(L, 0.85 * hf);   // the light-and-shadow pictures are flat: they cannot follow the bumps
     // deep time: light and shadow from the ancient elevation maps, kept to the land
     if (sea) {
-      const tc = lite ? null : terDraw(t, 'land', 0.9 * sea.k * (finOn ? Math.max(0.35, 1 - Math.max(0, zoom - 1.6) * 0.22) : 1));   // the 1° shading gives way to the carved relief as you come close
+      const tc = lite ? null : terDraw(t, 'land', 0.9 * sea.k * (finOn ? Math.max(0.12, 1 - Math.max(0, zoom - 1.6) * 0.24) : 1));   // the 1° shading gives way to the carved relief as you come close (its triangles show up close)
       if (tc) {
         if (!terMask) { terMask = document.createElement('canvas'); tmx = terMask.getContext('2d'); }
         if (terMask.width !== land.width || terMask.height !== land.height) { terMask.width = land.width; terMask.height = land.height; }
@@ -2796,6 +2848,8 @@ void main() {
     setFinish(on) { finOn = !!on; dirty = true; schedule(); },
     setLifeUpClose(on) { lifeOn = !!on; dirty = true; schedule(); },
     get lifeUpClose() { return lifeOn; },
+    _glint(k) { glintK = k; dirty = true; wake(); schedule(); },   // review only: the sun glint's strength (0 = none)
+    _relief(k) { groundRelief = k; dirty = true; schedule(); },              // review only: the carved relief's strength (0 = none)
     _finish: () => ({ ok: !!finGL(), err: FIN.err || null, drawn: FIN.drawn.slice(), ground: TER.ground || 0, terErr: TER.err || null }),
     _plants: () => { const k = {}; for (const P of plantsAt) k[P.kind] = (k[P.kind] || 0) + 1; return k; },
     _fauna: () => ({ why: faunaWhy, asked: layers.fauna.length, show: faunaShow(), scene: !!fxHook, placed: faunaAt.map(g => ({ name: g.f.name, n: g.n, x: g.cx, y: g.cy, L: g.L, where: g.f.where, land: onLand(g.cx, g.cy) })), hits: faunaHits.map(h => [Math.round(h.x * 10) / 10, Math.round(h.y * 10) / 10, h.marker.name]) }),   // as if the last touch was 14 s ago

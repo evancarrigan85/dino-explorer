@@ -709,6 +709,24 @@ const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; consol
     const off = await p.evaluate(() => { const n = WorldMap._finish().drawn[0]; WorldMap.setFinish(false); WorldMap._draw(); const m = WorldMap._finish().drawn[0]; WorldMap.setFinish(true); WorldMap._draw(); return n === m; });
     ok('living sea and sky: it can be switched off, and the map draws as before', off);
     ok('living sea and sky: How this map is made says it is a sketch of the wind belts, not a weather record', await p.evaluate(() => /trade winds/.test(document.getElementById('skyNote').textContent) && /not a weather record/.test(document.getElementById('skyNote').textContent)));
+    // the sun's glint (Cox & Munk 1954) and the carved relief, both drawn by code (Evan, 26 Nov: "can't we turn some aspects to pure code?")
+    const gl = await p.evaluate(() => {
+      const m0 = WorldMap.mode; WorldMap.setMotion(false); WorldMap.setMode('globe'); setTime(100); WorldMap.lookAtLL(-150, 5); WorldMap._draw();
+      const c = document.getElementById('mapFx'), x = c.getContext('2d'), w = c.width, h = c.height;
+      const lit = () => { WorldMap._draw(); const d = x.getImageData(Math.round(w * 0.3), Math.round(h * 0.2), Math.round(w * 0.2), Math.round(h * 0.3)).data; let s = 0; for (let i = 3; i < d.length; i += 4) s += d[i]; return s / (d.length / 4); };
+      WorldMap._glint(0); const a = lit(); WorldMap._glint(5); const b = lit();
+      WorldMap.setMode(m0); WorldMap.setMotion(true); WorldMap.resetView(); return { a, b, err: WorldMap._finish().err };
+    });
+    ok('sun glint: on the globe the sea catches the sun where its surface faces halfway between sun and viewer', gl.b > gl.a + 1 && !gl.err, JSON.stringify(gl));
+    const rl = await p.evaluate(() => {
+      setTime(60); WorldMap.lookAtLL(-108, 40); WorldMap.zoomBy(4);
+      const c = document.getElementById('mapCanvas'), x = c.getContext('2d');
+      const sum = () => { WorldMap._draw(); const d = x.getImageData(0, 0, c.width, c.height).data; let s = 0; for (let i = 0; i < d.length; i += 4) s += Math.abs(d[i] - d[i + 4 * 3] || 0); return s; };
+      WorldMap._relief(0); const flat = sum(); WorldMap._relief(1); const carved = sum();
+      WorldMap.resetView(); return { flat, carved, err: WorldMap._finish().terErr };
+    });
+    ok('carved relief: close up, the ground gets ridges and valleys from code (more light and shade than without them)', rl.carved > rl.flat * 1.05 && !rl.err, JSON.stringify(rl));
+    ok('sun glint: How this map is made credits Cox and Munk, and the source is verified', await p.evaluate(() => /Cox and Munk/.test(document.getElementById('skyNote').textContent) && (SRCMAP['m:sky'] || []).includes('coxmunk1954') && !!REFS.coxmunk1954));
     await p.evaluate(() => setTime(600)); await p.waitForTimeout(100); }
     await p.evaluate(() => setTime(600)); await p.waitForTimeout(200);
     ok('terrain: nothing before the elevation maps begin (540 Ma)', await p.evaluate(() => { const d = WorldMap._ter().drawn; WorldMap._draw(); return WorldMap._ter().drawn === d; }));

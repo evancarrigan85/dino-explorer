@@ -654,3 +654,4 @@ ritchie1977 | Ritchie | 1977 | First Ordovician vertebrates from the Southern He
 rubinstein2010 | Rubinstein | 2010 | Early Middle Ordovician evidence for land plants in Argentina (eastern Gondwana) | a:Earliest land plants (spores)
 gabbott1995 | Gabbott | 1995 | A giant conodont with preserved muscle tissue from the Upper Ordovician of South Africa | a:Promissum
 klug2015 | Klug | 2015 | Normal giants? Temporal and latitudinal shifts of Palaeozoic marine invertebrate gigantism and global change | a:Endoceras, a:Cameroceras
+coxmunk1954 | Cox | 1954 | Measurement of the Roughness of the Sea Surface from Photographs of the Sun's Glitter | m:sky

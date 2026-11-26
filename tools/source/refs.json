@@ -11060,5 +11060,21 @@
 ],
 "first": "",
 "title_expected": "Normal giants? Temporal and latitudinal shifts of Palaeozoic marine invertebrate gigantism and global change"
+},
+"coxmunk1954": {
+"doi": "10.1364/josa.44.000838",
+"title": "Measurement of the Roughness of the Sea Surface from Photographs of the Sun’s Glitter",
+"journal": "Journal of the Optical Society of America",
+"year": 1954,
+"authors": [
+"Cox",
+"Munk"
+],
+"type": "journal-article",
+"targets": [
+"m:sky"
+],
+"first": "",
+"title_expected": "Measurement of the Roughness of the Sea Surface from Photographs of the Sun's Glitter"
 }
 }

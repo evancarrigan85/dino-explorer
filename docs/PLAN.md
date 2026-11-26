@@ -9,15 +9,24 @@ commit that builds, passes `node tools/test.js`, has been looked at on desktop a
 pushed to `main`. When a release ships, move it to "Shipped" with the date and the numbers, and
 correct anything below that turned out to be wrong. Where a step says **ask Evan**, stop and ask.
 
-## Next up (updated 25 Nov 2026 — start here)
+## Next up (updated 26 Nov 2026 — start here)
+
+**26 Nov: the living globe is live, and its land and sea are drawn by code** (Evan: “the sparkle looks bad / the land
+isn't that great”; “can't we turn some aspects to pure code?”). Shipped: calm water (no sparkle, streaks or surf), crisper
+clouds, the land coloured by climate at full size, and then, all in shader code: **eroded relief** (gullies cut down the
+slopes, each finer set branching off the last, strong only where the elevation maps put high ground and steered downhill
+by their slope; detail is added as you zoom, never finer than the screen can show) and **the sun's glint as Cox & Munk
+measured it** (1954, verified; wider and dimmer where today's wind belts blow harder). Review hooks:
+`WorldMap._relief(k)`, `_glint(k)`. Still to do on the globe: the creatures up close (off until they look polished),
+Safari untested, and the globe in the new app.
 
 **25 Nov, latest of all: Before Us is an evidence-led atlas of deep time; its style is Deep-Time History Painting**
 (Evan; `docs/ART.md` › Before Us, and its style). Built: the **reconstruction brief** (`content/briefs/`, rules in
 `tools/briefs.mjs`, checked by the build), the Kem Kem as the first brief (25 decisions: 14 documented, 9 inferred,
 2 imagined, 13 papers), the painter's prompt and the reviewer's checklist built from it, and in the app **The Scene**
 (the painting alone) and **The Evidence** (every part ringed by its status; *Where was this? What lived here? How do we
-know?*). The living globe (moving sea and sky; the land coloured by its climate) is on the `living-world` branch,
-not shipped. **Next:** *A More Ancient Dorset* as the first brief written from scratch in this form — Lyme Regis in the
+know?*). The living globe (moving sea and sky; the land coloured by its climate) shipped on 26 Nov (above).
+**Next:** *A More Ancient Dorset* as the first brief written from scratch in this form — Lyme Regis in the
 Early Jurassic, from Mary Anning's finds, after De la Beche's *Duria Antiquior* (1830): verify its papers first
 (`tools/verify_refs.py`), then the brief, then the painting (Gemini credits needed). The story: perhaps the viewer at
 the waterline, a small disturbance in the foreground, a large shape coming into view below — every scene needs a story,
