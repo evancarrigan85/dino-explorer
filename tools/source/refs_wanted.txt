@@ -647,3 +647,10 @@ tapanila2020 | Tapanila | 2020 | Saws, scissors, and sharks: Late Paleozoic expe
 sallan2014 | Sallan | 2014 | The long-rostrumed elasmobranch Bandringa Zangerl, 1969, and taphonomy within a Carboniferous shark nursery | a:Bandringa
 kukalova1983 | Kukalová-Peck | 1983 | New Homoiopteridae (Insecta: Paleodictyoptera) with wing articulation from Upper Carboniferous strata of Mazon Creek, Illinois | a:Mazothairos
 holmes1984 | Holmes | 1984 | The Carboniferous amphibian Proterogyrinus scheelei Romer, and the early evolution of tetrapods | a:Proterogyrinus
+lamsdell2010 | Lamsdell | 2010 | Cope's rule and Romer's theory: patterns of diversity and gigantism in eurypterids and Palaeozoic vertebrates | a:Eurypterid (Sea Scorpion)
+briggs1983 | Briggs | 1983 | The conodont animal | a:Conodonts
+donoghue2000 | Donoghue | 2000 | Conodont affinity and chordate phylogeny | a:Conodonts
+ritchie1977 | Ritchie | 1977 | First Ordovician vertebrates from the Southern Hemisphere | a:Arandaspis
+rubinstein2010 | Rubinstein | 2010 | Early Middle Ordovician evidence for land plants in Argentina (eastern Gondwana) | a:Earliest land plants (spores)
+gabbott1995 | Gabbott | 1995 | A giant conodont with preserved muscle tissue from the Upper Ordovician of South Africa | a:Promissum
+klug2015 | Klug | 2015 | Normal giants? Temporal and latitudinal shifts of Palaeozoic marine invertebrate gigantism and global change | a:Endoceras, a:Cameroceras

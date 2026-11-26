@@ -10940,5 +10940,125 @@
 ],
 "first": "",
 "title_expected": "The Carboniferous amphibian Proterogyrinus scheelei Romer, and the early evolution of tetrapods"
+},
+"lamsdell2010": {
+"doi": "10.1098/rsbl.2009.0700",
+"title": "Cope's Rule and Romer's theory: patterns of diversity and gigantism in eurypterids and Palaeozoic vertebrates",
+"journal": "Biology Letters",
+"year": 2010,
+"authors": [
+"Lamsdell",
+"Braddy"
+],
+"type": "journal-article",
+"targets": [
+"a:Eurypterid (Sea Scorpion)"
+],
+"first": "",
+"title_expected": "Cope's rule and Romer's theory: patterns of diversity and gigantism in eurypterids and Palaeozoic vertebrates"
+},
+"briggs1983": {
+"doi": "10.1111/j.1502-3931.1983.tb01993.x",
+"title": "The conodont animal",
+"journal": "Lethaia",
+"year": 1983,
+"authors": [
+"Briggs",
+"Clarkson",
+"Aldridge"
+],
+"type": "journal-article",
+"targets": [
+"a:Conodonts"
+],
+"first": "",
+"title_expected": "The conodont animal"
+},
+"donoghue2000": {
+"doi": "10.1111/j.1469-185x.1999.tb00045.x",
+"title": "Conodont affinity and chordate phylogeny",
+"journal": "Biological Reviews",
+"year": 2000,
+"authors": [
+"DONOGHUE",
+"FOREY",
+"ALDRIDGE"
+],
+"type": "journal-article",
+"targets": [
+"a:Conodonts"
+],
+"first": "",
+"title_expected": "Conodont affinity and chordate phylogeny"
+},
+"ritchie1977": {
+"doi": "10.1080/03115517708527770",
+"title": "First Ordovician vertebrates from the Southern Hemisphere",
+"journal": "Alcheringa: An Australasian Journal of Palaeontology",
+"year": 1977,
+"authors": [
+"Ritchie",
+"Gilbert-Tomlinson"
+],
+"type": "journal-article",
+"targets": [
+"a:Arandaspis"
+],
+"first": "",
+"title_expected": "First Ordovician vertebrates from the Southern Hemisphere"
+},
+"rubinstein2010": {
+"doi": "10.1111/j.1469-8137.2010.03433.x",
+"title": "Early Middle Ordovician evidence for land plants in Argentina (eastern Gondwana)",
+"journal": "New Phytologist",
+"year": 2010,
+"authors": [
+"Rubinstein",
+"Gerrienne",
+"de la Puente",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Earliest land plants (spores)"
+],
+"first": "",
+"title_expected": "Early Middle Ordovician evidence for land plants in Argentina (eastern Gondwana)"
+},
+"gabbott1995": {
+"doi": "10.1038/374800a0",
+"title": "A giant conodont with preserved muscle tissue from the Upper Ordovician of South Africa",
+"journal": "Nature",
+"year": 1995,
+"authors": [
+"Gabbott",
+"Aldridge",
+"Theron"
+],
+"type": "journal-article",
+"targets": [
+"a:Promissum"
+],
+"first": "",
+"title_expected": "A giant conodont with preserved muscle tissue from the Upper Ordovician of South Africa"
+},
+"klug2015": {
+"doi": "10.1111/let.12104",
+"title": "Normal giants? Temporal and latitudinal shifts of Palaeozoic marine invertebrate gigantism and global change",
+"journal": "Lethaia",
+"year": 2015,
+"authors": [
+"Klug",
+"De Baets",
+"Kröger",
+"et al."
+],
+"type": "journal-article",
+"targets": [
+"a:Endoceras",
+"a:Cameroceras"
+],
+"first": "",
+"title_expected": "Normal giants? Temporal and latitudinal shifts of Palaeozoic marine invertebrate gigantism and global change"
 }
 }

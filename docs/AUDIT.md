@@ -50,11 +50,12 @@ claims (Triceratops, Parasaurolophus) were corrected with them.
 | Period | Cards | With a paper before → after | Corrected | Date |
 |---|---|---|---|---|
 | Carboniferous | 29 | 4 → 23 | 11: Rhizodus (called Devonian), Hylonomus (put on the mammal line), Westlothiana (not an amniote after all), Petrolacosaurus (“the ancestor”, an invented 80%), Lepidodendron (the fungi-and-coal idea stated as fact; “every piece of coal”), Meganeura, Pulmonate Snail (360 Myr), Sigillaria (“every continent”), Arthropleura, Eryops, Edops | 26 Nov 2026 |
+| Ordovician | 20 | 5 → 11 | 8: Cameroceras (an unchecked 9 m, against the atlas’s own Endoceras card), Conodonts (“the most sensitive teeth”), Streptelasma (“built the first reefs”), brachiopods (“a few dozen” living kinds: a few hundred), Arandaspis (an untraceable anecdote), jawless fish (“the first vertebrates”, a lamprey’s sucking mouth), Orthoceras (the ornaments are later relatives), sea scorpions | 26 Nov 2026 |
 
 Still without a paper in the Carboniferous: Pulmonate Snail, Pulmonoscorpius, Archaeothyris, Euphoberia, Ophiderpeton,
 Spinoaequalis — their key papers (in *Palaeontology* before 2000, museum bulletins, USGS papers) are not in Crossref, so
-`verify_refs.py` cannot confirm them; they stay unsourced, and say so, until a verifiable paper is found. Next: the
-Ordovician (5/20), Silurian (6/22) and Devonian (8/31).
+`verify_refs.py` cannot confirm them; they stay unsourced, and say so, until a verifiable paper is found. Still without in the Ordovician: Orthoceras, the jawless-fish, brachiopod, graptolite and rugose-coral cards, Asaphus,
+Sacabambaspis, Astraspis, Sinoceras. Next: the Silurian (6/22) and Devonian (8/31).
 
 ## What it takes to finish
 

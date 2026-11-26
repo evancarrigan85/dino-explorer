@@ -9,7 +9,7 @@
   "t": [470,440],
   "g": "invert",
   "c": "Invertebrates › Molluscs › Shelled cephalopods",
-  "fact": "A straight-shelled nautiloid that hunted like a submarine! It controlled its depth by pumping gas in and out of its shell chambers. Its fossils are so common they're sold as desk ornaments today.",
+  "fact": "A straight-shelled relative of today’s nautilus and squid. Like the nautilus, it rose and sank by changing the gas and water in the chambers of its shell. The polished “Orthoceras” stones sold today are mostly its later relatives, from Morocco.",
   "sites": [[56.7,16.6,"Öland, Sweden"],[59.4,24.7,"Northern Estonia"]]
 },
 {
@@ -22,7 +22,7 @@
   "t": [467,444],
   "g": "invert",
   "c": "Invertebrates › Arthropods › Sea scorpions",
-  "fact": "Sea scorpions grew HUGE — some bigger than a person! They were the top predators of ancient seas. Some could even venture onto land. They were distant cousins of today's horseshoe crabs and spiders.",
+  "fact": "Sea scorpions: hunters of shallow seas and lagoons, and the closest big relatives of spiders and scorpions. The largest, from the Devonian, grew longer than a person. Some may have crawled briefly onto land.",
   "sites": [[42.9,-78.9,"Bertie Waterlime, New York / Ontario"],[55.6,-3.9,"Lesmahagow, Scotland"],[58.4,22.5,"Saaremaa, Estonia"]]
 },
 {
@@ -35,20 +35,20 @@
   "t": [485,444],
   "g": "fish",
   "c": "Fishes › Jawless fishes",
-  "fact": "The first vertebrates — animals with backbones, just like us! They had no jaws, just a round sucking mouth. We are descended from these weird little armored fish, through a very long chain of evolution.",
+  "fact": "Among the earliest vertebrates — animals with backbones, like us. They had no jaws, just a simple mouth for taking in small food, and many wore armour of bony plates. Jaws came later, and our own line runs back through fish like these.",
   "sites": [[38.4,-105.2,"Harding Sandstone, Colorado"],[-17.5,-65.7,"Sacabamba, Bolivia"]]
 },
 {
   "name": "Cameroceras",
   "emoji": "🦑",
   "diet": "pred",
-  "size": "Up to 9 meters long!",
+  "size": "Several metres (claims of 9 m cannot be checked)",
   "habitat": "Open ancient oceans",
   "lived": "470–440 MYA",
   "t": [470,440],
   "g": "invert",
   "c": "Invertebrates › Molluscs › Shelled cephalopods",
-  "fact": "One of the biggest sea creatures of the Ordovician — a giant strait-shelled cephalopod longer than a bus! It was the ultimate predator of its time, but left no descendants.",
+  "fact": "A giant straight-shelled cephalopod, a relative of today’s nautilus and squid, and one of the biggest animals of the Ordovician seas. Old claims of 9-metre shells come from broken pieces and cannot be checked; the longest complete shells of its relatives are about 3.5 m. Its whole line died out.",
   "sites": [[43.2,-75.2,"Trenton Falls, New York"],[59.4,24.7,"Northern Estonia"]]
 },
 {
@@ -61,7 +61,7 @@
   "t": [485,444],
   "g": "fish",
   "c": "Fishes › Jawless fishes",
-  "fact": "Tiny mysterious creatures with razor-sharp tooth-like structures. Scientists argued for 100 years what they even were! We now know they were early fish relatives with the most sensitive teeth of any ancient creature.",
+  "fact": "Tiny eel-like animals known for more than a century only from their tooth-like parts — so common in rocks that geologists use them to tell the age of a layer. Whole bodies found in Scotland in the 1980s, with eyes, muscle blocks and a tail fin, showed they were early vertebrates.",
   "sites": [[-32.2,19,"Soom Shale, South Africa"],[55.98,-3.22,"Granton, Edinburgh — first whole animal"]]
 },
 {
@@ -74,7 +74,7 @@
   "t": [470,460],
   "g": "fish",
   "c": "Fishes › Jawless fishes",
-  "fact": "One of the earliest fish with a recognizable head shield, discovered in Australia. Completely jawless, Arandaspis sucked up organic particles from the seafloor. Its fossils were so unexpected in Ordovician rocks that scientists initially assumed the rock layers were mislabeled.",
+  "fact": "One of the oldest fish known from more than scraps: a jawless fish with a bony head shield, from the sandstones of central Australia. How it fed is not known; it may have taken small food from the sea floor.",
   "sites": [[-24.4,133.4,"Stairway Sandstone, central Australia"]]
 },
 {
@@ -87,7 +87,7 @@
   "t": [470,444],
   "g": "invert",
   "c": "Invertebrates › Brachiopods",
-  "fact": "A lamp shell that looks like a clam but is completely unrelated. Brachiopods like Strophomena were the most abundant shelled animals on Earth during the Ordovician. Only a few dozen brachiopod species survive today out of thousands that once existed.",
+  "fact": "A lamp shell: it looks like a clam but is not related to one. Brachiopods like Strophomena were among the commonest shelled animals of the Ordovician seas. A few hundred kinds live today, against many thousands known as fossils.",
   "sites": [[39.1,-84.5,"Cincinnati, Ohio"]]
 },
 {
@@ -113,7 +113,7 @@
   "t": [470,444],
   "g": "invert",
   "c": "Invertebrates › Jellyfish & corals",
-  "fact": "Solitary horn corals that built the first true reef ecosystems. Unlike modern corals they had a distinctive wrinkled outer wall - hence rugose, from Latin for wrinkled. Whole reef systems built by these ancient corals are preserved across North America.",
+  "fact": "A solitary horn coral: each one grew alone, like a little horn set in the sea floor, with a wrinkled outer wall — “rugose” means wrinkled. Rugose corals appeared in the Ordovician and lived until the end of the Permian.",
   "sites": [[39.1,-84.5,"Cincinnati, Ohio"],[49.5,-63,"Anticosti Island, Québec"]]
 },
 {
